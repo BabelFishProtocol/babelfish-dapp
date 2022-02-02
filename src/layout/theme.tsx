@@ -1,7 +1,13 @@
-import React from 'react'
-import { createTheme, responsiveFontSizes, ThemeProvider as MuiThemeProvider, Theme, Components } from '@mui/material/styles'
+import React from 'react';
+import {
+  createTheme,
+  responsiveFontSizes,
+  ThemeProvider as MuiThemeProvider,
+  Theme,
+  Components,
+} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import createPalette from '@mui/material/styles/createPalette'
+import createPalette from '@mui/material/styles/createPalette';
 
 /* @ts-ignore */
 import ComfortaaWoff2 from '../assets/fonts/Comfortaa-Regular.woff2';
@@ -12,15 +18,20 @@ import ArchiveWoff2 from '../assets/fonts/Archive.woff2';
 /* @ts-ignore */
 import ArchiveWoff from '../assets/fonts/Archive.woff';
 
+const colors = {
+  primary: '#ffbf42',
+  lightYellow: '#fddc90',
+};
+
 const palette = createPalette({
   mode: 'dark',
   primary: {
-    main: "#ffbf42"
+    main: colors.primary,
   },
   background: {
-    default: "#181a20",
-  }
-})
+    default: '#181a20',
+  },
+});
 
 const components: Components<Theme> = {
   MuiCssBaseline: {
@@ -45,24 +56,59 @@ const components: Components<Theme> = {
       }
     `,
   },
-}
+  MuiButton: {
+    defaultProps: {
+      variant: 'contained',
+    },
+    styleOverrides: {
+      root: {
+        padding: '16px 54px 15px 54px',
+      },
+      containedPrimary: {
+        backgroundImage: `linear-gradient(to left, ${colors.lightYellow}, ${colors.primary})`,
+      },
+    },
+  },
+};
+
+const typography = {
+  h1: {
+    fontSize: 30,
+    fontFamily: 'Archive',
+  },
+  h2: {
+    fontSize: 24,
+    fontFamily: 'Archive',
+  },
+  h3: {
+    fontSize: 20,
+    fontFamily: 'Archive',
+  },
+  h4: {
+    fontSize: 16,
+    fontFamily: 'Archive',
+  },
+  subtitle1: {
+    fontSize: 16,
+  },
+  button: {
+    fontSize: 18,
+    fontFamily: 'Archive',
+    lineHeight: 1,
+  },
+};
 
 const theme = responsiveFontSizes(
   createTheme({
     palette,
     components,
-    typography: {
-      fontSize: 14,
-      fontFamily: [
-        'Comfortaa-Regular',
-      ].join(',')
-    },
+    typography,
   })
-)
+);
 
 export const ThemeProvider: React.FC = ({ children }) => (
   <MuiThemeProvider theme={theme}>
     <CssBaseline />
     {children}
   </MuiThemeProvider>
-)
+);

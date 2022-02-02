@@ -7,6 +7,7 @@
     "prettier"
   ],
   "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
   "parserOptions": {
     "project": "./tsconfig.json",
     "parser": "@typescript-eslint/parser"
@@ -15,7 +16,8 @@
     "react/react-in-jsx-scope": 0,
     "import/prefer-default-export": 0,
     "react/function-component-definition": 0,
-    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "no-console": 2
   },
   "overrides": [
     {
