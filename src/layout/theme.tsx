@@ -4,9 +4,13 @@ import CssBaseline from '@mui/material/CssBaseline';
 import createPalette from '@mui/material/styles/createPalette'
 
 /* @ts-ignore */
-import Comfortaa from '../assets/fonts/Comfortaa-Regular.ttf';
+import ComfortaaWoff2 from '../assets/fonts/Comfortaa-Regular.woff2';
 /* @ts-ignore */
-import Heavitas from '../assets/fonts/Heavitas.ttf';
+import ComfortaaWoff from '../assets/fonts/Comfortaa-Regular.woff';
+/* @ts-ignore */
+import ArchiveWoff2 from '../assets/fonts/Archive.woff2';
+/* @ts-ignore */
+import ArchiveWoff from '../assets/fonts/Archive.woff';
 
 const palette = createPalette({
   mode: 'dark',
@@ -26,15 +30,17 @@ const components: Components<Theme> = {
         font-style: normal;
         font-display: swap;
         font-weight: 400;
-        src: url(${Comfortaa}) format('truetype');
+        src: url(${ComfortaaWoff2}) format('woff2'),
+             url(${ComfortaaWoff}) format('woff');
         unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
       }
       @font-face {
-        font-family: 'Heavitas';
+        font-family: 'Archive';
         font-style: normal;
         font-display: swap;
         font-weight: 400;
-        src: url(${Heavitas}) format('truetype');
+        src: url(${ArchiveWoff2}) format('woff2'),
+             url(${ArchiveWoff}) format('woff');
         unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
       }
     `,
@@ -48,7 +54,7 @@ const theme = responsiveFontSizes(
     typography: {
       fontSize: 14,
       fontFamily: [
-        'Heavitas',
+        'Comfortaa-Regular',
       ].join(',')
     },
   })
