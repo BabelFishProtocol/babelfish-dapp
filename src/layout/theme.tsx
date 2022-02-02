@@ -4,11 +4,12 @@ import CssBaseline from '@mui/material/CssBaseline';
 import createPalette from '@mui/material/styles/createPalette'
 
 /* @ts-ignore */
-import Comfortaa from './fonts/Comfortaa-Regular.ttf';
+import Comfortaa from '../assets/fonts/Comfortaa-Regular.ttf';
 /* @ts-ignore */
-import Heavitas from './fonts/Heavitas.ttf';
+import Heavitas from '../assets/fonts/Heavitas.ttf';
 
 const palette = createPalette({
+  mode: 'dark',
   primary: {
     main: "#ffbf42"
   },
