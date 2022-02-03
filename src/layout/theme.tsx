@@ -8,14 +8,11 @@ import {
 } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import createPalette from '@mui/material/styles/createPalette';
+import createTypography from '@mui/material/styles/createTypography';
 
-/* @ts-ignore */
 import ComfortaaWoff2 from '../assets/fonts/Comfortaa-Regular.woff2';
-/* @ts-ignore */
 import ComfortaaWoff from '../assets/fonts/Comfortaa-Regular.woff';
-/* @ts-ignore */
 import ArchiveWoff2 from '../assets/fonts/Archive.woff2';
-/* @ts-ignore */
 import ArchiveWoff from '../assets/fonts/Archive.woff';
 
 const colors = {
@@ -30,6 +27,12 @@ const palette = createPalette({
   },
   background: {
     default: '#181a20',
+  },
+  success: {
+    main: '#32f05f',
+  },
+  error: {
+    main: '#ef0512',
   },
 });
 
@@ -62,16 +65,21 @@ const components: Components<Theme> = {
     },
     styleOverrides: {
       root: {
+        fontSize: 18,
         padding: '16px 54px 15px 54px',
+        borderRadius: '12px',
       },
       containedPrimary: {
-        backgroundImage: `linear-gradient(to left, ${colors.lightYellow}, ${colors.primary})`,
+        backgroundImage: `linear-gradient(to left, ${colors.lightYellow}, ${palette.primary.main})`,
+      },
+      outlinedPrimary: {
+        boxShadow: `inset 0 0 0 2px ${palette.primary.main}`,
       },
     },
   },
 };
 
-const typography = {
+const typography = createTypography(palette, {
   h1: {
     fontSize: 30,
     fontFamily: 'Archive',
@@ -92,11 +100,10 @@ const typography = {
     fontSize: 16,
   },
   button: {
-    fontSize: 18,
     fontFamily: 'Archive',
-    lineHeight: 1,
+    lineHeight: 'normal',
   },
-};
+});
 
 const theme = responsiveFontSizes(
   createTheme({

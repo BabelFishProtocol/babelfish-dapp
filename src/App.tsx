@@ -12,6 +12,12 @@ function App() {
               <>
                 <div>Main</div>
                 <Button>About</Button>
+                <br />
+                <Button variant="outlined">Outlined</Button>
+                <br />
+                <Button variant="outlined" color="error">
+                  Error
+                </Button>
               </>
             }
           />
