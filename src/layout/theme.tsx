@@ -13,8 +13,8 @@ import GlobalStyles from '@mui/material/GlobalStyles';
 
 import ComfortaaWoff2 from '../assets/fonts/Comfortaa-Regular.woff2';
 import ComfortaaWoff from '../assets/fonts/Comfortaa-Regular.woff';
-import ArchiveWoff2 from '../assets/fonts/Archive.woff2';
-import ArchiveWoff from '../assets/fonts/Archive.woff';
+import ArchiveWoff2 from '../assets/fonts/Archive-Regular.woff2';
+import ArchiveWoff from '../assets/fonts/Archive-Regular.woff';
 
 const colors = {
   primary: '#ffbf42',
@@ -67,7 +67,7 @@ const components: Components<Theme> = {
     styleOverrides: {
       root: {
         fontSize: 18,
-        padding: '16px 54px 13px 54px',
+        padding: '16px 54px',
         borderRadius: '12px',
         border: 0,
         ':hover': {
@@ -86,7 +86,7 @@ const components: Components<Theme> = {
       },
       text: {
         fontSize: 14,
-        padding: '5px 5px 2px 5px',
+        padding: '5px',
       },
     },
   },
