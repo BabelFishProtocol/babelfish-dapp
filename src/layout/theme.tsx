@@ -9,7 +9,6 @@ import {
 import CssBaseline from '@mui/material/CssBaseline';
 import createPalette from '@mui/material/styles/createPalette';
 import createTypography from '@mui/material/styles/createTypography';
-import GlobalStyles from '@mui/material/GlobalStyles';
 
 import ComfortaaWoff2 from '../assets/fonts/Comfortaa-Regular.woff2';
 import ComfortaaWoff from '../assets/fonts/Comfortaa-Regular.woff';
@@ -68,18 +67,21 @@ const components: Components<Theme> = {
       root: {
         fontSize: 18,
         padding: '16px 54px',
-        borderRadius: '12px',
         border: 0,
         ':hover': {
           border: 0,
         },
       },
       containedPrimary: {
+        borderRadius: '12px',
         backgroundImage: `linear-gradient(to left, ${colors.lightYellow}, ${palette.primary.main})`,
         transition: 'opacity 250ms cubic-bezier(0.4, 0, 0.2, 1)',
         ':hover': {
           opacity: 0.8,
         },
+      },
+      outlined: {
+        borderRadius: '8px',
       },
       outlinedPrimary: {
         boxShadow: `inset 0 0 0 2px ${palette.primary.main}`,
@@ -87,29 +89,13 @@ const components: Components<Theme> = {
       text: {
         fontSize: 14,
         padding: '5px',
+        ':hover': {
+          textDecoration: 'underline',
+        },
       },
     },
   },
 };
-
-// outlinedError and outlinedSuccess buttons global styles.
-// Mui doesn't allow ammending error or success in styleOverrides
-const globalStyles = `
-  .MuiButton-outlinedError.MuiButton-outlinedError {
-    box-shadow: inset 0 0 0 2px ${palette.error.main};
-    background-color: rgba(239, 5, 18, 0.1);
-  }
-  .MuiButton-outlinedError.MuiButton-outlinedError:hover {
-    background-color: rgba(239, 5, 18, 0.2);
-  }
-  .MuiButton-outlinedSuccess.MuiButton-outlinedSuccess {
-    box-shadow: inset 0 0 0 2px ${palette.success.main};
-    background-color: rgba(50, 240, 95, 0.1);
-  }
-  .MuiButton-outlinedSuccess.MuiButton-outlinedSuccess:hover {
-    background-color: rgba(50, 240, 95, 0.2);
-  }
-`;
 
 const typography = createTypography(palette, {
   h1: {
@@ -148,7 +134,6 @@ const theme = responsiveFontSizes(
 export const ThemeProvider: React.FC = ({ children }) => (
   <MuiThemeProvider theme={theme}>
     <CssBaseline />
-    <GlobalStyles styles={globalStyles} />
     {children}
   </MuiThemeProvider>
 );
