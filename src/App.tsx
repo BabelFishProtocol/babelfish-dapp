@@ -13,11 +13,21 @@ function App() {
                 <div>Main</div>
                 <Button>About</Button>
                 <br />
+                <br />
                 <Button variant="outlined">Outlined</Button>
+                <br />
                 <br />
                 <Button variant="outlined" color="error">
                   Error
                 </Button>
+                <br />
+                <br />
+                <Button variant="outlined" color="success">
+                  Success
+                </Button>
+                <br />
+                <br />
+                <Button variant="text">Text</Button>
               </>
             }
           />
