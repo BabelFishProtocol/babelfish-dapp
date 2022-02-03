@@ -8,6 +8,7 @@ import {
 } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import createPalette from '@mui/material/styles/createPalette';
+import createTypography from '@mui/material/styles/createTypography';
 
 /* @ts-ignore */
 import ComfortaaWoff2 from '../assets/fonts/Comfortaa-Regular.woff2';
@@ -71,7 +72,7 @@ const components: Components<Theme> = {
   },
 };
 
-const typography = {
+const typography = createTypography(palette, {
   h1: {
     fontSize: 30,
     fontFamily: 'Archive',
@@ -96,7 +97,7 @@ const typography = {
     fontFamily: 'Archive',
     lineHeight: 1,
   },
-};
+});
 
 const theme = responsiveFontSizes(
   createTheme({
