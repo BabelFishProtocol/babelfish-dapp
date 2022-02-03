@@ -21,7 +21,7 @@ export const DataTable = ({
       sx={{
         maxHeight: 400,
         borderRadius: 2,
-        backgroundImage: `linear-gradient(243deg, #ffc148 0%, #786d57 0%, #424040 20%, #272626 100%)`,
+        backgroundImage: (theme) => theme.palette.boxGradient,
       }}
     >
       <Table>

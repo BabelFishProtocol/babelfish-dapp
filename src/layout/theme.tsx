@@ -19,9 +19,11 @@ import ArchiveWoff from '../assets/fonts/Archive-Regular.woff';
 declare module '@mui/material/styles/createPalette' {
   interface Palette {
     borderGrey: Palette['primary'];
+    boxGradient: string;
   }
   interface PaletteOptions {
     borderGrey: PaletteOptions['primary'];
+    boxGradient: string;
   }
 }
 
@@ -49,6 +51,7 @@ const palette = createPalette({
   borderGrey: {
     main: colors.borderGrey,
   },
+  boxGradient: `linear-gradient(243deg, #ffc148 0%, #786d57 0%, #424040 20%, #272626 100%)`,
 });
 
 const components: Components<Theme> = {

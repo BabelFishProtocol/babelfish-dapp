@@ -18,8 +18,9 @@ import { ProposalsListComponentProps } from './ProposalsList.types';
 
 const PageContent = styled('div')(({ theme }) => ({
   borderRadius: 8,
-  backgroundImage: `linear-gradient(243deg, #ffc148 0%, #786d57 0%, #424040 20%, #272626 100%)`,
-  width: '70%',
+  backgroundImage: theme.palette.boxGradient,
+  width: '80%',
+  maxWidth: 1100,
   [theme.breakpoints.down('sm')]: {
     width: '100%',
   },
