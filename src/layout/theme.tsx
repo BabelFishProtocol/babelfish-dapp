@@ -16,9 +16,19 @@ import ComfortaaWoff from '../assets/fonts/Comfortaa-Regular.woff';
 import ArchiveWoff2 from '../assets/fonts/Archive-Regular.woff2';
 import ArchiveWoff from '../assets/fonts/Archive-Regular.woff';
 
+declare module '@mui/material/styles/createPalette' {
+  interface Palette {
+    borderGrey: Palette['primary'];
+  }
+  interface PaletteOptions {
+    borderGrey: PaletteOptions['primary'];
+  }
+}
+
 const colors = {
   primary: '#ffbf42',
   lightYellow: '#fddc90',
+  borderGrey: 'rgba(255, 255, 255, 0.4)',
 };
 
 const palette = createPalette({
@@ -28,12 +38,16 @@ const palette = createPalette({
   },
   background: {
     default: '#181a20',
+    paper: '#272626',
   },
   success: {
     main: '#32f05f',
   },
   error: {
     main: '#ef0512',
+  },
+  borderGrey: {
+    main: colors.borderGrey,
   },
 });
 
@@ -90,6 +104,28 @@ const components: Components<Theme> = {
       },
     },
   },
+  MuiTableHead: {
+    styleOverrides: {
+      root: {
+        fontFamily: 'Archive',
+      },
+    },
+  },
+  MuiTableCell: {
+    styleOverrides: {
+      root: {
+        fontFamily: 'inherit',
+        border: 'none',
+        padding: 10,
+      },
+      head: {
+        borderBottom: `1px solid ${palette.borderGrey.main}`,
+      },
+      body: {
+        borderTop: `1px solid ${palette.borderGrey.main}`,
+      },
+    },
+  },
 };
 
 // outlinedError and outlinedSuccess buttons global styles.
@@ -134,6 +170,10 @@ const typography = createTypography(palette, {
   button: {
     fontFamily: 'Archive',
     lineHeight: 'normal',
+  },
+  body1: {
+    fontFamily: 'Comfortaa-Regular',
+    fontSize: 14,
   },
 });
 
