@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import Box from '@mui/material/Box';
 import MuiLink from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import Badge from '@mui/material/Badge';
@@ -14,7 +15,6 @@ import { DataTable } from '../../components/DataTable/DataTable.component';
 import { PageView } from '../../components/PageView/PageView.component';
 import { Urls } from '../../constants';
 
-import { ButtonContainer } from './ProposalsList.styles';
 import { ProposalsListComponentProps } from './ProposalsList.types';
 
 const ViewProposalComponent: CustomColumn = ({ value }) => (
@@ -64,8 +64,15 @@ export const ProposalsListComponent = ({
       tableAction={<Button variant="text">+CREATE PROPOSAL</Button>}
     />
 
-    <ButtonContainer>
+    <Box
+      pt={3}
+      sx={{
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+      }}
+    >
       <Button variant="outlined">View All Proposals</Button>
-    </ButtonContainer>
+    </Box>
   </PageView>
 );

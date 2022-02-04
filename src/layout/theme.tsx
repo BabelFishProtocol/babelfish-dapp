@@ -138,6 +138,14 @@ const components: Components<Theme> = {
       },
     },
   },
+  MuiContainer: {
+    styleOverrides: {
+      root: {
+        backgroundImage: palette.boxGradient,
+        borderRadius: 8,
+      },
+    },
+  },
 };
 
 // outlinedError and outlinedSuccess buttons global styles.
