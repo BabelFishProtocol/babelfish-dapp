@@ -179,6 +179,10 @@ const typography = createTypography(palette, {
   },
   body1: {
     fontFamily: 'Comfortaa-Regular',
+    fontSize: 16,
+  },
+  body2: {
+    fontFamily: 'Comfortaa-Regular',
     fontSize: 14,
   },
 });

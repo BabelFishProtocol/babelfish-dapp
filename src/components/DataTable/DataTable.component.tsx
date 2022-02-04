@@ -34,16 +34,18 @@ const DataTableRow = ({ rowIndex, columns, rowData }: DataTableRowProps) => (
 );
 
 export const DataTable = ({
+  data,
+  columns,
   tableTitle,
   tableAction,
-  columns,
-  data,
+  containerSx = {},
 }: DataTableProps) => (
   <TableContainer
     sx={{
       maxHeight: 400,
       borderRadius: 2,
       backgroundImage: (theme) => theme.palette.boxGradient,
+      ...containerSx,
     }}
   >
     <Table>

@@ -1,6 +1,7 @@
 import { Button } from '@mui/material';
 import { Routes, Route } from 'react-router-dom';
 import { Urls } from './constants';
+import { DashboardContainer } from './pages/Dashboard/Dashboard.container';
 import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.container';
 
 function App() {
@@ -58,6 +59,7 @@ function App() {
             path={Urls.ProposalsList}
             element={<ProposalsListContainer />}
           />
+          <Route path={Urls.Dashboard} element={<DashboardContainer />} />
         </Routes>
       </header>
     </div>

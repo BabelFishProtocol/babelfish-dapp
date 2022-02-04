@@ -1,3 +1,5 @@
+import { TableContainerProps } from '@mui/material/TableContainer';
+
 export type CustomColumnProps = {
   rowIndex: number;
   value: CellData;
@@ -19,9 +21,10 @@ export type DataTableColumn = {
 
 export type DataTableProps = {
   tableTitle: React.ReactNode;
-  tableAction: React.ReactNode;
+  tableAction?: React.ReactNode;
   columns: DataTableColumn[];
   data: RowData[];
+  containerSx?: TableContainerProps['sx'];
 };
 
 export type DataTableRowProps = {
