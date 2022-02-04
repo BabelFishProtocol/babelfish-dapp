@@ -15,9 +15,21 @@ import ComfortaaWoff from '../assets/fonts/Comfortaa-Regular.woff';
 import ArchiveWoff2 from '../assets/fonts/Archive-Regular.woff2';
 import ArchiveWoff from '../assets/fonts/Archive-Regular.woff';
 
+declare module '@mui/material/styles/createPalette' {
+  interface Palette {
+    borderGrey: Palette['primary'];
+    boxGradient: string;
+  }
+  interface PaletteOptions {
+    borderGrey: PaletteOptions['primary'];
+    boxGradient: string;
+  }
+}
+
 const colors = {
   primary: '#ffbf42',
   lightYellow: '#fddc90',
+  borderGrey: 'rgba(255, 255, 255, 0.2)',
 };
 
 const palette = createPalette({
@@ -27,6 +39,7 @@ const palette = createPalette({
   },
   background: {
     default: '#181a20',
+    paper: '#272626',
   },
   success: {
     main: '#32f05f',
@@ -34,6 +47,10 @@ const palette = createPalette({
   error: {
     main: '#ef0512',
   },
+  borderGrey: {
+    main: colors.borderGrey,
+  },
+  boxGradient: `linear-gradient(243deg, #ffc148 0%, #786d57 0%, #424040 20%, #272626 100%)`,
 });
 
 const components: Components<Theme> = {
@@ -95,6 +112,45 @@ const components: Components<Theme> = {
       },
     },
   },
+  MuiTableHead: {
+    styleOverrides: {
+      root: {
+        fontFamily: 'Archive',
+      },
+    },
+  },
+  MuiTableCell: {
+    styleOverrides: {
+      root: {
+        fontFamily: 'inherit',
+        border: 'none',
+        padding: 10,
+      },
+    },
+  },
+  MuiTableRow: {
+    styleOverrides: {
+      root: {
+        borderTop: `1px solid ${palette.borderGrey.main}`,
+      },
+    },
+  },
+  MuiBadge: {
+    styleOverrides: {
+      dot: {
+        width: 12,
+        height: 12,
+      },
+    },
+  },
+  MuiContainer: {
+    styleOverrides: {
+      root: {
+        backgroundImage: palette.boxGradient,
+        borderRadius: 8,
+      },
+    },
+  },
 };
 
 const typography = createTypography(palette, {
@@ -120,6 +176,10 @@ const typography = createTypography(palette, {
   button: {
     fontFamily: 'Archive',
     lineHeight: 'normal',
+  },
+  body1: {
+    fontFamily: 'Comfortaa-Regular',
+    fontSize: 14,
   },
 });
 
