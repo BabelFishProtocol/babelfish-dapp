@@ -1,5 +1,7 @@
 import { Button } from '@mui/material';
 import { Routes, Route } from 'react-router-dom';
+import { Urls } from './constants';
+import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.container';
 
 function App() {
   return (
@@ -32,6 +34,10 @@ function App() {
             }
           />
           <Route path="about" element={<div>About</div>} />
+          <Route
+            path={Urls.ProposalsList}
+            element={<ProposalsListContainer />}
+          />
         </Routes>
       </header>
     </div>
