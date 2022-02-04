@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import { Button, FormControl, MenuItem, Select } from '@mui/material';
 import { Routes, Route } from 'react-router-dom';
 import { Urls } from './constants';
 import { DashboardContainer } from './pages/Dashboard/Dashboard.container';
@@ -51,6 +51,13 @@ function App() {
                 <br />
                 <br />
                 <Button variant="text">Text</Button>
+                <br />
+                <br />
+                <FormControl sx={{ m: 10, minWidth: 300 }}>
+                  <Select>
+                    <MenuItem value="dupa" />
+                  </Select>
+                </FormControl>
               </>
             }
           />

@@ -151,6 +151,32 @@ const components: Components<Theme> = {
       },
     },
   },
+  MuiMenu: {
+    styleOverrides: {
+      list: {
+        padding: 0,
+      },
+      paper: {
+        borderRadius: 0,
+      },
+    },
+  },
+  MuiOutlinedInput: {
+    styleOverrides: {
+      root: {
+        borderRadius: 0,
+      },
+    },
+  },
+  MuiSelect: {
+    defaultProps: {
+      MenuProps: {
+        PaperProps: {
+          square: true,
+        },
+      },
+    },
+  },
 };
 
 const typography = createTypography(palette, {
