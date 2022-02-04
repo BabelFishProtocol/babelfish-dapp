@@ -32,6 +32,8 @@ const colors = {
   borderGrey: 'rgba(255, 255, 255, 0.4)',
 };
 
+const transition = `250ms cubic-bezier(0.4, 0, 0.2, 1)`;
+
 const palette = createPalette({
   mode: 'dark',
   primary: {
@@ -92,7 +94,7 @@ const components: Components<Theme> = {
       containedPrimary: {
         borderRadius: '12px',
         backgroundImage: `linear-gradient(to left, ${colors.lightYellow}, ${palette.primary.main})`,
-        transition: 'opacity 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+        transition: `opacity ${transition}`,
         ':hover': {
           opacity: 0.8,
         },
@@ -108,6 +110,37 @@ const components: Components<Theme> = {
         padding: '5px',
         ':hover': {
           textDecoration: 'underline',
+        },
+      },
+    },
+  },
+  MuiIconButton: {
+    styleOverrides: {
+      root: {
+        position: 'relative',
+        border: '1px solid transparent',
+        borderRadius: 8,
+        backgroundImage: palette.boxGradient,
+        backgroundClip: 'padding-box',
+        ':after': {
+          content: '""',
+          position: 'absolute',
+          top: -1,
+          right: -1,
+          bottom: -1,
+          left: -1,
+          borderRadius: 'inherit',
+          backgroundImage:
+            'linear-gradient(45deg, #2a303c, #fddc90 30%, #ffbf42, #ffbf42, #fddc90 70% , #2a303c)',
+          backgroundPosition: '0% 100%',
+          backgroundSize: '200% 200%',
+          transition: `background-position ${transition}`,
+          zIndex: -1,
+        },
+        ':hover': {
+          ':after': {
+            backgroundPosition: '100% 0%',
+          },
         },
       },
     },

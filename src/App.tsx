@@ -1,5 +1,6 @@
 import { Button } from '@mui/material';
 import { Routes, Route } from 'react-router-dom';
+import { Header } from './components/Header/Header.component';
 import { Urls } from './constants';
 import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.container';
 
@@ -12,6 +13,7 @@ function App() {
             path="/"
             element={
               <>
+                <Header />
                 <div>Main</div>
                 <Button>About</Button>
                 <br />
