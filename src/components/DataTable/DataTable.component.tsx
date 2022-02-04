@@ -10,77 +10,68 @@ import TableContainer from '@mui/material/TableContainer';
 
 import { DataTableProps, DataTableRowProps } from './DataTable.types';
 
+const DataTableRow = ({ rowIndex, columns, rowData }: DataTableRowProps) => (
+  <TableRow key={rowIndex}>
+    {columns.map((column, cellIndex) => {
+      const { component: CellComponent, format, name } = column;
+      const value = format ? format(rowData[name]) : rowData[name];
+
+      return (
+        <TableCell key={cellIndex}>
+          {CellComponent ? (
+            <CellComponent
+              rowIndex={rowIndex}
+              rowData={rowData}
+              value={value}
+            />
+          ) : (
+            value
+          )}
+        </TableCell>
+      );
+    })}
+  </TableRow>
+);
+
 export const DataTable = ({
   tableTitle,
   tableAction,
   columns,
   data,
-}: DataTableProps) => {
-  return (
-    <TableContainer
-      sx={{
-        maxHeight: 400,
-        borderRadius: 2,
-        backgroundImage: (theme) => theme.palette.boxGradient,
-      }}
-    >
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell colSpan={columns.length - 1}>
-              <Typography variant="h4">{tableTitle}</Typography>
-            </TableCell>
-            <TableCell colSpan={1}>{tableAction}</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableHead>
-          <TableRow>
-            {columns.map(({ label }, headIndex) => (
-              <TableCell key={headIndex}>{label}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map((rowData, rowIndex) => (
-            <DataTableRow
-              key={rowIndex}
-              columns={columns}
-              rowIndex={rowIndex}
-              rowData={rowData}
-            />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-};
-
-const DataTableRow = ({ rowIndex, columns, rowData }: DataTableRowProps) => {
-  return (
-    <TableRow key={rowIndex}>
-      {columns.map((column, cellIndex) => {
-        const { component: CellComponent, format, name } = column;
-        let value = rowData[name];
-
-        if (format) {
-          value = format(value);
-        }
-
-        return (
-          <TableCell key={cellIndex}>
-            {CellComponent ? (
-              <CellComponent
-                rowIndex={rowIndex}
-                rowData={rowData}
-                value={value}
-                key={cellIndex}
-              />
-            ) : (
-              value
-            )}
+}: DataTableProps) => (
+  <TableContainer
+    sx={{
+      maxHeight: 400,
+      borderRadius: 2,
+      backgroundImage: (theme) => theme.palette.boxGradient,
+    }}
+  >
+    <Table>
+      <TableHead>
+        <TableRow sx={{ border: 'none' }}>
+          <TableCell colSpan={columns.length - 1}>
+            <Typography variant="h4">{tableTitle}</Typography>
           </TableCell>
-        );
-      })}
-    </TableRow>
-  );
-};
+          <TableCell colSpan={1}>{tableAction}</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableHead>
+        <TableRow>
+          {columns.map(({ label }, headIndex) => (
+            <TableCell key={headIndex}>{label}</TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {data.map((rowData, rowIndex) => (
+          <DataTableRow
+            key={rowIndex}
+            columns={columns}
+            rowIndex={rowIndex}
+            rowData={rowData}
+          />
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
+);

@@ -30,7 +30,7 @@ declare module '@mui/material/styles/createPalette' {
 const colors = {
   primary: '#ffbf42',
   lightYellow: '#fddc90',
-  borderGrey: 'rgba(255, 255, 255, 0.4)',
+  borderGrey: 'rgba(255, 255, 255, 0.2)',
 };
 
 const palette = createPalette({
@@ -121,11 +121,20 @@ const components: Components<Theme> = {
         border: 'none',
         padding: 10,
       },
-      head: {
-        borderBottom: `1px solid ${palette.borderGrey.main}`,
-      },
-      body: {
+    },
+  },
+  MuiTableRow: {
+    styleOverrides: {
+      root: {
         borderTop: `1px solid ${palette.borderGrey.main}`,
+      },
+    },
+  },
+  MuiBadge: {
+    styleOverrides: {
+      dot: {
+        width: 12,
+        height: 12,
       },
     },
   },

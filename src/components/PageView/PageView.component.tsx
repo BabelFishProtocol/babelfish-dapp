@@ -7,13 +7,11 @@ import {
 } from './PageView.styles';
 import { PageViewProps } from './PageView.types';
 
-export const PageView = ({ title, children }: PageViewProps) => {
-  return (
-    <PageAligner>
-      <PageContainer>
-        <PageHeader>{title}</PageHeader>
-        <PageContentContainer>{children}</PageContentContainer>
-      </PageContainer>
-    </PageAligner>
-  );
-};
+export const PageView = ({ title, children }: PageViewProps) => (
+  <PageAligner>
+    <PageContainer>
+      <PageHeader>{title}</PageHeader>
+      <PageContentContainer>{children}</PageContentContainer>
+    </PageContainer>
+  </PageAligner>
+);

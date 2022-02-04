@@ -17,17 +17,15 @@ import { Urls } from '../../constants';
 import { ButtonContainer } from './ProposalsList.styles';
 import { ProposalsListComponentProps } from './ProposalsList.types';
 
-const ViewProposalComponent: CustomColumn = ({ value }) => {
-  return (
-    <MuiLink
-      component={Link}
-      color="textPrimary"
-      to={`${Urls.Proposal}/${value}`}
-    >
-      View Proposal
-    </MuiLink>
-  );
-};
+const ViewProposalComponent: CustomColumn = ({ value }) => (
+  <MuiLink
+    component={Link}
+    color="textPrimary"
+    to={`${Urls.Proposal}/${value}`}
+  >
+    View Proposal
+  </MuiLink>
+);
 
 const VoteWeightComponent: CustomColumn = ({ value, rowData }) => {
   const dotColor = rowData.isWinning === 'true' ? 'success' : 'error';
@@ -51,25 +49,23 @@ const proposalsListColumns: DataTableColumn[] = [
 
 export const ProposalsListComponent = ({
   proposals,
-}: ProposalsListComponentProps) => {
-  return (
-    <PageView
-      title={
-        <Typography variant="h2" padding={1}>
-          BABELFISH BITOCRACY
-        </Typography>
-      }
-    >
-      <DataTable
-        data={proposals}
-        columns={proposalsListColumns}
-        tableTitle="GOVERNANCE PROPOSALS"
-        tableAction={<Button variant="text">+ CREATE PROPOSAL</Button>}
-      />
+}: ProposalsListComponentProps) => (
+  <PageView
+    title={
+      <Typography variant="h2" padding={1}>
+        BABELFISH BITOCRACY
+      </Typography>
+    }
+  >
+    <DataTable
+      data={proposals}
+      columns={proposalsListColumns}
+      tableTitle="GOVERNANCE PROPOSALS"
+      tableAction={<Button variant="text">+CREATE PROPOSAL</Button>}
+    />
 
-      <ButtonContainer>
-        <Button variant="outlined">View All Proposals</Button>
-      </ButtonContainer>
-    </PageView>
-  );
-};
+    <ButtonContainer>
+      <Button variant="outlined">View All Proposals</Button>
+    </ButtonContainer>
+  </PageView>
+);

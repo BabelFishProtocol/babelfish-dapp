@@ -61,6 +61,6 @@ const proposalsDataMock: Proposal[] = [
   },
 ];
 
-export const ProposalsListContainer = () => {
-  return <ProposalsListComponent proposals={proposalsDataMock} />;
-};
+export const ProposalsListContainer = () => (
+  <ProposalsListComponent proposals={proposalsDataMock} />
+);
