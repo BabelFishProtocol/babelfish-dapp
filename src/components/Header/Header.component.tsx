@@ -10,21 +10,23 @@ export const Header: React.FC = () => (
   <Box
     component="header"
     sx={{
-      margin: '60px 66px 60px 100px',
+      margin: ({ spacing }) => spacing(7, 8, 7, 12),
       display: 'flex',
       justifyContent: 'space-between',
     }}
   >
     <Logo />
     <Box component="nav" sx={{ display: 'flex', alignItems: 'center' }}>
-      <Button sx={{ padding: '15px 20px' }}>Connect Wallet</Button>
+      <Button sx={{ padding: ({ spacing }) => spacing(2, 2.5) }}>
+        Connect Wallet
+      </Button>
       <IconButton
-        sx={{
+        sx={({ spacing }) => ({
           height: '100%',
-          marginLeft: '20px',
-          px: '15px',
+          marginLeft: spacing(2.5),
+          px: spacing(2),
           borderRadius: '8px',
-        }}
+        })}
       >
         <img alt="dashboard icon" src={dashboardIcon} />
       </IconButton>

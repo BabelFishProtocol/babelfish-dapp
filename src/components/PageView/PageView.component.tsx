@@ -24,7 +24,7 @@ export const PageView = ({ title, children }: PageViewProps) => (
       <PageHeaderContainer>{title}</PageHeaderContainer>
       <Box
         sx={{
-          padding: ({ spacing }) => `${spacing(4)} ${spacing(3)}`,
+          padding: ({ spacing }) => spacing(4, 3),
         }}
       >
         {children}
