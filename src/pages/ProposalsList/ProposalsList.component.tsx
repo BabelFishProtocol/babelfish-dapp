@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import Box from '@mui/material/Box';
 import MuiLink from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import Badge from '@mui/material/Badge';
@@ -14,20 +15,17 @@ import { DataTable } from '../../components/DataTable/DataTable.component';
 import { PageView } from '../../components/PageView/PageView.component';
 import { Urls } from '../../constants';
 
-import { ButtonContainer } from './ProposalsList.styles';
 import { ProposalsListComponentProps } from './ProposalsList.types';
 
-const ViewProposalComponent: CustomColumn = ({ value }) => {
-  return (
-    <MuiLink
-      component={Link}
-      color="textPrimary"
-      to={`${Urls.Proposal}/${value}`}
-    >
-      View Proposal
-    </MuiLink>
-  );
-};
+const ViewProposalComponent: CustomColumn = ({ value }) => (
+  <MuiLink
+    component={Link}
+    color="textPrimary"
+    to={`${Urls.Proposal}/${value}`}
+  >
+    View Proposal
+  </MuiLink>
+);
 
 const VoteWeightComponent: CustomColumn = ({ value, rowData }) => {
   const dotColor = rowData.isWinning === 'true' ? 'success' : 'error';
@@ -51,25 +49,30 @@ const proposalsListColumns: DataTableColumn[] = [
 
 export const ProposalsListComponent = ({
   proposals,
-}: ProposalsListComponentProps) => {
-  return (
-    <PageView
-      title={
-        <Typography variant="h2" padding={1}>
-          BABELFISH BITOCRACY
-        </Typography>
-      }
-    >
-      <DataTable
-        data={proposals}
-        columns={proposalsListColumns}
-        tableTitle="GOVERNANCE PROPOSALS"
-        tableAction={<Button variant="text">+ CREATE PROPOSAL</Button>}
-      />
+}: ProposalsListComponentProps) => (
+  <PageView
+    title={
+      <Typography variant="h2" padding={1}>
+        BABELFISH BITOCRACY
+      </Typography>
+    }
+  >
+    <DataTable
+      data={proposals}
+      columns={proposalsListColumns}
+      tableTitle="GOVERNANCE PROPOSALS"
+      tableAction={<Button variant="text">+CREATE PROPOSAL</Button>}
+    />
 
-      <ButtonContainer>
-        <Button variant="outlined">View All Proposals</Button>
-      </ButtonContainer>
-    </PageView>
-  );
-};
+    <Box
+      pt={3}
+      sx={{
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+      }}
+    >
+      <Button variant="outlined">View All Proposals</Button>
+    </Box>
+  </PageView>
+);
