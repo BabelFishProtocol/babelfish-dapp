@@ -1,4 +1,5 @@
 export enum Urls {
-  ProposalsList = 'proposals-list',
-  Proposal = 'proposal',
+  ProposalsList = '/proposals-list',
+  Proposal = '/proposal',
+  Dashboard = '/dashboard',
 }
