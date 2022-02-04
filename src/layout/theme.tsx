@@ -38,6 +38,7 @@ const palette = createPalette({
   mode: 'dark',
   primary: {
     main: colors.primary,
+    light: colors.lightYellow,
   },
   background: {
     default: '#181a20',
@@ -93,7 +94,7 @@ const components: Components<Theme> = {
       },
       containedPrimary: {
         borderRadius: '12px',
-        backgroundImage: `linear-gradient(to left, ${colors.lightYellow}, ${palette.primary.main})`,
+        backgroundImage: `linear-gradient(to left, ${palette.primary.light}, ${palette.primary.main})`,
         transition: `opacity ${transition}`,
         ':hover': {
           opacity: 0.8,
@@ -130,8 +131,7 @@ const components: Components<Theme> = {
           bottom: -1,
           left: -1,
           borderRadius: 'inherit',
-          backgroundImage:
-            'linear-gradient(45deg, #2a303c, #fddc90 30%, #ffbf42, #ffbf42, #fddc90 70% , #2a303c)',
+          backgroundImage: `linear-gradient(45deg, #2a303c, ${palette.primary.light} 30%, ${palette.primary.main}, ${palette.primary.light} 70% , #2a303c)`,
           backgroundPosition: '0% 100%',
           backgroundSize: '200% 200%',
           transition: `background-position ${transition}`,

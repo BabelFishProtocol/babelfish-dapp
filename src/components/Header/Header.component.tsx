@@ -22,8 +22,7 @@ export const Header: React.FC = () => (
         sx={{
           height: '100%',
           marginLeft: '20px',
-          paddingRight: '15px',
-          paddingLeft: '15px',
+          px: '15px',
           borderRadius: '8px',
         }}
       >
