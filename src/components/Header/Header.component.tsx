@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import { Logo } from '../Logo/Logo.component';
 import dashboardIcon from '../../assets/icons/dashboard.svg';
 
-export const Header: React.FC = () => (
+export const Header = () => (
   <Box
     component="header"
     sx={{
@@ -21,12 +21,12 @@ export const Header: React.FC = () => (
         Connect Wallet
       </Button>
       <IconButton
-        sx={({ spacing }) => ({
+        sx={{
           height: '100%',
-          marginLeft: spacing(2.5),
-          px: spacing(2),
+          marginLeft: 2.5,
+          px: 2,
           borderRadius: '8px',
-        })}
+        }}
       >
         <img alt="dashboard icon" src={dashboardIcon} />
       </IconButton>

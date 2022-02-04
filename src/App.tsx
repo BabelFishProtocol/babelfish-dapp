@@ -1,6 +1,7 @@
 import { Button } from '@mui/material';
 import { Routes, Route } from 'react-router-dom';
 import { Header } from './components/Header/Header.component';
+import { WalletDropdown } from './components/WalletDropdown/WalletDropdown';
 import { Urls } from './constants';
 import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.container';
 
@@ -14,7 +15,7 @@ function App() {
             element={
               <>
                 <Header />
-                <div>Main</div>
+                Main
                 <Button>About</Button>
                 <br />
                 <br />
@@ -52,6 +53,7 @@ function App() {
                 <br />
                 <br />
                 <Button variant="text">Text</Button>
+                <WalletDropdown />
               </>
             }
           />

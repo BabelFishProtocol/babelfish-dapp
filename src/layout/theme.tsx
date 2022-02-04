@@ -203,6 +203,10 @@ const typography = createTypography(palette, {
     fontSize: 16,
     fontFamily: 'Archive',
   },
+  h5: {
+    fontSize: 18,
+    fontFamily: 'Comfortaa-Regular',
+  },
   subtitle1: {
     fontSize: 16,
   },
