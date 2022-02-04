@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import { Logo } from '../Logo/Logo.component';
 import dashboardIcon from '../../assets/icons/dashboard.svg';
 
-export const Header: React.FC = () => (
+export const Header = () => (
   <Box
     component="header"
     sx={{
