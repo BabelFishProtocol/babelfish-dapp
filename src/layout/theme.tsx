@@ -30,6 +30,7 @@ const colors = {
   primary: '#ffbf42',
   lightYellow: '#fddc90',
   borderGrey: 'rgba(255, 255, 255, 0.2)',
+  borderGreyDark: 'rgba(255, 255, 255, 0.1)',
 };
 
 const transition = `250ms cubic-bezier(0.4, 0, 0.2, 1)`;
@@ -52,8 +53,9 @@ const palette = createPalette({
   },
   borderGrey: {
     main: colors.borderGrey,
+    dark: colors.borderGreyDark,
   },
-  boxGradient: `linear-gradient(243deg, #ffc148 0%, #786d57 0%, #424040 20%, #272626 100%)`,
+  boxGradient: `linear-gradient(243deg, #ffc148 0%, #5e5544 0%, #424040 25%, #272626 100%)`,
 });
 
 const components: Components<Theme> = {
@@ -181,6 +183,17 @@ const components: Components<Theme> = {
       root: {
         backgroundImage: palette.boxGradient,
         borderRadius: 8,
+      },
+    },
+  },
+  MuiTooltip: {
+    styleOverrides: {
+      tooltip: {
+        background: palette.background.default,
+        maxWidth: 'unset',
+      },
+      arrow: {
+        color: palette.background.default,
       },
     },
   },

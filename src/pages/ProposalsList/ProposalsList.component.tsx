@@ -62,11 +62,12 @@ export const ProposalsListComponent = ({
       columns={proposalsListColumns}
       tableTitle="GOVERNANCE PROPOSALS"
       tableAction={<Button variant="text">+CREATE PROPOSAL</Button>}
+      containerSx={{ minHeight: 100 }}
     />
 
     <Box
-      pt={3}
       sx={{
+        pt: 3,
         width: '100%',
         display: 'flex',
         justifyContent: 'center',
