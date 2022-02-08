@@ -12,10 +12,12 @@ type RowData = {
   [key: string]: CellData;
 };
 
+export type CellParser = (val: CellData) => CellData;
+
 export type DataTableColumn = {
   label: React.ReactNode;
   name: string;
-  format?: (val: CellData) => CellData;
+  format?: CellParser;
   component?: CustomColumn;
 };
 
@@ -24,8 +26,11 @@ export type DataTableProps = {
   tableAction?: React.ReactNode;
   columns: DataTableColumn[];
   data: RowData[];
+  isLoading?: boolean;
   containerSx?: TableContainerProps['sx'];
 };
+
+export type LoadingStateRowProps = Pick<DataTableRowProps, 'columns'>;
 
 export type DataTableRowProps = {
   rowIndex: number;
