@@ -31,152 +31,146 @@ import { VotesRatioBlock } from './ProposalDetails.votesRatio';
 
 export const ProposalDetailsComponent = ({
   proposal,
-  votesRatio,
   forVotes,
   voteStatus,
-  againstVotes,
+  votesRatio,
   isGuardian,
-}: ProposalDetailsComponentProps) => {
-  const votedFor = voteStatus.type === 'for' && voteStatus.status === 'success';
-  const votedAgainst =
-    voteStatus.type === 'against' && voteStatus.status === 'success';
+  againstVotes,
+}: ProposalDetailsComponentProps) => (
+  <PageView
+    title={
+      <Box
+        sx={{
+          p: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <CenteredBox>
+          <IconButton
+            sx={{ mr: 1, p: 0.2 }}
+            component={Link}
+            to={Urls.ProposalsList}
+          >
+            {'<'}
+          </IconButton>
+          <Typography variant="h2">{proposal.name}</Typography>
+        </CenteredBox>
 
-  return (
-    <PageView
-      title={
-        <Box
+        <Typography variant="body1">Voting Ends {proposal.endDate}</Typography>
+      </Box>
+    }
+  >
+    <Grid container>
+      <Grid item sm={12} sx={{ p: ({ spacing }) => spacing(0, 2) }}>
+        <VotesRatioBlock
+          votesRatio={votesRatio}
+          forVotes={forVotes}
+          againstVotes={againstVotes}
+        />
+      </Grid>
+
+      <Grid item sm={6} p={1}>
+        <VoteActionBlock votesAmount={`${forVotes} VOTES FOR`}>
+          <VoteForButton
+            voteStatus={voteStatus}
+            proposalState={proposal.state}
+          />
+        </VoteActionBlock>
+
+        <ForVotesListContainer />
+
+        <Container sx={{ p: 1, mt: 2, height: 200 }}>
+          <Typography variant="body2" sx={{ height: 130 }}>
+            {proposal.description}
+          </Typography>
+
+          <ProposalInfoItem label="Function to invoke" width={140}>
+            <Typography color="primary" variant="body2" component="span">
+              {proposal.functionToInvoke}
+            </Typography>
+          </ProposalInfoItem>
+
+          <ProposalInfoItem label="Contract Address" width={140}>
+            <Typography color="primary" variant="body2" component="span">
+              {proposal.contractAddress}
+            </Typography>
+          </ProposalInfoItem>
+        </Container>
+      </Grid>
+
+      <Grid item sm={6} p={1}>
+        <VoteActionBlock votesAmount={`${againstVotes} VOTES AGAINST`}>
+          <VoteAgainstButton
+            voteStatus={voteStatus}
+            proposalState={proposal.state}
+          />
+        </VoteActionBlock>
+
+        <AgainstVotesListContainer />
+
+        <Container
           sx={{
             p: 1,
+            mt: 2,
+            height: 200,
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            flexDirection: 'column',
+            justifyContent: 'space-evenly',
           }}
         >
-          <CenteredBox>
-            <IconButton
-              sx={{ mr: 1, p: 0.2 }}
-              component={Link}
-              to={Urls.ProposalsList}
-            >
-              {'<'}
-            </IconButton>
-            <Typography variant="h2">{proposal.name}</Typography>
-          </CenteredBox>
+          <ProposalInfoItem label="Proposed by">
+            <PrettyTx value={proposal.proposedBy} />
+          </ProposalInfoItem>
 
-          <Typography variant="body1">
-            Voting Ends {proposal.endDate}
-          </Typography>
-        </Box>
-      }
-    >
-      <Grid container>
-        <Grid item sm={12} sx={{ p: ({ spacing }) => spacing(0, 2) }}>
-          <VotesRatioBlock
-            votesRatio={votesRatio}
-            forVotes={forVotes}
-            againstVotes={againstVotes}
-          />
-        </Grid>
+          <ProposalInfoItem label="Proposed on">
+            <Box>
+              <Typography variant="body2">{proposal.startDate}</Typography>
+              <Typography color="primary" variant="body2">
+                #{proposal.startBlock}
+              </Typography>
+            </Box>
+          </ProposalInfoItem>
 
-        <Grid item sm={6} p={1}>
-          <VoteActionBlock votesAmount={`${forVotes} VOTES FOR`}>
-            {(proposal.state === ProposalState.Active || votedFor) && (
-              <VoteForButton voteStatus={voteStatus} />
-            )}
-          </VoteActionBlock>
+          <ProposalInfoItem label="Deadline">
+            <Box>
+              <Typography variant="body2">{proposal.endDate}</Typography>
+              <Typography color="primary" variant="body2">
+                #{proposal.endBlock}
+              </Typography>
+            </Box>
+          </ProposalInfoItem>
 
-          <ForVotesListContainer />
-
-          <Container sx={{ p: 1, mt: 2, height: 200 }}>
-            <Typography variant="body2" sx={{ height: 130 }}>
-              {proposal.description}
+          <ProposalInfoItem label="Proposal ID">
+            <Typography color="primary" variant="body2" component="span">
+              {proposal.id}
             </Typography>
+          </ProposalInfoItem>
 
-            <ProposalInfoItem label="Function to invoke" width={140}>
-              <Typography color="primary" variant="body2" component="span">
-                {proposal.functionToInvoke}
-              </Typography>
-            </ProposalInfoItem>
-
-            <ProposalInfoItem label="Contract Address" width={140}>
-              <Typography color="primary" variant="body2" component="span">
-                {proposal.contractAddress}
-              </Typography>
-            </ProposalInfoItem>
-          </Container>
-        </Grid>
-
-        <Grid item sm={6} p={1}>
-          <VoteActionBlock votesAmount={`${againstVotes} VOTES AGAINST`}>
-            {(proposal.state === ProposalState.Active || votedAgainst) && (
-              <VoteAgainstButton voteStatus={voteStatus} />
+          <CenteredBox sx={{ mt: 1, gap: 2 }}>
+            {proposal.state !== ProposalState.Executed && isGuardian && (
+              <Button variant="outlined" size="small">
+                Cancel
+              </Button>
             )}
-          </VoteActionBlock>
-
-          <AgainstVotesListContainer />
-
-          <Container
-            sx={{
-              p: 1,
-              mt: 2,
-              height: 200,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-evenly',
-            }}
-          >
-            <ProposalInfoItem label="Proposed by">
-              <PrettyTx value={proposal.proposedBy} />
-            </ProposalInfoItem>
-
-            <ProposalInfoItem label="Proposed on">
-              <Box>
-                <Typography variant="body2">{proposal.startDate}</Typography>
-                <Typography color="primary" variant="body2">
-                  #{proposal.startBlock}
-                </Typography>
-              </Box>
-            </ProposalInfoItem>
-
-            <ProposalInfoItem label="Deadline">
-              <Box>
-                <Typography variant="body2">{proposal.endDate}</Typography>
-                <Typography color="primary" variant="body2">
-                  #{proposal.endBlock}
-                </Typography>
-              </Box>
-            </ProposalInfoItem>
-
-            <ProposalInfoItem label="Proposal ID">
-              <Typography color="primary" variant="body2" component="span">
-                {proposal.id}
-              </Typography>
-            </ProposalInfoItem>
-
-            <CenteredBox sx={{ mt: 1, gap: 2 }}>
-              {proposal.state !== ProposalState.Executed && isGuardian && (
+            {proposal.state === ProposalState.Succeeded && (
+              <Button variant="outlined" size="small">
+                Queue
+              </Button>
+            )}
+            {proposal.state === ProposalState.Queued &&
+              proposal.eta <= new Date().getTime() / 1000 && (
                 <Button variant="outlined" size="small">
-                  Cancel
+                  Execute
                 </Button>
               )}
-              {proposal.state === ProposalState.Succeeded && (
-                <Button variant="outlined" size="small">
-                  Queue
-                </Button>
-              )}
-              {proposal.state === ProposalState.Queued &&
-                proposal.eta <= new Date().getTime() / 1000 && (
-                  <Button variant="outlined" size="small">
-                    Execute
-                  </Button>
-                )}
-            </CenteredBox>
-          </Container>
-        </Grid>
+          </CenteredBox>
+        </Container>
       </Grid>
-    </PageView>
-  );
-};
+    </Grid>
+  </PageView>
+);
 
 const ProposalInfoItem = ({
   label,

@@ -23,6 +23,7 @@ export type VoteStatus = {
 
 export type VoteButtonProps = {
   voteStatus: VoteStatus;
+  proposalState: ProposalState;
 };
 
 export type ProposalDetailsComponentProps = VotesRatioBlockProps & {

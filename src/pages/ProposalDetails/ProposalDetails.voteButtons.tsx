@@ -1,10 +1,22 @@
 import { Button } from '../../components/Button/Button.component';
+import { ProposalState } from '../../constants';
 import { VoteButtonProps } from './ProposalDetails.types';
 
 const VotedText = () => <>voted &#10003;</>;
 
-export const VoteForButton = ({ voteStatus }: VoteButtonProps) => {
+export const VoteForButton = ({
+  voteStatus,
+  proposalState,
+}: VoteButtonProps) => {
   const { status, type } = voteStatus;
+
+  const votedFor = type === 'for' && status === 'success';
+  const showButton = proposalState === ProposalState.Active || votedFor;
+
+  if (!showButton) {
+    return null;
+  }
+
   return (
     <Button
       color="success"
@@ -20,13 +32,24 @@ export const VoteForButton = ({ voteStatus }: VoteButtonProps) => {
         },
       })}
     >
-      {type === 'for' && status === 'success' ? <VotedText /> : 'Vote For This'}
+      {votedFor ? <VotedText /> : 'Vote For This'}
     </Button>
   );
 };
 
-export const VoteAgainstButton = ({ voteStatus }: VoteButtonProps) => {
+export const VoteAgainstButton = ({
+  voteStatus,
+  proposalState,
+}: VoteButtonProps) => {
   const { status, type } = voteStatus;
+
+  const votedAgainst = type === 'against' && status === 'success';
+  const showButton = proposalState === ProposalState.Active || votedAgainst;
+
+  if (!showButton) {
+    return null;
+  }
+
   return (
     <Button
       color="error"
@@ -42,11 +65,7 @@ export const VoteAgainstButton = ({ voteStatus }: VoteButtonProps) => {
         },
       })}
     >
-      {type === 'against' && status === 'success' ? (
-        <VotedText />
-      ) : (
-        'Vote Against'
-      )}
+      {votedAgainst ? <VotedText /> : 'Vote Against'}
     </Button>
   );
 };
