@@ -44,7 +44,7 @@ export const PageView = ({
         p: { xs: 0 },
         maxWidth: { xs: 1300 },
         width: '90%',
-        maxHeight: '80vh',
+        maxHeight: '85vh',
         overflowY: 'auto',
       }}
     >

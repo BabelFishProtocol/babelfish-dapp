@@ -31,7 +31,7 @@ export const VotesListComponent = ({
         />
       </TableIcon>
     }
-    containerSx={{ p: 1, mt: 2, height: 260 }}
+    containerSx={{ p: 1, mt: 2, height: 250 }}
   />
 );
 

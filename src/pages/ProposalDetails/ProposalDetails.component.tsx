@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -24,11 +23,13 @@ import {
   AgainstVotesListContainer,
   ForVotesListContainer,
 } from './VotesList/VotesList.container';
+import { VoteAgainstButton, VoteForButton } from './ProposalDetails.buttons';
 
 export const ProposalDetailsComponent = ({
   proposal,
   votesRatio,
   forVotes,
+  voteStatus,
   againstVotes,
 }: ProposalDetailsComponentProps) => (
   <PageView
@@ -67,19 +68,7 @@ export const ProposalDetailsComponent = ({
 
       <Grid item sm={6} p={1}>
         <VoteActionBlock votesAmount={`${forVotes} VOTES FOR`}>
-          <Button
-            variant="outlined"
-            color="success"
-            sx={({ palette }) => ({
-              boxShadow: `inset 0 0 0 2px ${palette.success.main}`,
-              backgroundColor: 'rgba(50, 240, 95, 0.1)',
-              ':hover': {
-                backgroundColor: `rgba(50, 240, 95, 0.2)`,
-              },
-            })}
-          >
-            Vote For This
-          </Button>
+          <VoteForButton voteStatus={voteStatus} />
         </VoteActionBlock>
 
         <ForVotesListContainer />
@@ -105,19 +94,7 @@ export const ProposalDetailsComponent = ({
 
       <Grid item sm={6} p={1}>
         <VoteActionBlock votesAmount={`${againstVotes} VOTES AGAINST`}>
-          <Button
-            variant="outlined"
-            color="error"
-            sx={({ palette }) => ({
-              boxShadow: `inset 0 0 0 2px ${palette.error.main}`,
-              backgroundColor: `rgba(239, 5, 18, 0.1)`,
-              ':hover': {
-                backgroundColor: `rgba(239, 5, 18, 0.2)`,
-              },
-            })}
-          >
-            Vote Against
-          </Button>
+          <VoteAgainstButton voteStatus={voteStatus} />
         </VoteActionBlock>
 
         <AgainstVotesListContainer />

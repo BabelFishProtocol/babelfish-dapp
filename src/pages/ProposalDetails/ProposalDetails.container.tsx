@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { ProposalData } from './ProposalDetails.types';
+import { ProposalData, VoteStatus } from './ProposalDetails.types';
 import { ProposalDetailsComponent } from './ProposalDetails.component';
 
 const mockProposal: ProposalData = {
@@ -16,6 +16,11 @@ const mockProposal: ProposalData = {
     'SIP-0018: BabelFish Token Sale via Origins, Details: https://github.com/DistributedCollective/SIPS/blob/f8a726d/SIP-0018.md, sha256: 76q876fdh23984723985349827',
 };
 
+const mockVoteStatus: VoteStatus = {
+  type: 'for',
+  status: 'idle',
+};
+
 export const ProposalDetailsContainer = () => {
   const { id } = useParams();
 
@@ -29,6 +34,7 @@ export const ProposalDetailsContainer = () => {
       votesRatio={80.5}
       forVotes="48.9800K"
       againstVotes="48.9800K"
+      voteStatus={mockVoteStatus}
     />
   );
 };

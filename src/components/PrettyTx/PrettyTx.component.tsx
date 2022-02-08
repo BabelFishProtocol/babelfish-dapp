@@ -15,7 +15,7 @@ export const PrettyTx = ({ value }: PrettyTxProps) => (
       </Typography>
     }
   >
-    <Button size="small" variant="text" sx={{ textTransform: 'unset' }}>
+    <Button size="small" variant="text" sx={{ textTransform: 'unset', p: 0 }}>
       <Typography variant="body2">{prettyTx(String(value))}</Typography>
     </Button>
   </Tooltip>

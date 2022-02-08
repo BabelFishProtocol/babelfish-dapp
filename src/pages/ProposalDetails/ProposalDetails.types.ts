@@ -1,3 +1,5 @@
+import { FiniteStates } from '../../utils/types';
+
 export type ProposalData = {
   id: string;
   name: string;
@@ -11,8 +13,18 @@ export type ProposalData = {
   functionToInvoke: string;
 };
 
+export type VoteStatus = {
+  type?: 'for' | 'against';
+  status: FiniteStates;
+};
+
+export type VoteButtonProps = {
+  voteStatus: VoteStatus;
+};
+
 export type ProposalDetailsComponentProps = VotesRatioBlockProps & {
   proposal: ProposalData;
+  voteStatus: VoteStatus;
 };
 
 export type VotesRatioBlockProps = {
