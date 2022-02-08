@@ -115,6 +115,9 @@ const components: Components<Theme> = {
           textDecoration: 'underline',
         },
       },
+      outlinedSizeSmall: {
+        padding: '8px 12px',
+      },
     },
   },
   MuiIconButton: {

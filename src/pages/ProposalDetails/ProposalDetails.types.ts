@@ -1,8 +1,10 @@
+import { ProposalState } from '../../constants';
 import { FiniteStates } from '../../utils/types';
 
 export type ProposalData = {
   id: string;
   name: string;
+  eta: number;
   endDate: string;
   endBlock: string;
   startDate: string;
@@ -11,6 +13,7 @@ export type ProposalData = {
   proposedBy: string;
   contractAddress: string;
   functionToInvoke: string;
+  state: ProposalState;
 };
 
 export type VoteStatus = {
@@ -25,6 +28,8 @@ export type VoteButtonProps = {
 export type ProposalDetailsComponentProps = VotesRatioBlockProps & {
   proposal: ProposalData;
   voteStatus: VoteStatus;
+  /** flag to determine whether current account is the guardian of the proposal */
+  isGuardian: boolean;
 };
 
 export type VotesRatioBlockProps = {
