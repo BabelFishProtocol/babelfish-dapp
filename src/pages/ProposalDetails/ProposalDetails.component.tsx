@@ -81,7 +81,7 @@ export const ProposalDetailsComponent = ({
 
         <ForVotesListContainer />
 
-        <Container sx={{ p: 1, mt: 2, height: 200 }}>
+        <Container sx={{ p: 2, mt: 2, height: 220 }}>
           <Typography variant="body2" sx={{ height: 130 }}>
             {proposal.description}
           </Typography>
@@ -112,9 +112,9 @@ export const ProposalDetailsComponent = ({
 
         <Container
           sx={{
-            p: 1,
+            p: 2,
             mt: 2,
-            height: 200,
+            height: 220,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-evenly',
