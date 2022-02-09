@@ -219,6 +219,14 @@ const typography = createTypography(palette, {
     fontSize: 16,
     fontFamily: 'Archive',
   },
+  h5: {
+    fontFamily: 'Comfortaa-Regular',
+    fontSize: 30,
+  },
+  h6: {
+    fontFamily: 'Comfortaa-Regular',
+    fontSize: 24,
+  },
   subtitle1: {
     fontSize: 16,
   },
