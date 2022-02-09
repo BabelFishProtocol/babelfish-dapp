@@ -13,16 +13,11 @@ import {
 } from '../../components/DataTable/DataTable.types';
 import { DataTable } from '../../components/DataTable/DataTable.component';
 import { PageView } from '../../components/PageView/PageView.component';
-import { Urls } from '../../constants';
 
 import { ProposalsListComponentProps } from './ProposalsList.types';
 
 const ViewProposalComponent: CustomColumn = ({ value }) => (
-  <MuiLink
-    component={Link}
-    color="textPrimary"
-    to={`${Urls.Proposal}/${value}`}
-  >
+  <MuiLink component={Link} color="textPrimary" to={String(value)}>
     View Proposal
   </MuiLink>
 );

@@ -42,7 +42,7 @@ export const DashboardComponent = ({
         <Button variant="outlined" component={Link} to={Urls.Staking}>
           Stake Your Fish
         </Button>
-        <Button variant="outlined" component={Link} to={Urls.ProposalsList}>
+        <Button variant="outlined" component={Link} to={Urls.Proposals}>
           Govern With Fish
         </Button>
       </Container>
