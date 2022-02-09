@@ -173,14 +173,6 @@ const components: Components<Theme> = {
       },
     },
   },
-  MuiBadge: {
-    styleOverrides: {
-      dot: {
-        width: 12,
-        height: 12,
-      },
-    },
-  },
   MuiContainer: {
     styleOverrides: {
       root: {
@@ -218,6 +210,14 @@ const typography = createTypography(palette, {
   h4: {
     fontSize: 16,
     fontFamily: 'Archive',
+  },
+  h5: {
+    fontFamily: 'Comfortaa-Regular',
+    fontSize: 30,
+  },
+  h6: {
+    fontFamily: 'Comfortaa-Regular',
+    fontSize: 24,
   },
   subtitle1: {
     fontSize: 16,

@@ -1,9 +1,15 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import React from 'react';
+import { Urls } from '../../constants';
 
 export const Logo = () => (
-  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+  <Box
+    sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}
+    component={Link}
+    to={Urls.Dashboard}
+  >
     {/* CONTEMPORARY LOGO ICON (YELLOW CIRCLE) */}
     <Box
       sx={(theme) => ({
@@ -14,7 +20,7 @@ export const Logo = () => (
         display: 'inline-block',
       })}
     />
-    <Typography variant="h1" sx={{ marginLeft: '14px' }}>
+    <Typography variant="h1" color="textPrimary" sx={{ marginLeft: '14px' }}>
       BABELFISH.MONEY
     </Typography>
   </Box>

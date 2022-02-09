@@ -17,6 +17,6 @@ export const TransactionsTableComponent = ({
     tableTitle="Transactions"
     columns={transactionsTableColumns}
     data={transactions}
-    containerSx={{ height: 500, padding: ({ spacing }) => spacing(0, 2) }}
+    containerSx={{ height: 600, padding: ({ spacing }) => spacing(0, 2) }}
   />
 );

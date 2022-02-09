@@ -10,7 +10,7 @@ export const Header = () => (
   <Box
     component="header"
     sx={{
-      margin: '40px 66px 40px 100px',
+      margin: '50px 66px 50px 100px',
       display: 'flex',
       justifyContent: 'space-between',
     }}

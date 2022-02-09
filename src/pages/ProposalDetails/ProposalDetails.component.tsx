@@ -51,7 +51,7 @@ export const ProposalDetailsComponent = ({
           <IconButton
             sx={{ mr: 1, p: 0.2 }}
             component={Link}
-            to={Urls.ProposalsList}
+            to={Urls.Proposals}
           >
             {'<'}
           </IconButton>
