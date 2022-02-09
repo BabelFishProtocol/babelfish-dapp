@@ -173,14 +173,6 @@ const components: Components<Theme> = {
       },
     },
   },
-  MuiBadge: {
-    styleOverrides: {
-      dot: {
-        width: 12,
-        height: 12,
-      },
-    },
-  },
   MuiContainer: {
     styleOverrides: {
       root: {

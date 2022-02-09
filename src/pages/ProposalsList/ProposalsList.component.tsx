@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import MuiLink from '@mui/material/Link';
 import Button from '@mui/material/Button';
-import Badge from '@mui/material/Badge';
 import Typography from '@mui/material/Typography';
 
 import {
@@ -22,22 +21,12 @@ const ViewProposalComponent: CustomColumn = ({ value }) => (
   </MuiLink>
 );
 
-const VoteWeightComponent: CustomColumn = ({ value, rowData }) => {
-  const dotColor = rowData.isWinning === 'true' ? 'success' : 'error';
-  return (
-    <>
-      <Badge variant="dot" sx={{ marginRight: 2 }} color={dotColor} />
-      {value}
-    </>
-  );
-};
-
 const formatBlockNumber = (val: string | number) => `#${val}`;
 
 const proposalsListColumns: DataTableColumn[] = [
   { label: 'title', name: 'name' },
   { label: 'start block', name: 'startBlock', format: formatBlockNumber },
-  { label: 'vote weight', name: 'voteVeight', component: VoteWeightComponent },
+  { label: 'vote weight', name: 'voteVeight' },
   { label: 'voting ends', name: 'endDate' },
   { label: 'action', name: 'id', component: ViewProposalComponent },
 ];
