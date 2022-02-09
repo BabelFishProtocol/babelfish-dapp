@@ -2,6 +2,7 @@ export enum Urls {
   Proposals = '/proposals',
   Dashboard = '/dashboard',
   Staking = '/stake',
+  Agregator = '/agregator',
 }
 
 export enum ProposalState {

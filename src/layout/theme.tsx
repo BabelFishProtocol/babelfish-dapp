@@ -232,6 +232,7 @@ const typography = createTypography(palette, {
   h3: {
     fontSize: 20,
     fontFamily: 'Archive',
+    marginBottom: '12px',
   },
   h4: {
     fontSize: 16,

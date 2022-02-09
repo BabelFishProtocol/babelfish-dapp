@@ -1,7 +1,8 @@
-import { Button, FormControl, MenuItem, Select } from '@mui/material';
+import { Button } from '@mui/material';
 import { Routes, Route } from 'react-router-dom';
 import { Header } from './components/Header/Header.component';
 import { Urls } from './constants';
+import { AgregatorContainer } from './pages/Agregator/Agregator.container';
 import { DashboardContainer } from './pages/Dashboard/Dashboard.container';
 import { ProposalDetailsContainer } from './pages/ProposalDetails/ProposalDetails.container';
 import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.container';
@@ -15,7 +16,6 @@ function App() {
           path="/"
           element={
             <>
-              <div>Main</div>
               <Button>About</Button>
               <br />
               <br />
@@ -55,11 +55,6 @@ function App() {
               <Button variant="text">Text</Button>
               <br />
               <br />
-              <FormControl sx={{ m: 10, minWidth: 300 }}>
-                <Select>
-                  <MenuItem value="dupa" />
-                </Select>
-              </FormControl>
             </>
           }
         />
@@ -70,6 +65,7 @@ function App() {
           path={`${Urls.Proposals}/:id`}
           element={<ProposalDetailsContainer />}
         />
+        <Route path={Urls.Agregator} element={<AgregatorContainer />} />
       </Routes>
     </div>
   );
