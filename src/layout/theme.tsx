@@ -184,6 +184,37 @@ const components: Components<Theme> = {
       },
     },
   },
+  MuiDialog: {
+    styleOverrides: {
+      paper: {
+        backgroundImage: palette.boxGradient,
+        minHeight: '60vh',
+        minWidth: '30rem'
+      }
+    }
+  },
+  MuiDialogTitle: {
+    styleOverrides: {
+      root: {
+        fontFamily: 'Archive',
+        borderBottom: `1px solid ${palette.borderGrey.main}`,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      },
+    },
+  },
+  MuiDialogContent: {
+    styleOverrides: {
+      root: {
+        textAlign: 'center',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '1rem 3rem'
+      }
+    }
+  }
 };
 
 const typography = createTypography(palette, {
