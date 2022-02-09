@@ -1,16 +1,25 @@
 import React from 'react';
 import { styled } from '@mui/material/styles';
 import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
+import Box, { BoxProps } from '@mui/material/Box';
 import { PageViewProps } from './PageView.types';
 
-export const PageAligner = styled('div')({
+export const CenteredBox = ({ sx, ...boxProps }: BoxProps) => (
+  <Box
+    sx={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      ...sx,
+    }}
+    {...boxProps}
+  />
+);
+
+export const PageAligner = styled(CenteredBox)(({ theme }) => ({
   width: '100%',
-  height: '100vh',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-});
+  paddingBottom: theme.spacing(4),
+}));
 
 export const PageHeaderContainer = styled('div')(({ theme }) => ({
   borderBottom: `1px solid ${theme.palette.borderGrey.main}`,
@@ -18,13 +27,24 @@ export const PageHeaderContainer = styled('div')(({ theme }) => ({
   paddingBottom: 6,
 }));
 
-export const PageView = ({ title, children }: PageViewProps) => (
+export const PageView = ({
+  title,
+  children,
+  contentContainerSx = {},
+}: PageViewProps) => (
   <PageAligner>
-    <Container>
+    <Container
+      sx={{
+        p: { xs: 0 },
+        maxWidth: { xs: 1300 },
+        width: '90%',
+      }}
+    >
       <PageHeaderContainer>{title}</PageHeaderContainer>
       <Box
         sx={{
-          padding: ({ spacing }) => `${spacing(4)} ${spacing(3)}`,
+          padding: ({ spacing }) => spacing(4, 3),
+          ...contentContainerSx,
         }}
       >
         {children}
