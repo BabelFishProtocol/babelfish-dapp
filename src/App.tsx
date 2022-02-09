@@ -58,7 +58,6 @@ function App() {
         />
         <Route path="about" element={<div>About</div>} />
         <Route path={Urls.Proposals} element={<ProposalsListContainer />} />
-        <Route path={Urls.ProposalsList} element={<ProposalsListContainer />} />
         <Route path={Urls.Dashboard} element={<DashboardContainer />} />
         <Route
           path={`${Urls.Proposals}/:id`}
