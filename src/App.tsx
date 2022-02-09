@@ -5,6 +5,7 @@ import { Urls } from './constants';
 import { DashboardContainer } from './pages/Dashboard/Dashboard.container';
 import { ProposalDetailsContainer } from './pages/ProposalDetails/ProposalDetails.container';
 import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.container';
+import { StakingContainer } from './pages/Staking/Staking.container';
 
 function App() {
   return (
@@ -58,6 +59,7 @@ function App() {
         />
         <Route path="about" element={<div>About</div>} />
         <Route path={Urls.Proposals} element={<ProposalsListContainer />} />
+        <Route path={Urls.Staking} element={<StakingContainer />} />
         <Route path={Urls.Dashboard} element={<DashboardContainer />} />
         <Route
           path={`${Urls.Proposals}/:id`}
