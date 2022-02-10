@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import React, { useState } from 'react';
 import { BigNumber, utils } from 'ethers';
 import { CurrencyInput } from '../CurrencyInput/CurrencyInput.component';
@@ -13,8 +12,8 @@ export const InputWithButtonPillGroup = ({
 }: InputButtonPillGroupProps) => {
   // WIP: Should move value outside of this component
   const [value, setValue] = useState('0.00');
-  const [percentSelected, setPercentSelected] = useState<number | undefined>();
-  const onChangeIn = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [percentSelected, setPercentSelected] = useState<number>();
+  const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPercentSelected(undefined);
     setValue(e.target.value);
   };
@@ -35,7 +34,7 @@ export const InputWithButtonPillGroup = ({
         title={title}
         value={value}
         symbol={symbol}
-        onChange={onChangeIn}
+        onChange={onChangeInput}
       />
       <ButtonPillGroup
         availableValues={availablePercentValues}
