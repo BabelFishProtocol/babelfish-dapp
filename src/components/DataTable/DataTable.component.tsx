@@ -10,19 +10,20 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 
 import {
+  BaseRowData,
   DataTableProps,
   DataTableRowProps,
   LoadingStateRowProps,
 } from './DataTable.types';
 
-export const DataTable = ({
+export const DataTable = <Data extends BaseRowData = BaseRowData>({
   data,
   columns,
   isLoading,
   tableTitle,
   tableAction,
   containerSx,
-}: DataTableProps) => (
+}: DataTableProps<Data>) => (
   <TableContainer
     sx={{
       maxHeight: 400,
@@ -70,7 +71,11 @@ DataTable.defaultProps = {
   containerSx: {},
 };
 
-const DataTableRow = ({ rowIndex, columns, rowData }: DataTableRowProps) => (
+const DataTableRow = <Data extends BaseRowData = BaseRowData>({
+  rowIndex,
+  columns,
+  rowData,
+}: DataTableRowProps<Data>) => (
   <TableRow key={rowIndex}>
     {columns.map((column, cellIndex) => {
       const { component: CellComponent, format, name } = column;
@@ -93,7 +98,9 @@ const DataTableRow = ({ rowIndex, columns, rowData }: DataTableRowProps) => (
   </TableRow>
 );
 
-const LoadingStateRow = ({ columns }: LoadingStateRowProps) => (
+const LoadingStateRow = <Data extends BaseRowData = BaseRowData>({
+  columns,
+}: LoadingStateRowProps<Data>) => (
   <TableRow>
     {columns.map((_, cellIndex) => (
       <TableCell key={cellIndex}>

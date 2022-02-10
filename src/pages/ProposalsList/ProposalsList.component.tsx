@@ -13,7 +13,7 @@ import {
 import { DataTable } from '../../components/DataTable/DataTable.component';
 import { PageView } from '../../components/PageView/PageView.component';
 
-import { ProposalsListComponentProps } from './ProposalsList.types';
+import { Proposal, ProposalsListComponentProps } from './ProposalsList.types';
 
 const ViewProposalComponent: CustomColumn = ({ value }) => (
   <MuiLink component={Link} color="textPrimary" to={String(value)}>
@@ -23,7 +23,7 @@ const ViewProposalComponent: CustomColumn = ({ value }) => (
 
 const formatBlockNumber = (val: string | number) => `#${val}`;
 
-const proposalsListColumns: DataTableColumn[] = [
+const proposalsListColumns: DataTableColumn<Proposal>[] = [
   { label: 'title', name: 'name' },
   { label: 'start block', name: 'startBlock', format: formatBlockNumber },
   { label: 'vote weight', name: 'voteVeight' },

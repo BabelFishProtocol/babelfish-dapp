@@ -7,9 +7,13 @@ import { DataTableColumn } from '../../../components/DataTable/DataTable.types';
 import upvoteIcon from '../../../assets/icons/upvote.svg';
 import downvoteIcon from '../../../assets/icons/downvote.svg';
 
-import { TableIconProps, VotesListComponentProps } from './VotesList.types';
+import {
+  TableIconProps,
+  VotesListComponentProps,
+  VotesListItem,
+} from './VotesList.types';
 
-const votesColumns: DataTableColumn[] = [
+const votesColumns: DataTableColumn<VotesListItem>[] = [
   { label: 'Address', name: 'address', component: PrettyTx },
   { label: 'Tx Hash', name: 'txHash', component: PrettyTx },
   { label: 'Votes', name: 'votes' },
