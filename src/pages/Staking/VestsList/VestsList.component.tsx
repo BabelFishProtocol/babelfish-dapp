@@ -23,12 +23,7 @@ const ActionColumn: CustomColumn = () => {
     },
   ];
 
-  return (
-    <>
-      <TableActionsComponent actions={actions} />
-      {}
-    </>
-  );
+  return <TableActionsComponent actions={actions} />;
 };
 
 const vestsColumns: DataTableColumn<VestsListItem>[] = [

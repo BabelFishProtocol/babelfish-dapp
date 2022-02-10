@@ -33,12 +33,7 @@ const StakeActionColumn: CustomColumn = () => {
     },
   ];
 
-  return (
-    <>
-      <TableActionsComponent actions={actions} />
-      {}
-    </>
-  );
+  return <TableActionsComponent actions={actions} />;
 };
 
 const stakesColumns: DataTableColumn<StakeListItem>[] = [
