@@ -1,11 +1,14 @@
-import { Button } from '@mui/material';
+import { Button, Box } from '@mui/material';
 import { Routes, Route } from 'react-router-dom';
+import { utils } from 'ethers';
 import { Header } from './components/Header/Header.component';
+import { InputWithButtonPillGroup } from './components/InputPillGroup/InputWithButtonPillGroup.component';
 import { Urls } from './constants';
 import { AgregatorContainer } from './pages/Agregator/Agregator.container';
 import { DashboardContainer } from './pages/Dashboard/Dashboard.container';
 import { ProposalDetailsContainer } from './pages/ProposalDetails/ProposalDetails.container';
 import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.container';
+import { StakingContainer } from './pages/Staking/Staking.container';
 
 function App() {
   return (
@@ -55,11 +58,18 @@ function App() {
               <Button variant="text">Text</Button>
               <br />
               <br />
+              <Box sx={{ maxWidth: 350, m: 10 }}>
+                <InputWithButtonPillGroup
+                  symbol="XUSD"
+                  totalAmount={utils.parseUnits('2.234')}
+                />
+              </Box>
             </>
           }
         />
         <Route path="about" element={<div>About</div>} />
         <Route path={Urls.Proposals} element={<ProposalsListContainer />} />
+        <Route path={Urls.Staking} element={<StakingContainer />} />
         <Route path={Urls.Dashboard} element={<DashboardContainer />} />
         <Route
           path={`${Urls.Proposals}/:id`}

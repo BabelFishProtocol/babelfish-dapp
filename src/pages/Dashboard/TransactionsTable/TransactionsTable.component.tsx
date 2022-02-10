@@ -1,8 +1,11 @@
 import { DataTable } from '../../../components/DataTable/DataTable.component';
 import { DataTableColumn } from '../../../components/DataTable/DataTable.types';
-import { TransactionsTableComponentProps } from './TransactionsTable.types';
+import {
+  TransactionsTableComponentProps,
+  TransactionsTableItem,
+} from './TransactionsTable.types';
 
-const transactionsTableColumns: DataTableColumn[] = [
+const transactionsTableColumns: DataTableColumn<TransactionsTableItem>[] = [
   { label: 'Event', name: 'eventName' },
   { label: 'Asset', name: 'asset' },
   { label: 'Amount', name: 'amount' },
