@@ -1,6 +1,8 @@
-import { Button } from '@mui/material';
+import { Button, Box } from '@mui/material';
 import { Routes, Route } from 'react-router-dom';
+import { utils } from 'ethers';
 import { Header } from './components/Header/Header.component';
+import { InputWithButtonPillGroup } from './components/InputPillGroup/InputWithButtonPillGroup.component';
 import { Urls } from './constants';
 import { DashboardContainer } from './pages/Dashboard/Dashboard.container';
 import { ProposalDetailsContainer } from './pages/ProposalDetails/ProposalDetails.container';
@@ -53,6 +55,14 @@ function App() {
               <br />
               <br />
               <Button variant="text">Text</Button>
+              <br />
+              <br />
+              <Box sx={{ maxWidth: 350, m: 10 }}>
+                <InputWithButtonPillGroup
+                  symbol="XUSD"
+                  totalAmount={utils.parseUnits('2.234')}
+                />
+              </Box>
             </>
           }
         />
