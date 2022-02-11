@@ -1,21 +1,21 @@
-import { IconButton, Typography } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 import React from 'react';
 import crossIcon from '../../assets/icons/cross.svg';
 import { AppDialogProps } from './AppDialog.types';
 
-export default function AppDialog({
-  openDialog,
+export const AppDialog = ({
+  isOpenDialog,
   icon,
   title,
   description,
   onClose,
   children,
-}: AppDialogProps) {
-  return (
-    <Dialog onClose={onClose} open={openDialog}>
+}: AppDialogProps) => 
+    <Dialog onClose={onClose} open={isOpenDialog}>
       {title && (
         <DialogTitle>
           {title}
@@ -30,8 +30,8 @@ export default function AppDialog({
           >
             <img
               style={{
-                width: '1rem',
-                height: '1rem',
+                width: '20px',
+                height: '20px',
               }}
               src={crossIcon}
               alt="Close"
@@ -43,10 +43,10 @@ export default function AppDialog({
       <DialogContent>
         <div>
           {icon && (
-            <img src={icon} style={{ width: '5rem', height: '5rem' }} alt="" />
+            <img src={icon} style={{ width: '100px', height: '100px' }} alt="" />
           )}
 
-          <Typography sx={{ mb: 5, mt: 5 }} variant="body2">
+          <Typography sx={{ my: 5 }} variant="body2">
             {description}
           </Typography>
 
@@ -54,5 +54,3 @@ export default function AppDialog({
         </div>
       </DialogContent>
     </Dialog>
-  );
-}

@@ -1,9 +1,9 @@
 import React from "react";
 
 export type AppDialogProps = {
-    openDialog: boolean,
+    isOpenDialog: boolean,
     onClose: () => void,
-    icon?: any,
+    icon?: string,
     title?: string,
     description?: string,
     children?: React.ReactNode

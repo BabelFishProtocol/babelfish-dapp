@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -10,9 +9,6 @@ import { PageAligner } from '../../components/PageView/PageView.component';
 
 import { TransactionsTableContainer } from './TransactionsTable/TransactionsTable.container';
 import { BalanceBlockProps, DashboardComponentProps } from './Dashboard.types';
-import AppDialog from '../../components/AppDialog/AppDialog.component';
-
-import errorIcon from '../../assets/icons/error.svg';
 
 
 const BalanceBlock = ({ amount, label }: BalanceBlockProps) => (
@@ -30,21 +26,8 @@ export const DashboardComponent = ({
   totalUSD,
   fishBalance,
   fishVesting,
-}: DashboardComponentProps) => {
-  
-  const [showDialog, setShowDialog] = useState(false);
-
-  return (
+}: DashboardComponentProps) => 
   <PageAligner>
-    <AppDialog 
-      openDialog={showDialog} 
-      icon={errorIcon} 
-      title='Minting Error' 
-      description='We encountered an error on the minting proces, please try again.' 
-      onClose={() => { setShowDialog(false) }}
-    >
-      <Button variant='outlined'>Try Again</Button>
-    </AppDialog>
     <Box
       sx={{
         gap: 2,
@@ -66,7 +49,7 @@ export const DashboardComponent = ({
         <Button component={Link} to={Urls.ProposalsList}>
           Govern With Fish
         </Button>
-        <Button variant="outlined" onClick={() => { setShowDialog(true); }}> Deposit/Withdraw XUSD</Button>
+        <Button variant="outlined"> Deposit/Withdraw XUSD</Button>
         <Button variant="outlined">Stake Your Fish</Button>
       </Container>
 
@@ -100,5 +83,3 @@ export const DashboardComponent = ({
       </Box>
     </Box>
   </PageAligner>
-  )
-};

@@ -188,8 +188,8 @@ const components: Components<Theme> = {
     styleOverrides: {
       paper: {
         backgroundImage: palette.boxGradient,
-        minHeight: '60vh',
-        minWidth: '30rem'
+        minHeight: '500px',
+        minWidth: '500px'
       }
     }
   },
@@ -211,7 +211,7 @@ const components: Components<Theme> = {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '1rem 3rem'
+        padding: '20px 30px',
       }
     }
   }
