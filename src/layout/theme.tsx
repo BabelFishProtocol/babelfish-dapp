@@ -235,6 +235,16 @@ const components: Components<Theme> = {
       },
     },
   },
+  MuiToggleButton: {
+    styleOverrides: {
+      root: {
+        color: palette.primary.main,
+        borderRadius: '8px !important', // !important needed to override all borderRadious from subclasses
+        borderColor: alpha(palette.primary.main, 0.2),
+        border: `1px solid ${alpha(palette.primary.main, 0.2)} !important`, // !important needed to override all border properties from subclasses
+      },
+    },
+  },
 };
 
 const typography = createTypography(palette, {

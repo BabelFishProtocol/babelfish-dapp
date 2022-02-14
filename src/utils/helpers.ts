@@ -7,3 +7,6 @@ export const prettyTx = (
   const end = text.substr(-endLength);
   return `${start} ... ${end}`;
 };
+
+export const timeStampToDate = (timestamp: number) =>
+  new Date(timestamp * 1000);

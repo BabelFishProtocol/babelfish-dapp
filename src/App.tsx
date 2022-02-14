@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Button, Box } from '@mui/material';
 import { Routes, Route } from 'react-router-dom';
 import { utils } from 'ethers';
@@ -8,8 +9,11 @@ import { DashboardContainer } from './pages/Dashboard/Dashboard.container';
 import { ProposalDetailsContainer } from './pages/ProposalDetails/ProposalDetails.container';
 import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.container';
 import { StakingContainer } from './pages/Staking/Staking.container';
+import { DateSelector } from './components/DateSelector/DateSelector.component';
 
 function App() {
+  const [selectedDate, setSelectedDate] = useState<number>();
+
   return (
     <div className="App">
       <Header />
@@ -64,6 +68,12 @@ function App() {
                   totalAmount={utils.parseUnits('2.234')}
                 />
               </Box>
+              <DateSelector
+                kickoffTs={1635379200}
+                stakes={[]}
+                value={selectedDate}
+                onChange={setSelectedDate}
+              />
             </>
           }
         />
