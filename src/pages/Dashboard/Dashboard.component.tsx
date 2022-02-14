@@ -15,7 +15,7 @@ export const DashboardComponent = ({
   totalUSD,
   fishBalance,
   fishVesting,
-}: DashboardComponentProps) => (
+}: DashboardComponentProps) => 
   <PageAligner>
     <Box
       sx={{
@@ -87,4 +87,3 @@ export const DashboardComponent = ({
       </Box>
     </Box>
   </PageAligner>
-);
