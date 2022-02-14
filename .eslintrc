@@ -18,6 +18,8 @@
     "import/prefer-default-export": 0,
     "react/prop-types": "off",
     "react/no-array-index-key": "off",
+    "react/jsx-props-no-spreading": "off",
+    "@typescript-eslint/no-use-before-define": "off",
     "react/function-component-definition": 0,
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
     "no-console": 2,

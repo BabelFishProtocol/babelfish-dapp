@@ -1,10 +1,7 @@
-export type BalanceBlockProps = {
-  label: string;
-  amount: string;
-};
+import { LoadableAmount } from '../../utils/types';
 
 export type DashboardComponentProps = {
-  fishBalance: BalanceBlockProps['amount'];
-  fishVesting: BalanceBlockProps['amount'];
+  fishBalance: LoadableAmount;
+  fishVesting: LoadableAmount;
   totalUSD: string;
 };

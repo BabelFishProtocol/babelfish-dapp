@@ -1,8 +1,11 @@
 import { DataTable } from '../../../components/DataTable/DataTable.component';
 import { DataTableColumn } from '../../../components/DataTable/DataTable.types';
-import { TransactionsTableComponentProps } from './TransactionsTable.types';
+import {
+  TransactionsTableComponentProps,
+  TransactionsTableItem,
+} from './TransactionsTable.types';
 
-const transactionsTableColumns: DataTableColumn[] = [
+const transactionsTableColumns: DataTableColumn<TransactionsTableItem>[] = [
   { label: 'Event', name: 'eventName' },
   { label: 'Asset', name: 'asset' },
   { label: 'Amount', name: 'amount' },
@@ -17,6 +20,6 @@ export const TransactionsTableComponent = ({
     tableTitle="Transactions"
     columns={transactionsTableColumns}
     data={transactions}
-    containerSx={{ height: 500, padding: ({ spacing }) => spacing(0, 2) }}
+    containerSx={{ height: 600, padding: ({ spacing }) => spacing(0, 2) }}
   />
 );

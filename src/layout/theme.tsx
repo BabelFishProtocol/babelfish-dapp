@@ -1,10 +1,11 @@
 import React from 'react';
 import {
+  alpha,
+  Theme,
+  Components,
   createTheme,
   responsiveFontSizes,
   ThemeProvider as MuiThemeProvider,
-  Theme,
-  Components,
 } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import createPalette from '@mui/material/styles/createPalette';
@@ -28,8 +29,10 @@ declare module '@mui/material/styles/createPalette' {
 
 const colors = {
   primary: '#ffbf42',
+  black: '#0c0b10',
   lightYellow: '#fddc90',
   borderGrey: 'rgba(255, 255, 255, 0.2)',
+  borderGreyDark: 'rgba(255, 255, 255, 0.1)',
 };
 
 const transition = `250ms cubic-bezier(0.4, 0, 0.2, 1)`;
@@ -52,8 +55,9 @@ const palette = createPalette({
   },
   borderGrey: {
     main: colors.borderGrey,
+    dark: colors.borderGreyDark,
   },
-  boxGradient: `linear-gradient(243deg, #ffc148 0%, #786d57 0%, #424040 20%, #272626 100%)`,
+  boxGradient: `linear-gradient(243deg, #ffc148 0%, #5e5544 0%, #383838 25%, #212020 80%)`,
 });
 
 const components: Components<Theme> = {
@@ -113,6 +117,9 @@ const components: Components<Theme> = {
           textDecoration: 'underline',
         },
       },
+      outlinedSizeSmall: {
+        padding: '8px 12px',
+      },
     },
   },
   MuiIconButton: {
@@ -168,19 +175,63 @@ const components: Components<Theme> = {
       },
     },
   },
-  MuiBadge: {
-    styleOverrides: {
-      dot: {
-        width: 12,
-        height: 12,
-      },
-    },
-  },
   MuiContainer: {
     styleOverrides: {
       root: {
         backgroundImage: palette.boxGradient,
         borderRadius: 8,
+      },
+    },
+  },
+  MuiTooltip: {
+    styleOverrides: {
+      tooltip: {
+        background: palette.background.default,
+        maxWidth: 'unset',
+      },
+      arrow: {
+        color: palette.background.default,
+      },
+    },
+  },
+  MuiMenu: {
+    styleOverrides: {
+      list: {
+        padding: 0,
+        backgroundColor: colors.black,
+      },
+      paper: {
+        borderRadius: 0,
+        border: `1px solid ${palette.primary.dark}`,
+      },
+      root: {},
+    },
+    defaultProps: {
+      PaperProps: {
+        square: true,
+      },
+    },
+  },
+  MuiMenuItem: {
+    styleOverrides: {
+      root: {
+        padding: '10px 18px',
+        '&.Mui-selected': {
+          backgroundColor: alpha(palette.primary.main, 0.1),
+        },
+        ':hover': {
+          backgroundColor: alpha(palette.primary.main, 0.1),
+        },
+        ':focus': {
+          backgroundColor: alpha(palette.primary.main, 0.2),
+        },
+      },
+    },
+  },
+  MuiOutlinedInput: {
+    styleOverrides: {
+      root: {
+        borderRadius: 0,
       },
     },
   },
@@ -234,6 +285,14 @@ const typography = createTypography(palette, {
     fontSize: 16,
     fontFamily: 'Archive',
   },
+  h5: {
+    fontFamily: 'Comfortaa-Regular',
+    fontSize: 30,
+  },
+  h6: {
+    fontFamily: 'Comfortaa-Regular',
+    fontSize: 24,
+  },
   subtitle1: {
     fontSize: 16,
   },
@@ -248,6 +307,10 @@ const typography = createTypography(palette, {
   body2: {
     fontFamily: 'Comfortaa-Regular',
     fontSize: 14,
+  },
+  caption: {
+    fontFamily: 'Comfortaa-Regular',
+    fontSize: 12,
   },
 });
 

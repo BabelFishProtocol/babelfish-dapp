@@ -6,21 +6,10 @@ import Typography from '@mui/material/Typography';
 
 import { Urls } from '../../constants';
 import { PageAligner } from '../../components/PageView/PageView.component';
+import { BalanceBlock } from '../../components/BalanceBlock/BalanceBlock.component';
 
 import { TransactionsTableContainer } from './TransactionsTable/TransactionsTable.container';
-import { BalanceBlockProps, DashboardComponentProps } from './Dashboard.types';
-
-
-const BalanceBlock = ({ amount, label }: BalanceBlockProps) => (
-  <Container sx={{ padding: 2 }}>
-    <Typography variant="body2" align="center">
-      {label}
-    </Typography>
-    <Typography variant="h2" align="center" mt={1}>
-      {amount} FISH
-    </Typography>
-  </Container>
-);
+import { DashboardComponentProps } from './Dashboard.types';
 
 export const DashboardComponent = ({
   totalUSD,
@@ -46,11 +35,16 @@ export const DashboardComponent = ({
           width: { sm: '100%', md: 'fit-content' },
         }}
       >
-        <Button component={Link} to={Urls.ProposalsList}>
+        <Button sx={{ width: 'max-content', pl: 3, pr: 3 }}>
+          {' '}
+          Deposit/Withdraw XUSD
+        </Button>
+        <Button variant="outlined" component={Link} to={Urls.Staking}>
+          Stake Your Fish
+        </Button>
+        <Button variant="outlined" component={Link} to={Urls.Proposals}>
           Govern With Fish
         </Button>
-        <Button variant="outlined"> Deposit/Withdraw XUSD</Button>
-        <Button variant="outlined">Stake Your Fish</Button>
       </Container>
 
       <Box
@@ -62,8 +56,16 @@ export const DashboardComponent = ({
         }}
       >
         <Box sx={{ display: 'flex', gap: 2 }}>
-          <BalanceBlock label="Fish Balance" amount={fishBalance} />
-          <BalanceBlock label="Fish Vesting" amount={fishVesting} />
+          <BalanceBlock
+            sx={{ alignItems: 'center' }}
+            label="Fish Balance"
+            {...fishBalance}
+          />
+          <BalanceBlock
+            sx={{ alignItems: 'center' }}
+            label="Fish Vesting"
+            {...fishVesting}
+          />
         </Box>
 
         <Container
@@ -75,8 +77,10 @@ export const DashboardComponent = ({
             border: ({ palette }) => `1px solid ${palette.primary.main}`,
           }}
         >
-          <Typography variant="body2">Total #USD Balance:</Typography>
-          <Typography variant="h2">{totalUSD}</Typography>
+          <Typography sx={{ fontWeight: 'bold' }}>
+            Total #USD Balance:
+          </Typography>
+          <Typography variant="h6">{totalUSD}</Typography>
         </Container>
 
         <TransactionsTableContainer />
