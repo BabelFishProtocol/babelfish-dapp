@@ -183,16 +183,6 @@ const components: Components<Theme> = {
       },
     },
   },
-  MuiMenu: {
-    styleOverrides: {
-      list: {
-        padding: 0,
-      },
-      paper: {
-        borderRadius: 0,
-      },
-    },
-  },
   MuiOutlinedInput: {
     styleOverrides: {
       root: {
@@ -251,13 +241,6 @@ const components: Components<Theme> = {
         ':focus': {
           backgroundColor: alpha(palette.primary.main, 0.2),
         },
-      },
-    },
-  },
-  MuiOutlinedInput: {
-    styleOverrides: {
-      root: {
-        borderRadius: 0,
       },
     },
   },
