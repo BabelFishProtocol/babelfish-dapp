@@ -1,6 +1,10 @@
-import { Button, Box } from '@mui/material';
-import { Routes, Route } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import { utils } from 'ethers';
+import { useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import errorIcon from './assets/icons/error.svg';
+import { AppDialog } from './components/AppDialog/AppDialog.component';
 import { Header } from './components/Header/Header.component';
 import { InputWithButtonPillGroup } from './components/InputPillGroup/InputWithButtonPillGroup.component';
 import { Urls } from './constants';
@@ -10,9 +14,23 @@ import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.cont
 import { StakingContainer } from './pages/Staking/Staking.container';
 
 function App() {
+  const [isOpenDialog, setIsOpenDialog] = useState(false);
   return (
     <div className="App">
       <Header />
+
+      <AppDialog
+        isOpenDialog={isOpenDialog}
+        icon={errorIcon}
+        title="Minting Error"
+        description="We encountered an error in the minting process. Please try again"
+        onClose={() => {
+          setIsOpenDialog(false);
+        }}
+      >
+        <Button variant="outlined">Try Again</Button>
+      </AppDialog>
+
       <Routes>
         <Route
           path="/"
@@ -22,7 +40,14 @@ function App() {
               <Button>About</Button>
               <br />
               <br />
-              <Button variant="outlined">Outlined</Button>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  setIsOpenDialog(true);
+                }}
+              >
+                Outlined
+              </Button>
               <br />
               <br />
               <Button

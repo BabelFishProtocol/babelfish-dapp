@@ -22,7 +22,8 @@
     "@typescript-eslint/no-use-before-define": "off",
     "react/function-component-definition": 0,
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
-    "no-console": 2
+    "no-console": 2,
+    "@typescript-eslint/no-explicit-any": 2
   },
   "overrides": [
     {
