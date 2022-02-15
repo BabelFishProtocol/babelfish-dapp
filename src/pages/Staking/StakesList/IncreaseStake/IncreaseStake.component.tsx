@@ -1,6 +1,7 @@
 import { utils } from 'ethers';
 
 import { Button } from '../../../../components/Button/Button.component';
+import { TextInput } from '../../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../../components/DialogForm/DialogForm.component';
 import { CurrencyInput } from '../../../../components/CurrencyInput/CurrencyInput.component';
 import { InputWithButtonPillGroup } from '../../../../components/InputPillGroup/InputWithButtonPillGroup.component';
@@ -39,11 +40,6 @@ export const IncreaseStakeComponent = ({
       totalAmount={utils.parseUnits('2.234')}
     />
 
-    <CurrencyInput
-      disabled
-      symbol=""
-      value={votingPower}
-      title="New Voting Power"
-    />
+    <TextInput disabled value={votingPower} title="New Voting Power" />
   </DialogForm>
 );
