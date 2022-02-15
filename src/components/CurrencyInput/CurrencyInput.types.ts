@@ -1,6 +1,7 @@
 export type CurrencyInputProps = {
-  title?: string;
+  label?: string;
   symbol: string;
   value: string;
+  disabled?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };

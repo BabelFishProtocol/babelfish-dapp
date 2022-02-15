@@ -15,3 +15,10 @@ export enum ProposalState {
   Expired = '6',
   Executed = '7',
 }
+
+export enum AggregatorInputs {
+  ChainDropdown = 'ChainDropdown',
+  TokenDropdown = 'TokenDropdown',
+  SendAmount = 'SendAmount',
+  ReceiveAddress = 'ReceiveAddress',
+}

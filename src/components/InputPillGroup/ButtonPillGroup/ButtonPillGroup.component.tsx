@@ -1,28 +1,34 @@
-import Box from '@mui/material/Box';
-import React from 'react';
-import { ButtonPill } from './ButtonPill.component';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
 import { ButtonPillGroupProps } from './ButtonPillGroup.types';
 
 export const ButtonPillGroup = ({
-  selected,
   availableValues,
-  onChangeSelected,
+  disabled,
+  value,
+  handleChange,
 }: ButtonPillGroupProps) => (
-  <Box
+  <ToggleButtonGroup
     sx={{
       display: 'flex',
       justifyContent: 'space-between',
       py: 1.5,
       gap: 0.5,
     }}
+    exclusive
+    value={value}
+    onChange={handleChange}
   >
-    {availableValues.map((value) => (
-      <ButtonPill
-        key={value}
-        value={value}
-        isSelected={value === selected}
-        onClick={() => onChangeSelected(selected !== value ? value : 0)}
-      />
+    {availableValues.map((percentValue) => (
+      <ToggleButton
+        color="primary"
+        size="small"
+        value={percentValue}
+        disabled={disabled}
+        aria-label={`${percentValue}%`}
+      >
+        {percentValue === 100 ? `MAX` : `${percentValue}%`}
+      </ToggleButton>
     ))}
-  </Box>
+  </ToggleButtonGroup>
 );

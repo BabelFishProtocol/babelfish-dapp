@@ -3,25 +3,26 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import { utils } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { IconButton } from '@mui/material';
 import { ControlledDropdown } from '../../components/ControlledDropdown/ControlledDropdown.component';
 import { PageView } from '../../components/PageView/PageView.component';
-import { InputWithButtonPillGroup } from '../../components/InputPillGroup/InputWithButtonPillGroup.component';
+import { ControlledInputWithButtonPillGroup } from '../../components/ControlledInputWithButtonPillGroup/ControlledInputWithButtonPillGroup.component';
 import { baseChains, ChainEnum, chains } from '../../config/chains';
 import { TokenTypeBase } from '../../config/tokens';
 import { NameWithIcon } from '../../components/NameWithIcon/NameWithIcon.component';
+import { AggregatorInputs } from '../../constants';
 
 export const AgregatorComponent = () => {
   const [bassetOptions, setBassetOptions] = useState<TokenTypeBase[]>();
   const [tokenDropdownDisabled, setTokenDropdownDisabled] = useState(true);
-
+  const [availableBalance, setAvailableBalance] = useState<BigNumber>();
   const [receiveAmount, setReceiveAmount] = useState('0.00');
 
-  const { watch, control } = useForm();
-  const watchChain = watch('chain');
+  const { watch, setValue, control } = useForm();
+  const watchChain = watch(AggregatorInputs.ChainDropdown);
+  const watchToken = watch(AggregatorInputs.TokenDropdown);
 
   useEffect(() => {
     const chosenChain = baseChains.find(({ id }) => id === watchChain);
@@ -29,6 +30,17 @@ export const AgregatorComponent = () => {
     setBassetOptions(currentOptions);
     setTokenDropdownDisabled(!currentOptions);
   }, [watchChain]);
+
+  const getTokenAvaliableAmount = () => {
+    // todo: implement
+    setAvailableBalance(utils.parseEther('81'));
+  };
+
+  useEffect(() => {
+    if (watchToken) {
+      getTokenAvaliableAmount();
+    }
+  }, [watchToken]);
   return (
     <form
       style={{
@@ -57,30 +69,46 @@ export const AgregatorComponent = () => {
           }}
         >
           <ControlledDropdown
-            name="chain"
+            name={AggregatorInputs.ChainDropdown}
             label="Select Network"
             defaultValue=""
             placeholder="Select Chain"
             control={control}
             options={baseChains}
+            sx={{ mb: 6 }}
           />
           <ControlledDropdown
-            name="token"
+            name={AggregatorInputs.TokenDropdown}
             label="Deposit stablecoin"
-            defaultValue=""
             placeholder="Select Coin"
+            defaultValue=""
             control={control}
             disabled={tokenDropdownDisabled}
             options={bassetOptions ?? []}
           />
-          <InputWithButtonPillGroup
-            title="Deposit amount"
+          <Box sx={{ height: 48, position: 'relative' }}>
+            {availableBalance && (
+              <Typography
+                variant="subtitle2"
+                sx={{ position: 'absolute', top: 14 }}
+              >
+                Available Balance: {utils.formatUnits(availableBalance)} USDT
+              </Typography>
+            )}
+          </Box>
+
+          <ControlledInputWithButtonPillGroup
+            name={AggregatorInputs.SendAmount}
+            label="Deposit amount"
             symbol="USDT"
-            totalAmount={utils.parseEther('81')}
+            defaultValue=""
+            disabled={!availableBalance}
+            availableBalance={availableBalance}
+            control={control}
+            setValue={setValue}
           />
         </Box>
       </PageView>
-
       <PageView
         title={
           <Box

@@ -41,7 +41,7 @@ export const tokensCatalog = {
     icon: usdtIcon,
   },
   [TokenEnum.USDC]: {
-    id: 'USDc',
+    id: 'USDC',
     name: 'USDC',
     icon: usdcIcon,
   },

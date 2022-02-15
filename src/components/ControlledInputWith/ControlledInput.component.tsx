@@ -1,28 +1,25 @@
+import { OutlinedInput } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import Typography from '@mui/material/Typography';
 import { Controller } from 'react-hook-form';
-import { DropdownOptions } from '../Dropdown/Dropdown.component';
-import { ControlledDropdownProps } from './ControlledDropdown.types';
+import { ControlledInputProps } from './ControlledInput.types';
 
-export const ControlledDropdown = ({
+export const ControlledInput = ({
   name,
   label,
   placeholder,
   control,
   defaultValue,
   disabled,
-  options,
-  sx,
-}: ControlledDropdownProps) => (
-  <FormControl fullWidth disabled={disabled} sx={{ ...sx }}>
+}: ControlledInputProps) => (
+  <FormControl fullWidth sx={{ mb: 6 }} disabled={disabled}>
     <Typography variant="h3">{label}</Typography>
     <Controller
       render={({ field: { onChange, value } }) => (
-        <DropdownOptions
-          options={options}
+        <OutlinedInput
           placeholder={placeholder}
-          value={value}
           onChange={onChange}
+          value={value}
         />
       )}
       name={name}

@@ -4,17 +4,19 @@ import Typography from '@mui/material/Typography';
 import { CurrencyInputProps } from './CurrencyInput.types';
 
 export const CurrencyInput = ({
-  title,
+  label,
   symbol,
   value,
+  disabled,
   onChange,
 }: CurrencyInputProps) => (
   <>
-    <Typography variant="h3">{title}</Typography>
+    <Typography variant="h3">{label}</Typography>
     <OutlinedInput
       fullWidth
       endAdornment={<InputAdornment position="end">{symbol}</InputAdornment>}
       value={value}
+      disabled={disabled}
       onChange={onChange}
     />
   </>

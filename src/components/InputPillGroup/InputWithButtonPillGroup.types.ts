@@ -1,9 +1,14 @@
 import { BigNumber } from 'ethers';
+import React from 'react';
+import { FieldValues, SetFieldValue } from 'react-hook-form';
 
-export type InputButtonPillGroupProps = {
-  title?: string;
+export type InputWithButtonPillGroupProps = {
+  name: string;
+  label?: string;
   symbol: string;
-  totalAmount: BigNumber;
-  // value: string;
-  onChange?: (newValue: string) => void;
+  disabled?: boolean;
+  availableBalance?: BigNumber;
+  value: string;
+  setValue: SetFieldValue<FieldValues>;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>)
 };

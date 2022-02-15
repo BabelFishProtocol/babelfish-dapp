@@ -1,13 +1,10 @@
-import { SxProps } from '@mui/material';
 import { Control } from 'react-hook-form';
 
-export type ControlledDropdownProps = {
+export type ControlledInputProps = {
   name: string;
   label: string;
   placeholder: string;
   control: Control;
   defaultValue: string;
   disabled?: boolean;
-  options: any[];
-  sx?: SxProps;
 };

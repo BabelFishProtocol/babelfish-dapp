@@ -2,44 +2,55 @@ import React, { useState } from 'react';
 import { BigNumber, utils } from 'ethers';
 import { CurrencyInput } from '../CurrencyInput/CurrencyInput.component';
 import { ButtonPillGroup } from './ButtonPillGroup/ButtonPillGroup.component';
-import { InputButtonPillGroupProps } from './InputWithButtonPillGroup.types';
+import { InputWithButtonPillGroupProps } from './InputWithButtonPillGroup.types';
 import { availablePercentValues } from './InputWithButtonPillGroup.constants';
 
 export const InputWithButtonPillGroup = ({
-  title,
+  name,
+  label,
   symbol,
-  totalAmount,
-}: InputButtonPillGroupProps) => {
-  // WIP: Should move value outside of this component
-  const [value, setValue] = useState('0.00');
-  const [percentSelected, setPercentSelected] = useState<number>();
-  const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPercentSelected(undefined);
-    setValue(e.target.value);
+  disabled,
+  availableBalance,
+  value,
+  setValue,
+  onChange,
+}: InputWithButtonPillGroupProps) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPercentValue(undefined);
+    onChange(e);
   };
 
-  const onChangePercent = (percentValue: number) => {
-    setPercentSelected(percentValue);
-
-    const formattedValue = utils.formatUnits(
-      totalAmount.mul(BigNumber.from(percentValue)).div(BigNumber.from(100))
+  const [percentValue, setPercentValue] = useState<string>();
+  const handleButtonChange = (
+    e: React.MouseEvent<HTMLElement>,
+    newPercentValue: string
+  ) => {
+    if (!availableBalance) {
+      return;
+    }
+    const newValue = utils.formatUnits(
+      availableBalance
+        ?.mul(BigNumber.from(newPercentValue))
+        .div(BigNumber.from('100'))
     );
 
-    setValue(formattedValue);
+    setPercentValue(newPercentValue);
+    setValue(name, newValue);
   };
-
   return (
     <>
       <CurrencyInput
-        title={title}
+        label={label}
         value={value}
         symbol={symbol}
-        onChange={onChangeInput}
+        disabled={disabled}
+        onChange={handleInputChange}
       />
       <ButtonPillGroup
         availableValues={availablePercentValues}
-        selected={percentSelected}
-        onChangeSelected={onChangePercent}
+        disabled={disabled}
+        value={percentValue}
+        handleChange={handleButtonChange}
       />
     </>
   );

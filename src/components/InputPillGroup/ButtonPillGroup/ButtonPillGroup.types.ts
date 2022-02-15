@@ -1,11 +1,13 @@
+import { BigNumber } from "ethers";
+import React from "react";
+
 export type ButtonPillGroupProps = {
-  selected?: number;
   availableValues: number[];
-  onChangeSelected: (newValue: number) => void;
+  disabled?: boolean;
+  value?: string;
+  handleChange?: (e: React.MouseEvent<HTMLElement>, newPercentValue: string) 
 };
 
 export type ButtonPillProps = {
   value: number;
-  isSelected: boolean;
-  onClick: () => void;
 };

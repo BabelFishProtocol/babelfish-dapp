@@ -255,6 +255,37 @@ const components: Components<Theme> = {
       variant: 'outlined',
     },
   },
+  MuiToggleButtonGroup: {
+    styleOverrides: {
+      grouped: {
+        ':last-of-type, :not(:last-of-type)': {
+          borderRadius: '12px',
+          borderColor: palette.borderGrey.main,
+        },
+        ':not(:last-of-type).Mui-selected, :last-of-type.Mui-selected': {
+          borderColor: palette.primary.main,
+        },
+      },
+    },
+  },
+  MuiToggleButton: {
+    styleOverrides: {
+      sizeSmall: {
+        padding: '5px 0',
+        fontFamily: 'Comfortaa-Regular',
+        fontSize: '12px',
+        flexGrow: 1,
+        gap: '5px',
+
+        //   borderColor: isSelected ? palette.primary.main : palette.grey[600],
+        //   color: isSelected ? palette.primary.main : 'white',
+        //   backgroundColor: isSelected
+        //     ? alpha(palette.primary.main, 0.2)
+        //     : 'rgba(255,255,255, 0.2)',
+        // })}
+      },
+    },
+  },
 };
 
 const typography = createTypography(palette, {
@@ -283,8 +314,10 @@ const typography = createTypography(palette, {
     fontFamily: 'Comfortaa-Regular',
     fontSize: 24,
   },
-  subtitle1: {
-    fontSize: 16,
+  subtitle2: {
+    fontFamily: 'Comfortaa-Regular',
+    fontSize: 14,
+    color: palette.grey[500],
   },
   button: {
     fontFamily: 'Archive',
