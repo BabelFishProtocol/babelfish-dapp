@@ -12,6 +12,9 @@ export const stakingSlice = createSlice({
     selectStake: (state, { payload }: PayloadAction<number>) => {
       state.selectedStake = payload;
     },
+    clearSelectedStake: (state) => {
+      state.selectedStake = undefined;
+    },
   },
   extraReducers: (builder) => {
     // ----- page data -----
