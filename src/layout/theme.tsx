@@ -188,6 +188,7 @@ const components: Components<Theme> = {
       tooltip: {
         background: palette.background.default,
         maxWidth: 'unset',
+        fontSize: 14,
       },
       arrow: {
         color: palette.background.default,
@@ -235,23 +236,45 @@ const components: Components<Theme> = {
       },
     },
   },
+  MuiToggleButton: {
+    styleOverrides: {
+      root: {
+        fontFamily: 'Comfortaa-Regular',
+        fontWeight: 'bold',
+        // color: palette.primary.main,
+        // backgroundColor: 'rgba(255,255,255, 0.2)',
+        borderRadius: '8px !important', // !important needed to override all borderRadious from subclasses
+        // borderColor: alpha(palette.primary.main, 0.2),
+        // border: `1px solid ${alpha(palette.primary.main, 1)} !important`, // !important needed to override all border properties from subclasses
+        border: `1px solid ${palette.borderGrey.main} !important`, // !important needed to override all border properties from subclasses
+        '&.Mui-selected': {
+          border: `1px solid ${alpha(palette.primary.main, 1)} !important`, // !important needed to override all border properties from subclasses
+        },
+        '&.Mui-disabled': {
+          background: 'none',
+        },
+      },
+    },
+  },
   MuiDialog: {
     styleOverrides: {
       paper: {
         backgroundImage: palette.boxGradient,
         minHeight: '500px',
-        minWidth: '500px'
-      }
-    }
+        minWidth: '500px',
+        borderRadius: '8px',
+      },
+    },
   },
   MuiDialogTitle: {
     styleOverrides: {
       root: {
+        width: '100%',
         fontFamily: 'Archive',
         borderBottom: `1px solid ${palette.borderGrey.main}`,
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
       },
     },
   },
@@ -261,11 +284,12 @@ const components: Components<Theme> = {
         textAlign: 'center',
         display: 'flex',
         alignItems: 'center',
+        flexDirection: 'column',
         justifyContent: 'center',
         padding: '20px 30px',
-      }
-    }
-  }
+      },
+    },
+  },
 };
 
 const typography = createTypography(palette, {

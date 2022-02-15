@@ -8,6 +8,7 @@ export const ButtonPill = ({ value, isSelected, onClick }: ButtonPillProps) => (
       flexGrow: 1,
       py: 0.5,
       borderRadius: '12px',
+      maxWidth: 80,
       fontSize: '12px',
       borderStyle: 'solid',
       borderWidth: '1px',

@@ -1,12 +1,7 @@
-export type StakeListItem = {
-  asset: string;
-  lockedAmount: string;
-  votingPower: string;
-  votingDelegation: string;
-  stakingPeriod: string;
-  unlockDate: string;
-};
+import { StakeListItem } from '../../../store/staking/staking.state';
+import { FiniteStates } from '../../../utils/types';
 
 export type StakesListComponentProps = {
   stakes: StakeListItem[];
+  state: FiniteStates;
 };

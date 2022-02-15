@@ -7,9 +7,11 @@ import {
 import { DataTable } from '../../../components/DataTable/DataTable.component';
 import { TableAction } from '../../../components/TableActions/TableActions.types';
 import { TableActionsComponent } from '../../../components/TableActions/TableActions.component';
+import { formatTimestamp } from '../../../utils/helpers';
+import { StakeListItem } from '../../../store/staking/staking.state';
 
 import { VotingDelegationColumn } from '../Staking.columns';
-import { StakeListItem, StakesListComponentProps } from './StakesList.types';
+import { StakesListComponentProps } from './StakesList.types';
 
 const StakeActionColumn: CustomColumn = () => {
   const handleClick = () => {};
@@ -46,14 +48,22 @@ const stakesColumns: DataTableColumn<StakeListItem>[] = [
     component: VotingDelegationColumn,
   },
   { label: 'Staking Period', name: 'stakingPeriod' },
-  { label: 'Unlock Date', name: 'unlockDate' },
+  {
+    label: 'Unlock Date',
+    name: 'unlockDate',
+    format: formatTimestamp,
+  },
   { label: 'Actions', name: 'unlockDate', component: StakeActionColumn },
 ];
 
-export const StakesListComponent = ({ stakes }: StakesListComponentProps) => (
+export const StakesListComponent = ({
+  stakes,
+  state,
+}: StakesListComponentProps) => (
   <DataTable
     data={stakes}
     columns={stakesColumns}
+    isLoading={state === 'loading'}
     tableTitle="Current Stakes"
     containerSx={{ p: 1, minHeight: 250 }}
   />
