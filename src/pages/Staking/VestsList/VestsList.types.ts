@@ -1,4 +1,4 @@
-import { StakeListItem } from '../StakesList/StakesList.types';
+import { StakeListItem } from '../../../store/staking/staking.state';
 
 export type VestsListItem = StakeListItem & {
   stakingDate: string;

@@ -1,3 +1,5 @@
+import { CellParser } from '../components/DataTable/DataTable.types';
+
 export const prettyTx = (
   text: string,
   startLength: number = 6,
@@ -8,5 +10,10 @@ export const prettyTx = (
   return `${start} ... ${end}`;
 };
 
-export const timeStampToDate = (timestamp: number) =>
+export const timestampToDate = (timestamp: number) =>
   new Date(timestamp * 1000);
+
+export const formatDate = (date: Date) => date.toUTCString();
+
+export const formatTimestamp: CellParser = (timestamp) =>
+  formatDate(timestampToDate(Number(timestamp)));

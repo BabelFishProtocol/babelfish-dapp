@@ -1,9 +1,9 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { TWO_WEEKS } from '../../constants';
-import { timeStampToDate } from '../../utils/helpers';
+import { timestampToDate } from '../../utils/helpers';
 
 import { useDateSelector } from './DateSelector.hooks';
-import { DateForYear } from './DateSelector.types';
+import { CheckpointInfo } from './DateSelector.types';
 
 const currentTime = 1636585200; // 2021-11-11
 
@@ -32,9 +32,21 @@ describe('useDateSelector', () => {
     const { result } = renderHook(() => useDateSelector({ stakes, kickoffTs }));
 
     // should filter out current, previous and already used checkpoints
-    expect(result.current.availableDates).not.toContain(kickoffTs);
+    expect(result.current.availableDates).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          timestamp: kickoffTs,
+        } as CheckpointInfo),
+      ])
+    );
     stakes.forEach((stake) => {
-      expect(result.current.availableDates).not.toContain(stake);
+      expect(result.current.availableDates).not.toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            timestamp: stake,
+          } as CheckpointInfo),
+        ])
+      );
     });
 
     const someRandomStakesInTheFuture = [
@@ -45,7 +57,15 @@ describe('useDateSelector', () => {
 
     // stake checkpoints in the future should be available
     someRandomStakesInTheFuture.forEach((timestamp) => {
-      expect(result.current.availableDates).toContain(timestamp);
+      expect(result.current.availableDates).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            timestamp,
+            isPast: false,
+            isAlreadyUsed: false,
+          } as CheckpointInfo),
+        ])
+      );
     });
 
     expect(result.current.availableDatesForYear).toEqual({});
@@ -61,8 +81,8 @@ describe('useDateSelector', () => {
     expect(result.current.selectedYear).toBe(2022);
     const datesForSelectedYear = result.current.availableDatesForYear;
 
-    // available months list should not contain January ('0' month) because all checkpoint from this month already have stakes
     expect(Object.keys(datesForSelectedYear)).toEqual([
+      '0',
       '1',
       '2',
       '3',
@@ -76,13 +96,21 @@ describe('useDateSelector', () => {
       '11',
     ]);
 
-    const expectedAvailableCheckpointsFebuary: DateForYear[] = [
+    const expectedAvailableCheckpointsFebuary: CheckpointInfo[] = [
       {
-        date: timeStampToDate(1643846400), // 2022-02-03
+        date: timestampToDate(1643846400), // 2022-02-03
         timestamp: 1643846400,
         month: 1,
+        isAlreadyUsed: false,
+        isPast: false,
       },
-      // 2022-02-17 in in the stakes list
+      {
+        date: timestampToDate(1645056000),
+        isAlreadyUsed: true,
+        isPast: false,
+        month: 1,
+        timestamp: 1645056000,
+      },
     ];
 
     expect(datesForSelectedYear['1']).toEqual(

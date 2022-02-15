@@ -14,6 +14,7 @@ export const ButtonPillGroup = ({
       justifyContent: 'space-between',
       py: 1.5,
       gap: 0.5,
+      width: '100%',
     }}
   >
     {availableValues.map((value) => (

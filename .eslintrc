@@ -13,8 +13,9 @@
     "parser": "@typescript-eslint/parser"
   },
   "rules": {
-    "no-plusplus":"off",
+    "no-plusplus": "off",
     "no-undef": "off",
+    "no-param-reassign": "off",
     "react/react-in-jsx-scope": 0,
     "import/prefer-default-export": 0,
     "react/prop-types": "off",

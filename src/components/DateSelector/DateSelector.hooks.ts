@@ -12,14 +12,14 @@ export const useDateSelector = ({
 }: UseDateSelectorConfig) => {
   const [selectedYear, setSelectedYear] = useState<number>();
 
-  const availableDates = useMemo(
+  const { availableDates, dates } = useMemo(
     () => getAvailableDates({ stakes, kickoffTs }),
     [kickoffTs, stakes]
   );
 
   const availableDatesForYear = useMemo(
-    () => getDatesForYear(availableDates, selectedYear),
-    [availableDates, selectedYear]
+    () => getDatesForYear(dates, selectedYear),
+    [dates, selectedYear]
   );
 
   const availableYears = getAvailableYears(availableDates);

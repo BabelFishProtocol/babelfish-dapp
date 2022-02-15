@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
@@ -6,7 +7,12 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { monthNames } from '../../constants';
 
 import { useDateSelector } from './DateSelector.hooks';
-import { DateSelectorProps, DatesInMonthProps } from './DateSelector.types';
+import {
+  CheckpointInfo,
+  DateSelectorProps,
+  DatesInMonthProps,
+  ToggleButtonWithTooltipProps,
+} from './DateSelector.types';
 
 export const DateSelector = ({
   stakes,
@@ -30,9 +36,9 @@ export const DateSelector = ({
   };
 
   return (
-    <>
-      <Typography variant="h3" sx={{ my: 2 }}>
-        Select year:
+    <Box sx={{ width: '100%' }}>
+      <Typography variant="h3" sx={{ mb: 1.5, mt: 2 }}>
+        Select Date
       </Typography>
       <ToggleButtonGroup
         exclusive
@@ -42,61 +48,90 @@ export const DateSelector = ({
         sx={{ gap: 0.5 }}
       >
         {availableYears.map((year) => (
-          <ToggleButton key={year} value={year}>
+          <ToggleButton key={year} value={year} sx={{ px: 4, py: 1 }}>
             {year}
           </ToggleButton>
         ))}
       </ToggleButtonGroup>
 
-      {selectedYear && (
-        <>
-          <Typography variant="h3" sx={{ my: 2 }}>
-            Select date:
-          </Typography>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-start', gap: 0.5 }}>
-            {Object.entries(availableDatesForYear).map(([month, dates]) => (
-              <DatesInMonth
-                key={`${month}_${selectedYear}`}
-                dates={dates}
-                selectedDate={value}
-                monthNumber={Number(month)}
-                handleSelectDate={onChangeDate}
-              />
-            ))}
-          </Box>
-        </>
+      {!!selectedYear && (
+        <Box
+          sx={{
+            mt: 2,
+            gap: 0.5,
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'flex-start',
+          }}
+        >
+          {monthNames.map((monthName, index) => (
+            <DatesInMonth
+              key={`${index}_${selectedYear}`}
+              selectedDate={value}
+              monthName={monthName}
+              handleSelectDate={onChangeDate}
+              dates={availableDatesForYear[index]}
+            />
+          ))}
+        </Box>
       )}
-    </>
+    </Box>
   );
 };
 
 const DatesInMonth = ({
-  dates,
-  monthNumber,
+  dates = [],
+  monthName,
   selectedDate = 0,
   handleSelectDate,
 }: DatesInMonthProps) => (
-  <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+  <Box
+    sx={{
+      display: 'flex',
+      alignItems: 'center',
+      flexDirection: 'column',
+      width: '100%',
+    }}
+  >
     <Typography variant="body2" sx={{ mb: 0.5 }}>
-      {monthNames[Number(monthNumber)]}
+      {monthName}
     </Typography>
     <ToggleButtonGroup
       exclusive
       orientation="vertical"
       value={selectedDate}
       onChange={handleSelectDate}
-      sx={{ gap: 0.5 }}
+      sx={{ gap: 0.5, width: '100%' }}
     >
       {dates.map((dateInfo) => (
-        <ToggleButton
+        <ToggleButtonWithTooltip
           color="primary"
-          sx={{ width: 50 }}
+          dateInfo={dateInfo}
+          sx={{ width: '100%' }}
           key={dateInfo.timestamp}
           value={dateInfo.timestamp}
+          disabled={dateInfo.isPast || dateInfo.isAlreadyUsed}
         >
           {dateInfo.date.getDate()}
-        </ToggleButton>
+        </ToggleButtonWithTooltip>
       ))}
     </ToggleButtonGroup>
   </Box>
 );
+
+const ToggleButtonWithTooltip = ({
+  dateInfo,
+  ...buttonProps
+}: ToggleButtonWithTooltipProps) => (
+  <Tooltip title={getTooltipMessage(dateInfo)} placement="bottom" arrow>
+    <div>
+      <ToggleButton {...buttonProps} />
+    </div>
+  </Tooltip>
+);
+
+const getTooltipMessage = (dateInfo: CheckpointInfo) => {
+  if (dateInfo.isPast) return 'Cannot use past dates';
+  if (dateInfo.isAlreadyUsed) return 'You already have a stake on this date';
+  return '';
+};

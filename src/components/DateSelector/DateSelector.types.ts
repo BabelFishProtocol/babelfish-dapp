@@ -1,3 +1,4 @@
+import { ToggleButtonProps } from '@mui/material/ToggleButton';
 import { ToggleButtonGroupProps } from '@mui/material/ToggleButtonGroup';
 
 export type DatesFilterConfig = {
@@ -17,21 +18,27 @@ export type GetAvailableDatesConfig = Pick<
   'kickoffTs' | 'stakes'
 >;
 
-export type DateForYear = {
+export type CheckpointInfo = {
   month: number;
   timestamp: number;
   date: Date;
+  isAlreadyUsed: boolean;
+  isPast: boolean;
 };
 
 export type GroupedDates = {
-  [monthName: string]: DateForYear[];
+  [monthName: string]: CheckpointInfo[];
 };
 
 export type DateSelectorProps = DatesFilterConfig;
 
 export type DatesInMonthProps = {
-  dates: DateForYear[];
+  dates: CheckpointInfo[];
   handleSelectDate: ToggleButtonGroupProps['onChange'];
-  monthNumber: number;
+  monthName: string;
   selectedDate?: number;
+};
+
+export type ToggleButtonWithTooltipProps = ToggleButtonProps & {
+  dateInfo: CheckpointInfo;
 };

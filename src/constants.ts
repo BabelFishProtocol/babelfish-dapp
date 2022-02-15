@@ -15,6 +15,10 @@ export enum ProposalState {
   Executed = '7',
 }
 
+export enum Reducers {
+  Staking = 'staking',
+}
+
 export const MAX_STAKING_PERIODS = 78;
 export const TWO_WEEKS = 1209600;
 
