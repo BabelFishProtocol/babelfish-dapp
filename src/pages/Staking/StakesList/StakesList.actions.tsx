@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { stakingActions } from '../../../store/staking/staking.slice';
@@ -7,16 +6,13 @@ import { TableAction } from '../../../components/TableActions/TableActions.types
 import { CustomColumn } from '../../../components/DataTable/DataTable.types';
 import { TableActionsComponent } from '../../../components/TableActions/TableActions.component';
 
+import { useStakeModalForm } from './StakesList.hooks';
 import { ExtendStakeContainer } from './ExtendStake/ExtendStake.container';
 import { IncreaseStakeContainer } from './IncreaseStake/IncreaseStake.container';
 import { WithdrawStakeContainer } from './WithdrawStake/WithdrawStake.container';
 
 export const StakeActionColumn: CustomColumn = ({ value }) => {
   const dispatch = useDispatch();
-
-  const [showExtendForm, setShowExtendForm] = useState(false);
-  const [showIncreaseForm, setShowIncreaseForm] = useState(false);
-  const [showWithdrawForm, setShowWithdrawForm] = useState(false);
 
   const selectStake = () => {
     dispatch(stakingActions.selectStake(Number(value)));
@@ -25,23 +21,14 @@ export const StakeActionColumn: CustomColumn = ({ value }) => {
     dispatch(stakingActions.clearSelectedStake());
   };
 
-  const handeIncreaseStake = () => {
-    selectStake();
-    setShowIncreaseForm(true);
-  };
-  const handleCloseIncreaseStake = () => {
-    clearSelectedStake();
-    setShowIncreaseForm(false);
-  };
+  const [showIncreaseForm, handleOpenIncreaseForm, handleCloseIncreaseForm] =
+    useStakeModalForm(selectStake, clearSelectedStake);
 
-  const handleExtendStake = () => {
-    selectStake();
-    setShowExtendForm(true);
-  };
-  const handleCloseExtendStake = () => {
-    clearSelectedStake();
-    setShowExtendForm(false);
-  };
+  const [showExtendForm, handleOpenExtendForm, handleCloseExtendForm] =
+    useStakeModalForm(selectStake, clearSelectedStake);
+
+  const [showWithdrawForm, handleOpenWithdrawForm, handleCloseWithdrawForm] =
+    useStakeModalForm(selectStake, clearSelectedStake);
 
   const handleWithdrawStake = () => {
     selectStake();
@@ -55,15 +42,15 @@ export const StakeActionColumn: CustomColumn = ({ value }) => {
   const actions: TableAction[] = [
     {
       label: 'Increase',
-      onClick: handeIncreaseStake,
+      onClick: handleOpenIncreaseForm,
     },
     {
       label: 'Extend',
-      onClick: handleExtendStake,
+      onClick: handleOpenExtendForm,
     },
     {
       label: 'Unstake',
-      onClick: handleWithdrawStake,
+      onClick: handleOpenWithdrawForm,
     },
     {
       label: 'Delegate',
@@ -77,14 +64,14 @@ export const StakeActionColumn: CustomColumn = ({ value }) => {
 
       {showIncreaseForm && (
         <IncreaseStakeContainer
-          onClose={handleCloseIncreaseStake}
+          onClose={handleCloseIncreaseForm}
           open={showIncreaseForm}
         />
       )}
 
       {showExtendForm && (
         <ExtendStakeContainer
-          onClose={handleCloseExtendStake}
+          onClose={handleCloseExtendForm}
           open={showExtendForm}
         />
       )}

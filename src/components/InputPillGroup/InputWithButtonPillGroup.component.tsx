@@ -10,6 +10,7 @@ export const InputWithButtonPillGroup = ({
   title,
   symbol,
   totalAmount,
+  ...inputProps
 }: InputButtonPillGroupProps) => {
   // WIP: Should move value outside of this component
   const [value, setValue] = useState('0.00');
@@ -36,6 +37,7 @@ export const InputWithButtonPillGroup = ({
         value={value}
         symbol={symbol}
         onChange={onChangeInput}
+        {...inputProps}
       />
       <ButtonPillGroup
         availableValues={availablePercentValues}

@@ -1,4 +1,3 @@
-import Box from '@mui/material/Box';
 import InputAdornment from '@mui/material/InputAdornment';
 import { TextInput } from '../TextInput/TextInput.component';
 import { CurrencyInputProps } from './CurrencyInput.types';

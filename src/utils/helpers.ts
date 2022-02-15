@@ -1,3 +1,5 @@
+import { utils } from 'ethers';
+
 import { CellParser } from '../components/DataTable/DataTable.types';
 
 export const prettyTx = (
@@ -9,6 +11,8 @@ export const prettyTx = (
   const end = text.substr(-endLength);
   return `${start} ... ${end}`;
 };
+
+export const isRskAddress = (address: string) => utils.isAddress(address || '');
 
 export const timestampToDate = (timestamp: number) =>
   new Date(timestamp * 1000);

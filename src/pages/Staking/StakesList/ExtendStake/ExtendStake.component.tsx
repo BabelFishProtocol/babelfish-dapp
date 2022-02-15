@@ -30,11 +30,6 @@ export const ExtendStakeComponent = ({
       onClose={onClose}
       title="Extend Fish Stake"
       leftButton={<Button>Confirm</Button>}
-      rightButton={
-        <Button variant="outlined" onClick={onClose}>
-          Cancel
-        </Button>
-      }
     >
       <Typography>Previous Until: {formatTimestamp(prevDate)}</Typography>
 

@@ -1,6 +1,7 @@
 import { utils } from 'ethers';
 
 import { Button } from '../../../../components/Button/Button.component';
+import { TextInput } from '../../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../../components/DialogForm/DialogForm.component';
 import { CurrencyInput } from '../../../../components/CurrencyInput/CurrencyInput.component';
 import { InputWithButtonPillGroup } from '../../../../components/InputPillGroup/InputWithButtonPillGroup.component';
@@ -21,11 +22,6 @@ export const WithdrawStakeComponent = ({
     onClose={onClose}
     title="Unstake Fish"
     leftButton={<Button>Confirm</Button>}
-    rightButton={
-      <Button variant="outlined" onClick={onClose}>
-        Cancel
-      </Button>
-    }
   >
     <CurrencyInput
       disabled
@@ -35,14 +31,14 @@ export const WithdrawStakeComponent = ({
     />
 
     <InputWithButtonPillGroup
+      autoFocus
       symbol="FISH"
       title="Amount To Unstake"
       totalAmount={utils.parseUnits('2.234')}
     />
 
-    <CurrencyInput
+    <TextInput
       disabled
-      symbol=""
       value={`${forfeitPercent}% ≈  ${forfeitWithdraw} FISH`}
       title="Early Unstake Forfeit"
     />
