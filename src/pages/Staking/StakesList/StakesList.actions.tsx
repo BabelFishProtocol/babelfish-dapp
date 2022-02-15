@@ -10,6 +10,7 @@ import { useStakeModalForm } from './StakesList.hooks';
 import { ExtendStakeContainer } from './ExtendStake/ExtendStake.container';
 import { IncreaseStakeContainer } from './IncreaseStake/IncreaseStake.container';
 import { WithdrawStakeContainer } from './WithdrawStake/WithdrawStake.container';
+import { DelegateStakeContainer } from './DelegateStake/DelegateStake.container';
 
 export const StakeActionColumn: CustomColumn = ({ value }) => {
   const dispatch = useDispatch();
@@ -30,14 +31,8 @@ export const StakeActionColumn: CustomColumn = ({ value }) => {
   const [showWithdrawForm, handleOpenWithdrawForm, handleCloseWithdrawForm] =
     useStakeModalForm(selectStake, clearSelectedStake);
 
-  const handleWithdrawStake = () => {
-    selectStake();
-    setShowWithdrawForm(true);
-  };
-  const handleCloseWithdrawForm = () => {
-    clearSelectedStake();
-    setShowWithdrawForm(false);
-  };
+  const [showDelegateForm, handleOpenDelegateForm, handleCloseDelegateForm] =
+    useStakeModalForm(selectStake, clearSelectedStake);
 
   const actions: TableAction[] = [
     {
@@ -54,7 +49,7 @@ export const StakeActionColumn: CustomColumn = ({ value }) => {
     },
     {
       label: 'Delegate',
-      onClick: selectStake,
+      onClick: handleOpenDelegateForm,
     },
   ];
 
@@ -80,6 +75,13 @@ export const StakeActionColumn: CustomColumn = ({ value }) => {
         <WithdrawStakeContainer
           onClose={handleCloseWithdrawForm}
           open={showWithdrawForm}
+        />
+      )}
+
+      {showDelegateForm && (
+        <DelegateStakeContainer
+          onClose={handleCloseDelegateForm}
+          open={showDelegateForm}
         />
       )}
     </>
