@@ -244,6 +244,17 @@ const components: Components<Theme> = {
       },
     },
   },
+  MuiPaper: {
+    styleOverrides: {
+      outlined: {
+        background: 'none',
+      },
+    },
+    defaultProps: {
+      square: true,
+      variant: 'outlined',
+    },
+  },
 };
 
 const typography = createTypography(palette, {

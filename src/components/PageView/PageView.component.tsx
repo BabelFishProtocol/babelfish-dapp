@@ -38,6 +38,7 @@ export const PageView = ({
         p: { xs: 0 },
         maxWidth: { xs: 1300 },
         width: '90%',
+        height: '100%',
       }}
     >
       <PageHeaderContainer>{title}</PageHeaderContainer>

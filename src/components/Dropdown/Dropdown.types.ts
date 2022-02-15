@@ -1,3 +1,5 @@
+import { SelectChangeEvent } from '@mui/material';
+
 export type DropdownOption = {
   id: string;
   name: string;
@@ -5,10 +7,9 @@ export type DropdownOption = {
 };
 
 export type DropdownProps<ItemSelected> = {
-  label: string;
+  value: Element;
+  onChange: (e: SelectChangeEvent<Element>) => void;
   options: ItemSelected[];
   placeholder?: string;
   disabled?: boolean;
-  itemSelectedId?: string;
-  setItemSelected: (newValue: string) => void;
 };
