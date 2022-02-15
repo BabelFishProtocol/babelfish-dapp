@@ -5,10 +5,14 @@
  * https://jestjs.io/docs/configuration
  */
 
-export default {
-  clearMocks: true,
-  preset: 'ts-jest',
-  testEnvironment: 'jsdom',
-  collectCoverage: true,
-  coverageDirectory: 'coverage',
+export default () => {
+  process.env.TZ = 'UTC';
+
+  return {
+    clearMocks: true,
+    preset: 'ts-jest',
+    testEnvironment: 'jsdom',
+    collectCoverage: true,
+    coverageDirectory: 'coverage',
+  };
 };

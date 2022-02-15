@@ -26,8 +26,8 @@ describe('DateSelector utils', () => {
     {
       // 01.01.2021
       month: 0,
-      timestamp: 1609455600,
-      date: timestampToDate(1609455600),
+      timestamp: 1609555600,
+      date: timestampToDate(1609555600),
       isPast: false,
       isAlreadyUsed: false,
     },
