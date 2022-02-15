@@ -19,13 +19,14 @@ export const DateSelector = ({
   value,
   onChange,
   kickoffTs,
+  prevDate,
 }: DateSelectorProps) => {
   const {
     selectedYear,
     availableYears,
     setSelectedYear,
     availableDatesForYear,
-  } = useDateSelector({ stakes, kickoffTs });
+  } = useDateSelector({ stakes, kickoffTs, prevDate });
 
   const onChangeDate = (_: React.MouseEvent, val: string) => {
     onChange(Number(val));
@@ -110,7 +111,11 @@ const DatesInMonth = ({
           sx={{ width: '100%' }}
           key={dateInfo.timestamp}
           value={dateInfo.timestamp}
-          disabled={dateInfo.isPast || dateInfo.isAlreadyUsed}
+          disabled={
+            dateInfo.isPast ||
+            dateInfo.isAlreadyUsed ||
+            dateInfo.isBeforePrevDate
+          }
         >
           {dateInfo.date.getDate()}
         </ToggleButtonWithTooltip>
@@ -131,6 +136,8 @@ const ToggleButtonWithTooltip = ({
 );
 
 const getTooltipMessage = (dateInfo: CheckpointInfo) => {
+  if (dateInfo.isBeforePrevDate)
+    return 'Cannot use dates prior to current stake';
   if (dateInfo.isPast) return 'Cannot use past dates';
   if (dateInfo.isAlreadyUsed) return 'You already have a stake on this date';
   return '';

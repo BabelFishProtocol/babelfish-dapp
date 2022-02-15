@@ -103,6 +103,7 @@ describe('useDateSelector', () => {
         month: 1,
         isAlreadyUsed: false,
         isPast: false,
+        isBeforePrevDate: false,
       },
       {
         date: timestampToDate(1645056000),
@@ -110,6 +111,7 @@ describe('useDateSelector', () => {
         isPast: false,
         month: 1,
         timestamp: 1645056000,
+        isBeforePrevDate: false,
       },
     ];
 
