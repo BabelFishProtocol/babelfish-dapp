@@ -37,7 +37,7 @@ export const DateSelector = ({
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Typography variant="h3" sx={{ mb: 1.5, mt: 2 }}>
+      <Typography variant="h3" sx={{ mb: 1.5 }}>
         Select Date
       </Typography>
       <ToggleButtonGroup

@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box';
 import InputAdornment from '@mui/material/InputAdornment';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Typography from '@mui/material/Typography';
@@ -11,7 +12,7 @@ export const CurrencyInput = ({
   labelSx,
   ...inputProps
 }: CurrencyInputProps) => (
-  <>
+  <Box sx={{ width: '100%' }}>
     <Typography variant="h3" sx={{ mb: 1.5, ...labelSx }}>
       {title}
     </Typography>
@@ -22,5 +23,5 @@ export const CurrencyInput = ({
       onChange={onChange}
       {...inputProps}
     />
-  </>
+  </Box>
 );
