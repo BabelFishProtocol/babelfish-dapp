@@ -99,7 +99,7 @@ export const AgregatorComponent = () => {
 
           <ControlledInputWithButtonPillGroup
             name={AggregatorInputs.SendAmount}
-            label="Deposit amount"
+            title="Deposit amount"
             symbol="USDT"
             defaultValue=""
             disabled={!availableBalance}

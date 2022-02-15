@@ -1,6 +1,6 @@
 import { SelectChangeEvent } from '@mui/material';
 
-export type DropdownOption = {
+export type DropdownOptionType = {
   id: string;
   name: string;
   icon: string;

@@ -1,5 +1,5 @@
-name: run-check-types
-on: ["push"]
+name: run-lint
+on: ['push']
 jobs:
   check-bats-version:
     runs-on: ubuntu-latest

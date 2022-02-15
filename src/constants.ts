@@ -22,3 +22,25 @@ export enum AggregatorInputs {
   SendAmount = 'SendAmount',
   ReceiveAddress = 'ReceiveAddress',
 }
+
+export enum Reducers {
+  Staking = 'staking',
+}
+
+export const MAX_STAKING_PERIODS = 78;
+export const TWO_WEEKS = 1209600;
+
+export const monthNames = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sept',
+  'Oct',
+  'Nov',
+  'Dec',
+];

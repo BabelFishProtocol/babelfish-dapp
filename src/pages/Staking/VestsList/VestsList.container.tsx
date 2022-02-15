@@ -9,7 +9,7 @@ const mockVests: VestsListItem[] = [
     votingDelegation: 'No Delegate',
     stakingPeriod: '373 days',
     stakingDate: '12/01/2022 - 9:31:19 am GMT',
-    unlockDate: '30/11/2021 - 9:31:19 pm GMT',
+    unlockDate: 1659571200,
   },
   {
     asset: 'FISH',
@@ -18,7 +18,7 @@ const mockVests: VestsListItem[] = [
     votingDelegation: '0x94e907f6B903A393E14FE549113137CA6483b5ef',
     stakingPeriod: 'Expired',
     stakingDate: '12/01/2022 - 9:31:19 am GMT',
-    unlockDate: '30/11/2021 - 9:31:19 pm GMT',
+    unlockDate: 1639008000,
   },
 ];
 

@@ -1,23 +1,20 @@
 import InputAdornment from '@mui/material/InputAdornment';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import Typography from '@mui/material/Typography';
+import { TextInput } from '../TextInput/TextInput.component';
 import { CurrencyInputProps } from './CurrencyInput.types';
 
 export const CurrencyInput = ({
-  label,
+  title,
   symbol,
   value,
   disabled,
   onChange,
+  ...inputProps
 }: CurrencyInputProps) => (
-  <>
-    <Typography variant="h3">{label}</Typography>
-    <OutlinedInput
-      fullWidth
-      endAdornment={<InputAdornment position="end">{symbol}</InputAdornment>}
-      value={value}
-      disabled={disabled}
-      onChange={onChange}
-    />
-  </>
+  <TextInput
+    title={title}
+    value={value}
+    onChange={onChange}
+    endAdornment={<InputAdornment position="end">{symbol}</InputAdornment>}
+    {...inputProps}
+  />
 );

@@ -4,11 +4,11 @@ import { FieldValues, SetFieldValue } from 'react-hook-form';
 
 export type InputWithButtonPillGroupProps = {
   name: string;
-  label?: string;
+  title?: string;
   symbol: string;
   disabled?: boolean;
   availableBalance?: BigNumber;
   value: string;
   setValue: SetFieldValue<FieldValues>;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>)
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };

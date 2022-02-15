@@ -1,10 +1,10 @@
 import React from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import { DropdownOption, DropdownProps } from './Dropdown.types';
+import { DropdownOptionType, DropdownProps } from './Dropdown.types';
 import { NameWithIcon } from '../NameWithIcon/NameWithIcon.component';
 
-export const DropdownOptions = <ItemSelected extends DropdownOption>({
+export const DropdownOptions = <ItemSelected extends DropdownOptionType>({
   options,
   value,
   placeholder,
