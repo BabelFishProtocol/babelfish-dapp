@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BigNumber, utils } from 'ethers';
+import Box from '@mui/material/Box';
 import { CurrencyInput } from '../CurrencyInput/CurrencyInput.component';
 import { ButtonPillGroup } from './ButtonPillGroup/ButtonPillGroup.component';
 import { InputWithButtonPillGroupProps } from './InputWithButtonPillGroup.types';
@@ -38,7 +39,7 @@ export const InputWithButtonPillGroup = ({
     setValue(name, newValue);
   };
   return (
-    <>
+    <Box sx={{ width: '100%' }}>
       <CurrencyInput
         label={label}
         value={value}
@@ -52,6 +53,6 @@ export const InputWithButtonPillGroup = ({
         value={percentValue}
         handleChange={handleButtonChange}
       />
-    </>
+    </Box>
   );
 };
