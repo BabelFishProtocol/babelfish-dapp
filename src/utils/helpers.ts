@@ -13,7 +13,12 @@ export const prettyTx = (
 export const timestampToDate = (timestamp: number) =>
   new Date(timestamp * 1000);
 
-export const formatDate = (date: Date) => date.toUTCString();
+export const formatDateUTC = (date: Date) => date.toUTCString();
+
+export const formatDate = (date: Date) => date.toLocaleDateString();
 
 export const formatTimestamp: CellParser = (timestamp) =>
-  formatDate(timestampToDate(Number(timestamp)));
+  timestamp ? formatDate(timestampToDate(Number(timestamp))) : '';
+
+export const formatTimestampToUTC: CellParser = (timestamp) =>
+  timestamp ? formatDateUTC(timestampToDate(Number(timestamp))) : '';
