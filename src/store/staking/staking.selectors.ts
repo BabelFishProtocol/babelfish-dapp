@@ -9,7 +9,7 @@ const stakingPageDataSelector = createSelector(
   (state) => state.pageData.data
 );
 
-export const kichoffTsSelector = createSelector(
+export const kickoffTsSelector = createSelector(
   stakingPageDataSelector,
   (state) => state.kickoffTs
 );
