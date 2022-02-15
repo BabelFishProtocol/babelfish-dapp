@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { utils } from 'ethers';
 
 import { Button } from '../../../components/Button/Button.component';
+import { TextInput } from '../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../components/DialogForm/DialogForm.component';
 import { DateSelector } from '../../../components/DateSelector/DateSelector.component';
-import { CurrencyInput } from '../../../components/CurrencyInput/CurrencyInput.component';
 import { InputWithButtonPillGroup } from '../../../components/InputPillGroup/InputWithButtonPillGroup.component';
 
 import { AddNewStakeComponentProps } from './AddStakeForm.types';
@@ -45,12 +45,7 @@ export const AddNewStakeComponent = ({
         onChange={setUnlockDate}
       />
 
-      <CurrencyInput
-        disabled
-        symbol=""
-        value={votingPower}
-        title="Voting Power received"
-      />
+      <TextInput disabled value={votingPower} title="Voting Power received" />
     </DialogForm>
   );
 };
