@@ -6,7 +6,7 @@ import { StakeListItem } from '../../../store/staking/staking.state';
 import { DataTable } from '../../../components/DataTable/DataTable.component';
 import { DataTableColumn } from '../../../components/DataTable/DataTable.types';
 
-import { StakeActionColumn } from './StakeList.actions';
+import { StakeActionColumn } from './StakesList.actions';
 import { VotingDelegationColumn } from '../Staking.columns';
 import { StakesListComponentProps } from './StakesList.types';
 

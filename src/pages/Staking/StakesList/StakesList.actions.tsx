@@ -9,11 +9,14 @@ import { TableActionsComponent } from '../../../components/TableActions/TableAct
 
 import { ExtendStakeContainer } from './ExtendStake/ExtendStake.container';
 import { IncreaseStakeContainer } from './IncreaseStake/IncreaseStake.container';
+import { WithdrawStakeContainer } from './WithdrawStake/WithdrawStake.container';
 
 export const StakeActionColumn: CustomColumn = ({ value }) => {
   const dispatch = useDispatch();
-  const [showIncreaseForm, setShowIncreaseForm] = useState(false);
+
   const [showExtendForm, setShowExtendForm] = useState(false);
+  const [showIncreaseForm, setShowIncreaseForm] = useState(false);
+  const [showWithdrawForm, setShowWithdrawForm] = useState(false);
 
   const selectStake = () => {
     dispatch(stakingActions.selectStake(Number(value)));
@@ -40,6 +43,15 @@ export const StakeActionColumn: CustomColumn = ({ value }) => {
     setShowExtendForm(false);
   };
 
+  const handleWithdrawStake = () => {
+    selectStake();
+    setShowWithdrawForm(true);
+  };
+  const handleCloseWithdrawForm = () => {
+    clearSelectedStake();
+    setShowWithdrawForm(false);
+  };
+
   const actions: TableAction[] = [
     {
       label: 'Increase',
@@ -51,7 +63,7 @@ export const StakeActionColumn: CustomColumn = ({ value }) => {
     },
     {
       label: 'Unstake',
-      onClick: selectStake,
+      onClick: handleWithdrawStake,
     },
     {
       label: 'Delegate',
@@ -74,6 +86,13 @@ export const StakeActionColumn: CustomColumn = ({ value }) => {
         <ExtendStakeContainer
           onClose={handleCloseExtendStake}
           open={showExtendForm}
+        />
+      )}
+
+      {showWithdrawForm && (
+        <WithdrawStakeContainer
+          onClose={handleCloseWithdrawForm}
+          open={showWithdrawForm}
         />
       )}
     </>
