@@ -8,6 +8,7 @@ import { TableActionsComponent } from '../../../components/TableActions/TableAct
 
 import { useStakeModalForm } from '../Staking.hooks';
 import { DelegateVestContainer } from './DelegateVest/DelegateVest.container';
+import { WithdrawVestContainer } from './WithdrawVest/WithdrawVest.container';
 
 export const VestsActionColumn: CustomColumn = ({ value }) => {
   const dispatch = useDispatch();
@@ -22,10 +23,17 @@ export const VestsActionColumn: CustomColumn = ({ value }) => {
   const [showDelegateForm, handleOpenDelegateForm, handleCloseDelegateForm] =
     useStakeModalForm(selectVest, clearSelectedVest);
 
+  const [showWithdrawForm, handleOpenWithdrawForm, handleCloseWithdrawForm] =
+    useStakeModalForm(selectVest, clearSelectedVest);
+
   const actions: TableAction[] = [
     {
       label: 'Delegate',
       onClick: handleOpenDelegateForm,
+    },
+    {
+      label: 'Withdraw',
+      onClick: handleOpenWithdrawForm,
     },
   ];
 
@@ -37,6 +45,13 @@ export const VestsActionColumn: CustomColumn = ({ value }) => {
         <DelegateVestContainer
           onClose={handleCloseDelegateForm}
           open={showDelegateForm}
+        />
+      )}
+
+      {showWithdrawForm && (
+        <WithdrawVestContainer
+          onClose={handleCloseWithdrawForm}
+          open={showWithdrawForm}
         />
       )}
     </>
