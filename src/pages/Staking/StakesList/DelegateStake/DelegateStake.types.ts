@@ -7,4 +7,6 @@ export type DelegateStakeContainerProps = Pick<
 
 export type DelegateStakeComponentProps = DelegateStakeContainerProps & {
   txFee: string;
+  account: string;
+  currentDelegate: string;
 };

@@ -6,6 +6,7 @@ import { DelegateStakeComponent } from './DelegateStake.component';
 import { DelegateStakeContainerProps } from './DelegateStake.types';
 
 const mockTxFee = '0.00012';
+const mockAccount = '0x0000000000000000000000000000000000000000';
 
 export const DelegateStakeContainer = ({
   open,
@@ -18,6 +19,12 @@ export const DelegateStakeContainer = ({
   }
 
   return (
-    <DelegateStakeComponent open={open} onClose={onClose} txFee={mockTxFee} />
+    <DelegateStakeComponent
+      open={open}
+      txFee={mockTxFee}
+      onClose={onClose}
+      account={mockAccount}
+      currentDelegate={selectedStakeData.votingDelegation}
+    />
   );
 };
