@@ -1,7 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
 import { StakingState } from './staking.state';
-import { fetchStakesListThunk, initStakePageThunk } from './staking.thunks';
+import {
+  fetchStakesListThunk,
+  fetchVestsListThunk,
+  initStakePageThunk,
+} from './staking.thunks';
 
 const initialState = { ...new StakingState() };
 
@@ -14,6 +18,12 @@ export const stakingSlice = createSlice({
     },
     clearSelectedStake: (state) => {
       state.selectedStake = undefined;
+    },
+    selectVest: (state, { payload }: PayloadAction<number>) => {
+      state.selectedVest = payload;
+    },
+    clearSelectedVest: (state) => {
+      state.selectedVest = undefined;
     },
   },
   extraReducers: (builder) => {
@@ -39,6 +49,18 @@ export const stakingSlice = createSlice({
     builder.addCase(fetchStakesListThunk.fulfilled, (state, { payload }) => {
       state.stakesList.state = 'success';
       state.stakesList.data = payload;
+    });
+
+    // ----- vests list -----
+    builder.addCase(fetchVestsListThunk.pending, (state) => {
+      state.vestsList.state = 'loading';
+    });
+    builder.addCase(fetchVestsListThunk.rejected, (state) => {
+      state.vestsList.state = 'failure';
+    });
+    builder.addCase(fetchVestsListThunk.fulfilled, (state, { payload }) => {
+      state.vestsList.state = 'success';
+      state.vestsList.data = payload;
     });
   },
 });
