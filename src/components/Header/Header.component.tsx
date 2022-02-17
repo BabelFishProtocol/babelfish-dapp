@@ -10,19 +10,21 @@ export const Header = () => (
   <Box
     component="header"
     sx={{
-      margin: '50px 66px 50px 100px',
+      margin: ({ spacing }) => spacing(7, 8, 7, 12),
       display: 'flex',
       justifyContent: 'space-between',
     }}
   >
     <Logo />
     <Box component="nav" sx={{ display: 'flex', alignItems: 'center' }}>
-      <Button sx={{ padding: '15px 20px' }}>Connect Wallet</Button>
+      <Button sx={{ padding: ({ spacing }) => spacing(2, 2.5) }}>
+        Connect Wallet
+      </Button>
       <IconButton
         sx={{
           height: '100%',
-          marginLeft: '20px',
-          px: '15px',
+          marginLeft: 2.5,
+          px: 2,
           borderRadius: '8px',
         }}
       >

@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from '@mui/material/styles';
+import styled from '@mui/material/styles/styled';
 import Container from '@mui/material/Container';
 import Box, { BoxProps } from '@mui/material/Box';
 import { PageViewProps } from './PageView.types';
