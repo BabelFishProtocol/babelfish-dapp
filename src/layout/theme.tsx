@@ -287,7 +287,7 @@ const components: Components<Theme> = {
         flexDirection: 'column',
         justifyContent: 'center',
         padding: '30px',
-        paddingTop: '30px !important'
+        paddingTop: '30px !important',
       },
     },
   },
