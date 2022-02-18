@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { WalletConnectWrapper } from '../../components/WalletConnectWrapper/WalletConnecWrapper.component';
+
 import { initStakePageThunk } from '../../store/staking/staking.thunks';
 import { LoadableAmount } from '../../utils/types';
 import { StakingComponent } from './Staking.component';
@@ -25,7 +27,7 @@ const mockRewards: RewardBlockProps[] = [
   { amount: '0.0000', asset: 'FISH', usdAmount: '0.0000' },
 ];
 
-export const StakingContainer = () => {
+const Container = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -41,3 +43,9 @@ export const StakingContainer = () => {
     />
   );
 };
+
+export const StakingContainer = () => (
+  <WalletConnectWrapper>
+    <Container />
+  </WalletConnectWrapper>
+);

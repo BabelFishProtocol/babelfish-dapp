@@ -7,7 +7,6 @@ import errorIcon from './assets/icons/error.svg';
 import { AppDialog } from './components/AppDialog/AppDialog.component';
 import { Header } from './components/Header/Header.component';
 import { InputWithButtonPillGroup } from './components/InputPillGroup/InputWithButtonPillGroup.component';
-import { WalletDropdown } from './components/WalletDropdown/WalletDropdown';
 import { Urls } from './constants';
 import { DashboardContainer } from './pages/Dashboard/Dashboard.container';
 import { ProposalDetailsContainer } from './pages/ProposalDetails/ProposalDetails.container';
@@ -99,7 +98,6 @@ function App() {
                 value={selectedDate}
                 onChange={setSelectedDate}
               />
-              <WalletDropdown />
             </>
           }
         />
