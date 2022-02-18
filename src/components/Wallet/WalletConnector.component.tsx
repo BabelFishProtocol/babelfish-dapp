@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useWeb3React } from '@web3-react/core';
 
 import { wallets } from '../../config/wallets';
+import { useActiveWeb3React } from '../../hooks/useActiveWeb3React';
 
 import { WalletDropdown } from './WalletDropdown/WalletDropdown';
 import { SelectedWallet } from './SelectedWallet/SelectedWallet.component';
@@ -12,7 +12,7 @@ const isProperWallet = (
 
 export const WalletConnector = () => {
   const [connectedWallet, setConnectedWallet] = useState<number>();
-  const { active, account, deactivate } = useWeb3React();
+  const { active, account, deactivate, activate } = useActiveWeb3React();
 
   const onDissconnect = () => {
     deactivate();
@@ -34,6 +34,10 @@ export const WalletConnector = () => {
   }
 
   return (
-    <WalletDropdown wallets={wallets} setConnectedWallet={setConnectedWallet} />
+    <WalletDropdown
+      wallets={wallets}
+      activate={activate}
+      setConnectedWallet={setConnectedWallet}
+    />
   );
 };

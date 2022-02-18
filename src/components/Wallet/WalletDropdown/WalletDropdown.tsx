@@ -5,17 +5,15 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
 
-import { useActiveWeb3React } from '../../../hooks/useActiveWeb3React';
-
 import { Button } from '../../Button/Button.component';
 import { WalletIcon } from '../WalletIcon/WalletIcon.component';
 import { WalletDropdownProps, WalletOptionProps } from './WalletDropdown.types';
 
 export const WalletDropdown = ({
   wallets,
+  activate,
   setConnectedWallet,
 }: WalletDropdownProps) => {
-  const { activate } = useActiveWeb3React();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const open = Boolean(anchorEl);
