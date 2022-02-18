@@ -261,7 +261,7 @@ const components: Components<Theme> = {
       paper: {
         backgroundImage: palette.boxGradient,
         minHeight: '500px',
-        minWidth: '500px',
+        width: '500px',
         borderRadius: '8px',
       },
     },
@@ -286,7 +286,8 @@ const components: Components<Theme> = {
         alignItems: 'center',
         flexDirection: 'column',
         justifyContent: 'center',
-        padding: '20px 30px',
+        padding: '30px',
+        paddingTop: '30px !important'
       },
     },
   },
