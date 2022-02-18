@@ -1,6 +1,6 @@
 import { WalletConfig } from '../../../config/wallets';
 
-export type WalletOptionProps = Omit<WalletConfig, 'connector'> & {
+export type WalletOptionProps = Pick<WalletConfig, 'name' | 'icon'> & {
   walletId: number;
   tryActivation: (walletId: number) => Promise<void>;
 };

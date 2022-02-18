@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-// import Portis from '@portis/web3';
 import { useWeb3React } from '@web3-react/core';
 
 import Menu from '@mui/material/Menu';
@@ -10,7 +9,6 @@ import { alpha } from '@mui/material/styles';
 import { Button } from '../../Button/Button.component';
 import { WalletIcon } from '../WalletIcon/WalletIcon.component';
 import { WalletDropdownProps, WalletOptionProps } from './WalletDropdown.types';
-import { checkWalletConnection } from '../../../config/wallets';
 
 export const WalletDropdown = ({
   wallets,
@@ -30,9 +28,9 @@ export const WalletDropdown = ({
   }, []);
 
   const tryActivation = async (walletId: number) => {
-    const { connector, name } = wallets[walletId];
+    const { connector, checkConnection } = wallets[walletId];
 
-    checkWalletConnection(name);
+    checkConnection();
 
     if (connector) {
       try {

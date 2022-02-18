@@ -15,6 +15,7 @@ export type WalletConfig = {
   name: SupportedWallets;
   icon: string;
   connector: AbstractConnector;
+  checkConnection: () => void;
 };
 
 export const wallets: WalletConfig[] = [
@@ -22,57 +23,43 @@ export const wallets: WalletConfig[] = [
     name: 'Metamask',
     icon: metamaskIcon,
     connector: injectedProvider,
+    checkConnection: () => {
+      if (!ethereum || !ethereum.isMetaMask) {
+        throw new Error(
+          '🦊 You must install Metamask into your browser: https://metamask.io/download.html and make sure it is set as the default wallet.'
+        );
+      }
+    },
   },
   {
     name: 'Nifty',
     icon: niftyIcon,
     connector: injectedProvider,
+    checkConnection: () => {
+      if (!ethereum || !ethereum.isNiftyWallet) {
+        throw new Error(
+          '👛 You must install Nifty into your browser: https://bit.ly/3k1lBqP and make sure it is set as the default wallet.'
+        );
+      }
+    },
   },
   {
     name: 'Liquality',
     icon: liqualityIcon,
     connector: injectedProvider,
+    checkConnection: () => {
+      if (!ethereum || !ethereum.isLiquality) {
+        throw new Error(
+          '🔵🟣 You must install Liquality into your browser: https://liquality.io/wallet.html and make sure it is set as the default wallet.'
+        );
+      }
+    },
   },
   {
     name: 'Portis',
     icon: portisIcon,
     // connector: providerProvider, // TODO: fix portis errors
     connector: injectedProvider,
+    checkConnection: () => {},
   },
 ];
-
-export const checkWalletConnection = (name: SupportedWallets) => {
-  switch (name) {
-    case 'Metamask': {
-      if (!ethereum || !ethereum.isMetaMask) {
-        throw new Error(
-          '🦊 You must install Metamask into your browser: https://metamask.io/download.html and make sure it is set as the default wallet.'
-        );
-      }
-      break;
-    }
-    case 'Nifty': {
-      if (!ethereum || !ethereum.isNiftyWallet) {
-        throw new Error(
-          '👛 You must install Nifty into your browser: https://bit.ly/3k1lBqP and make sure it is set as the default wallet.'
-        );
-      }
-      break;
-    }
-    case 'Liquality': {
-      if (!ethereum || !ethereum.isLiquality) {
-        throw new Error(
-          '🔵🟣 You must install Liquality into your browser: https://liquality.io/wallet.html and make sure it is set as the default wallet.'
-        );
-      }
-      break;
-    }
-    case 'Portis': {
-      break;
-    }
-
-    default: {
-      throw new Error('Wallet not supported');
-    }
-  }
-};
