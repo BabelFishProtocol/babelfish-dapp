@@ -6,23 +6,23 @@ import { StakingComponent } from './Staking.component';
 import { RewardBlockProps } from './Staking.types';
 
 const mockFishStaked: LoadableAmount = {
-  amount: '9,552.8567',
+  amount: '9552856700000000000000',
   isLoading: false,
 };
 
 const mockTotalRewards: LoadableAmount = {
-  amount: '2000.0000',
+  amount: '2000000000000000000000',
   isLoading: false,
 };
 
 const mockVotingPower: LoadableAmount = {
-  amount: '0.0000',
+  amount: '1023000000000000000',
   isLoading: false,
 };
 
 const mockRewards: RewardBlockProps[] = [
-  { amount: '0.0000', asset: 'XUSD', usdAmount: '0.0000' },
-  { amount: '0.0000', asset: 'FISH', usdAmount: '0.0000' },
+  { amount: '0', asset: 'XUSD', usdAmount: '0.00' },
+  { amount: '0', asset: 'FISH', usdAmount: '0.00' },
 ];
 
 export const StakingContainer = () => {

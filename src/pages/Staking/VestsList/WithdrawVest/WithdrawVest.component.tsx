@@ -31,7 +31,6 @@ export const WithdrawVestComponent = ({
       <TextInput
         title="Receive FISH At"
         value={recipient}
-        defaultValue={delegate}
         onChange={onRecipientChange}
         placeholder="Enter or place address"
       />

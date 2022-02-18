@@ -7,7 +7,11 @@ import { DataTable } from '../../../components/DataTable/DataTable.component';
 import { DataTableColumn } from '../../../components/DataTable/DataTable.types';
 
 import { StakeActionColumn } from './StakesList.actions';
-import { VotingDelegationColumn } from '../Staking.columns';
+import {
+  formatStakingPeriod,
+  getAmountColumn,
+  VotingDelegationColumn,
+} from '../Staking.columns';
 import { StakesListComponentProps } from './StakesList.types';
 
 const stakesColumns: DataTableColumn<StakeListItem>[] = [
@@ -15,15 +19,19 @@ const stakesColumns: DataTableColumn<StakeListItem>[] = [
   {
     label: 'Locked Amount',
     name: 'lockedAmount',
-    format: (val) => `${val} FISH`,
+    component: getAmountColumn('lockedAmount'),
   },
-  { label: 'Voting Power', name: 'votingPower' },
+  // { label: 'Voting Power', name: 'votingPower' },
   {
     label: 'Voting Delegation Power',
     name: 'votingDelegation',
     component: VotingDelegationColumn,
   },
-  { label: 'Staking Period', name: 'stakingPeriod' },
+  {
+    label: 'Staking Period',
+    name: 'unlockDate',
+    format: formatStakingPeriod,
+  },
   {
     label: 'Unlock Date',
     name: 'unlockDate',

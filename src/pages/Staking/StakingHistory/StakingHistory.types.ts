@@ -1,7 +1,7 @@
 export type StakingHistoryListItem = {
   asset: string;
   stakedAmount: string;
-  stakingDate: string;
+  stakingDate: number;
   totalStaked: string;
 };
 
