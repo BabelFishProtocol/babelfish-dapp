@@ -1,10 +1,11 @@
 import { useCallback, useState } from 'react';
-import { useWeb3React } from '@web3-react/core';
 
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
+
+import { useActiveWeb3React } from '../../../hooks/useActiveWeb3React';
 
 import { Button } from '../../Button/Button.component';
 import { WalletIcon } from '../WalletIcon/WalletIcon.component';
@@ -14,7 +15,7 @@ export const WalletDropdown = ({
   wallets,
   setConnectedWallet,
 }: WalletDropdownProps) => {
-  const { activate } = useWeb3React();
+  const { activate } = useActiveWeb3React();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const open = Boolean(anchorEl);
