@@ -23,7 +23,7 @@ export type TokenOnNetworkType = {
 export interface TokenTypeBase {
   id: string;
   name: string;
-  icon?: string;
+  icon: string;
 }
 
 // export const tokensOrder = [
