@@ -1,4 +1,4 @@
-import OutlinedInput from '@mui/material/OutlinedInput';
+import { OutlinedInput } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import Typography from '@mui/material/Typography';
 import { Controller } from 'react-hook-form';
