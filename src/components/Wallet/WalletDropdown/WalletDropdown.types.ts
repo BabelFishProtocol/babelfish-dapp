@@ -2,7 +2,7 @@ import { Web3ReactContextInterface } from '@web3-react/core/dist/types';
 import { WalletConfig } from '../../../config/wallets';
 
 export type WalletOptionProps = Pick<WalletConfig, 'name' | 'icon'> & {
-  walletId: number;
+  walletIndex: number;
   tryActivation: (walletId: number) => Promise<void>;
 };
 

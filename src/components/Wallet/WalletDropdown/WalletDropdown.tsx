@@ -53,7 +53,7 @@ export const WalletDropdown = ({
         id="wallet-selector-button"
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
-        aria-controls={open ? 'demo-positioned-menu' : undefined}
+        aria-controls={open ? 'wallet-selector-menu' : undefined}
         onClick={handleClick}
       >
         Connect Wallet
@@ -82,7 +82,7 @@ export const WalletDropdown = ({
         {wallets.map((wallet, index) => (
           <WalletOption
             key={index}
-            walletId={index}
+            walletIndex={index}
             name={wallet.name}
             icon={wallet.icon}
             tryActivation={tryActivation}
@@ -112,12 +112,13 @@ export const WalletDropdown = ({
 const WalletOption = ({
   name,
   icon,
-  walletId,
+  walletIndex,
   tryActivation,
 }: WalletOptionProps) => (
   <MenuItem
+    autoFocus={walletIndex === 0}
     onClick={() => {
-      tryActivation(walletId);
+      tryActivation(walletIndex);
     }}
     sx={{
       width: 300,
