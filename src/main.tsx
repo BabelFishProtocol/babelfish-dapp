@@ -1,18 +1,37 @@
+// import { Buffer } from 'buffer';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import { Web3ReactProvider } from '@web3-react/core';
+import { ExternalProvider, Web3Provider } from '@ethersproject/providers';
 
 import App from './App';
 import { store } from './store';
 import { ThemeProvider } from './theme';
+import { AppUpdater } from './store/app/app.updaters';
+
+if ('ethereum' in window) {
+  // @ts-ignore
+  window.ethereum.autoRefreshOnNetworkChange = false;
+}
+
+const getLibrary = (provider: ExternalProvider) => {
+  const library = new Web3Provider(provider);
+  library.pollingInterval = 12000;
+
+  return library;
+};
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <ThemeProvider>
         <BrowserRouter>
-          <App />
+          <Web3ReactProvider getLibrary={getLibrary}>
+            <AppUpdater />
+            <App />
+          </Web3ReactProvider>
         </BrowserRouter>
       </ThemeProvider>
     </Provider>
