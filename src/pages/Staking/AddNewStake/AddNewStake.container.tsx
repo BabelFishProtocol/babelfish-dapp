@@ -6,7 +6,7 @@ import {
 } from '../../../store/staking/staking.selectors';
 
 import { AddNewStakeComponent } from './AddNewStake.component';
-import { AddNewStakeContainerProps } from './AddStakeForm.types';
+import { AddNewStakeContainerProps } from './AddNewStake.types';
 
 const mockTxFee = '0.00012';
 const mockVotingPower = '10.0000';

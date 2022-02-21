@@ -190,11 +190,7 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
       root: {
         fontFamily: 'Comfortaa-Regular',
         fontWeight: 'bold',
-        // color: palette.primary.main,
-        // backgroundColor: 'rgba(255,255,255, 0.2)',
         borderRadius: '8px !important', // !important needed to override all borderRadious from subclasses
-        // borderColor: alpha(palette.primary.main, 0.2),
-        // border: `1px solid ${alpha(palette.primary.main, 1)} !important`, // !important needed to override all border properties from subclasses
         border: `1px solid ${palette.borderGrey.main} !important`, // !important needed to override all border properties from subclasses
         '&.Mui-selected': {
           border: `1px solid ${alpha(palette.primary.main, 1)} !important`, // !important needed to override all border properties from subclasses
