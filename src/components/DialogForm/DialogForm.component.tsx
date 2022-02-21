@@ -2,6 +2,7 @@ import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
 import Typography from '@mui/material/Typography';
 
+import { Button } from '../Button/Button.component';
 import { CenteredBox } from '../PageView/PageView.component';
 import { AppDialogTitle } from '../AppDialog/AppDialog.component';
 
@@ -14,13 +15,17 @@ export const DialogForm = ({
   onClose,
   children,
   leftButton,
-  rightButton,
+  rightButton = (
+    <Button variant="outlined" onClick={onClose}>
+      Cancel
+    </Button>
+  ),
 }: DialogFormProps) => (
   <Dialog
     open={open}
     maxWidth="md"
     onClose={onClose}
-    PaperProps={{ sx: { width: 600 } }}
+    PaperProps={{ sx: { width: 600, minHeight: 'unset' } }}
   >
     <AppDialogTitle title={title} onClose={onClose} />
 

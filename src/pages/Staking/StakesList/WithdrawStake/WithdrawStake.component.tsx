@@ -6,21 +6,22 @@ import { DialogForm } from '../../../../components/DialogForm/DialogForm.compone
 import { CurrencyInput } from '../../../../components/CurrencyInput/CurrencyInput.component';
 import { InputWithButtonPillGroup } from '../../../../components/InputPillGroup/InputWithButtonPillGroup.component';
 
-import { IncreaseStakeComponentProps } from './IncreaseStake.types';
+import { WithdrawStakeComponentProps } from './WithdrawStake.types';
 
-export const IncreaseStakeComponent = ({
+export const WithdrawStakeComponent = ({
   open,
   txFee,
   onClose,
-  votingPower,
+  forfeitPercent,
+  forfeitWithdraw,
   currentStakeAmount,
-}: IncreaseStakeComponentProps) => (
+}: WithdrawStakeComponentProps) => (
   <DialogForm
     open={open}
     txFee={txFee}
     onClose={onClose}
-    title="Add To Stake"
-    leftButton={<Button>Stake</Button>}
+    title="Unstake Fish"
+    leftButton={<Button>Confirm</Button>}
   >
     <CurrencyInput
       disabled
@@ -32,10 +33,14 @@ export const IncreaseStakeComponent = ({
     <InputWithButtonPillGroup
       autoFocus
       symbol="FISH"
-      title="Amount To Add"
+      title="Amount To Unstake"
       totalAmount={utils.parseUnits('2.234')}
     />
 
-    <TextInput disabled value={votingPower} title="New Voting Power" />
+    <TextInput
+      disabled
+      value={`${forfeitPercent}% ≈  ${forfeitWithdraw} FISH`}
+      title="Early Unstake Forfeit"
+    />
   </DialogForm>
 );

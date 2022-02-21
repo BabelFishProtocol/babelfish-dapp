@@ -5,7 +5,7 @@ import {
   DataTableColumn,
 } from '../../../components/DataTable/DataTable.types';
 import { TableActionsComponent } from '../../../components/TableActions/TableActions.component';
-import { formatTimestamp } from '../../../utils/helpers';
+import { formatTimestampToUTC } from '../../../utils/helpers';
 
 import { VotingDelegationColumn } from '../Staking.columns';
 import { VestsListComponentProps, VestsListItem } from './VestsList.types';
@@ -38,7 +38,7 @@ const vestsColumns: DataTableColumn<VestsListItem>[] = [
   },
   { label: 'Staking Date', name: 'stakingDate' },
   { label: 'Staking Period', name: 'stakingPeriod' },
-  { label: 'Unlock Date', name: 'unlockDate', format: formatTimestamp },
+  { label: 'Unlock Date', name: 'unlockDate', format: formatTimestampToUTC },
   { label: 'Actions', name: 'unlockDate', component: ActionColumn },
 ];
 
