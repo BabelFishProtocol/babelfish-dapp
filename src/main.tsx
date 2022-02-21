@@ -8,7 +8,7 @@ import { ExternalProvider, Web3Provider } from '@ethersproject/providers';
 
 import App from './App';
 import { store } from './store';
-import { ThemeProvider } from './layout/theme';
+import { ThemeProvider } from './theme';
 import { AppUpdater } from './store/app/app.updaters';
 
 if ('ethereum' in window) {
