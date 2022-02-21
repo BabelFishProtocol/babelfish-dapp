@@ -1,66 +1,15 @@
-import React from 'react';
-import {
-  alpha,
-  Theme,
-  Components,
-  createTheme,
-  responsiveFontSizes,
-  ThemeProvider as MuiThemeProvider,
-} from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import createPalette from '@mui/material/styles/createPalette';
-import createTypography from '@mui/material/styles/createTypography';
+import { alpha, Components, Palette, Theme } from '@mui/material/styles';
 
 import ComfortaaWoff2 from '../assets/fonts/Comfortaa-Regular.woff2';
 import ComfortaaWoff from '../assets/fonts/Comfortaa-Regular.woff';
 import ArchiveWoff2 from '../assets/fonts/Archive-Regular.woff2';
 import ArchiveWoff from '../assets/fonts/Archive-Regular.woff';
 
-declare module '@mui/material/styles/createPalette' {
-  interface Palette {
-    borderGrey: Palette['primary'];
-    boxGradient: string;
-  }
-  interface PaletteOptions {
-    borderGrey: PaletteOptions['primary'];
-    boxGradient: string;
-  }
-}
-
-const colors = {
-  primary: '#ffbf42',
-  black: '#0c0b10',
-  lightYellow: '#fddc90',
-  borderGrey: 'rgba(255, 255, 255, 0.2)',
-  borderGreyDark: 'rgba(255, 255, 255, 0.1)',
-};
+import { colors } from './palette';
 
 const transition = `250ms cubic-bezier(0.4, 0, 0.2, 1)`;
 
-const palette = createPalette({
-  mode: 'dark',
-  primary: {
-    main: colors.primary,
-    light: colors.lightYellow,
-  },
-  background: {
-    default: '#181a20',
-    paper: '#272626',
-  },
-  success: {
-    main: '#32f05f',
-  },
-  error: {
-    main: '#ef0512',
-  },
-  borderGrey: {
-    main: colors.borderGrey,
-    dark: colors.borderGreyDark,
-  },
-  boxGradient: `linear-gradient(243deg, #ffc148 0%, #5e5544 0%, #383838 25%, #212020 80%)`,
-});
-
-const components: Components<Theme> = {
+export const getComponents = (palette: Palette): Components<Theme> => ({
   MuiCssBaseline: {
     styleOverrides: `
       @font-face {
@@ -286,65 +235,4 @@ const components: Components<Theme> = {
       },
     },
   },
-};
-
-const typography = createTypography(palette, {
-  h1: {
-    fontSize: 30,
-    fontFamily: 'Archive',
-  },
-  h2: {
-    fontSize: 24,
-    fontFamily: 'Archive',
-  },
-  h3: {
-    fontSize: 20,
-    fontFamily: 'Archive',
-  },
-  h4: {
-    fontSize: 16,
-    fontFamily: 'Archive',
-  },
-  h5: {
-    fontFamily: 'Comfortaa-Regular',
-    fontSize: 30,
-  },
-  h6: {
-    fontFamily: 'Comfortaa-Regular',
-    fontSize: 24,
-  },
-  subtitle1: {
-    fontSize: 16,
-  },
-  button: {
-    fontFamily: 'Archive',
-    lineHeight: 'normal',
-  },
-  body1: {
-    fontFamily: 'Comfortaa-Regular',
-    fontSize: 16,
-  },
-  body2: {
-    fontFamily: 'Comfortaa-Regular',
-    fontSize: 14,
-  },
-  caption: {
-    fontFamily: 'Comfortaa-Regular',
-    fontSize: 12,
-  },
 });
-
-const theme = responsiveFontSizes(
-  createTheme({
-    palette,
-    components,
-    typography,
-  })
-);
-
-export const ThemeProvider: React.FC = ({ children }) => (
-  <MuiThemeProvider theme={theme}>
-    <CssBaseline />
-    {children}
-  </MuiThemeProvider>
-);

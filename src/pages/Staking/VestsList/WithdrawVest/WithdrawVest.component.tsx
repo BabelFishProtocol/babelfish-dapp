@@ -29,6 +29,7 @@ export const WithdrawVestComponent = ({
       leftButton={<Button>Confirm</Button>}
     >
       <TextInput
+        autoFocus
         title="Receive FISH At"
         value={recipient}
         onChange={onRecipientChange}
