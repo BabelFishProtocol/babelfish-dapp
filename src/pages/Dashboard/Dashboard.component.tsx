@@ -36,7 +36,6 @@ export const DashboardComponent = ({
         }}
       >
         <Button sx={{ width: 'max-content', pl: 3, pr: 3 }}>
-          {' '}
           Deposit/Withdraw XUSD
         </Button>
         <Button variant="outlined" component={Link} to={Urls.Staking}>

@@ -6,7 +6,7 @@ import { TableAction } from '../../../components/TableActions/TableActions.types
 import { CustomColumn } from '../../../components/DataTable/DataTable.types';
 import { TableActionsComponent } from '../../../components/TableActions/TableActions.component';
 
-import { useStakeModalForm } from './StakesList.hooks';
+import { useStakeModalForm } from '../Staking.hooks';
 import { ExtendStakeContainer } from './ExtendStake/ExtendStake.container';
 import { IncreaseStakeContainer } from './IncreaseStake/IncreaseStake.container';
 import { WithdrawStakeContainer } from './WithdrawStake/WithdrawStake.container';
