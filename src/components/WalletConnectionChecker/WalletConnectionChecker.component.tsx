@@ -1,13 +1,13 @@
 import Typography from '@mui/material/Typography';
 
 import { useActiveWeb3React } from '../../hooks/useActiveWeb3React';
-import { WalletConnectInfoProps } from './WalletConnectWrapper.types';
+import { WalletConnectionCheckerProps } from './WalletConnectionChecker.types';
 
-export const WalletConnectWrapper = ({
+export const WalletConnectionChecker = ({
   expectedChainName = 'RSK',
   expectedChains = [30, 31],
   children,
-}: WalletConnectInfoProps) => {
+}: WalletConnectionCheckerProps) => {
   const web3Data = useActiveWeb3React();
 
   if (!web3Data.active) {

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { WalletConnectWrapper } from '../../components/WalletConnectWrapper/WalletConnecWrapper.component';
+import { WalletConnectionChecker } from '../../components/WalletConnectionChecker/WalletConnectionChecker.component';
 
 import { initStakePageThunk } from '../../store/staking/staking.thunks';
 import { LoadableAmount } from '../../utils/types';
@@ -45,7 +45,7 @@ const Container = () => {
 };
 
 export const StakingContainer = () => (
-  <WalletConnectWrapper>
+  <WalletConnectionChecker>
     <Container />
-  </WalletConnectWrapper>
+  </WalletConnectionChecker>
 );
