@@ -4,15 +4,18 @@ import Typography from '@mui/material/Typography';
 
 import { PrettyTx } from '../../components/PrettyTx/PrettyTx.component';
 import { CustomColumn } from '../../components/DataTable/DataTable.types';
+import { isRskAddress } from '../../utils/helpers';
 
-/** TODO: replace with address checker once etheres library is installed */
-const mockIsAddress = (val: string | number) => val !== 'No Delegate';
+const mockAccount = '0x0000000000000000000000000000000000000000';
 
-export const VotingDelegationColumn: CustomColumn = ({ value }) =>
-  mockIsAddress(value) ? (
+export const VotingDelegationColumn: CustomColumn = ({ value }) => {
+  const account = mockAccount;
+
+  return isRskAddress(String(value)) && value !== account ? (
     <>
       Delegated to: <PrettyTx value={value} />
     </>
   ) : (
-    <Typography variant="body2">{value}</Typography>
+    <Typography variant="body2">No Delegate</Typography>
   );
+};

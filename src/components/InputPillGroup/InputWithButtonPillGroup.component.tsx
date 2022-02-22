@@ -9,9 +9,9 @@ import { availablePercentValues } from './InputWithButtonPillGroup.constants';
 export const InputWithButtonPillGroup = ({
   title,
   symbol,
-  disabled,
   availableBalance,
   value,
+  disabled,
   onInputChange,
   onButtonChange,
 }: InputWithButtonPillGroupProps) => {

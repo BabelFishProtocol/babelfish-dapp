@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
-import { StakeListItem, StakingData } from './staking.state';
+import { StakeListItem, StakingData, VestsListItem } from './staking.state';
 
 const mockStakes: StakeListItem[] = [
   {
@@ -29,6 +29,27 @@ const mockStakes: StakeListItem[] = [
   },
 ];
 
+const mockVests: VestsListItem[] = [
+  {
+    asset: 'FISH',
+    lockedAmount: '9,552.8567 FISH',
+    votingPower: '0.0000',
+    votingDelegation: '0x0000000000000000000000000000000000000000',
+    stakingPeriod: '373 days',
+    stakingDate: '12/01/2022 - 9:31:19 am GMT',
+    unlockDate: 1659571200,
+  },
+  {
+    asset: 'FISH',
+    lockedAmount: '2,552.8567 FISH',
+    votingPower: '12.0000',
+    votingDelegation: '0x94e907f6B903A393E14FE549113137CA6483b5ef',
+    stakingPeriod: 'Expired',
+    stakingDate: '12/01/2022 - 9:31:19 am GMT',
+    unlockDate: 1639008000,
+  },
+];
+
 const mockKickoffTs = 1635379200;
 
 export const fetchStakesListThunk = createAsyncThunk<StakeListItem[]>(
@@ -38,6 +59,22 @@ export const fetchStakesListThunk = createAsyncThunk<StakeListItem[]>(
       const stakes = mockStakes;
 
       return stakes;
+    } catch (e) {
+      // TODO: add error notification
+      // eslint-disable-next-line no-console
+      console.error(e);
+      throw e;
+    }
+  }
+);
+
+export const fetchVestsListThunk = createAsyncThunk<VestsListItem[]>(
+  `${Reducers.Staking}/fetchVests`,
+  async () => {
+    try {
+      const vests = mockVests;
+
+      return vests;
     } catch (e) {
       // TODO: add error notification
       // eslint-disable-next-line no-console

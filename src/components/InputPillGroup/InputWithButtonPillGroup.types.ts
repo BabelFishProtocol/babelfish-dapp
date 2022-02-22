@@ -1,7 +1,10 @@
+import { OutlinedInputProps } from '@mui/material/OutlinedInput';
 import { BigNumber } from 'ethers';
 import React from 'react';
 
-export type InputWithButtonPillGroupProps = {
+export type InputWithButtonPillGroupProps = Partial<
+  Omit<OutlinedInputProps, 'value'>
+> & {
   title?: string;
   symbol: string;
   disabled?: boolean;

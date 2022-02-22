@@ -10,7 +10,7 @@ import { DateSelector } from '../../../components/DateSelector/DateSelector.comp
 import {
   AddNewStakeComponentProps,
   AddNewStakeFormValues,
-} from './AddStakeForm.types';
+} from './AddNewStake.types';
 import { ControlledInputWithButtonPillGroup } from '../../../components/ControlledInputWithButtonPillGroup/ControlledInputWithButtonPillGroup.component';
 import { AddNewStakeFields } from './AddNewStake.fields';
 
@@ -38,11 +38,6 @@ export const AddNewStakeComponent = ({
       title="Stake Fish"
       onClose={onClose}
       leftButton={<Button>Stake</Button>}
-      rightButton={
-        <Button variant="outlined" onClick={onClose}>
-          Cancel
-        </Button>
-      }
     >
       <ControlledInputWithButtonPillGroup
         symbol="FISH"

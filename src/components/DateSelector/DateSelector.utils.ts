@@ -20,6 +20,7 @@ export const getAllCheckpoints = (kickoffTs: number) => {
 export const getAvailableDates = ({
   kickoffTs,
   stakes,
+  prevDate,
 }: GetAvailableDatesConfig) => {
   const currentCheckpoint = Math.trunc(Date.now() / 1000) + TWO_WEEKS;
   const allDates = getAllCheckpoints(kickoffTs);
@@ -34,11 +35,12 @@ export const getAvailableDates = ({
       date: convertedDate,
       isPast: timestamp <= currentCheckpoint,
       isAlreadyUsed: stakes.includes(timestamp),
+      isBeforePrevDate: !!prevDate && prevDate >= timestamp,
     };
   });
 
   const availableDates = dates.filter(
-    (date) => !date.isAlreadyUsed && !date.isPast
+    (date) => !date.isAlreadyUsed && !date.isPast && !date.isBeforePrevDate
   );
 
   return { availableDates, dates };

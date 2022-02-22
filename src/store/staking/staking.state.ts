@@ -9,10 +9,19 @@ export type StakeListItem = {
   unlockDate: number;
 };
 
+export type VestsListItem = StakeListItem & {
+  stakingDate: string;
+};
+
 export type StakingData = { kickoffTs?: number };
 
 export class StakingState {
   stakesList: LoadableValue<StakeListItem[]> = {
+    data: [],
+    state: 'idle',
+  };
+
+  vestsList: LoadableValue<VestsListItem[]> = {
     data: [],
     state: 'idle',
   };
@@ -25,4 +34,6 @@ export class StakingState {
   };
 
   selectedStake?: number;
+
+  selectedVest?: number;
 }
