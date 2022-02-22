@@ -23,7 +23,7 @@ export const IncreaseStakeComponent = ({
   // TODO: change dateSelector and slectDate to controlled inputs by react-hook-form
   const { control, setValue } = useForm<IncreaseStakeFormValues>({
     defaultValues: {
-      [IncreaseStakeFields.IncreaseStakeAmount]: undefined,
+      [IncreaseStakeFields.IncreaseStakeAmount]: '',
     },
   });
   return (

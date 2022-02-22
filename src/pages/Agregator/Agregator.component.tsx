@@ -24,11 +24,11 @@ export const AgregatorComponent = () => {
 
   const { watch, setValue, control } = useForm<AgregatorFormValues>({
     defaultValues: {
-      [AggregatorInputs.ChainDropdown]: undefined,
-      [AggregatorInputs.TokenDropdown]: undefined,
-      [AggregatorInputs.SendAmount]: undefined,
+      [AggregatorInputs.ChainDropdown]: '',
+      [AggregatorInputs.TokenDropdown]: '',
+      [AggregatorInputs.SendAmount]: '',
       [AggregatorInputs.DestinationChain]: ChainEnum.RSK,
-      [AggregatorInputs.ReceiveAddress]: undefined,
+      [AggregatorInputs.ReceiveAddress]: '',
     },
   });
   const watchChain = watch(AggregatorInputs.ChainDropdown);

@@ -22,6 +22,7 @@ export const ButtonPillGroup = ({
   >
     {availableValues.map((percentValue) => (
       <ToggleButton
+        key={percentValue}
         color="primary"
         size="small"
         value={percentValue}

@@ -29,7 +29,7 @@ export const DropdownOptions = <
     }}
   >
     {placeholder && (
-      <MenuItem disabled style={{ display: 'none' }}>
+      <MenuItem disabled value="" style={{ display: 'none' }}>
         {placeholder}
       </MenuItem>
     )}

@@ -27,7 +27,7 @@ export const AddNewStakeComponent = ({
   // TODO: change dateSelector and slectDate to controlled inputs by react-hook-form
   const { control, setValue } = useForm<AddNewStakeFormValues>({
     defaultValues: {
-      [AddNewStakeFields.stakeAmount]: undefined,
+      [AddNewStakeFields.stakeAmount]: '',
     },
   });
 
