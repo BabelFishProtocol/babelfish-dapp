@@ -1,13 +1,18 @@
 import { useState } from 'react';
 import { utils } from 'ethers';
 
+import { useForm } from 'react-hook-form';
 import { Button } from '../../../components/Button/Button.component';
 import { TextInput } from '../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../components/DialogForm/DialogForm.component';
 import { DateSelector } from '../../../components/DateSelector/DateSelector.component';
-import { InputWithButtonPillGroup } from '../../../components/InputPillGroup/InputWithButtonPillGroup.component';
 
-import { AddNewStakeComponentProps } from './AddStakeForm.types';
+import {
+  AddNewStakeComponentProps,
+  AddNewStakeFormValues,
+} from './AddStakeForm.types';
+import { ControlledInputWithButtonPillGroup } from '../../../components/ControlledInputWithButtonPillGroup/ControlledInputWithButtonPillGroup.component';
+import { AddNewStakeFields } from './AddNewStake.fields';
 
 export const AddNewStakeComponent = ({
   open,
@@ -18,6 +23,13 @@ export const AddNewStakeComponent = ({
   kickoffTs,
 }: AddNewStakeComponentProps) => {
   const [unlockDate, setUnlockDate] = useState<number>();
+
+  // TODO: change dateSelector and slectDate to controlled inputs by react-hook-form
+  const { control, setValue } = useForm<AddNewStakeFormValues>({
+    defaultValues: {
+      [AddNewStakeFields.stakeAmount]: undefined,
+    },
+  });
 
   return (
     <DialogForm
@@ -32,10 +44,13 @@ export const AddNewStakeComponent = ({
         </Button>
       }
     >
-      <InputWithButtonPillGroup
+      <ControlledInputWithButtonPillGroup
         symbol="FISH"
         title="Amount To Stake"
-        totalAmount={utils.parseUnits('2.234')}
+        availableBalance={utils.parseUnits('2.234')}
+        name={AddNewStakeFields.stakeAmount}
+        control={control}
+        setValue={setValue}
       />
 
       <DateSelector

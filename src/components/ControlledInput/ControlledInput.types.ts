@@ -1,10 +1,10 @@
-import { Control } from 'react-hook-form';
+import { Control, FieldPath } from 'react-hook-form';
+import { TextInputProps } from '../TextInput/TextInput.types';
 
-export type ControlledInputProps = {
-  name: string;
-  label: string;
-  placeholder: string;
-  control: Control;
-  defaultValue: string;
-  disabled?: boolean;
+export type ControlledInputType<FormValues> = {
+  name: FieldPath<FormValues>;
+  control: Control<FormValues>;
 };
+
+export type ControlledInputProps<FormValues> = ControlledInputType<FormValues> &
+  TextInputProps;

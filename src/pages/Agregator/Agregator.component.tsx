@@ -1,26 +1,36 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
-import OutlinedInput from '@mui/material/OutlinedInput';
+
 import { BigNumber, utils } from 'ethers';
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+
+import { baseChains, ChainEnum, chains } from '../../config/chains';
+import { TokenTypeBase } from '../../config/tokens';
 import { ControlledDropdown } from '../../components/ControlledDropdown/ControlledDropdown.component';
 import { PageView } from '../../components/PageView/PageView.component';
 import { ControlledInputWithButtonPillGroup } from '../../components/ControlledInputWithButtonPillGroup/ControlledInputWithButtonPillGroup.component';
-import { baseChains, ChainEnum, chains } from '../../config/chains';
-import { TokenTypeBase } from '../../config/tokens';
-import { NameWithIcon } from '../../components/NameWithIcon/NameWithIcon.component';
-import { AggregatorInputs } from '../../constants';
+import { ControlledCurrencyInput } from '../../components/ControlledCurrencyInput/ControlledCurrencyInput.component';
+import { ControlledInput } from '../../components/ControlledInput/ControlledInput.component';
+
+import { AggregatorInputs } from './Agregator.fields';
+import { AgregatorFormValues } from './Agregator.types';
 
 export const AgregatorComponent = () => {
   const [bassetOptions, setBassetOptions] = useState<TokenTypeBase[]>();
   const [tokenDropdownDisabled, setTokenDropdownDisabled] = useState(true);
   const [availableBalance, setAvailableBalance] = useState<BigNumber>();
-  const [receiveAmount, setReceiveAmount] = useState('0.00');
 
-  const { watch, setValue, control } = useForm();
+  const { watch, setValue, control } = useForm<AgregatorFormValues>({
+    defaultValues: {
+      [AggregatorInputs.ChainDropdown]: undefined,
+      [AggregatorInputs.TokenDropdown]: undefined,
+      [AggregatorInputs.SendAmount]: undefined,
+      [AggregatorInputs.DestinationChain]: ChainEnum.RSK,
+      [AggregatorInputs.ReceiveAddress]: undefined,
+    },
+  });
   const watchChain = watch(AggregatorInputs.ChainDropdown);
   const watchToken = watch(AggregatorInputs.TokenDropdown);
 
@@ -33,7 +43,7 @@ export const AgregatorComponent = () => {
 
   const getTokenAvaliableAmount = () => {
     // todo: implement
-    setAvailableBalance(utils.parseEther('81'));
+    setAvailableBalance(utils.parseEther('81.123'));
   };
 
   useEffect(() => {
@@ -71,7 +81,6 @@ export const AgregatorComponent = () => {
           <ControlledDropdown
             name={AggregatorInputs.ChainDropdown}
             label="Select Network"
-            defaultValue=""
             placeholder="Select Chain"
             control={control}
             options={baseChains}
@@ -81,7 +90,6 @@ export const AgregatorComponent = () => {
             name={AggregatorInputs.TokenDropdown}
             label="Deposit stablecoin"
             placeholder="Select Coin"
-            defaultValue=""
             control={control}
             disabled={tokenDropdownDisabled}
             options={bassetOptions ?? []}
@@ -101,7 +109,6 @@ export const AgregatorComponent = () => {
             name={AggregatorInputs.SendAmount}
             title="Deposit amount"
             symbol="USDT"
-            defaultValue=""
             disabled={!availableBalance}
             availableBalance={availableBalance}
             control={control}
@@ -127,30 +134,27 @@ export const AgregatorComponent = () => {
             mx: 'auto',
           }}
         >
-          <Typography variant="h3">Network</Typography>
-          <Paper sx={{ mb: 6, px: 2 }}>
-            <NameWithIcon
-              name={chains[ChainEnum.RSK].name}
-              icon={chains[ChainEnum.RSK].icon}
-            />
-          </Paper>
-          <Typography variant="h3">Receive amount</Typography>
-          <Paper
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              px: '14px',
-              py: '16.5px',
-              mb: 6,
-            }}
-          >
-            <span>{receiveAmount}</span>
-            <span>XUSD</span>
-          </Paper>
-          <Typography variant="h3">Receiving address</Typography>
-          <OutlinedInput
-            sx={{ width: '100%', mb: 5 }}
+          <ControlledDropdown
+            disabled
+            name={AggregatorInputs.ChainDropdown}
+            label="Network"
+            control={control}
+            options={[chains.RSK]}
+            sx={{ mb: 6 }}
+          />
+          <ControlledCurrencyInput
+            disabled
+            title="Receive amount"
+            symbol="XUSD"
+            name={AggregatorInputs.ReceiveAmount}
+            control={control}
+          />
+          <ControlledInput
+            title="Receiving address"
             placeholder="Enter or paste address"
+            name={AggregatorInputs.ReceiveAddress}
+            control={control}
+            sx={{ mb: 5 }}
           />
           <Button type="submit" fullWidth>
             Transfer

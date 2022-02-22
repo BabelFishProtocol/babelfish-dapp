@@ -4,12 +4,15 @@ import Select from '@mui/material/Select';
 import { DropdownOptionType, DropdownProps } from './Dropdown.types';
 import { NameWithIcon } from '../NameWithIcon/NameWithIcon.component';
 
-export const DropdownOptions = <ItemSelected extends DropdownOptionType>({
+export const DropdownOptions = <
+  ItemSelected extends DropdownOptionType,
+  ValueType
+>({
   options,
   value,
   placeholder,
   onChange,
-}: DropdownProps<ItemSelected>) => (
+}: DropdownProps<ItemSelected, ValueType>) => (
   <Select
     value={value}
     onChange={onChange}
@@ -25,9 +28,11 @@ export const DropdownOptions = <ItemSelected extends DropdownOptionType>({
       },
     }}
   >
-    <MenuItem value="" disabled style={{ display: 'none' }}>
-      {placeholder}
-    </MenuItem>
+    {placeholder && (
+      <MenuItem disabled style={{ display: 'none' }}>
+        {placeholder}
+      </MenuItem>
+    )}
     {options.map(({ id, name, icon }) => (
       <MenuItem key={id} value={id}>
         <NameWithIcon name={name} icon={icon} />

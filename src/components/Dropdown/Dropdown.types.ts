@@ -6,9 +6,9 @@ export type DropdownOptionType = {
   icon: string;
 };
 
-export type DropdownProps<ItemSelected> = {
-  value: Element;
-  onChange: (e: SelectChangeEvent<Element>) => void;
+export type DropdownProps<ItemSelected, ValueType> = {
+  value: ValueType;
+  onChange: (e: SelectChangeEvent<ValueType>) => void;
   options: ItemSelected[];
   placeholder?: string;
   disabled?: boolean;

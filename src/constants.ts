@@ -16,13 +16,6 @@ export enum ProposalState {
   Executed = '7',
 }
 
-export enum AggregatorInputs {
-  ChainDropdown = 'ChainDropdown',
-  TokenDropdown = 'TokenDropdown',
-  SendAmount = 'SendAmount',
-  ReceiveAddress = 'ReceiveAddress',
-}
-
 export enum Reducers {
   Staking = 'staking',
 }

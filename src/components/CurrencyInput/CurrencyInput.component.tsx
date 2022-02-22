@@ -6,7 +6,6 @@ export const CurrencyInput = ({
   title,
   symbol,
   value,
-  disabled,
   onChange,
   ...inputProps
 }: CurrencyInputProps) => (

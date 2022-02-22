@@ -7,21 +7,21 @@ import { InputWithButtonPillGroupProps } from './InputWithButtonPillGroup.types'
 import { availablePercentValues } from './InputWithButtonPillGroup.constants';
 
 export const InputWithButtonPillGroup = ({
-  name,
   title,
   symbol,
   disabled,
   availableBalance,
   value,
-  setValue,
-  onChange,
+  onInputChange,
+  onButtonChange,
 }: InputWithButtonPillGroupProps) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPercentValue(undefined);
-    onChange(e);
+    onInputChange(e);
   };
 
   const [percentValue, setPercentValue] = useState<string>();
+
   const handleButtonChange = (
     e: React.MouseEvent<HTMLElement>,
     newPercentValue: string
@@ -36,8 +36,9 @@ export const InputWithButtonPillGroup = ({
     );
 
     setPercentValue(newPercentValue);
-    setValue(name, newValue);
+    onButtonChange(newValue);
   };
+
   return (
     <Box sx={{ width: '100%' }}>
       <CurrencyInput

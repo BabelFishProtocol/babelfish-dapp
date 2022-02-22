@@ -1,10 +1,13 @@
-import { Control } from 'react-hook-form';
+import { BigNumber } from 'ethers';
+import { SetFieldValue } from 'react-hook-form';
+import { ControlledInputType } from '../ControlledInput/ControlledInput.types';
 import { InputWithButtonPillGroupProps } from '../InputPillGroup/InputWithButtonPillGroup.types';
 
-export type ControlledInputWithButtonPillGroupProps = Omit<
+export type ControlledInputWithButtonPillGroupProps<FormValues> = Omit<
   InputWithButtonPillGroupProps,
-  'value' | 'onChange'
-> & {
-  control: Control;
-  defaultValue: string;
-};
+  'value' | 'onInputChange' | 'onButtonChange'
+> &
+  ControlledInputType<FormValues> & {
+    setValue: SetFieldValue<FormValues>;
+    availableBalance?: BigNumber;
+  };

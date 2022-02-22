@@ -5,16 +5,18 @@ import { DropdownOptions } from '../Dropdown/Dropdown.component';
 import { DropdownOptionType } from '../Dropdown/Dropdown.types';
 import { ControlledDropdownProps } from './ControlledDropdown.types';
 
-export const ControlledDropdown = <OptionType extends DropdownOptionType>({
+export const ControlledDropdown = <
+  OptionType extends DropdownOptionType,
+  FormValues
+>({
   name,
   label,
   placeholder,
   control,
-  defaultValue,
   disabled,
   options,
   sx,
-}: ControlledDropdownProps<OptionType>) => (
+}: ControlledDropdownProps<OptionType, FormValues>) => (
   <FormControl fullWidth disabled={disabled} sx={{ ...sx }}>
     <Typography variant="h3">{label}</Typography>
     <Controller
@@ -28,7 +30,6 @@ export const ControlledDropdown = <OptionType extends DropdownOptionType>({
       )}
       name={name}
       control={control}
-      defaultValue={defaultValue}
     />
   </FormControl>
 );
