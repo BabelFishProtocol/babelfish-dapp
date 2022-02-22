@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import { utils } from 'ethers';
 import { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
@@ -11,17 +10,13 @@ import { AppDialog } from './components/AppDialog/AppDialog.component';
 import { DateSelector } from './components/DateSelector/DateSelector.component';
 import { Header } from './components/Header/Header.component';
 import { InputWithButtonPillGroup } from './components/InputPillGroup/InputWithButtonPillGroup.component';
+import { MintingInfo } from './components/MintingInfo/MintingInfo.component';
+import { MintingProcessInfo } from './components/MintingInfo/MintingInfo.types';
 import { Urls } from './constants';
 import { DashboardContainer } from './pages/Dashboard/Dashboard.container';
 import { ProposalDetailsContainer } from './pages/ProposalDetails/ProposalDetails.container';
 import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.container';
 import { StakingContainer } from './pages/Staking/Staking.container';
-
-type MintingProcessInfo = {
-  label: string;
-  value: string;
-  isProminant?: boolean;
-};
 
 function App() {
   const [selectedDate, setSelectedDate] = useState<number>();
@@ -67,39 +62,7 @@ function App() {
         }}
       >
         <Box sx={{ mt: 3 }}>
-          {dialogVals.map((dv) => (
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: 1,
-                my: '5px',
-              }}
-            >
-              <Typography
-                sx={{
-                  fontWeight: 'bold',
-                  display: 'inline-grid',
-                  textAlign: 'right',
-                  textTransform: 'uppercase',
-                  fontSize: '12px',
-                }}
-                variant="body2"
-              >
-                {dv.label} :
-              </Typography>
-              <Typography
-                sx={({ palette }) => ({
-                  display: 'inline-grid',
-                  textAlign: 'left',
-                  color: dv.isProminant ? palette.primary.main : 'white',
-                })}
-                variant="body2"
-              >
-                {dv.value}
-              </Typography>
-            </Box>
-          ))}
+          <MintingInfo data={dialogVals} />
         </Box>
         <Button sx={{ my: 5 }} size="small">
           View on Explorer
@@ -113,42 +76,7 @@ function App() {
         title="Minting In Progress"
         description="Minting can take a couple minutes, please make sure to approve the transaction in your wallet when prompted, and wait for minting to be complete"
       >
-        {dialogVals.map((dv) => (
-          <Box
-            onClick={() => {
-              setOpenDialogType('success');
-            }}
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
-              gap: 1,
-              my: '5px',
-            }}
-          >
-            <Typography
-              sx={{
-                fontWeight: 'bold',
-                display: 'inline-grid',
-                textAlign: 'right',
-                textTransform: 'uppercase',
-                fontSize: '12px',
-              }}
-              variant="body2"
-            >
-              {dv.label} :
-            </Typography>
-            <Typography
-              sx={({ palette }) => ({
-                display: 'inline-grid',
-                textAlign: 'left',
-                color: dv.isProminant ? palette.primary.main : 'white',
-              })}
-              variant="body2"
-            >
-              {dv.value}
-            </Typography>
-          </Box>
-        ))}
+        <MintingInfo data={dialogVals} />
       </AppDialog>
 
       <Routes>
