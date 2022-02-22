@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
-import { BigNumber, utils } from 'ethers';
+import { utils } from 'ethers';
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -15,24 +15,34 @@ import { ControlledCurrencyInput } from '../../components/ControlledCurrencyInpu
 import { ControlledInput } from '../../components/ControlledInput/ControlledInput.component';
 
 import { AggregatorInputs } from './Agregator.fields';
-import { AgregatorFormValues } from './Agregator.types';
+import {
+  AgregatorComponentProps,
+  AgregatorFormValues,
+} from './Agregator.types';
 
-export const AgregatorComponent = () => {
+export const AgregatorComponent = ({
+  availableBalance,
+  getTokenAvaliableBalance,
+  getReceiveAmount,
+  onSubmit,
+}: AgregatorComponentProps) => {
   const [bassetOptions, setBassetOptions] = useState<TokenTypeBase[]>();
   const [tokenDropdownDisabled, setTokenDropdownDisabled] = useState(true);
-  const [availableBalance, setAvailableBalance] = useState<BigNumber>();
 
-  const { watch, setValue, control } = useForm<AgregatorFormValues>({
-    defaultValues: {
-      [AggregatorInputs.ChainDropdown]: '',
-      [AggregatorInputs.TokenDropdown]: '',
-      [AggregatorInputs.SendAmount]: '',
-      [AggregatorInputs.DestinationChain]: ChainEnum.RSK,
-      [AggregatorInputs.ReceiveAddress]: '',
-    },
-  });
+  const { handleSubmit, watch, setValue, control } =
+    useForm<AgregatorFormValues>({
+      defaultValues: {
+        [AggregatorInputs.ChainDropdown]: '',
+        [AggregatorInputs.TokenDropdown]: '',
+        [AggregatorInputs.SendAmount]: '',
+        [AggregatorInputs.DestinationChain]: ChainEnum.RSK,
+        [AggregatorInputs.ReceiveAmount]: '',
+        [AggregatorInputs.ReceiveAddress]: '',
+      },
+    });
   const watchChain = watch(AggregatorInputs.ChainDropdown);
   const watchToken = watch(AggregatorInputs.TokenDropdown);
+  const watchAmount = watch(AggregatorInputs.SendAmount);
 
   useEffect(() => {
     const chosenChain = baseChains.find(({ id }) => id === watchChain);
@@ -41,16 +51,18 @@ export const AgregatorComponent = () => {
     setTokenDropdownDisabled(!currentOptions);
   }, [watchChain]);
 
-  const getTokenAvaliableAmount = () => {
-    // todo: implement
-    setAvailableBalance(utils.parseEther('81.123'));
-  };
-
   useEffect(() => {
     if (watchToken) {
-      getTokenAvaliableAmount();
+      getTokenAvaliableBalance();
     }
   }, [watchToken]);
+
+  useEffect(() => {
+    if (watchAmount) {
+      setValue(AggregatorInputs.ReceiveAmount, getReceiveAmount(watchAmount));
+    }
+  }, [watchAmount]);
+
   return (
     <form
       style={{
@@ -59,6 +71,7 @@ export const AgregatorComponent = () => {
         maxWidth: 1120,
         margin: '0 auto',
       }}
+      onSubmit={handleSubmit(onSubmit)}
     >
       <PageView
         title={
@@ -100,7 +113,8 @@ export const AgregatorComponent = () => {
                 variant="subtitle2"
                 sx={{ position: 'absolute', top: 14 }}
               >
-                Available Balance: {utils.formatUnits(availableBalance)} USDT
+                Available Balance:{' '}
+                {`${utils.formatUnits(availableBalance)} ${watchToken}`}
               </Typography>
             )}
           </Box>
@@ -136,18 +150,20 @@ export const AgregatorComponent = () => {
         >
           <ControlledDropdown
             disabled
-            name={AggregatorInputs.ChainDropdown}
+            name={AggregatorInputs.DestinationChain}
             label="Network"
             control={control}
             options={[chains.RSK]}
-            sx={{ mb: 6 }}
+            sx={{ mb: 4 }}
           />
           <ControlledCurrencyInput
             disabled
             title="Receive amount"
             symbol="XUSD"
+            placeholder="0.00"
             name={AggregatorInputs.ReceiveAmount}
             control={control}
+            sx={{ mb: 5 }}
           />
           <ControlledInput
             title="Receiving address"
