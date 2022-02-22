@@ -16,6 +16,7 @@ export enum ProposalState {
 }
 
 export enum Reducers {
+  App = 'app',
   Staking = 'staking',
 }
 

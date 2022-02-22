@@ -40,3 +40,21 @@ export const selectedStakeSelector = createSelector(
     return selectedStake;
   }
 );
+
+export const vestsListSelector = createSelector(
+  stakingState,
+  (state) => state.vestsList.data
+);
+export const vestsListStatusSelector = createSelector(
+  stakingState,
+  (state) => state.vestsList.state
+);
+export const selectedVestSelector = createSelector(
+  [stakingState, vestsListSelector],
+  (state, vestsList) => {
+    const selectedStake = vestsList.find(
+      (vest) => vest.unlockDate === state.selectedVest
+    );
+    return selectedStake;
+  }
+);

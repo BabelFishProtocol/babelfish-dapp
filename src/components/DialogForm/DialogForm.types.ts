@@ -7,5 +7,5 @@ export type DialogFormProps = {
   onClose: () => void;
   children: ReactNode;
   leftButton: ReactNode;
-  rightButton: ReactNode;
+  rightButton?: ReactNode;
 };

@@ -7,7 +7,7 @@ import { DialogForm } from '../../../components/DialogForm/DialogForm.component'
 import { DateSelector } from '../../../components/DateSelector/DateSelector.component';
 import { InputWithButtonPillGroup } from '../../../components/InputPillGroup/InputWithButtonPillGroup.component';
 
-import { AddNewStakeComponentProps } from './AddStakeForm.types';
+import { AddNewStakeComponentProps } from './AddNewStake.types';
 
 export const AddNewStakeComponent = ({
   open,
@@ -26,13 +26,9 @@ export const AddNewStakeComponent = ({
       title="Stake Fish"
       onClose={onClose}
       leftButton={<Button>Stake</Button>}
-      rightButton={
-        <Button variant="outlined" onClick={onClose}>
-          Cancel
-        </Button>
-      }
     >
       <InputWithButtonPillGroup
+        autoFocus
         symbol="FISH"
         title="Amount To Stake"
         totalAmount={utils.parseUnits('2.234')}

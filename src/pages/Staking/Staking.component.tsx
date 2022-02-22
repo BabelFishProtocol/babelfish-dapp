@@ -14,7 +14,7 @@ import { Urls } from '../../constants';
 
 import { VestsListContainer } from './VestsList/VestsList.container';
 import { StakesListContainer } from './StakesList/StakesList.container';
-import { AddNewStakeContainer } from './AddNewStake/AddStakeForm.container';
+import { AddNewStakeContainer } from './AddNewStake/AddNewStake.container';
 import { StakingHistoryContainer } from './StakingHistory/StakingHistory.container';
 import { RewardBlockProps, StakingComponentProps } from './Staking.types';
 

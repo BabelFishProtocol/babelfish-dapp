@@ -21,11 +21,6 @@ export const IncreaseStakeComponent = ({
     onClose={onClose}
     title="Add To Stake"
     leftButton={<Button>Stake</Button>}
-    rightButton={
-      <Button variant="outlined" onClick={onClose}>
-        Cancel
-      </Button>
-    }
   >
     <CurrencyInput
       disabled
@@ -35,6 +30,7 @@ export const IncreaseStakeComponent = ({
     />
 
     <InputWithButtonPillGroup
+      autoFocus
       symbol="FISH"
       title="Amount To Add"
       totalAmount={utils.parseUnits('2.234')}

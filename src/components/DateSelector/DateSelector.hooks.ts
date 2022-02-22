@@ -9,12 +9,13 @@ import {
 export const useDateSelector = ({
   stakes,
   kickoffTs,
+  prevDate,
 }: UseDateSelectorConfig) => {
   const [selectedYear, setSelectedYear] = useState<number>();
 
   const { availableDates, dates } = useMemo(
-    () => getAvailableDates({ stakes, kickoffTs }),
-    [kickoffTs, stakes]
+    () => getAvailableDates({ stakes, kickoffTs, prevDate }),
+    [kickoffTs, prevDate, stakes]
   );
 
   const availableDatesForYear = useMemo(
