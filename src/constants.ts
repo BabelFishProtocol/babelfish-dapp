@@ -40,5 +40,5 @@ export const monthNames = [
 
 export enum VoteType {
   FOR = 'for',
-  AGAINST = 'against'
+  AGAINST = 'against',
 }

@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
-import { getTimeMeasureUtils } from '@reduxjs/toolkit/dist/utils';
 import React, { useState } from 'react';
 import pendingIcon from '../../assets/icons/loading.svg';
 import { VoteType } from '../../constants';
