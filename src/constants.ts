@@ -37,3 +37,8 @@ export const monthNames = [
   'Nov',
   'Dec',
 ];
+
+export enum VoteType {
+  FOR = 'for',
+  AGAINST = 'against'
+}

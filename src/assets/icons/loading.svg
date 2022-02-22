@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; background: rgba(0, 0, 0, 0); display: block;" width="234px" height="234px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+<circle cx="50" cy="50" r="40" stroke="#ffffff" stroke-width="2" fill="none"></circle>
+<path d="M12 50 Q31 30 50 50 Q69 70 88 50 A38 38 0 0 1 12 50" fill="#ffc52050" stroke="#ffc520">
+  <animate attributeName="d" repeatCount="indefinite" dur="2.0408163265306123s" calcMode="spline" keyTimes="0;0.5;1" values="M12 50 Q31 30 50 50 Q69 70 88 50 A38 38 0 0 1 12 50;M12 50 Q31 70 50 50 Q69 30 88 50 A38 38 0 0 1 12 50;M12 50 Q31 30 50 50 Q69 70 88 50 A38 38 0 0 1 12 50" keySplines="0.5 0 0.5 1;0.5 0 0.5 1"></animate>
+</path>
+</svg>
