@@ -9,5 +9,5 @@ export type ControlledInputWithButtonPillGroupProps<FormValues> = Omit<
 > &
   ControlledInputType<FormValues> & {
     setValue: SetFieldValue<FormValues>;
-    availableBalance?: BigNumber;
+    totalAmount?: BigNumber;
   };

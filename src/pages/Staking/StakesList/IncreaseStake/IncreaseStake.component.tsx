@@ -49,7 +49,7 @@ export const IncreaseStakeComponent = ({
       <ControlledInputWithButtonPillGroup
         symbol="FISH"
         title="Amount To Add"
-        availableBalance={utils.parseUnits('2.234')}
+        totalAmount={utils.parseUnits('2.234')}
         name={IncreaseStakeFields.IncreaseStakeAmount}
         control={control}
         setValue={setValue}

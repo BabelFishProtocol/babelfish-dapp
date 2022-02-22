@@ -124,7 +124,7 @@ export const AgregatorComponent = ({
             title="Deposit amount"
             symbol="USDT"
             disabled={!availableBalance}
-            availableBalance={availableBalance}
+            totalAmount={availableBalance}
             control={control}
             setValue={setValue}
           />

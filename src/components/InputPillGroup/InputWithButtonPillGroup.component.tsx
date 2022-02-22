@@ -9,7 +9,7 @@ import { availablePercentValues } from './InputWithButtonPillGroup.constants';
 export const InputWithButtonPillGroup = ({
   title,
   symbol,
-  availableBalance,
+  totalAmount,
   value,
   disabled,
   onInputChange,
@@ -27,11 +27,11 @@ export const InputWithButtonPillGroup = ({
     e: React.MouseEvent<HTMLElement>,
     newPercentValue: string
   ) => {
-    if (!availableBalance) {
+    if (!totalAmount) {
       return;
     }
     const newValue = utils.formatUnits(
-      availableBalance
+      totalAmount
         ?.mul(BigNumber.from(newPercentValue))
         .div(BigNumber.from('100'))
     );
