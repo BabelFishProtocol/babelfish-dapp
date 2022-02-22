@@ -14,6 +14,7 @@ export const InputWithButtonPillGroup = ({
   disabled,
   onInputChange,
   onButtonChange,
+  ...inputProps
 }: InputWithButtonPillGroupProps) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPercentValue(undefined);
@@ -47,6 +48,7 @@ export const InputWithButtonPillGroup = ({
         symbol={symbol}
         disabled={disabled}
         onChange={handleInputChange}
+        {...inputProps}
       />
       <ButtonPillGroup
         availableValues={availablePercentValues}
