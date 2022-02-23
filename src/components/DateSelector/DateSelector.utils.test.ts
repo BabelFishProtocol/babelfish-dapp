@@ -11,7 +11,7 @@ const currentTime = 250000;
 
 jest.mock('../../constants', () => ({
   ...jest.requireActual('../../constants'),
-  MAX_STAKING_PERIODS: 5,
+  MAX_STAKING_PERIODS: 6,
   TWO_WEEKS: 100,
 }));
 

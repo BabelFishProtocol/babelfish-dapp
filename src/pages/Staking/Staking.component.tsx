@@ -54,8 +54,8 @@ export const StakingComponent = ({
           <BalanceBlock
             asset="USD"
             label="Total Earned Rewards Available"
-            isLoading={totalRewards.isLoading}
-            amount={`≈ ${totalRewards.amount}`}
+            state={totalRewards.state}
+            data={`≈ ${totalRewards.data}`}
           >
             <Box>
               {rewards.map((reward, index) => (
@@ -67,8 +67,8 @@ export const StakingComponent = ({
           <BalanceBlock
             asset=""
             label="Combined Voting Power"
-            amount={votingPower.amount}
-            isLoading={votingPower.isLoading}
+            data={votingPower.data}
+            state={votingPower.state}
           >
             <Button
               sx={{ width: 'fit-content' }}

@@ -1,11 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
+import { ActionsType } from '../types';
 import { StakingState } from './staking.state';
-import {
-  fetchStakesListThunk,
-  fetchVestsListThunk,
-  initStakePageThunk,
-} from './staking.thunks';
 
 const initialState = { ...new StakingState() };
 
@@ -13,6 +9,45 @@ export const stakingSlice = createSlice({
   name: Reducers.Staking,
   initialState,
   reducers: {
+    watchStakingData: (_) => {},
+    stopWatchingStakingData: (state) => {
+      state.kickoffTs.state = 'idle';
+      state.totalStaked.state = 'idle';
+      state.combinedVotingPower.state = 'idle';
+    },
+    fetchStakingData: (state) => {
+      state.kickoffTs.state = 'loading';
+      state.totalStaked.state = 'loading';
+      state.combinedVotingPower.state = 'loading';
+    },
+
+    fetchTotalStakedFailure: (state) => {
+      state.totalStaked.state = 'failure';
+      state.totalStaked.data = undefined;
+    },
+    setTotalStaked: (state, { payload }: PayloadAction<string>) => {
+      state.totalStaked.state = 'success';
+      state.totalStaked.data = payload;
+    },
+
+    fetchKickoffTsFailure: (state) => {
+      state.kickoffTs.state = 'failure';
+      state.kickoffTs.data = undefined;
+    },
+    setKickoffTs: (state, { payload }: PayloadAction<number>) => {
+      state.kickoffTs.state = 'success';
+      state.kickoffTs.data = payload;
+    },
+
+    fetchVotingPowerFailure: (state) => {
+      state.combinedVotingPower.state = 'failure';
+      state.combinedVotingPower.data = undefined;
+    },
+    setVotingPower: (state, { payload }: PayloadAction<string>) => {
+      state.combinedVotingPower.state = 'success';
+      state.combinedVotingPower.data = payload;
+    },
+
     selectStake: (state, { payload }: PayloadAction<number>) => {
       state.selectedStake = payload;
     },
@@ -26,45 +61,9 @@ export const stakingSlice = createSlice({
       state.selectedVest = undefined;
     },
   },
-  extraReducers: (builder) => {
-    // ----- page data -----
-    builder.addCase(initStakePageThunk.pending, (state) => {
-      state.pageData.state = 'loading';
-    });
-    builder.addCase(initStakePageThunk.rejected, (state) => {
-      state.pageData.state = 'failure';
-    });
-    builder.addCase(initStakePageThunk.fulfilled, (state, { payload }) => {
-      state.pageData.state = 'success';
-      state.pageData.data = payload;
-    });
-
-    // ----- stakes list -----
-    builder.addCase(fetchStakesListThunk.pending, (state) => {
-      state.stakesList.state = 'loading';
-    });
-    builder.addCase(fetchStakesListThunk.rejected, (state) => {
-      state.stakesList.state = 'failure';
-    });
-    builder.addCase(fetchStakesListThunk.fulfilled, (state, { payload }) => {
-      state.stakesList.state = 'success';
-      state.stakesList.data = payload;
-    });
-
-    // ----- vests list -----
-    builder.addCase(fetchVestsListThunk.pending, (state) => {
-      state.vestsList.state = 'loading';
-    });
-    builder.addCase(fetchVestsListThunk.rejected, (state) => {
-      state.vestsList.state = 'failure';
-    });
-    builder.addCase(fetchVestsListThunk.fulfilled, (state, { payload }) => {
-      state.vestsList.state = 'success';
-      state.vestsList.data = payload;
-    });
-  },
 });
 
 const { actions: stakingActions, reducer: stakingReducer } = stakingSlice;
-
 export { stakingActions, stakingReducer };
+
+export type StakingActions = ActionsType<typeof stakingActions>;

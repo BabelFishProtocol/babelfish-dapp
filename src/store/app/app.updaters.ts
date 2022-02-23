@@ -6,7 +6,7 @@ import { appActions } from './app.slice';
 
 export const AppUpdater = () => {
   const dispatch = useDispatch();
-  const { chainId, account } = useActiveWeb3React();
+  const { chainId, account, library } = useActiveWeb3React();
 
   useEffect(() => {
     dispatch(appActions.setChainId(chainId));
@@ -15,6 +15,14 @@ export const AppUpdater = () => {
   useEffect(() => {
     dispatch(appActions.setAccount(account));
   }, [account, dispatch]);
+
+  useEffect(() => {
+    if (!library) {
+      dispatch(appActions.walletDisconnected());
+      return;
+    }
+    dispatch(appActions.walletConnected(library));
+  }, [library, chainId, dispatch]);
 
   return null;
 };

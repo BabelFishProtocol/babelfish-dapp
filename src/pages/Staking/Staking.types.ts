@@ -1,4 +1,4 @@
-import { LoadableAmount } from '../../utils/types';
+import { LoadableAmount } from '../../store/types';
 
 export type RewardBlockProps = {
   amount: string;

@@ -1,25 +1,20 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { WalletConnectionChecker } from '../../components/WalletConnectionChecker/WalletConnectionChecker.component';
+import { useConnectedWeb3React } from '../../hooks/useActiveWeb3React';
+import {
+  combinedVotingPowerSelector,
+  totalStakedSelector,
+} from '../../store/staking/staking.selectors';
+import { stakingActions } from '../../store/staking/staking.slice';
+import { LoadableAmount } from '../../store/types';
 
-import { initStakePageThunk } from '../../store/staking/staking.thunks';
-import { LoadableAmount } from '../../utils/types';
 import { StakingComponent } from './Staking.component';
 import { RewardBlockProps } from './Staking.types';
 
-const mockFishStaked: LoadableAmount = {
-  amount: '9,552.8567',
-  isLoading: false,
-};
-
 const mockTotalRewards: LoadableAmount = {
-  amount: '2000.0000',
-  isLoading: false,
-};
-
-const mockVotingPower: LoadableAmount = {
-  amount: '0.0000',
-  isLoading: false,
+  data: '0.0000',
+  state: 'success',
 };
 
 const mockRewards: RewardBlockProps[] = [
@@ -29,17 +24,25 @@ const mockRewards: RewardBlockProps[] = [
 
 const Container = () => {
   const dispatch = useDispatch();
+  const { library, chainId, account } = useConnectedWeb3React();
+
+  const totalStaked = useSelector(totalStakedSelector);
+  const combinedVotingPower = useSelector(combinedVotingPowerSelector);
 
   useEffect(() => {
-    dispatch(initStakePageThunk());
-  }, [dispatch]);
+    dispatch(stakingActions.watchStakingData());
+
+    return () => {
+      dispatch(stakingActions.stopWatchingStakingData());
+    };
+  }, [dispatch, library, chainId, account]);
 
   return (
     <StakingComponent
       rewards={mockRewards}
-      fishStaked={mockFishStaked}
+      fishStaked={totalStaked}
       totalRewards={mockTotalRewards}
-      votingPower={mockVotingPower}
+      votingPower={combinedVotingPower}
     />
   );
 };

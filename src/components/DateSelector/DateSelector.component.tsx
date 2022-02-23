@@ -138,7 +138,7 @@ const ToggleButtonWithTooltip = ({
 const getTooltipMessage = (dateInfo: CheckpointInfo) => {
   if (dateInfo.isBeforePrevDate)
     return 'Cannot use dates prior to current stake';
-  if (dateInfo.isPast) return 'Cannot use past dates';
+  if (dateInfo.isPast) return 'Cannot use past and current checkpoints';
   if (dateInfo.isAlreadyUsed) return 'You already have a stake on this date';
   return '';
 };

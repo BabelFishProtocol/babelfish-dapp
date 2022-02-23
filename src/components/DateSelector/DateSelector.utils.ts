@@ -9,7 +9,7 @@ import {
 export const getAllCheckpoints = (kickoffTs: number) => {
   const dates: number[] = [];
 
-  for (let i = 1; i <= MAX_STAKING_PERIODS; i++) {
+  for (let i = 1; i < MAX_STAKING_PERIODS; i++) {
     const date = kickoffTs + TWO_WEEKS * i;
     dates.push(date);
   }
