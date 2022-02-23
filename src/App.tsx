@@ -7,13 +7,12 @@ import errorIcon from './assets/icons/error.svg';
 import { AppDialog } from './components/AppDialog/AppDialog.component';
 import { Header } from './components/Header/Header.component';
 import { InputWithButtonPillGroup } from './components/InputPillGroup/InputWithButtonPillGroup.component';
-import { Urls, VoteType } from './constants';
+import { Urls } from './constants';
 import { DashboardContainer } from './pages/Dashboard/Dashboard.container';
 import { ProposalDetailsContainer } from './pages/ProposalDetails/ProposalDetails.container';
 import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.container';
 import { StakingContainer } from './pages/Staking/Staking.container';
 import { DateSelector } from './components/DateSelector/DateSelector.component';
-import { VotingButton } from './components/VotingButton/VotingButton.component';
 
 function App() {
   const [selectedDate, setSelectedDate] = useState<number>();
@@ -84,10 +83,6 @@ function App() {
               </Button>
 
               <br />
-              <br />
-              <VotingButton type={VoteType.FOR} />
-              <br />
-              <VotingButton type={VoteType.AGAINST} />
               <br />
               <Button variant="text">Text</Button>
               <br />
