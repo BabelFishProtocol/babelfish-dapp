@@ -1,16 +1,5 @@
-import { SxProps } from '@mui/material';
-import { Control, FieldPath } from 'react-hook-form';
+import { ControlledInputType } from '../ControlledInput/ControlledInput.types';
+import { DropdownProps } from '../Dropdown/Dropdown.types';
 
-export type ControlledDropdownProps<
-  OptionType,
-  FormValues,
-  NameType = FieldPath<FormValues>
-> = {
-  name: NameType;
-  label: string;
-  placeholder?: string;
-  control: Control<FormValues>;
-  disabled?: boolean;
-  options: OptionType[];
-  sx?: SxProps;
-};
+export type ControlledDropdownProps<OptionType, FormValues> =
+  ControlledInputType<FormValues> & DropdownProps<OptionType>;

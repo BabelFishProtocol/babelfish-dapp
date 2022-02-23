@@ -55,13 +55,13 @@ export const AgregatorComponent = ({
     if (watchToken) {
       getTokenAvaliableBalance();
     }
-  }, [watchToken]);
+  }, [watchToken, getTokenAvaliableBalance]);
 
   useEffect(() => {
     if (watchAmount) {
       setValue(AggregatorInputs.ReceiveAmount, getReceiveAmount(watchAmount));
     }
-  }, [watchAmount]);
+  }, [watchAmount, getReceiveAmount, setValue]);
 
   return (
     <form
@@ -92,8 +92,9 @@ export const AgregatorComponent = ({
           }}
         >
           <ControlledDropdown
+            autoFocus
             name={AggregatorInputs.ChainDropdown}
-            label="Select Network"
+            title="Select Network"
             placeholder="Select Chain"
             control={control}
             options={baseChains}
@@ -101,7 +102,7 @@ export const AgregatorComponent = ({
           />
           <ControlledDropdown
             name={AggregatorInputs.TokenDropdown}
-            label="Deposit stablecoin"
+            title="Deposit stablecoin"
             placeholder="Select Coin"
             control={control}
             disabled={tokenDropdownDisabled}
@@ -151,7 +152,7 @@ export const AgregatorComponent = ({
           <ControlledDropdown
             disabled
             name={AggregatorInputs.DestinationChain}
-            label="Network"
+            title="Network"
             control={control}
             options={[chains.RSK]}
             sx={{ mb: 4 }}
