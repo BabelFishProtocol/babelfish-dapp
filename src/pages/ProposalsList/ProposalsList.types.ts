@@ -1,3 +1,5 @@
+import { FiniteStates } from '../../utils/types';
+
 export type Proposal = {
   name: string;
   startBlock: number;
@@ -9,4 +11,5 @@ export type Proposal = {
 
 export type ProposalsListComponentProps = {
   proposals: Proposal[];
+  state: FiniteStates;
 };

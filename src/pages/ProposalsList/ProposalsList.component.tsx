@@ -32,6 +32,7 @@ const proposalsListColumns: DataTableColumn<Proposal>[] = [
 ];
 
 export const ProposalsListComponent = ({
+  state,
   proposals,
 }: ProposalsListComponentProps) => (
   <PageView
@@ -43,10 +44,11 @@ export const ProposalsListComponent = ({
   >
     <DataTable
       data={proposals}
+      isLoading={state === 'loading'}
       columns={proposalsListColumns}
       tableTitle="GOVERNANCE PROPOSALS"
       tableAction={<Button variant="text">+CREATE PROPOSAL</Button>}
-      containerSx={{ minHeight: 100 }}
+      containerSx={{ minHeight: 250 }}
     />
 
     <Box
