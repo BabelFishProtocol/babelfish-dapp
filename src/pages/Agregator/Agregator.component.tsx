@@ -100,7 +100,7 @@ export const AgregatorComponent = ({
             placeholder="Select Chain"
             control={control}
             options={baseChains}
-            sx={{ mb: 6 }}
+            sx={{ mb: 4 }}
           />
           <ControlledDropdown
             name={AggregatorInputs.TokenDropdown}
@@ -110,7 +110,7 @@ export const AgregatorComponent = ({
             disabled={tokenDropdownDisabled}
             options={bassetOptions ?? []}
           />
-          <Box sx={{ height: 48, position: 'relative' }}>
+          <Box sx={{ mb: 8, position: 'relative' }}>
             {availableBalance && (
               <Typography
                 variant="subtitle2"
