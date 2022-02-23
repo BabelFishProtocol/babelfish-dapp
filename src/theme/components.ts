@@ -132,6 +132,22 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
       },
     },
   },
+  MuiOutlinedInput: {
+    styleOverrides: {
+      root: {
+        borderRadius: 0,
+      },
+    },
+  },
+  MuiSelect: {
+    defaultProps: {
+      MenuProps: {
+        PaperProps: {
+          square: true,
+        },
+      },
+    },
+  },
   MuiTooltip: {
     styleOverrides: {
       tooltip: {
@@ -178,10 +194,27 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
       },
     },
   },
-  MuiOutlinedInput: {
+  MuiPaper: {
     styleOverrides: {
-      root: {
-        borderRadius: 0,
+      outlined: {
+        background: 'none',
+      },
+    },
+    defaultProps: {
+      square: true,
+      variant: 'outlined',
+    },
+  },
+  MuiToggleButtonGroup: {
+    styleOverrides: {
+      grouped: {
+        ':last-of-type, :not(:last-of-type)': {
+          borderRadius: '12px',
+          borderColor: palette.borderGrey.main,
+        },
+        ':not(:last-of-type).Mui-selected, :last-of-type.Mui-selected': {
+          borderColor: palette.primary.main,
+        },
       },
     },
   },
@@ -198,6 +231,13 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
         '&.Mui-disabled': {
           background: 'none',
         },
+      },
+      sizeSmall: {
+        padding: '5px 0',
+        fontFamily: 'Comfortaa-Regular',
+        fontSize: '12px',
+        flexGrow: 1,
+        gap: '5px',
       },
     },
   },

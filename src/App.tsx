@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import { utils } from 'ethers';
 import { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import errorIcon from './assets/icons/error.svg';
@@ -9,10 +8,10 @@ import successIcon from './assets/icons/success.svg';
 import { AppDialog } from './components/AppDialog/AppDialog.component';
 import { DateSelector } from './components/DateSelector/DateSelector.component';
 import { Header } from './components/Header/Header.component';
-import { InputWithButtonPillGroup } from './components/InputPillGroup/InputWithButtonPillGroup.component';
 import { MintingInfo } from './components/MintingInfo/MintingInfo.component';
 import { MintingProcessInfo } from './components/MintingInfo/MintingInfo.types';
 import { Urls } from './constants';
+import { AgregatorContainer } from './pages/Agregator/Agregator.container';
 import { DashboardContainer } from './pages/Dashboard/Dashboard.container';
 import { ProposalDetailsContainer } from './pages/ProposalDetails/ProposalDetails.container';
 import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.container';
@@ -84,7 +83,6 @@ function App() {
           path="/"
           element={
             <>
-              <div>Main</div>
               <Button>About</Button>
               <br />
               <br />
@@ -137,12 +135,6 @@ function App() {
               <Button variant="text">Text</Button>
               <br />
               <br />
-              <Box sx={{ maxWidth: 350, m: 10 }}>
-                <InputWithButtonPillGroup
-                  symbol="XUSD"
-                  totalAmount={utils.parseUnits('2.234')}
-                />
-              </Box>
               <DateSelector
                 kickoffTs={1635379200}
                 stakes={[]}
@@ -160,6 +152,7 @@ function App() {
           path={`${Urls.Proposals}/:id`}
           element={<ProposalDetailsContainer />}
         />
+        <Route path={Urls.Agregator} element={<AgregatorContainer />} />
       </Routes>
     </div>
   );
