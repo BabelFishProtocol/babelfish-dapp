@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 import { Reducers } from '../constants';
-import { indexSaga } from './saga';
+import { indexSaga, indexSaga } from './saga';
 import { appReducer } from './app/app.slice';
 import { stakingReducer } from './staking/staking.slice';
 import { proposalsReducer } from './proposals/proposals.slice';
