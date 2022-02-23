@@ -1,12 +1,17 @@
 import { utils } from 'ethers';
 
+import { useForm } from 'react-hook-form';
 import { Button } from '../../../../components/Button/Button.component';
 import { TextInput } from '../../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../../components/DialogForm/DialogForm.component';
 import { CurrencyInput } from '../../../../components/CurrencyInput/CurrencyInput.component';
-import { InputWithButtonPillGroup } from '../../../../components/InputPillGroup/InputWithButtonPillGroup.component';
 
-import { WithdrawStakeComponentProps } from './WithdrawStake.types';
+import {
+  WithdrawStakeComponentProps,
+  WithdrawStakeFormValues,
+} from './WithdrawStake.types';
+import { WithdrawStakeFields } from './WithdrawStake.fields';
+import { ControlledInputWithButtonPillGroup } from '../../../../components/ControlledInputWithButtonPillGroup/ControlledInputWithButtonPillGroup.component';
 
 export const WithdrawStakeComponent = ({
   open,
@@ -15,32 +20,42 @@ export const WithdrawStakeComponent = ({
   forfeitPercent,
   forfeitWithdraw,
   currentStakeAmount,
-}: WithdrawStakeComponentProps) => (
-  <DialogForm
-    open={open}
-    txFee={txFee}
-    onClose={onClose}
-    title="Unstake Fish"
-    leftButton={<Button>Confirm</Button>}
-  >
-    <CurrencyInput
-      disabled
-      symbol="FISH"
-      value={currentStakeAmount}
-      title="Amount Currently Staked"
-    />
+}: WithdrawStakeComponentProps) => {
+  const { control, setValue } = useForm<WithdrawStakeFormValues>({
+    defaultValues: {
+      [WithdrawStakeFields.WithdrawStakeAmount]: '',
+    },
+  });
+  return (
+    <DialogForm
+      open={open}
+      txFee={txFee}
+      onClose={onClose}
+      title="Unstake Fish"
+      leftButton={<Button>Confirm</Button>}
+    >
+      <CurrencyInput
+        disabled
+        symbol="FISH"
+        value={currentStakeAmount}
+        title="Amount Currently Staked"
+      />
 
-    <InputWithButtonPillGroup
-      autoFocus
-      symbol="FISH"
-      title="Amount To Unstake"
-      totalAmount={utils.parseUnits('2.234')}
-    />
+      <ControlledInputWithButtonPillGroup
+        autoFocus
+        symbol="FISH"
+        title="Amount To Unstake"
+        totalAmount={utils.parseUnits('2.234')}
+        name={WithdrawStakeFields.WithdrawStakeAmount}
+        control={control}
+        setValue={setValue}
+      />
 
-    <TextInput
-      disabled
-      value={`${forfeitPercent}% ≈  ${forfeitWithdraw} FISH`}
-      title="Early Unstake Forfeit"
-    />
-  </DialogForm>
-);
+      <TextInput
+        disabled
+        value={`${forfeitPercent}% ≈  ${forfeitWithdraw} FISH`}
+        title="Early Unstake Forfeit"
+      />
+    </DialogForm>
+  );
+};
