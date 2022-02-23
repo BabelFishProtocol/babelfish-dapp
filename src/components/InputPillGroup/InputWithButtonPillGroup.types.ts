@@ -1,12 +1,11 @@
 import { OutlinedInputProps } from '@mui/material/OutlinedInput';
 import { BigNumber } from 'ethers';
+import React from 'react';
 
-export type InputButtonPillGroupProps = Partial<
-  Omit<OutlinedInputProps, 'value'>
-> & {
+export type InputWithButtonPillGroupProps = Partial<OutlinedInputProps> & {
   title?: string;
   symbol: string;
-  totalAmount: BigNumber;
-  // value: string;
-  onChange?: (newValue: string) => void;
+  totalAmount?: BigNumber;
+  onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onButtonChange: (newValue: string) => void;
 };
