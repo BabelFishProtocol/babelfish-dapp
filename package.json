@@ -8,7 +8,8 @@
     "test": "jest",
     "preview": "vite preview",
     "check-types": "tsc --noEmit",
-    "generate-contracts-types": "typechain --target ethers-v5 --out-dir src/contracts './src/contracts/abi/*.json'"
+    "generate-contracts-types": "typechain --target ethers-v5 --out-dir src/contracts/types './src/contracts/abi/*.json'",
+    "postinstall": "yarn generate-contracts-types"
   },
   "dependencies": {
     "@emotion/react": "^11.7.1",
