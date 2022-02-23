@@ -33,11 +33,6 @@ export const IncreaseStakeComponent = ({
       onClose={onClose}
       title="Add To Stake"
       leftButton={<Button>Stake</Button>}
-      rightButton={
-        <Button variant="outlined" onClick={onClose}>
-          Cancel
-        </Button>
-      }
     >
       <CurrencyInput
         disabled

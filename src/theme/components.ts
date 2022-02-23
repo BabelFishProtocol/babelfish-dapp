@@ -238,13 +238,6 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
         fontSize: '12px',
         flexGrow: 1,
         gap: '5px',
-
-        //   borderColor: isSelected ? palette.primary.main : palette.grey[600],
-        //   color: isSelected ? palette.primary.main : 'white',
-        //   backgroundColor: isSelected
-        //     ? alpha(palette.primary.main, 0.2)
-        //     : 'rgba(255,255,255, 0.2)',
-        // })}
       },
     },
   },
