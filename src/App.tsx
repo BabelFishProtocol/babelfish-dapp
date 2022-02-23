@@ -19,7 +19,9 @@ import { StakingContainer } from './pages/Staking/Staking.container';
 
 function App() {
   const [selectedDate, setSelectedDate] = useState<number>();
-  const [openDialogType, setOpenDialogType] = useState<string | null>(null);
+  const [openDialogType, setOpenDialogType] = useState<
+    'success' | 'error' | 'pending'
+  >();
 
   const dialogVals: MintingProcessInfo[] = [
     { label: 'Date/Time', value: '21/01/21-14:34 GMT' },
@@ -45,7 +47,7 @@ function App() {
         title="Minting Error"
         description="We encountered an error in the minting process. Please try again"
         onClose={() => {
-          setOpenDialogType(null);
+          setOpenDialogType(undefined);
         }}
       >
         <Button variant="outlined">Try Again</Button>
@@ -57,7 +59,7 @@ function App() {
         icon={successIcon}
         title="Minting Complete"
         onClose={() => {
-          setOpenDialogType(null);
+          setOpenDialogType(undefined);
         }}
       >
         <Box sx={{ mt: 3 }}>
