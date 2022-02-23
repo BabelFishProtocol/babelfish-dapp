@@ -38,3 +38,5 @@ export const monthNames = [
   'Nov',
   'Dec',
 ];
+
+export const decimalRegex = /^\d*\.?\d*$/;

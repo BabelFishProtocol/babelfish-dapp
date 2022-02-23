@@ -10,7 +10,6 @@ export const ControlledDropdown = <
 >({
   name,
   control,
-  disabled,
   ...dropdownProps
 }: ControlledDropdownProps<OptionType, FormValues>) => (
   <Controller

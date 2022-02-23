@@ -20,7 +20,9 @@ export const DropdownOptions = <
   onChange,
 }: DropdownProps<ItemSelected, ValueType>) => (
   <FormControl fullWidth disabled={disabled} sx={sx}>
-    <Typography variant="h3">{title}</Typography>
+    <Typography variant="h3" sx={{ mb: 1.5 }}>
+      {title}
+    </Typography>
     <Select
       value={value}
       onChange={onChange}

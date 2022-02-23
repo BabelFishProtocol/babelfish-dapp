@@ -47,8 +47,10 @@ export const AgregatorComponent = ({
   useEffect(() => {
     const chosenChain = baseChains.find(({ id }) => id === watchChain);
     const currentOptions = chosenChain && chosenChain.bassets;
-    setBassetOptions(currentOptions);
-    setTokenDropdownDisabled(!currentOptions);
+    if (currentOptions) {
+      setBassetOptions(currentOptions);
+      setTokenDropdownDisabled(!currentOptions);
+    }
   }, [watchChain]);
 
   useEffect(() => {
