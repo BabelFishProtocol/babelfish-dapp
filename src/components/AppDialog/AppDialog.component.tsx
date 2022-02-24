@@ -16,7 +16,6 @@ export const AppDialogTitle = ({ title, onClose }: AppDialogTitleProps) => (
       onClick={onClose}
       sx={{
         background: 'transparent',
-        borderRadius: '50%',
       }}
     >
       <img
