@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { WalletConnectionChecker } from '../../components/WalletConnectionChecker/WalletConnectionChecker.component';
-import { useConnectedWeb3React } from '../../hooks/useActiveWeb3React';
 import {
   combinedVotingPowerSelector,
   totalStakedSelector,
@@ -24,8 +23,6 @@ const mockRewards: RewardBlockProps[] = [
 
 const Container = () => {
   const dispatch = useDispatch();
-  const { chainId, account } = useConnectedWeb3React();
-
   const totalStaked = useSelector(totalStakedSelector);
   const combinedVotingPower = useSelector(combinedVotingPowerSelector);
 
@@ -35,7 +32,7 @@ const Container = () => {
     return () => {
       dispatch(stakingActions.stopWatchingStakingData());
     };
-  }, [dispatch, chainId, account]);
+  }, [dispatch]);
 
   return (
     <StakingComponent

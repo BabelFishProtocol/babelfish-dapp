@@ -70,14 +70,21 @@ function* fetchBalances() {
   ]);
 }
 
-function* runBalancesUpdater() {
+function* triggerFetch() {
   yield* put(stakingActions.fetchStakingData());
+}
 
-  while (true) {
-    yield* take(appActions.setBlockNumber.type);
+function* runBalancesUpdater() {
+  yield* triggerFetch();
 
-    yield* put(stakingActions.fetchStakingData());
-  }
+  yield* takeLatest(
+    [
+      appActions.setChainId.type,
+      appActions.setAccount.type,
+      appActions.setBlockNumber.type,
+    ],
+    triggerFetch
+  );
 }
 
 function* watchStakingData() {
