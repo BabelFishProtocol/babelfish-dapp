@@ -53,7 +53,7 @@ export const ExtendStakeContainer = ({
   const { handleSubmit: onExtend, ...extendTxData } =
     useContractCall(handleExtend);
 
-  if (!kickoffTs.data || !selectedStakeData) {
+  if (!kickoffTs || !selectedStakeData) {
     return null;
   }
 

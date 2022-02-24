@@ -104,7 +104,7 @@ export const WithdrawStakeContainer = ({
   const { handleSubmit: onWithdraw, ...withdrawTxData } =
     useContractCall(handleWithdraw);
 
-  if (!kickoffTs.data || !selectedStakeData) {
+  if (!kickoffTs || !selectedStakeData) {
     return null;
   }
 
