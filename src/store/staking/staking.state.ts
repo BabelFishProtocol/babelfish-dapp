@@ -5,12 +5,11 @@ export type StakeListItem = {
   lockedAmount: string;
   votingPower: string;
   votingDelegation: string;
-  stakingPeriod: string;
   unlockDate: number;
 };
 
 export type VestsListItem = StakeListItem & {
-  stakingDate: string;
+  stakingPeriodStart: number;
 };
 
 export class StakingState {

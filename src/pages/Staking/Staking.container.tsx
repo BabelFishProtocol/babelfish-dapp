@@ -12,13 +12,13 @@ import { StakingComponent } from './Staking.component';
 import { RewardBlockProps } from './Staking.types';
 
 const mockTotalRewards: LoadableAmount = {
-  data: '0.0000',
+  data: '0',
   state: 'success',
 };
 
 const mockRewards: RewardBlockProps[] = [
-  { amount: '0.0000', asset: 'XUSD', usdAmount: '0.0000' },
-  { amount: '0.0000', asset: 'FISH', usdAmount: '0.0000' },
+  { amount: '0', asset: 'XUSD', usdAmount: '0.00' },
+  { amount: '0', asset: 'FISH', usdAmount: '0.00' },
 ];
 
 const Container = () => {

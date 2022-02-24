@@ -3,6 +3,7 @@ import { ContainerProps } from '@mui/material/Container';
 import { LoadableAmount } from '../../store/types';
 
 export type BalanceBlockContentProps = LoadableAmount & {
+  aprox?: boolean;
   asset?: string;
 };
 

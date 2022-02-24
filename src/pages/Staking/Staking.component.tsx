@@ -11,6 +11,7 @@ import {
 } from '../../components/PageView/PageView.component';
 import { BalanceBlock } from '../../components/BalanceBlock/BalanceBlock.component';
 import { Urls } from '../../constants';
+import { formatWeiAmount } from '../../utils/helpers';
 
 import { VestsListContainer } from './VestsList/VestsList.container';
 import { StakesListContainer } from './StakesList/StakesList.container';
@@ -52,10 +53,11 @@ export const StakingComponent = ({
           </BalanceBlock>
 
           <BalanceBlock
+            aprox
             asset="USD"
             label="Total Earned Rewards Available"
             state={totalRewards.state}
-            data={`≈ ${totalRewards.data}`}
+            data={totalRewards.data}
           >
             <Box>
               {rewards.map((reward, index) => (
@@ -101,7 +103,7 @@ export const StakingComponent = ({
 const RewardBlock = ({ amount, asset, usdAmount }: RewardBlockProps) => (
   <Box sx={{ gap: 1, display: 'flex', alignItems: 'center' }}>
     <Typography variant="caption">
-      {asset} {amount} ≈ USD {usdAmount}
+      {asset} {formatWeiAmount(amount, 6)} ≈ USD {usdAmount}
     </Typography>
     <Button
       size="small"

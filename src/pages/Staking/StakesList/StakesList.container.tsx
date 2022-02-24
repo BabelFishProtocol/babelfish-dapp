@@ -12,26 +12,24 @@ import { StakesListComponent } from './StakesList.component';
 const mockStakes: StakeListItem[] = [
   {
     asset: 'FISH',
-    lockedAmount: '9,552.8567',
-    votingPower: '0.0000',
+    lockedAmount: '9552856700000000000000',
+    votingPower: '0',
     votingDelegation: 'No Delegate',
-    stakingPeriod: '373 days',
     unlockDate: 1659571200,
   },
   {
     asset: 'FISH',
-    lockedAmount: '2,552.8567',
-    votingPower: '12.0000',
+    lockedAmount: '2552856700000000000000',
+    votingPower: '12000000000000000000',
     votingDelegation: '0x94e907f6B903A393E14FE549113137CA6483b5ef',
-    stakingPeriod: 'Expired',
     unlockDate: 1677715200,
   },
   {
     asset: 'FISH',
-    lockedAmount: '0.8567',
-    votingPower: '0.0000',
+    lockedAmount: '0856700000000000000',
+    votingPower: '0',
     votingDelegation: 'No Delegate',
-    stakingPeriod: '373 days',
+    // stakingPeriod: '373 days',
     unlockDate: 1639008000,
   },
 ];
