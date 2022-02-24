@@ -24,7 +24,7 @@ const mockRewards: RewardBlockProps[] = [
 
 const Container = () => {
   const dispatch = useDispatch();
-  const { library, chainId, account } = useConnectedWeb3React();
+  const { chainId, account } = useConnectedWeb3React();
 
   const totalStaked = useSelector(totalStakedSelector);
   const combinedVotingPower = useSelector(combinedVotingPowerSelector);
@@ -35,7 +35,7 @@ const Container = () => {
     return () => {
       dispatch(stakingActions.stopWatchingStakingData());
     };
-  }, [dispatch, library, chainId, account]);
+  }, [dispatch, chainId, account]);
 
   return (
     <StakingComponent
