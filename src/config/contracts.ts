@@ -28,4 +28,15 @@ export const contractsAddresses: ContractsAddresses = {
     feeSharingProxy: '0x12B1B0C67d9A771EB5Db7726d23fdc6848fd93ef',
     vestingRegistry: '0x036ab2DB0a3d1574469a4a7E09887Ed76fB56C41',
   },
+  [ChainEnum.RSK_TESTNET]: {
+    staking: '0x786CD2E46fFa407114cCDb78b57F9fbe3b83Cd24',
+    priceFeed: '0x7f38c422b99075f63C9c919ECD200DF8d2Cf5BD4',
+    multicall: '0x9e469e1fc7fb4c5d17897b68eaf1afc9df39f103',
+    fishToken: '0x5250D37B096099678b0957bae32153915ca2C043',
+    swapNetwork: '0x61172B53423E205a399640e5283e51FE60EC2256',
+    governorAdmin: '0x82dF1C8d73235128A5176Af4Bdac7dDb7e049e5E',
+    governorOwner: '0x82dF1C8d73235128A5176Af4Bdac7dDb7e049e5E',
+    feeSharingProxy: '0xBF56E401e3CbE1ddF3d8fEee770d9A3a19076751',
+    vestingRegistry: '0x64e0C4bBe361B3efbbcE35870FaFc9DC1A049AC6',
+  },
 };
