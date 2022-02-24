@@ -8,3 +8,4 @@ dist-ssr
 yarn-error.log
 .yarn/cache
 .yarn/install-state.gz
+src/contracts/types
