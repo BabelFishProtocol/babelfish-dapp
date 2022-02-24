@@ -1,5 +1,3 @@
-/* eslint-disable require-yield */
-
 import { END, eventChannel } from 'redux-saga';
 import { all, call, put, take, takeLatest } from 'typed-redux-saga';
 import { Web3Provider } from '@ethersproject/providers';
