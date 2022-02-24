@@ -7,6 +7,7 @@ export const ControlledInputWithButtonPillGroup = <
   FormValues extends FieldValues
 >({
   name,
+  rules,
   control,
   setValue,
   totalAmount,
@@ -30,6 +31,8 @@ export const ControlledInputWithButtonPillGroup = <
       control={control}
       rules={{
         validate: (v) => !totalAmount || utils.parseUnits(v).lt(totalAmount),
+        required: true,
+        ...rules,
       }}
     />
   );

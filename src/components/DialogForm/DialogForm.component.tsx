@@ -14,6 +14,7 @@ export const DialogForm = ({
   title,
   onClose,
   children,
+  handleSubmit,
   leftButton,
   rightButton = (
     <Button variant="outlined" onClick={onClose}>
@@ -29,26 +30,28 @@ export const DialogForm = ({
   >
     <AppDialogTitle title={title} onClose={onClose} />
 
-    <Box
-      sx={{
-        px: 4,
-        pt: 3,
-        pb: 1,
-        gap: 3,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-      }}
-    >
-      {children}
-      <Typography>Tx Fee: {txFee} RBTC</Typography>
-    </Box>
+    <form onSubmit={handleSubmit}>
+      <Box
+        sx={{
+          px: 4,
+          pt: 3,
+          pb: 1,
+          gap: 3,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+        }}
+      >
+        {children}
+        <Typography>Tx Fee: {txFee} RBTC</Typography>
+      </Box>
 
-    <CenteredBox
-      sx={{ width: '100%', gap: 3, p: 3, '& button': { flexGrow: 1 } }}
-    >
-      {leftButton}
-      {rightButton}
-    </CenteredBox>
+      <CenteredBox
+        sx={{ width: '100%', gap: 3, p: 3, '& button': { flexGrow: 1 } }}
+      >
+        {leftButton}
+        {rightButton}
+      </CenteredBox>
+    </form>
   </Dialog>
 );

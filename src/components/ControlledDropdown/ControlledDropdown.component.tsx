@@ -9,6 +9,7 @@ export const ControlledDropdown = <
   FormValues
 >({
   name,
+  rules,
   control,
   ...dropdownProps
 }: ControlledDropdownProps<OptionType, FormValues>) => (
@@ -18,5 +19,9 @@ export const ControlledDropdown = <
     )}
     name={name}
     control={control}
+    rules={{
+      required: true,
+      ...rules,
+    }}
   />
 );

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { FormEventHandler, ReactNode } from 'react';
 
 export type DialogFormProps = {
   open: boolean;
@@ -8,4 +8,5 @@ export type DialogFormProps = {
   children: ReactNode;
   leftButton: ReactNode;
   rightButton?: ReactNode;
+  handleSubmit?: FormEventHandler<HTMLFormElement>;
 };

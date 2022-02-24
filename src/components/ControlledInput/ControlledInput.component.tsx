@@ -4,6 +4,7 @@ import { ControlledInputProps } from './ControlledInput.types';
 
 export const ControlledInput = <FormValues extends FieldValues>({
   name,
+  rules,
   control,
   ...inputProps
 }: ControlledInputProps<FormValues>) => (
@@ -13,5 +14,9 @@ export const ControlledInput = <FormValues extends FieldValues>({
     )}
     name={name}
     control={control}
+    rules={{
+      required: true,
+      ...rules,
+    }}
   />
 );

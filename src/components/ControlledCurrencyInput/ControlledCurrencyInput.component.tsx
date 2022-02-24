@@ -4,6 +4,7 @@ import { ControlledCurrencyInputProps } from './ControlledCurrencyInput.types';
 
 export const ControlledCurrencyInput = <FormValues extends FieldValues>({
   name,
+  rules,
   control,
   ...inputProps
 }: ControlledCurrencyInputProps<FormValues>) => (
@@ -13,5 +14,9 @@ export const ControlledCurrencyInput = <FormValues extends FieldValues>({
     )}
     name={name}
     control={control}
+    rules={{
+      required: true,
+      ...rules,
+    }}
   />
 );

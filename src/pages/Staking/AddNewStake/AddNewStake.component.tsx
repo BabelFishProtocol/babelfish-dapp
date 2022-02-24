@@ -1,17 +1,16 @@
-import { useState } from 'react';
 import { utils } from 'ethers';
-
 import { useForm } from 'react-hook-form';
+
 import { Button } from '../../../components/Button/Button.component';
 import { TextInput } from '../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../components/DialogForm/DialogForm.component';
-import { DateSelector } from '../../../components/DateSelector/DateSelector.component';
+import { ControlledDateSelector } from '../../../components/ControlledDateSelector/ControlledDateSelector.component';
+import { ControlledInputWithButtonPillGroup } from '../../../components/ControlledInputWithButtonPillGroup/ControlledInputWithButtonPillGroup.component';
 
 import {
   AddNewStakeComponentProps,
   AddNewStakeFormValues,
 } from './AddNewStake.types';
-import { ControlledInputWithButtonPillGroup } from '../../../components/ControlledInputWithButtonPillGroup/ControlledInputWithButtonPillGroup.component';
 import { AddNewStakeFields } from './AddNewStake.fields';
 
 export const AddNewStakeComponent = ({
@@ -19,13 +18,11 @@ export const AddNewStakeComponent = ({
   txFee,
   onClose,
   stakes,
+  onSubmit,
   votingPower,
   kickoffTs,
 }: AddNewStakeComponentProps) => {
-  const [unlockDate, setUnlockDate] = useState<number>();
-
-  // TODO: change dateSelector and slectDate to controlled inputs by react-hook-form
-  const { control, setValue } = useForm<AddNewStakeFormValues>({
+  const { control, setValue, handleSubmit } = useForm<AddNewStakeFormValues>({
     defaultValues: {
       [AddNewStakeFields.stakeAmount]: '',
     },
@@ -37,7 +34,8 @@ export const AddNewStakeComponent = ({
       txFee={txFee}
       title="Stake Fish"
       onClose={onClose}
-      leftButton={<Button>Stake</Button>}
+      handleSubmit={handleSubmit(onSubmit)}
+      leftButton={<Button type="submit">Stake</Button>} // change to buttonText. Add loading, disabled states inside DialogForm
     >
       <ControlledInputWithButtonPillGroup
         autoFocus
@@ -49,11 +47,11 @@ export const AddNewStakeComponent = ({
         setValue={setValue}
       />
 
-      <DateSelector
-        value={unlockDate}
+      <ControlledDateSelector
+        name={AddNewStakeFields.unlockDate}
         stakes={stakes}
         kickoffTs={kickoffTs}
-        onChange={setUnlockDate}
+        control={control}
       />
 
       <TextInput disabled value={votingPower} title="Voting Power received" />
