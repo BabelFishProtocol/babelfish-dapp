@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 
 import Typography from '@mui/material/Typography';
 
+import { useSelector } from 'react-redux';
 import {
   formatWeiAmount,
   isRskAddress,
@@ -18,13 +19,12 @@ import {
   StakeListItem,
   VestsListItem,
 } from '../../store/staking/staking.state';
-
-const mockAccount = '0x0000000000000000000000000000000000000000';
+import { accountSelector } from '../../store/app/app.selectors';
 
 type ColumnComponent = CustomColumn<StakeListItem | VestsListItem>;
 
 export const VotingDelegationColumn: ColumnComponent = ({ value }) => {
-  const account = mockAccount;
+  const account = useSelector(accountSelector);
 
   return isRskAddress(String(value)) && value !== account ? (
     <>
@@ -48,7 +48,7 @@ export const formatStakingPeriod: CellParser = (val) => {
   const parsedDate = timestampToDate(Number(val));
 
   const isLocked = dayjs().isAfter(parsedDate);
-  const daysDiff = dayjs().diff(parsedDate, 'days');
+  const daysDiff = Math.abs(dayjs().diff(parsedDate, 'days'));
 
   return isLocked ? 'Expired' : `${daysDiff} days`;
 };
