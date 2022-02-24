@@ -1,13 +1,15 @@
+import { utils } from 'ethers';
 import { createSelector } from '@reduxjs/toolkit';
-import { Contract, Signer, utils } from 'ethers';
+
 import { RootState } from '..';
-import { chains } from '../../config/chains';
 import {
   contractsAddresses,
   ContractsForNetwork,
 } from '../../config/contracts';
 import { Reducers } from '../../constants';
+import { chains } from '../../config/chains';
 import { Staking__factory } from '../../contracts/types';
+import { BaseContractFactory } from '../types';
 
 const appState = (state: RootState) => state[Reducers.App];
 
@@ -48,11 +50,7 @@ export const addressesSelector = createSelector(
   }
 );
 
-type BaseFactory = {
-  connect: (address: string, signer: Signer) => Contract;
-};
-
-const createContractSelector = <Factory extends BaseFactory>(
+const createContractSelector = <Factory extends BaseContractFactory>(
   factory: Factory,
   name: keyof ContractsForNetwork
 ) =>
