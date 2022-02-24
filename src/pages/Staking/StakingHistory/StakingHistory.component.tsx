@@ -1,6 +1,6 @@
 import { DataTable } from '../../../components/DataTable/DataTable.component';
 import { DataTableColumn } from '../../../components/DataTable/DataTable.types';
-import { formatTimestampToUTC } from '../../../utils/helpers';
+import { formatTimestamp } from '../../../utils/helpers';
 import { getAmountColumn } from '../Staking.columns';
 import {
   StakingHistoryComponentProps,
@@ -14,7 +14,7 @@ const stakingHistoryColumns: DataTableColumn<StakingHistoryListItem>[] = [
     label: 'Staked Amount',
     component: getAmountColumn('stakedAmount'),
   },
-  { name: 'stakingDate', label: 'Staking Date', format: formatTimestampToUTC },
+  { name: 'stakingDate', label: 'Staking Date', format: formatTimestamp },
   {
     name: 'totalStaked',
     label: 'Total Staked',

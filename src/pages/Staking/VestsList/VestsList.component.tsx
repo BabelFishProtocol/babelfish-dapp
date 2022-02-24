@@ -1,4 +1,4 @@
-import { formatTimestampToUTC } from '../../../utils/helpers';
+import { formatTimestamp } from '../../../utils/helpers';
 import { VestsListItem } from '../../../store/staking/staking.state';
 
 import { DataTable } from '../../../components/DataTable/DataTable.component';
@@ -28,10 +28,10 @@ const vestsColumns: DataTableColumn<VestsListItem>[] = [
   {
     label: 'Staking Date',
     name: 'stakingPeriodStart',
-    format: formatTimestampToUTC,
+    format: formatTimestamp,
   },
   { label: 'Staking Period', name: 'unlockDate', format: formatStakingPeriod },
-  { label: 'Unlock Date', name: 'unlockDate', format: formatTimestampToUTC },
+  { label: 'Unlock Date', name: 'unlockDate', format: formatTimestamp },
   { label: 'Actions', name: 'unlockDate', component: VestsActionColumn },
 ];
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { formatTimestampToUTC } from '../../../utils/helpers';
+import { formatTimestamp } from '../../../utils/helpers';
 import { StakeListItem } from '../../../store/staking/staking.state';
 
 import { DataTable } from '../../../components/DataTable/DataTable.component';
@@ -35,7 +35,7 @@ const stakesColumns: DataTableColumn<StakeListItem>[] = [
   {
     label: 'Unlock Date',
     name: 'unlockDate',
-    format: formatTimestampToUTC,
+    format: formatTimestamp,
   },
   { label: 'Actions', name: 'unlockDate', component: StakeActionColumn },
 ];
