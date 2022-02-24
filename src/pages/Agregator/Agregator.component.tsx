@@ -156,7 +156,7 @@ export const AgregatorComponent = ({
             name={AggregatorInputs.DestinationChain}
             title="Network"
             control={control}
-            options={[chains.RSK]}
+            options={[chains[ChainEnum.RSK]]}
             sx={{ mb: 4 }}
           />
           <ControlledCurrencyInput

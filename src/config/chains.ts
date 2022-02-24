@@ -15,7 +15,7 @@ export enum ChainEnum {
 
 export type ChainType = {
   name: string;
-  icon?: string;
+  icon: string;
   id: ChainEnum;
   chainId: string;
   rpcUrls: string[];

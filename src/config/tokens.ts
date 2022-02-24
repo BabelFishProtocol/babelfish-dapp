@@ -36,27 +36,27 @@ export interface TokenTypeBase {
 
 export const tokensCatalog = {
   [TokenEnum.USDT]: {
-    id: 'USDT',
+    id: TokenEnum.USDT,
     name: 'USDT',
     icon: usdtIcon,
   },
   [TokenEnum.USDC]: {
-    id: 'USDC',
+    id: TokenEnum.USDC,
     name: 'USDC',
     icon: usdcIcon,
   },
   [TokenEnum.DAI]: {
-    id: 'DAI',
+    id: TokenEnum.USDC,
     name: 'DAI',
     icon: daiIcon,
   },
   [TokenEnum.BUSD]: {
-    id: 'BUSD',
+    id: TokenEnum.BUSD,
     name: 'BUSD',
     icon: busdIcon,
   },
   [TokenEnum.USDP]: {
-    id: 'PAX',
+    id: TokenEnum.USDP,
     name: 'PAX',
     icon: usdpIcon,
   },
