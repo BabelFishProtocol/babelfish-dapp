@@ -11,6 +11,7 @@ export type AddNewStakeComponentProps = AddNewStakeContainerProps &
   Pick<DateSelectorProps, 'kickoffTs' | 'stakes'> & {
     txFee: string;
     votingPower: string;
+    totalFishAmount: string;
     onSubmit: (formValues: AddNewStakeFormValues) => Promise<void>;
   };
 

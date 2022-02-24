@@ -1,4 +1,4 @@
-import { utils } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '../../../components/Button/Button.component';
@@ -21,6 +21,7 @@ export const AddNewStakeComponent = ({
   onSubmit,
   votingPower,
   kickoffTs,
+  totalFishAmount,
 }: AddNewStakeComponentProps) => {
   const { control, setValue, handleSubmit } = useForm<AddNewStakeFormValues>({
     defaultValues: {
@@ -41,7 +42,7 @@ export const AddNewStakeComponent = ({
         autoFocus
         symbol="FISH"
         title="Amount To Stake"
-        totalAmount={utils.parseUnits('2.234')}
+        totalAmount={BigNumber.from(totalFishAmount)}
         name={AddNewStakeFields.stakeAmount}
         control={control}
         setValue={setValue}

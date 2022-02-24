@@ -91,6 +91,8 @@ export function* fetchStakesList() {
   }
 }
 
+export function* fetchFishBalance() {}
+
 function* fetchBalances() {
   yield* all([
     call(fetchTotalStaked),

@@ -20,6 +20,7 @@ export const AddNewStakeContainer = ({
 }: AddNewStakeContainerProps) => {
   const kickoffTs = useSelector(kickoffTsSelector);
   const currentStakes = useSelector(stakesDatesSelector);
+  const totalStaked = useSelector(stakesDatesSelector);
 
   if (!kickoffTs.data) {
     return null;
