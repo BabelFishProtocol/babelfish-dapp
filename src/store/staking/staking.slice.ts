@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
 import { ActionsType } from '../types';
-import { StakingState } from './staking.state';
+import { StakeListItem, StakingState } from './staking.state';
 
 const initialState = { ...new StakingState() };
 
@@ -19,6 +19,7 @@ export const stakingSlice = createSlice({
       state.kickoffTs.state = 'loading';
       state.totalStaked.state = 'loading';
       state.combinedVotingPower.state = 'loading';
+      state.stakesList.state = 'loading';
     },
 
     fetchTotalStakedFailure: (state) => {
@@ -46,6 +47,15 @@ export const stakingSlice = createSlice({
     setVotingPower: (state, { payload }: PayloadAction<string>) => {
       state.combinedVotingPower.state = 'success';
       state.combinedVotingPower.data = payload;
+    },
+
+    fetchStakesListFailure: (state) => {
+      state.stakesList.data = [];
+      state.stakesList.state = 'failure';
+    },
+    setStakesList: (state, { payload }: PayloadAction<StakeListItem[]>) => {
+      state.stakesList.data = payload;
+      state.stakesList.state = 'success';
     },
 
     selectStake: (state, { payload }: PayloadAction<number>) => {

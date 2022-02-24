@@ -3,7 +3,7 @@ import { LoadableAmount, LoadableValue } from '../types';
 export type StakeListItem = {
   asset: string;
   lockedAmount: string;
-  votingPower: string;
+  // votingPower: string;
   votingDelegation: string;
   unlockDate: number;
 };

@@ -45,9 +45,12 @@ export const getAmountColumn =
     );
 
 export const formatStakingPeriod: CellParser = (val) => {
-  const daysDiff = Math.abs(dayjs().diff(timestampToDate(Number(val)), 'days'));
+  const parsedDate = timestampToDate(Number(val));
 
-  return `${daysDiff} days`;
+  const isLocked = dayjs().isAfter(parsedDate);
+  const daysDiff = dayjs().diff(parsedDate, 'days');
+
+  return isLocked ? 'Expired' : `${daysDiff} days`;
 };
 
 export const formatFishAmountColumn: CellParser = (val) =>
