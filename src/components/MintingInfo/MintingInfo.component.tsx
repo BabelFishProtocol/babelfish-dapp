@@ -5,9 +5,9 @@ import { MintingInfoPros } from './MintingInfo.types';
 
 export const MintingInfo = ({ data }: MintingInfoPros) => (
   <>
-    {data.map((d, i) => (
+    {data.map(({ label, value, isProminant }, index) => (
       <Box
-        key={i}
+        key={index}
         sx={{
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',
@@ -21,16 +21,16 @@ export const MintingInfo = ({ data }: MintingInfoPros) => (
             textAlign: 'right',
           }}
         >
-          {d.label} :
+          {label}:
         </Typography>
         <Typography
           sx={({ palette }) => ({
             textAlign: 'left',
-            color: d.isProminant ? palette.primary.main : 'white',
+            color: isProminant ? palette.primary.main : 'white',
           })}
           variant="body1"
         >
-          {d.value}
+          {value}
         </Typography>
       </Box>
     ))}
