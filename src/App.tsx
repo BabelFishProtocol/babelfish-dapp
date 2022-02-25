@@ -10,10 +10,8 @@ import { DashboardContainer } from './pages/Dashboard/Dashboard.container';
 import { ProposalDetailsContainer } from './pages/ProposalDetails/ProposalDetails.container';
 import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.container';
 import { StakingContainer } from './pages/Staking/Staking.container';
-import { DateSelector } from './components/DateSelector/DateSelector.component';
 
 function App() {
-  const [selectedDate, setSelectedDate] = useState<number>();
   const [isOpenDialog, setIsOpenDialog] = useState(false);
 
   return (
