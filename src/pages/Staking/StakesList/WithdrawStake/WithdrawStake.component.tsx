@@ -5,13 +5,13 @@ import { Button } from '../../../../components/Button/Button.component';
 import { TextInput } from '../../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../../components/DialogForm/DialogForm.component';
 import { CurrencyInput } from '../../../../components/CurrencyInput/CurrencyInput.component';
+import { ControlledInputWithButtonPillGroup } from '../../../../components/InputPillGroup/InputWithButtonPillGroup.controlled';
 
 import {
   WithdrawStakeComponentProps,
   WithdrawStakeFormValues,
 } from './WithdrawStake.types';
 import { WithdrawStakeFields } from './WithdrawStake.fields';
-import { ControlledInputWithButtonPillGroup } from '../../../../components/ControlledInputWithButtonPillGroup/ControlledInputWithButtonPillGroup.component';
 
 export const WithdrawStakeComponent = ({
   open,
