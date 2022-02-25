@@ -9,14 +9,24 @@ export const ControlledDropdown = <
   FormValues
 >({
   name,
+  rules,
   control,
   ...dropdownProps
 }: ControlledDropdownProps<OptionType, FormValues>) => (
   <Controller
-    render={({ field: { onChange, value } }) => (
-      <DropdownOptions {...dropdownProps} value={value} onChange={onChange} />
+    render={({ field: { onChange, value }, fieldState }) => (
+      <DropdownOptions
+        {...dropdownProps}
+        value={value}
+        onChange={onChange}
+        error={fieldState.error}
+      />
     )}
     name={name}
     control={control}
+    rules={{
+      required: true,
+      ...rules,
+    }}
   />
 );

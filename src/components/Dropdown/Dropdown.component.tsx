@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
 import { DropdownOptionType, DropdownProps } from './Dropdown.types';
 import { NameWithIcon } from '../NameWithIcon/NameWithIcon.component';
+import { FieldErrorMessage } from '../FieldErrorMessage/FieldErrorMessage.component';
 
 export const DropdownOptions = <
   ItemSelected extends DropdownOptionType,
@@ -16,6 +17,7 @@ export const DropdownOptions = <
   placeholder,
   disabled,
   sx,
+  error,
   autoFocus,
   onChange,
 }: DropdownProps<ItemSelected, ValueType>) => (
@@ -25,6 +27,7 @@ export const DropdownOptions = <
     </Typography>
     <Select
       value={value}
+      error={!!error}
       onChange={onChange}
       displayEmpty
       SelectDisplayProps={{
@@ -51,6 +54,7 @@ export const DropdownOptions = <
           <NameWithIcon name={name} icon={icon} />
         </MenuItem>
       ))}
+      <FieldErrorMessage error={error} />
     </Select>
   </FormControl>
 );

@@ -5,7 +5,7 @@ import { InputWithButtonPillGroupProps } from '../InputPillGroup/InputWithButton
 
 export type ControlledInputWithButtonPillGroupProps<FormValues> = Omit<
   InputWithButtonPillGroupProps,
-  'value' | 'onInputChange' | 'onButtonChange'
+  'value' | 'onInputChange' | 'onButtonChange' | 'error'
 > &
   ControlledInputType<FormValues> & {
     setValue: SetFieldValue<FormValues>;

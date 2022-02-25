@@ -1,5 +1,6 @@
 import { FormControlProps } from '@mui/material/FormControl';
 import { SelectChangeEvent } from '@mui/material/Select';
+import { FieldError } from 'react-hook-form';
 
 export type DropdownOptionType = {
   id: string | number;
@@ -15,5 +16,6 @@ export type DropdownProps<OptionType, ValueType = unknown> = {
   disabled?: boolean;
   sx?: FormControlProps['sx'];
   autoFocus?: boolean;
+  error?: FieldError;
   onChange?: (e: SelectChangeEvent<ValueType>) => void;
 };

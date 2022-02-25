@@ -83,12 +83,6 @@ function App() {
               <Button variant="text">Text</Button>
               <br />
               <br />
-              <DateSelector
-                kickoffTs={1635379200}
-                stakes={[]}
-                value={selectedDate}
-                onChange={setSelectedDate}
-              />
             </>
           }
         />

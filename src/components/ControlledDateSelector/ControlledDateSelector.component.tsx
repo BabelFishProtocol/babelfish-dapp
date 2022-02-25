@@ -1,20 +1,20 @@
 import { Controller, FieldValues } from 'react-hook-form';
-import { CurrencyInput } from '../CurrencyInput/CurrencyInput.component';
-import { ControlledCurrencyInputProps } from './ControlledCurrencyInput.types';
+import { DateSelector } from '../DateSelector/DateSelector.component';
+import { ControlledDateSelectorProps } from './ControlledDateSelector.types';
 
-export const ControlledCurrencyInput = <FormValues extends FieldValues>({
+export const ControlledDateSelector = <FormValues extends FieldValues>({
   name,
-  rules,
   control,
-  ...inputProps
-}: ControlledCurrencyInputProps<FormValues>) => (
+  rules,
+  ...props
+}: ControlledDateSelectorProps<FormValues>) => (
   <Controller
     render={({ field: { onChange, value }, fieldState }) => (
-      <CurrencyInput
-        {...inputProps}
+      <DateSelector
         value={value}
         onChange={onChange}
         error={fieldState.error}
+        {...props}
       />
     )}
     name={name}
