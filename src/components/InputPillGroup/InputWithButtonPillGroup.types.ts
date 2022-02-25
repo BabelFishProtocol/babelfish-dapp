@@ -1,7 +1,9 @@
-import { FieldError } from 'react-hook-form';
-import { OutlinedInputProps } from '@mui/material/OutlinedInput';
-import { BigNumber } from 'ethers';
 import React from 'react';
+import { BigNumber } from 'ethers';
+import { FieldError, SetFieldValue } from 'react-hook-form';
+
+import { OutlinedInputProps } from '@mui/material/OutlinedInput';
+import { ControlledInputType } from '../TextInput/TextInput.types';
 
 export type InputWithButtonPillGroupProps = Partial<
   Omit<OutlinedInputProps, 'error'>
@@ -13,3 +15,12 @@ export type InputWithButtonPillGroupProps = Partial<
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onButtonChange: (newValue: string) => void;
 };
+
+export type ControlledInputWithButtonPillGroupProps<FormValues> = Omit<
+  InputWithButtonPillGroupProps,
+  'value' | 'onInputChange' | 'onButtonChange' | 'error'
+> &
+  ControlledInputType<FormValues> & {
+    setValue: SetFieldValue<FormValues>;
+    totalAmount?: BigNumber;
+  };

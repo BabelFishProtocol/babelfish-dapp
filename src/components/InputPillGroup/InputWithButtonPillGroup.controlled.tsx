@@ -1,8 +1,8 @@
 import { Controller, FieldValues } from 'react-hook-form';
 import { utils } from 'ethers';
 import { fieldsErrors } from '../../constants';
-import { ControlledInputWithButtonPillGroupProps } from './ControlledInputWithButtonPillGroup.types';
-import { InputWithButtonPillGroup } from '../InputPillGroup/InputWithButtonPillGroup.component';
+import { ControlledInputWithButtonPillGroupProps } from './InputWithButtonPillGroup.types';
+import { InputWithButtonPillGroup } from './InputWithButtonPillGroup.component';
 
 export const ControlledInputWithButtonPillGroup = <
   FormValues extends FieldValues

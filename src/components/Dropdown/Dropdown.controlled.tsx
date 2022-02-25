@@ -1,8 +1,7 @@
 import { Controller } from 'react-hook-form';
 
-import { DropdownOptions } from '../Dropdown/Dropdown.component';
-import { DropdownOptionType } from '../Dropdown/Dropdown.types';
-import { ControlledDropdownProps } from './ControlledDropdown.types';
+import { DropdownOptions } from './Dropdown.component';
+import { DropdownOptionType, ControlledDropdownProps } from './Dropdown.types';
 
 export const ControlledDropdown = <
   OptionType extends DropdownOptionType,

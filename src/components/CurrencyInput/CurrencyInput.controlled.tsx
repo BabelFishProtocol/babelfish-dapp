@@ -1,6 +1,6 @@
 import { Controller, FieldValues } from 'react-hook-form';
-import { CurrencyInput } from '../CurrencyInput/CurrencyInput.component';
-import { ControlledCurrencyInputProps } from './ControlledCurrencyInput.types';
+import { CurrencyInput } from './CurrencyInput.component';
+import { ControlledCurrencyInputProps } from './CurrencyInput.types';
 
 export const ControlledCurrencyInput = <FormValues extends FieldValues>({
   name,

@@ -13,13 +13,11 @@ export const DialogForm = ({
   txFee,
   title,
   onClose,
+  isValid,
   children,
-  leftButton,
-  rightButton = (
-    <Button variant="outlined" onClick={onClose}>
-      Cancel
-    </Button>
-  ),
+  handleSubmit,
+  leftButtonText,
+  rightButtonText = 'Cancel',
 }: DialogFormProps) => (
   <Dialog
     open={open}
@@ -29,26 +27,32 @@ export const DialogForm = ({
   >
     <AppDialogTitle title={title} onClose={onClose} />
 
-    <Box
-      sx={{
-        px: 4,
-        pt: 3,
-        pb: 1,
-        gap: 3,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-      }}
-    >
-      {children}
-      <Typography>Tx Fee: {txFee} RBTC</Typography>
-    </Box>
+    <form onSubmit={handleSubmit}>
+      <Box
+        sx={{
+          px: 4,
+          pt: 3,
+          pb: 1,
+          gap: 3,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+        }}
+      >
+        {children}
+        <Typography>Tx Fee: {txFee} RBTC</Typography>
+      </Box>
 
-    <CenteredBox
-      sx={{ width: '100%', gap: 3, p: 3, '& button': { flexGrow: 1 } }}
-    >
-      {leftButton}
-      {rightButton}
-    </CenteredBox>
+      <CenteredBox
+        sx={{ width: '100%', gap: 3, p: 3, '& button': { flexGrow: 1 } }}
+      >
+        <Button type="submit" disabled={!isValid}>
+          {leftButtonText}
+        </Button>
+        <Button variant="outlined" onClick={onClose}>
+          {rightButtonText}
+        </Button>
+      </CenteredBox>
+    </form>
   </Dialog>
 );

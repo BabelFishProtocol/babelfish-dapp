@@ -1,6 +1,6 @@
 import { Controller, FieldValues } from 'react-hook-form';
-import { DateSelector } from '../DateSelector/DateSelector.component';
-import { ControlledDateSelectorProps } from './ControlledDateSelector.types';
+import { DateSelector } from './DateSelector.component';
+import { ControlledDateSelectorProps } from './DateSelector.types';
 
 export const ControlledDateSelector = <FormValues extends FieldValues>({
   name,

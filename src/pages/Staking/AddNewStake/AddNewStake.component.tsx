@@ -5,13 +5,12 @@ import { useForm } from 'react-hook-form';
 import { Button } from '../../../components/Button/Button.component';
 import { TextInput } from '../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../components/DialogForm/DialogForm.component';
-import { DateSelector } from '../../../components/DateSelector/DateSelector.component';
+import { ControlledInputWithButtonPillGroup } from '../../../components/InputPillGroup/InputWithButtonPillGroup.controlled';
 
 import {
   AddNewStakeComponentProps,
   AddNewStakeFormValues,
 } from './AddNewStake.types';
-import { ControlledInputWithButtonPillGroup } from '../../../components/ControlledInputWithButtonPillGroup/ControlledInputWithButtonPillGroup.component';
 import { AddNewStakeFields } from './AddNewStake.fields';
 
 export const AddNewStakeComponent = ({
