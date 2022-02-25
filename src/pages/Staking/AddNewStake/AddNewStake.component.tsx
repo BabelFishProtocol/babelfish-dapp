@@ -1,61 +1,104 @@
-import { useState } from 'react';
-import { utils } from 'ethers';
+import { BigNumber } from 'ethers';
+import { Control, useForm, useWatch } from 'react-hook-form';
 
-import { useForm } from 'react-hook-form';
-import { Button } from '../../../components/Button/Button.component';
 import { TextInput } from '../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../components/DialogForm/DialogForm.component';
+import { ControlledDateSelector } from '../../../components/DateSelector/DateSelector.controlled';
 import { ControlledInputWithButtonPillGroup } from '../../../components/InputPillGroup/InputWithButtonPillGroup.controlled';
 
 import {
-  AddNewStakeComponentProps,
   AddNewStakeFormValues,
+  AddNewStakeComponentProps,
 } from './AddNewStake.types';
-import { AddNewStakeFields } from './AddNewStake.fields';
+import {
+  AddNewStakeFields,
+  addNewStakeDefaultValues,
+} from './AddNewStake.fields';
+import {
+  useEstimateFee,
+  useNeedApproval,
+  useVotingPower,
+} from '../Staking.hooks';
+import { formatWeiAmount } from '../../../utils/helpers';
 
 export const AddNewStakeComponent = ({
   open,
-  txFee,
   onClose,
   stakes,
-  votingPower,
+  onStake,
+  onApprove,
   kickoffTs,
+  estimateStakeFee,
+  esmimateApproveFee,
+  fishBalance = '0',
 }: AddNewStakeComponentProps) => {
-  const [unlockDate, setUnlockDate] = useState<number>();
+  const { control, setValue, handleSubmit, formState, watch } =
+    useForm<AddNewStakeFormValues>({
+      mode: 'onChange',
+      defaultValues: addNewStakeDefaultValues,
+    });
 
-  // TODO: change dateSelector and slectDate to controlled inputs by react-hook-form
-  const { control, setValue } = useForm<AddNewStakeFormValues>({
-    defaultValues: {
-      [AddNewStakeFields.stakeAmount]: '',
-    },
+  const needsApproval = useNeedApproval(watch, AddNewStakeFields.stakeAmount);
+  const watchUnlockDate = watch(AddNewStakeFields.unlockDate);
+  const estimatedFee = useEstimateFee({
+    watch,
+    amountField: 'stakeAmount',
+    timestamp: watchUnlockDate,
+    estimator: needsApproval ? esmimateApproveFee : estimateStakeFee,
   });
 
   return (
     <DialogForm
       open={open}
-      txFee={txFee}
+      txFee={estimatedFee}
       title="Stake Fish"
       onClose={onClose}
-      leftButton={<Button>Stake</Button>}
+      isValid={formState.isValid}
+      handleSubmit={handleSubmit(needsApproval ? onApprove : onStake)}
+      leftButtonText={needsApproval ? 'Approve' : 'Stake'}
     >
       <ControlledInputWithButtonPillGroup
         autoFocus
         symbol="FISH"
         title="Amount To Stake"
-        totalAmount={utils.parseUnits('2.234')}
         name={AddNewStakeFields.stakeAmount}
+        totalAmount={BigNumber.from(fishBalance)}
         control={control}
         setValue={setValue}
       />
 
-      <DateSelector
-        value={unlockDate}
+      <ControlledDateSelector
+        name={AddNewStakeFields.unlockDate}
         stakes={stakes}
         kickoffTs={kickoffTs}
-        onChange={setUnlockDate}
+        control={control}
       />
-
-      <TextInput disabled value={votingPower} title="Voting Power received" />
+      <VotingPower control={control} />
     </DialogForm>
+  );
+};
+
+const VotingPower = ({
+  control,
+}: {
+  control: Control<AddNewStakeFormValues>;
+}) => {
+  const watchStakeAmount = useWatch({
+    name: AddNewStakeFields.stakeAmount,
+    control,
+  });
+  const watchUnlockDate = useWatch({
+    name: AddNewStakeFields.unlockDate,
+    control,
+  });
+
+  const votingPower = useVotingPower(watchStakeAmount, watchUnlockDate);
+
+  return (
+    <TextInput
+      disabled
+      value={formatWeiAmount(votingPower)}
+      title="Voting Power received"
+    />
   );
 };

@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import {
-  kickoffTsSelector,
+  stakingConstantsSelector,
   selectedVestSelector,
 } from '../../../../store/staking/staking.selectors';
 
@@ -14,10 +14,10 @@ export const WithdrawVestContainer = ({
   open,
   onClose,
 }: WithdrawVestContainerProps) => {
-  const kickoffTs = useSelector(kickoffTsSelector);
+  const { kickoffTs } = useSelector(stakingConstantsSelector);
   const selectedVestData = useSelector(selectedVestSelector);
 
-  if (!kickoffTs.data || !selectedVestData) {
+  if (!kickoffTs || !selectedVestData) {
     return null;
   }
 

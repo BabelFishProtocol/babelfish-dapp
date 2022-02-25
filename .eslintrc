@@ -25,6 +25,7 @@
     "react/function-component-definition": 0,
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
     "no-console": 2,
+    "consistent-return": "off",
     "require-yield": "off",
     "@typescript-eslint/no-explicit-any": 2,
     "import/no-cycle": "off",

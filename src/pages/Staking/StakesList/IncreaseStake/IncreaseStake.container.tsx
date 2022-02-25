@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import {
-  kickoffTsSelector,
+  stakingConstantsSelector,
   selectedStakeSelector,
 } from '../../../../store/staking/staking.selectors';
 
@@ -14,10 +14,10 @@ export const IncreaseStakeContainer = ({
   open,
   onClose,
 }: IncreaseStakeContainerProps) => {
-  const kickoffTs = useSelector(kickoffTsSelector);
+  const { kickoffTs } = useSelector(stakingConstantsSelector);
   const selectedStakeData = useSelector(selectedStakeSelector);
 
-  if (!kickoffTs.data || !selectedStakeData) {
+  if (!kickoffTs || !selectedStakeData) {
     return null;
   }
 

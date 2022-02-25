@@ -8,7 +8,7 @@ import {
 } from '../../config/contracts';
 import { Reducers } from '../../constants';
 import { chains } from '../../config/chains';
-import { Staking__factory } from '../../contracts/types';
+import { ERC20__factory, Staking__factory } from '../../contracts/types';
 import { BaseContractFactory } from '../types';
 
 const appState = (state: RootState) => state[Reducers.App];
@@ -69,4 +69,8 @@ const createContractSelector = <Factory extends BaseContractFactory>(
 export const stakingContractSelector = createContractSelector(
   Staking__factory,
   'staking'
+);
+export const fishTokenSelector = createContractSelector(
+  ERC20__factory,
+  'fishToken'
 );

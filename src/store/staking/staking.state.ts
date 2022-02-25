@@ -12,21 +12,37 @@ export type VestsListItem = StakeListItem & {
   stakingPeriodStart: number;
 };
 
+export type FishTokenInfo = {
+  fishBalance?: string;
+  totalStaked?: string;
+  allowanceForStaking?: string;
+};
+
+export type StakeConstants = {
+  kickoffTs?: number;
+  WEIGHT_FACTOR?: string;
+};
+
 export class StakingState {
   selectedVest?: number;
   selectedStake?: number;
 
-  kickoffTs: LoadableValue<number | undefined> = {
+  constants: LoadableValue<StakeConstants> = {
     state: 'idle',
-    data: undefined,
+    data: { WEIGHT_FACTOR: undefined, kickoffTs: undefined },
   };
-  totalStaked: LoadableAmount = {
-    state: 'idle',
-    data: undefined,
-  };
+
   combinedVotingPower: LoadableAmount = {
     state: 'idle',
     data: undefined,
+  };
+  fishToken: LoadableValue<FishTokenInfo> = {
+    data: {
+      fishBalance: undefined,
+      totalStaked: undefined,
+      allowanceForStaking: undefined,
+    },
+    state: 'idle',
   };
 
   stakesList: LoadableValue<StakeListItem[]> = {

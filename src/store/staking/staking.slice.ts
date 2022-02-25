@@ -1,7 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
 import { ActionsType } from '../types';
-import { StakeListItem, StakingState } from './staking.state';
+import {
+  FishTokenInfo,
+  StakeConstants,
+  StakeListItem,
+  StakingState,
+} from './staking.state';
 
 const initialState = { ...new StakingState() };
 
@@ -11,33 +16,37 @@ export const stakingSlice = createSlice({
   reducers: {
     watchStakingData: (_) => {},
     stopWatchingStakingData: (state) => {
-      state.kickoffTs.state = 'idle';
-      state.totalStaked.state = 'idle';
+      state.fishToken.state = 'idle';
       state.combinedVotingPower.state = 'idle';
     },
     fetchStakingData: (state) => {
-      state.kickoffTs.state = 'loading';
-      state.totalStaked.state = 'loading';
+      state.constants.state = 'loading';
+      state.fishToken.state = 'loading';
+      state.combinedVotingPower.state = 'loading';
+      state.stakesList.state = 'loading';
+    },
+    updateStakingData: (state) => {
+      state.fishToken.state = 'loading';
       state.combinedVotingPower.state = 'loading';
       state.stakesList.state = 'loading';
     },
 
-    fetchTotalStakedFailure: (state) => {
-      state.totalStaked.state = 'failure';
-      state.totalStaked.data = undefined;
+    fetchFishTokenDataFailure: (state) => {
+      state.fishToken.state = 'failure';
+      state.fishToken.data = {};
     },
-    setTotalStaked: (state, { payload }: PayloadAction<string>) => {
-      state.totalStaked.state = 'success';
-      state.totalStaked.data = payload;
+    setFishTokenData: (state, { payload }: PayloadAction<FishTokenInfo>) => {
+      state.fishToken.state = 'success';
+      state.fishToken.data = payload;
     },
 
-    fetchKickoffTsFailure: (state) => {
-      state.kickoffTs.state = 'failure';
-      state.kickoffTs.data = undefined;
+    fetchConstantsFailure: (state) => {
+      state.constants.state = 'failure';
+      state.constants.data = {};
     },
-    setKickoffTs: (state, { payload }: PayloadAction<number>) => {
-      state.kickoffTs.state = 'success';
-      state.kickoffTs.data = payload;
+    setConstants: (state, { payload }: PayloadAction<StakeConstants>) => {
+      state.constants.state = 'success';
+      state.constants.data = payload;
     },
 
     fetchVotingPowerFailure: (state) => {

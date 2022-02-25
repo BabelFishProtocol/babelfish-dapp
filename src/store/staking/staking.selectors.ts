@@ -4,14 +4,23 @@ import { Reducers } from '../../constants';
 
 const stakingState = (state: RootState) => state[Reducers.Staking];
 
-export const totalStakedSelector = createSelector(
+const fishTokenSelector = createSelector(
   stakingState,
-  (state) => state.totalStaked
+  (state) => state.fishToken
 );
 
-export const kickoffTsSelector = createSelector(
+export const fishTokenDataSelector = createSelector(
+  fishTokenSelector,
+  (fishToken) => fishToken.data
+);
+export const fishLoadingStateSelector = createSelector(
+  fishTokenSelector,
+  (fishToken) => fishToken.state
+);
+
+export const stakingConstantsSelector = createSelector(
   stakingState,
-  (state) => state.kickoffTs
+  (state) => state.constants.data
 );
 
 export const combinedVotingPowerSelector = createSelector(

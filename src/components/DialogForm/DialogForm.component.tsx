@@ -7,6 +7,7 @@ import { CenteredBox } from '../PageView/PageView.component';
 import { AppDialogTitle } from '../AppDialog/AppDialog.component';
 
 import { DialogFormProps } from './DialogForm.types';
+import { formatWeiAmount } from '../../utils/helpers';
 
 export const DialogForm = ({
   open,
@@ -40,7 +41,7 @@ export const DialogForm = ({
         }}
       >
         {children}
-        <Typography>Tx Fee: {txFee} RBTC</Typography>
+        <Typography>Tx Fee: {formatWeiAmount(txFee, 6)} RBTC</Typography>
       </Box>
 
       <CenteredBox
