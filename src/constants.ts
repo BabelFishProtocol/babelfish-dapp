@@ -2,6 +2,7 @@ export enum Urls {
   Proposals = '/proposals',
   Dashboard = '/dashboard',
   Staking = '/stake',
+  Agregator = '/agregator',
 }
 
 export enum ProposalState {
@@ -38,7 +39,4 @@ export const monthNames = [
   'Dec',
 ];
 
-export enum VoteType {
-  FOR = 'for',
-  AGAINST = 'against',
-}
+export const decimalRegex = /^\d*\.?\d*$/;

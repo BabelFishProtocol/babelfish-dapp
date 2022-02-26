@@ -8,4 +8,5 @@ export type BalanceBlockProps = {
   sx?: ContainerProps['sx'];
   asset?: string;
   isLoading?: boolean;
+  aprox?: boolean;
 };

@@ -8,7 +8,8 @@
     "test": "jest",
     "preview": "vite preview",
     "check-types": "tsc --noEmit",
-    "generate-contracts-types": "typechain --target ethers-v5 --out-dir src/contracts './src/contracts/abi/*.json'"
+    "generate-contracts-types": "typechain --target ethers-v5 --out-dir src/contracts/types './src/contracts/abi/*.json'",
+    "postinstall": "yarn generate-contracts-types"
   },
   "dependencies": {
     "@emotion/react": "^11.7.1",
@@ -17,9 +18,11 @@
     "@portis/web3": "^4.0.7",
     "@reduxjs/toolkit": "^1.7.2",
     "@typechain/ethers-v5": "^9.0.0",
+    "dayjs": "^1.10.7",
     "ethers": "^5.5.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-hook-form": "^7.27.0",
     "react-redux": "^7.2.6",
     "react-router-dom": "^6.2.1",
     "ts-node": "^10.5.0"
@@ -29,6 +32,7 @@
     "@testing-library/react": "^12.1.2",
     "@testing-library/react-hooks": "^7.0.2",
     "@types/jest": "^27.4.0",
+    "@types/node": "^17.0.17",
     "@types/react": "^17.0.33",
     "@types/react-dom": "^17.0.10",
     "@typescript-eslint/eslint-plugin": "^5.10.2",

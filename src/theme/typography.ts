@@ -3,6 +3,7 @@ import createTypography from '@mui/material/styles/createTypography';
 
 export const getTypography = (palette: Palette) =>
   createTypography(palette, {
+    fontFamily: ['Comfortaa-Regular', 'Open Sans'].join(','),
     h1: {
       fontSize: 30,
       fontFamily: 'Archive',
@@ -20,30 +21,29 @@ export const getTypography = (palette: Palette) =>
       fontFamily: 'Archive',
     },
     h5: {
-      fontFamily: 'Comfortaa-Regular',
       fontSize: 30,
     },
     h6: {
-      fontFamily: 'Comfortaa-Regular',
       fontSize: 24,
     },
     subtitle1: {
       fontSize: 16,
+    },
+    subtitle2: {
+      fontSize: 14,
+      opacity: 0.6,
     },
     button: {
       fontFamily: 'Archive',
       lineHeight: 'normal',
     },
     body1: {
-      fontFamily: 'Comfortaa-Regular',
       fontSize: 16,
     },
     body2: {
-      fontFamily: 'Comfortaa-Regular',
       fontSize: 14,
     },
     caption: {
-      fontFamily: 'Comfortaa-Regular',
       fontSize: 12,
     },
   });
