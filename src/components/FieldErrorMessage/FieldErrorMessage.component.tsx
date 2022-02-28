@@ -17,7 +17,7 @@ export const getFieldError = (error: FieldError | undefined) => {
   if (error.message) {
     return error.message;
   }
-  return 'invalid field';
+  return 'Field Invalid';
 };
 
 export const FieldErrorMessage = ({ error }: FieldErrorMessageProps) => (
