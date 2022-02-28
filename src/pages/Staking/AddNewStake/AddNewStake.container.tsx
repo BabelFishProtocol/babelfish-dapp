@@ -14,10 +14,10 @@ import {
   stakesDatesSelector,
 } from '../../../store/staking/staking.selectors';
 import { ONE_DAY } from '../../../constants';
+import { useContractCall } from '../../../hooks/useContractCall';
 
 import { SubmitStatusDialog } from '../../../components/TxDialog/TxDialog.component';
 
-import { useSubmitCall } from '../Staking.hooks';
 import { StakingFeeEstimator } from '../Staking.types';
 import {
   AddNewStakeContainerProps,
@@ -59,7 +59,7 @@ export const AddNewStakeContainer = ({
   };
 
   const { handleSubmit: handleApprove, ...approveData } =
-    useSubmitCall(onApproveStake);
+    useContractCall(onApproveStake);
 
   // ----- staking -----
 
@@ -88,7 +88,7 @@ export const AddNewStakeContainer = ({
     return tx;
   };
 
-  const { handleSubmit: handleStake, ...stakeData } = useSubmitCall(onStake);
+  const { handleSubmit: handleStake, ...stakeData } = useContractCall(onStake);
 
   if (!kickoffTs || !staking || !account) {
     return null;

@@ -30,7 +30,7 @@ export const TxErrorDialog = ({
     onClose={onClose}
   >
     <Button variant="outlined" onClick={onClose}>
-      Try Again
+      OK
     </Button>
   </AppDialog>
 );
