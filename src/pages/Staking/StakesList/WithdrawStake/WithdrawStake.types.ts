@@ -7,7 +7,6 @@ export type WithdrawStakeContainerProps = Pick<
 >;
 
 export type WithdrawStakeComponentProps = WithdrawStakeContainerProps & {
-  txFee: string;
   forfeitPercent: string;
   forfeitWithdraw: string;
   currentStakeAmount: string;

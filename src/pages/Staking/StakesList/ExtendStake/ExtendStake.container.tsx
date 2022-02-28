@@ -8,7 +8,6 @@ import {
 import { ExtendStakeComponent } from './ExtendStake.component';
 import { ExtendStakeContainerProps } from './ExtendStake.types';
 
-const mockTxFee = '0.00012';
 const mockNewVotingPower = '10.0000';
 
 export const ExtendStakeContainer = ({
@@ -27,7 +26,6 @@ export const ExtendStakeContainer = ({
     <ExtendStakeComponent
       open={open}
       onClose={onClose}
-      txFee={mockTxFee}
       stakes={currentStakes}
       kickoffTs={kickoffTs}
       votingPower={mockNewVotingPower}

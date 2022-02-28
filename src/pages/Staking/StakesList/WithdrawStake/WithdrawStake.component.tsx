@@ -1,7 +1,9 @@
 import { utils } from 'ethers';
-
 import { useForm } from 'react-hook-form';
-import { Button } from '../../../../components/Button/Button.component';
+
+import Typography from '@mui/material/Typography';
+
+import { formatWeiAmount } from '../../../../utils/helpers';
 import { TextInput } from '../../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../../components/DialogForm/DialogForm.component';
 import { CurrencyInput } from '../../../../components/CurrencyInput/CurrencyInput.component';
@@ -15,7 +17,6 @@ import { WithdrawStakeFields } from './WithdrawStake.fields';
 
 export const WithdrawStakeComponent = ({
   open,
-  txFee,
   onClose,
   forfeitPercent,
   forfeitWithdraw,
@@ -29,10 +30,10 @@ export const WithdrawStakeComponent = ({
   return (
     <DialogForm
       open={open}
-      txFee={txFee}
+      isValid
       onClose={onClose}
       title="Unstake Fish"
-      leftButton={<Button>Confirm</Button>}
+      leftButtonText="Confirm"
     >
       <CurrencyInput
         disabled
@@ -56,6 +57,12 @@ export const WithdrawStakeComponent = ({
         value={`${forfeitPercent}% ≈  ${forfeitWithdraw} FISH`}
         title="Early Unstake Forfeit"
       />
+
+      <FeeEstimator />
     </DialogForm>
   );
 };
+
+const FeeEstimator = () => (
+  <Typography>Tx Fee: {formatWeiAmount('30000000000000', 7)} RBTC</Typography>
+);

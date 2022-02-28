@@ -7,7 +7,6 @@ import {
 import { WithdrawStakeComponent } from './WithdrawStake.component';
 import { WithdrawStakeContainerProps } from './WithdrawStake.types';
 
-const mockTxFee = '0.00012';
 const mockForfeitPercent = '20';
 const mockForfeitWithdraw = '10.1200';
 
@@ -18,7 +17,7 @@ export const WithdrawStakeContainer = ({
   const { kickoffTs } = useSelector(stakingConstantsSelector);
   const selectedStakeData = useSelector(selectedStakeSelector);
 
-  if (!kickoffTs.data || !selectedStakeData) {
+  if (!kickoffTs || !selectedStakeData) {
     return null;
   }
 
@@ -26,7 +25,6 @@ export const WithdrawStakeContainer = ({
     <WithdrawStakeComponent
       open={open}
       onClose={onClose}
-      txFee={mockTxFee}
       forfeitPercent={mockForfeitPercent}
       forfeitWithdraw={mockForfeitWithdraw}
       currentStakeAmount={selectedStakeData.lockedAmount}

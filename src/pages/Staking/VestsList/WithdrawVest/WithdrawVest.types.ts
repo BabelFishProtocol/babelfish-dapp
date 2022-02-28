@@ -6,7 +6,6 @@ export type WithdrawVestContainerProps = Pick<
 >;
 
 export type WithdrawVestComponentProps = WithdrawVestContainerProps & {
-  txFee: string;
   delegate: string;
   unlockedAmount: string;
 };

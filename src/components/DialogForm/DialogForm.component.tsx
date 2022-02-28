@@ -1,17 +1,14 @@
 import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
-import Typography from '@mui/material/Typography';
 
 import { Button } from '../Button/Button.component';
 import { CenteredBox } from '../PageView/PageView.component';
 import { AppDialogTitle } from '../AppDialog/AppDialog.component';
 
 import { DialogFormProps } from './DialogForm.types';
-import { formatWeiAmount } from '../../utils/helpers';
 
 export const DialogForm = ({
   open,
-  txFee,
   title,
   onClose,
   isValid,
@@ -41,7 +38,6 @@ export const DialogForm = ({
         }}
       >
         {children}
-        <Typography>Tx Fee: {formatWeiAmount(txFee, 6)} RBTC</Typography>
       </Box>
 
       <CenteredBox

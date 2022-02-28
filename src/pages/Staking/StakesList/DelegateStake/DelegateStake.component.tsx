@@ -2,7 +2,8 @@ import { useState } from 'react';
 
 import Box from '@mui/material/Box';
 
-import { isRskAddress } from '../../../../utils/helpers';
+import Typography from '@mui/material/Typography';
+import { formatWeiAmount, isRskAddress } from '../../../../utils/helpers';
 import { Button } from '../../../../components/Button/Button.component';
 import { TextInput } from '../../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../../components/DialogForm/DialogForm.component';
@@ -11,7 +12,6 @@ import { DelegateStakeComponentProps } from './DelegateStake.types';
 
 export const DelegateStakeComponent = ({
   open,
-  txFee,
   onClose,
   account,
   currentDelegate,
@@ -28,10 +28,10 @@ export const DelegateStakeComponent = ({
   return (
     <DialogForm
       open={open}
-      txFee={txFee}
+      isValid
       onClose={onClose}
       title="Delegate"
-      leftButton={<Button>Confirm</Button>}
+      leftButtonText="Confirm"
     >
       {hasDelegate && (
         <>
@@ -45,6 +45,7 @@ export const DelegateStakeComponent = ({
           </Box>
         </>
       )}
+
       <TextInput
         autoFocus
         value={delegate}
@@ -52,6 +53,12 @@ export const DelegateStakeComponent = ({
         onChange={onDelegateChange}
         placeholder="Enter or paste delegate address"
       />
+
+      <FeeEstimator />
     </DialogForm>
   );
 };
+
+const FeeEstimator = () => (
+  <Typography>Tx Fee: {formatWeiAmount('30000000000000', 7)} RBTC</Typography>
+);
