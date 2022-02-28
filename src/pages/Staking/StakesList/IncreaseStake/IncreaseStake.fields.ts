@@ -1,3 +1,7 @@
 export enum IncreaseStakeFields {
-  IncreaseStakeAmount = 'IncreaseStakeAmount',
+  IncreaseStakeAmount = 'increaseStakeAmount',
 }
+
+export const increaseStakeDefaultValues = {
+  [IncreaseStakeFields.IncreaseStakeAmount]: '',
+};
