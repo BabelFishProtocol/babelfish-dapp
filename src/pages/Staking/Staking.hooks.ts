@@ -7,6 +7,7 @@ import {
   fishTokenDataSelector,
   stakingConstantsSelector,
 } from '../../store/staking/staking.selectors';
+import { useDebounce } from '../../hooks/useDebounce';
 import { getCurrentTimestamp } from '../../utils/helpers';
 import {
   providerSelector,
@@ -57,27 +58,37 @@ export const useVotingPower = (amount: string, unlockDate: number) => {
   const staking = useSelector(stakingContractSelector);
   const { WEIGHT_FACTOR } = useSelector(stakingConstantsSelector);
 
-  // TODO: debounce
+  const debouncedAmount = useDebounce(amount, 500);
+  const debouncedUnlockDate = useDebounce(unlockDate, 500);
+
   useEffect(() => {
     const calculateVotingPower = async () => {
-      if (!staking || !WEIGHT_FACTOR || !unlockDate || amount === '') {
+      if (
+        !staking ||
+        !WEIGHT_FACTOR ||
+        !debouncedUnlockDate ||
+        debouncedAmount === ''
+      ) {
         setVotingPower('0');
         return;
       }
 
       const currentTimestamp = getCurrentTimestamp();
       const weight = await staking.computeWeightByDate(
-        unlockDate,
+        debouncedUnlockDate,
         currentTimestamp
       );
 
-      const power = utils.parseEther(amount).mul(weight).div(WEIGHT_FACTOR);
+      const power = utils
+        .parseEther(debouncedAmount)
+        .mul(weight)
+        .div(WEIGHT_FACTOR);
 
       setVotingPower(power.toString());
     };
 
     calculateVotingPower();
-  }, [WEIGHT_FACTOR, staking, unlockDate, amount]);
+  }, [WEIGHT_FACTOR, staking, debouncedUnlockDate, debouncedAmount]);
 
   return votingPower;
 };
@@ -90,15 +101,20 @@ export const useEstimateFee = ({
   const provider = useSelector(providerSelector);
   const [estimatedFee, setEstimatedFee] = useState('0');
 
-  // TODO: debounce
+  const debouncedAmount = useDebounce(amount, 500);
+  const debouncedTimestamp = useDebounce(timestamp, 500);
+
   useEffect(() => {
     const estimate = async () => {
-      if (!timestamp || amount === '' || !provider) {
+      if (!debouncedTimestamp || debouncedAmount === '' || !provider) {
         setEstimatedFee('0');
         return;
       }
 
-      const estimatedValue = await estimator(amount, timestamp);
+      const estimatedValue = await estimator(
+        debouncedAmount,
+        debouncedTimestamp
+      );
       const gasPrice = await provider.getGasPrice();
 
       if (estimatedValue) {
@@ -107,7 +123,7 @@ export const useEstimateFee = ({
     };
 
     estimate();
-  }, [amount, estimator, provider, timestamp]);
+  }, [debouncedAmount, estimator, provider, debouncedTimestamp]);
 
   return estimatedFee;
 };
