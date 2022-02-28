@@ -1,4 +1,4 @@
-import { ControlledInputType } from '../ControlledInput/ControlledInput.types';
+import { ControlledInputType } from '../TextInput/TextInput.types';
 import { DateSelectorProps } from '../DateSelector/DateSelector.types';
 
 export type ControlledDateSelectorProps<FormValues> = Omit<

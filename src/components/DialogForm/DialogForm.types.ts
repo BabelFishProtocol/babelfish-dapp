@@ -2,7 +2,6 @@ import { FormEventHandler, ReactNode } from 'react';
 
 export type DialogFormProps = {
   open: boolean;
-  txFee: string;
   title: string;
   isValid: boolean;
   onClose: () => void;

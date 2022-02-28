@@ -62,9 +62,9 @@ export const vestsListStatusSelector = createSelector(
 export const selectedVestSelector = createSelector(
   [stakingState, vestsListSelector],
   (state, vestsList) => {
-    const selectedStake = vestsList.find(
+    const selectedVest = vestsList.find(
       (vest) => vest.unlockDate === state.selectedVest
     );
-    return selectedStake;
+    return selectedVest;
   }
 );

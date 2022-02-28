@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { BigNumber, utils } from 'ethers';
+import { BigNumber, ContractReceipt, ContractTransaction, utils } from 'ethers';
 import { useSelector } from 'react-redux';
 import { FieldPath, FieldValues, UseFormWatch } from 'react-hook-form';
 
@@ -12,6 +12,8 @@ import {
   providerSelector,
   stakingContractSelector,
 } from '../../store/app/app.selectors';
+import { FiniteStates } from '../../utils/types';
+import { UseEstimateFeeConfig } from './Staking.types';
 
 export const useStakeModalForm = (
   selectStake: () => void,
@@ -29,6 +31,42 @@ export const useStakeModalForm = (
   };
 
   return [showModal, handleShowForm, handleCloseForm] as const;
+};
+
+export const useSubmitCall = <Values extends FieldValues>(
+  submitFunction: (values: Values) => Promise<ContractTransaction | undefined>
+) => {
+  const [status, setStatus] = useState<FiniteStates>('idle');
+  const [tx, setTx] = useState<ContractTransaction>();
+  const [txReceipt, setTxReceipt] = useState<ContractReceipt>();
+
+  const onClose = () => {
+    setStatus('idle');
+    setTx(undefined);
+    setTxReceipt(undefined);
+  };
+
+  const handleSubmit = async (formValues: Values) => {
+    setStatus('loading');
+    try {
+      const txData = await submitFunction(formValues);
+      setTx(txData);
+
+      const receipt = await txData?.wait();
+      setTxReceipt(receipt);
+      setStatus('success');
+    } catch (e) {
+      setStatus('failure');
+    }
+  };
+
+  return {
+    tx,
+    status,
+    txReceipt,
+    handleSubmit,
+    onClose,
+  };
 };
 
 export const useNeedApproval = <FormValues extends FieldValues>(
@@ -81,37 +119,23 @@ export const useVotingPower = (amount: string, unlockDate: number) => {
   return votingPower;
 };
 
-export type StakingFeeEstimator = (
-  amount: string,
-  timestamp: number
-) => Promise<BigNumber | undefined>;
-
-type UseEstimateFeeConfig<FormValues extends FieldValues> = {
-  watch: UseFormWatch<FormValues>;
-  amountField: FieldPath<FormValues>;
-  estimator: StakingFeeEstimator;
-  timestamp?: number;
-};
-
-export const useEstimateFee = <FormValues extends FieldValues>({
-  watch,
+export const useEstimateFee = ({
+  amount,
   timestamp,
   estimator,
-  amountField,
-}: UseEstimateFeeConfig<FormValues>) => {
+}: UseEstimateFeeConfig) => {
   const provider = useSelector(providerSelector);
   const [estimatedFee, setEstimatedFee] = useState('0');
-  const watchCurrentValue = watch(amountField);
 
   // TODO: debounce
   useEffect(() => {
     const estimate = async () => {
-      if (!timestamp || watchCurrentValue === '' || !provider) {
+      if (!timestamp || amount === '' || !provider) {
         setEstimatedFee('0');
         return;
       }
 
-      const estimatedValue = await estimator(watchCurrentValue, timestamp);
+      const estimatedValue = await estimator(amount, timestamp);
       const gasPrice = await provider.getGasPrice();
 
       if (estimatedValue) {
@@ -120,9 +144,7 @@ export const useEstimateFee = <FormValues extends FieldValues>({
     };
 
     estimate();
-  }, [estimator, provider, timestamp, watchCurrentValue]);
-
-  console.log({ estimatedFee });
+  }, [amount, estimator, provider, timestamp]);
 
   return estimatedFee;
 };

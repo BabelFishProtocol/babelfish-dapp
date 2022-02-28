@@ -1,6 +1,9 @@
 import { BigNumber } from 'ethers';
-import { Control, useForm, useWatch } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
+import Typography from '@mui/material/Typography';
+
+import { formatWeiAmount } from '../../../utils/helpers';
 import { TextInput } from '../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../components/DialogForm/DialogForm.component';
 import { ControlledDateSelector } from '../../../components/DateSelector/DateSelector.controlled';
@@ -9,6 +12,8 @@ import { ControlledInputWithButtonPillGroup } from '../../../components/InputPil
 import {
   AddNewStakeFormValues,
   AddNewStakeComponentProps,
+  FeeEstimatorProps,
+  VotingPowerBlockProps,
 } from './AddNewStake.types';
 import {
   AddNewStakeFields,
@@ -19,7 +24,6 @@ import {
   useNeedApproval,
   useVotingPower,
 } from '../Staking.hooks';
-import { formatWeiAmount } from '../../../utils/helpers';
 
 export const AddNewStakeComponent = ({
   open,
@@ -39,23 +43,15 @@ export const AddNewStakeComponent = ({
     });
 
   const needsApproval = useNeedApproval(watch, AddNewStakeFields.stakeAmount);
-  const watchUnlockDate = watch(AddNewStakeFields.unlockDate);
-  const estimatedFee = useEstimateFee({
-    watch,
-    amountField: 'stakeAmount',
-    timestamp: watchUnlockDate,
-    estimator: needsApproval ? esmimateApproveFee : estimateStakeFee,
-  });
 
   return (
     <DialogForm
       open={open}
-      txFee={estimatedFee}
       title="Stake Fish"
       onClose={onClose}
       isValid={formState.isValid}
-      handleSubmit={handleSubmit(needsApproval ? onApprove : onStake)}
       leftButtonText={needsApproval ? 'Approve' : 'Stake'}
+      handleSubmit={handleSubmit(needsApproval ? onApprove : onStake)}
     >
       <ControlledInputWithButtonPillGroup
         autoFocus
@@ -73,16 +69,20 @@ export const AddNewStakeComponent = ({
         kickoffTs={kickoffTs}
         control={control}
       />
+
       <VotingPower control={control} />
+
+      <FeeEstimator
+        control={control}
+        needsApproval={needsApproval}
+        estimateStakeFee={estimateStakeFee}
+        esmimateApproveFee={esmimateApproveFee}
+      />
     </DialogForm>
   );
 };
 
-const VotingPower = ({
-  control,
-}: {
-  control: Control<AddNewStakeFormValues>;
-}) => {
+const VotingPower = ({ control }: VotingPowerBlockProps) => {
   const watchStakeAmount = useWatch({
     name: AddNewStakeFields.stakeAmount,
     control,
@@ -100,5 +100,31 @@ const VotingPower = ({
       value={formatWeiAmount(votingPower)}
       title="Voting Power received"
     />
+  );
+};
+
+const FeeEstimator = ({
+  control,
+  needsApproval,
+  estimateStakeFee,
+  esmimateApproveFee,
+}: FeeEstimatorProps) => {
+  const watchStakeAmount = useWatch({
+    name: AddNewStakeFields.stakeAmount,
+    control,
+  });
+  const watchUnlockDate = useWatch({
+    name: AddNewStakeFields.unlockDate,
+    control,
+  });
+
+  const estimatedFee = useEstimateFee({
+    amount: watchStakeAmount,
+    timestamp: watchUnlockDate,
+    estimator: needsApproval ? esmimateApproveFee : estimateStakeFee,
+  });
+
+  return (
+    <Typography>Tx Fee: {formatWeiAmount(estimatedFee, 7)} RBTC</Typography>
   );
 };
