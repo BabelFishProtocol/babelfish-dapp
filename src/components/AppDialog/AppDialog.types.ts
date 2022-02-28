@@ -4,7 +4,7 @@ import { DialogContentProps } from '@mui/material/DialogContent';
 
 export type AppDialogProps = {
   isOpenDialog: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   icon?: string;
   title?: string;
   description?: string;

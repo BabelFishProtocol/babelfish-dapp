@@ -1,35 +1,83 @@
-import { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import { useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import errorIcon from './assets/icons/error.svg';
+import loadingIcon from './assets/icons/loading.svg';
+import successIcon from './assets/icons/success.svg';
 import { AppDialog } from './components/AppDialog/AppDialog.component';
+import { DateSelector } from './components/DateSelector/DateSelector.component';
 import { Header } from './components/Header/Header.component';
+import { MintingInfo } from './components/MintingInfo/MintingInfo.component';
+import { MintingProcessInfo } from './components/MintingInfo/MintingInfo.types';
 import { Urls } from './constants';
 import { AgregatorContainer } from './pages/Agregator/Agregator.container';
 import { DashboardContainer } from './pages/Dashboard/Dashboard.container';
 import { ProposalDetailsContainer } from './pages/ProposalDetails/ProposalDetails.container';
 import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.container';
 import { StakingContainer } from './pages/Staking/Staking.container';
-import { DateSelector } from './components/DateSelector/DateSelector.component';
 
 function App() {
   const [selectedDate, setSelectedDate] = useState<number>();
-  const [isOpenDialog, setIsOpenDialog] = useState(false);
+  const [openDialogType, setOpenDialogType] = useState<
+    'success' | 'error' | 'pending'
+  >();
+
+  const dialogVals: MintingProcessInfo[] = [
+    { label: 'Date/Time', value: '21/01/21-14:34 GMT' },
+    { label: 'Amount Sent', value: '50.00 USDT' },
+    { label: 'Amount Minted', value: '50.00 XUSD' },
+    { label: 'GAS Fees', value: 'XXX ETH' },
+    { label: 'ETH Deposit ID', value: '0X413.89054', isProminant: true },
+    {
+      label: 'RSK Relay Hash',
+      value: '0X413.89054',
+      isProminant: true,
+    },
+  ];
 
   return (
     <div className="App">
       <Header />
 
+      {/* Error Dialog */}
       <AppDialog
-        isOpenDialog={isOpenDialog}
+        isOpenDialog={openDialogType === 'error'}
         icon={errorIcon}
         title="Minting Error"
         description="We encountered an error in the minting process. Please try again"
         onClose={() => {
-          setIsOpenDialog(false);
+          setOpenDialogType(undefined);
         }}
       >
         <Button variant="outlined">Try Again</Button>
+      </AppDialog>
+
+      {/* Success Dialog */}
+      <AppDialog
+        isOpenDialog={openDialogType === 'success'}
+        icon={successIcon}
+        title="Minting Complete"
+        onClose={() => {
+          setOpenDialogType(undefined);
+        }}
+      >
+        <Box sx={{ mt: 3 }}>
+          <MintingInfo data={dialogVals} />
+        </Box>
+        <Button sx={{ my: 5 }} size="small">
+          View on Explorer
+        </Button>
+      </AppDialog>
+
+      {/* Pending Dialog */}
+      <AppDialog
+        isOpenDialog={openDialogType === 'pending'}
+        icon={loadingIcon}
+        title="Minting In Progress"
+        description="Minting can take a couple minutes, please make sure to approve the transaction in your wallet when prompted, and wait for minting to be complete"
+      >
+        <MintingInfo data={dialogVals} />
       </AppDialog>
 
       <Routes>
@@ -43,7 +91,7 @@ function App() {
               <Button
                 variant="outlined"
                 onClick={() => {
-                  setIsOpenDialog(true);
+                  setOpenDialogType('pending');
                 }}
               >
                 Outlined
@@ -53,6 +101,9 @@ function App() {
               <Button
                 variant="outlined"
                 color="success"
+                onClick={() => {
+                  setOpenDialogType('success');
+                }}
                 sx={({ palette }) => ({
                   boxShadow: `inset 0 0 0 2px ${palette.success.main}`,
                   backgroundColor: 'rgba(50, 240, 95, 0.1)',
@@ -68,6 +119,9 @@ function App() {
               <Button
                 variant="outlined"
                 color="error"
+                onClick={() => {
+                  setOpenDialogType('error');
+                }}
                 sx={({ palette }) => ({
                   boxShadow: `inset 0 0 0 2px ${palette.error.main}`,
                   backgroundColor: `rgba(239, 5, 18, 0.1)`,
@@ -78,6 +132,7 @@ function App() {
               >
                 Error
               </Button>
+
               <br />
               <br />
               <Button variant="text">Text</Button>
