@@ -10,24 +10,25 @@ import { AppDialogProps, AppDialogTitleProps } from './AppDialog.types';
 export const AppDialogTitle = ({ title, onClose }: AppDialogTitleProps) => (
   <DialogTitle>
     {title}
-
-    <IconButton
-      aria-label="close"
-      onClick={onClose}
-      sx={{
-        background: 'transparent',
-        borderRadius: '50%',
-      }}
-    >
-      <img
-        style={{
-          width: '20px',
-          height: '20px',
+    {onClose && (
+      <IconButton
+        aria-label="close"
+        onClick={onClose}
+        sx={{
+          background: 'transparent',
+          borderRadius: '50%',
         }}
-        src={crossIcon}
-        alt="Close"
-      />
-    </IconButton>
+      >
+        <img
+          style={{
+            width: '20px',
+            height: '20px',
+          }}
+          src={crossIcon}
+          alt="Close"
+        />
+      </IconButton>
+    )}
   </DialogTitle>
 );
 
@@ -49,9 +50,11 @@ export const AppDialog = ({
         <img src={icon} style={{ width: '100px', height: '100px' }} alt="" />
       )}
 
-      <Typography sx={{ my: 5 }} variant="body2">
-        {description}
-      </Typography>
+      {description && (
+        <Typography sx={{ my: 5 }} variant="body2">
+          {description}
+        </Typography>
+      )}
 
       {children}
     </DialogContent>
