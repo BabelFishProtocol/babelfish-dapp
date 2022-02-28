@@ -4,9 +4,10 @@ export type DialogFormProps = {
   open: boolean;
   txFee: string;
   title: string;
+  isValid: boolean;
   onClose: () => void;
   children: ReactNode;
-  leftButton: ReactNode;
-  rightButton?: ReactNode;
+  leftButtonText: ReactNode;
+  rightButtonText?: ReactNode;
   handleSubmit?: FormEventHandler<HTMLFormElement>;
 };

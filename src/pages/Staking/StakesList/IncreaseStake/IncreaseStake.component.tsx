@@ -5,12 +5,12 @@ import { Button } from '../../../../components/Button/Button.component';
 import { TextInput } from '../../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../../components/DialogForm/DialogForm.component';
 import { CurrencyInput } from '../../../../components/CurrencyInput/CurrencyInput.component';
+import { ControlledInputWithButtonPillGroup } from '../../../../components/InputPillGroup/InputWithButtonPillGroup.controlled';
 
 import {
   IncreaseStakeComponentProps,
   IncreaseStakeFormValues,
 } from './IncreaseStake.types';
-import { ControlledInputWithButtonPillGroup } from '../../../../components/ControlledInputWithButtonPillGroup/ControlledInputWithButtonPillGroup.component';
 import { IncreaseStakeFields } from './IncreaseStake.fields';
 
 export const IncreaseStakeComponent = ({

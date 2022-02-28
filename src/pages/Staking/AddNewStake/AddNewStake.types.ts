@@ -1,5 +1,6 @@
 import { DateSelectorProps } from '../../../components/DateSelector/DateSelector.types';
 import { DialogFormProps } from '../../../components/DialogForm/DialogForm.types';
+import { StakingFeeEstimator } from '../Staking.hooks';
 import { AddNewStakeFields } from './AddNewStake.fields';
 
 export type AddNewStakeContainerProps = Pick<
@@ -7,12 +8,13 @@ export type AddNewStakeContainerProps = Pick<
   'open' | 'onClose'
 >;
 
+type FormSubmittor = (formValues: AddNewStakeFormValues) => Promise<void>;
+
 export type AddNewStakeComponentProps = AddNewStakeContainerProps &
+  Record<'estimateStakeFee' | 'esmimateApproveFee', StakingFeeEstimator> &
+  Record<'onStake' | 'onApprove', FormSubmittor> &
   Pick<DateSelectorProps, 'kickoffTs' | 'stakes'> & {
-    txFee: string;
-    votingPower: string;
-    totalFishAmount: string;
-    onSubmit: (formValues: AddNewStakeFormValues) => Promise<void>;
+    fishBalance?: string;
   };
 
 export type AddNewStakeFormValues = {

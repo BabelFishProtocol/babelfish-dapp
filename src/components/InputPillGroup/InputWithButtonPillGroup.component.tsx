@@ -11,6 +11,7 @@ export const InputWithButtonPillGroup = ({
   symbol,
   totalAmount,
   value,
+  error,
   disabled,
   onInputChange,
   onButtonChange,
@@ -47,6 +48,7 @@ export const InputWithButtonPillGroup = ({
         value={value}
         symbol={symbol}
         disabled={disabled}
+        error={error}
         onChange={handleInputChange}
         {...inputProps}
       />

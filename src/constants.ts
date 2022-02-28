@@ -39,4 +39,9 @@ export const monthNames = [
   'Dec',
 ];
 
+export const fieldsErrors = {
+  required: 'Field Required',
+  amountGreaterThanBalance: 'Value cannot be greater than your token balance',
+};
+
 export const decimalRegex = /^\d*\.?\d*$/;

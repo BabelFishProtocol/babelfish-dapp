@@ -8,29 +8,46 @@ import {
   select,
   takeLatest,
 } from 'typed-redux-saga';
-import { accountSelector, stakingContractSelector } from '../app/app.selectors';
+import {
+  accountSelector,
+  fishTokenSelector,
+  stakingContractSelector,
+} from '../app/app.selectors';
 import { appActions } from '../app/app.slice';
 import { stakingActions } from './staking.slice';
 import { StakeListItem } from './staking.state';
 
-export function* fetchTotalStaked() {
+export function* fetchFishTokenData() {
   try {
     const account = yield* select(accountSelector);
     const staking = yield* select(stakingContractSelector);
+    const fishToken = yield* select(fishTokenSelector);
 
-    if (!staking || !account) {
+    if (!staking || !account || !fishToken) {
       throw new Error('Wallet not connected');
     }
 
     const totalStaked = yield* call(staking.balanceOf, account);
+    const totalBalance = yield* call(fishToken.balanceOf, account);
+    const allowanceForStaking = yield* call(
+      fishToken.allowance,
+      account,
+      staking.address
+    );
 
-    yield* put(stakingActions.setTotalStaked(totalStaked.toString()));
+    yield* put(
+      stakingActions.setFishTokenData({
+        totalStaked: totalStaked.toString(),
+        fishBalance: totalBalance.toString(),
+        allowanceForStaking: allowanceForStaking.toString(),
+      })
+    );
   } catch (e) {
-    yield* put(stakingActions.fetchTotalStakedFailure());
+    yield* put(stakingActions.fetchFishTokenDataFailure());
   }
 }
 
-export function* fetchKickoffTs() {
+export function* fetchStakeConstants() {
   try {
     const staking = yield* select(stakingContractSelector);
 
@@ -39,10 +56,16 @@ export function* fetchKickoffTs() {
     }
 
     const kickoffTS = yield* call(staking.kickoffTS);
+    const WEIGHT_FACTOR = yield* call(staking.WEIGHT_FACTOR);
 
-    yield* put(stakingActions.setKickoffTs(kickoffTS.toNumber()));
+    yield* put(
+      stakingActions.setConstants({
+        kickoffTs: kickoffTS.toNumber(),
+        WEIGHT_FACTOR: WEIGHT_FACTOR.toString(),
+      })
+    );
   } catch (e) {
-    yield* put(stakingActions.fetchKickoffTsFailure());
+    yield* put(stakingActions.fetchConstantsFailure());
   }
 }
 
@@ -91,23 +114,31 @@ export function* fetchStakesList() {
   }
 }
 
-export function* fetchFishBalance() {}
-
+/** Fetch data needed for the stake page */
 function* fetchBalances() {
   yield* all([
-    call(fetchTotalStaked),
-    call(fetchKickoffTs),
+    call(fetchFishTokenData),
+    call(fetchStakeConstants),
     call(fetchVotingPower),
     call(fetchStakesList),
   ]);
 }
 
-function* triggerFetch() {
-  yield* put(stakingActions.fetchStakingData());
+/** Update values that can potentialy be changed after user actions */
+function* updateBalances() {
+  yield* all([
+    call(fetchFishTokenData),
+    call(fetchVotingPower),
+    call(fetchStakesList),
+  ]);
+}
+
+function* triggerUpdate() {
+  yield* put(stakingActions.updateStakingData());
 }
 
 function* runBalancesUpdater() {
-  yield* triggerFetch();
+  yield* put(stakingActions.fetchStakingData());
 
   yield* takeLatest(
     [
@@ -115,7 +146,7 @@ function* runBalancesUpdater() {
       appActions.setAccount.type,
       appActions.setBlockNumber.type,
     ],
-    triggerFetch
+    triggerUpdate
   );
 }
 
@@ -130,6 +161,7 @@ function* watchStakingData() {
 export function* stakingSaga() {
   yield* all([
     takeLatest(stakingActions.fetchStakingData.type, fetchBalances),
+    takeLatest(stakingActions.updateStakingData.type, updateBalances),
     takeLatest(stakingActions.watchStakingData.type, watchStakingData),
   ]);
 }

@@ -7,20 +7,18 @@ import { CenteredBox } from '../PageView/PageView.component';
 import { AppDialogTitle } from '../AppDialog/AppDialog.component';
 
 import { DialogFormProps } from './DialogForm.types';
+import { formatWeiAmount } from '../../utils/helpers';
 
 export const DialogForm = ({
   open,
   txFee,
   title,
   onClose,
+  isValid,
   children,
   handleSubmit,
-  leftButton,
-  rightButton = (
-    <Button variant="outlined" onClick={onClose}>
-      Cancel
-    </Button>
-  ),
+  leftButtonText,
+  rightButtonText = 'Cancel',
 }: DialogFormProps) => (
   <Dialog
     open={open}
@@ -43,14 +41,18 @@ export const DialogForm = ({
         }}
       >
         {children}
-        <Typography>Tx Fee: {txFee} RBTC</Typography>
+        <Typography>Tx Fee: {formatWeiAmount(txFee, 6)} RBTC</Typography>
       </Box>
 
       <CenteredBox
         sx={{ width: '100%', gap: 3, p: 3, '& button': { flexGrow: 1 } }}
       >
-        {leftButton}
-        {rightButton}
+        <Button type="submit" disabled={!isValid}>
+          {leftButtonText}
+        </Button>
+        <Button variant="outlined" onClick={onClose}>
+          {rightButtonText}
+        </Button>
       </CenteredBox>
     </form>
   </Dialog>
