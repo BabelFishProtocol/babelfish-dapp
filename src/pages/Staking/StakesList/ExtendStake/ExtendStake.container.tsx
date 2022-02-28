@@ -19,7 +19,7 @@ export const ExtendStakeContainer = ({
   const currentStakes = useSelector(stakesDatesSelector);
   const selectedStakeData = useSelector(selectedStakeSelector);
 
-  if (!kickoffTs || !selectedStakeData) {
+  if (!kickoffTs.data || !selectedStakeData) {
     return null;
   }
 
@@ -28,8 +28,8 @@ export const ExtendStakeContainer = ({
       open={open}
       onClose={onClose}
       txFee={mockTxFee}
-      kickoffTs={kickoffTs}
       stakes={currentStakes}
+      kickoffTs={kickoffTs.data}
       votingPower={mockNewVotingPower}
       prevDate={selectedStakeData.unlockDate}
       stakedAmount={selectedStakeData.lockedAmount}

@@ -1,4 +1,4 @@
-import { LoadableValue } from '../types';
+import { LoadableAmount, LoadableValue } from '../types';
 
 export type StakeListItem = {
   asset: string;
@@ -12,27 +12,29 @@ export type VestsListItem = StakeListItem & {
   stakingPeriodStart: number;
 };
 
-export type StakingData = { kickoffTs?: number };
-
 export class StakingState {
+  selectedVest?: number;
+  selectedStake?: number;
+
+  kickoffTs: LoadableValue<number | undefined> = {
+    state: 'idle',
+    data: undefined,
+  };
+  totalStaked: LoadableAmount = {
+    state: 'idle',
+    data: undefined,
+  };
+  combinedVotingPower: LoadableAmount = {
+    state: 'idle',
+    data: undefined,
+  };
+
   stakesList: LoadableValue<StakeListItem[]> = {
     data: [],
     state: 'idle',
   };
-
   vestsList: LoadableValue<VestsListItem[]> = {
     data: [],
     state: 'idle',
   };
-
-  pageData: LoadableValue<StakingData> = {
-    data: {
-      kickoffTs: undefined,
-    },
-    state: 'idle',
-  };
-
-  selectedStake?: number;
-
-  selectedVest?: number;
 }

@@ -18,7 +18,7 @@ export const AddNewStakeContainer = ({
   const kickoffTs = useSelector(kickoffTsSelector);
   const currentStakes = useSelector(stakesDatesSelector);
 
-  if (!kickoffTs) {
+  if (!kickoffTs.data) {
     return null;
   }
   return (
@@ -26,7 +26,7 @@ export const AddNewStakeContainer = ({
       open={open}
       onClose={onClose}
       txFee={mockTxFee}
-      kickoffTs={kickoffTs}
+      kickoffTs={kickoffTs.data}
       stakes={currentStakes}
       votingPower={mockVotingPower}
     />

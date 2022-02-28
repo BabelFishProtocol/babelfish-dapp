@@ -1,14 +1,14 @@
-import { LoadableAmount } from '../../utils/types';
+import { LoadableAmount } from '../../store/types';
 import { DashboardComponent } from './Dashboard.component';
 
 export const DashboardContainer = () => {
   const mockFishBalance: LoadableAmount = {
-    isLoading: false,
-    amount: '200000000000000000000',
+    state: 'success',
+    data: '200000000000000000000',
   };
   const mockFishVesting: LoadableAmount = {
-    isLoading: false,
-    amount: '200000000000000000000',
+    state: 'success',
+    data: '200000000000000000000',
   };
   const mockTotalUSD = '100,000.00';
 

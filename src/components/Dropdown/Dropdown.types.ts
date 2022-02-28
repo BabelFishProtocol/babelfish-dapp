@@ -2,7 +2,7 @@ import { FormControlProps } from '@mui/material/FormControl';
 import { SelectChangeEvent } from '@mui/material/Select';
 
 export type DropdownOptionType = {
-  id: string;
+  id: string | number;
   name: string;
   icon: string;
 };

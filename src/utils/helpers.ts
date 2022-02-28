@@ -11,6 +11,18 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(advanced);
 
+export const pick = <Obj extends {}, Keys extends keyof Obj>(
+  object: Obj,
+  keys: ReadonlyArray<Keys>
+): Pick<Obj, Keys> =>
+  keys.reduce((obj, key) => {
+    // eslint-disable-next-line no-prototype-builtins
+    if (object && object.hasOwnProperty(key)) {
+      obj[key] = object[key];
+    }
+    return obj;
+  }, {} as Obj);
+
 export const prettyTx = (
   text: string,
   startLength: number = 6,
