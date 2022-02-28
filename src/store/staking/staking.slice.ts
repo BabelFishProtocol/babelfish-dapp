@@ -14,10 +14,15 @@ export const stakingSlice = createSlice({
   name: Reducers.Staking,
   initialState,
   reducers: {
-    watchStakingData: (_) => {},
+    watchStakingData: (state) => {
+      state.fishToken.data = {};
+      state.combinedVotingPower.data = undefined;
+      state.stakesList.data = [];
+    },
     stopWatchingStakingData: (state) => {
       state.fishToken.state = 'idle';
       state.combinedVotingPower.state = 'idle';
+      state.stakesList.state = 'idle';
     },
     fetchStakingData: (state) => {
       state.constants.state = 'loading';
