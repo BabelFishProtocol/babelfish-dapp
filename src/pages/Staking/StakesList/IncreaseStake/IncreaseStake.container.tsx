@@ -17,7 +17,7 @@ export const IncreaseStakeContainer = ({
   const { kickoffTs } = useSelector(stakingConstantsSelector);
   const selectedStakeData = useSelector(selectedStakeSelector);
 
-  if (!kickoffTs || !selectedStakeData) {
+  if (!kickoffTs.data || !selectedStakeData) {
     return null;
   }
 

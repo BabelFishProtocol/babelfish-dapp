@@ -17,7 +17,7 @@ export const WithdrawVestContainer = ({
   const { kickoffTs } = useSelector(stakingConstantsSelector);
   const selectedVestData = useSelector(selectedVestSelector);
 
-  if (!kickoffTs || !selectedVestData) {
+  if (!kickoffTs.data || !selectedVestData) {
     return null;
   }
 
