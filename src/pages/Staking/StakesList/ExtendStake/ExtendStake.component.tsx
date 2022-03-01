@@ -1,63 +1,133 @@
-import { useState } from 'react';
+import { BigNumber, utils } from 'ethers';
+import { useForm, useWatch } from 'react-hook-form';
 
 import Typography from '@mui/material/Typography';
 
 import { formatTimestamp, formatWeiAmount } from '../../../../utils/helpers';
 
+import { TextInput } from '../../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../../components/DialogForm/DialogForm.component';
-import { DateSelector } from '../../../../components/DateSelector/DateSelector.component';
 import { CurrencyInput } from '../../../../components/CurrencyInput/CurrencyInput.component';
+import { ControlledDateSelector } from '../../../../components/DateSelector/DateSelector.controlled';
 
-import { ExtendStakeComponentProps } from './ExtendStake.types';
+import { useEstimateFee, useVotingPower } from '../../Staking.hooks';
+import {
+  ExtendStakeComponentProps,
+  FeeEstimatorProps,
+  VotingPowerBlockProps,
+} from './ExtendStake.types';
+import {
+  extendStakeDefaultValues,
+  ExtendStakeFields,
+  ExtendStakeValues,
+} from './ExtendStake.fields';
 
 export const ExtendStakeComponent = ({
   open,
   stakes,
   onClose,
+  onExtend,
   prevDate,
   kickoffTs,
-  votingPower,
   stakedAmount,
+  estimateExtendFee,
 }: ExtendStakeComponentProps) => {
-  const [unlockDate, setUnlockDate] = useState<number>();
+  const { control, formState, handleSubmit } = useForm<ExtendStakeValues>({
+    mode: 'onChange',
+    defaultValues: extendStakeDefaultValues,
+  });
 
   return (
     <DialogForm
       open={open}
-      isValid
+      isValid={formState.isValid}
       onClose={onClose}
       title="Extend Fish Stake"
       leftButtonText="Confirm"
+      handleSubmit={handleSubmit(onExtend)}
     >
       <Typography>Previous Until: {formatTimestamp(prevDate)}</Typography>
 
       <CurrencyInput
         disabled
         symbol="FISH"
-        value={stakedAmount}
+        value={formatWeiAmount(stakedAmount)}
         title="Staked Amount"
       />
 
-      <DateSelector
+      <ControlledDateSelector
+        control={control}
+        name={ExtendStakeFields.unlockDate}
         stakes={stakes}
-        value={unlockDate}
         prevDate={prevDate}
         kickoffTs={kickoffTs}
-        onChange={setUnlockDate}
       />
 
-      <CurrencyInput
-        disabled
-        symbol=""
-        value={votingPower}
-        title="Voting Power Received"
+      <VotingPower
+        control={control}
+        prevDate={prevDate}
+        stakedAmount={stakedAmount}
       />
 
-      <FeeEstimator />
+      <FeeEstimator
+        control={control}
+        stakedAmount={stakedAmount}
+        estimateExtendFee={estimateExtendFee}
+      />
     </DialogForm>
   );
 };
 
-const FeeEstimator = () => (
-  <Typography>Tx Fee: {formatWeiAmount('30000000000000', 7)} RBTC</Typography>
-);
+const VotingPower = ({
+  control,
+  prevDate,
+  stakedAmount,
+}: VotingPowerBlockProps) => {
+  const watchUnlockDate = useWatch({
+    name: ExtendStakeFields.unlockDate,
+    control,
+  });
+
+  const prevVotingPower = useVotingPower(
+    utils.formatEther(stakedAmount),
+    prevDate
+  );
+
+  const currVotingPower = useVotingPower(
+    utils.formatEther(stakedAmount),
+    watchUnlockDate
+  );
+
+  const votingPower = BigNumber.from(currVotingPower).gt(prevVotingPower)
+    ? BigNumber.from(currVotingPower).sub(prevVotingPower)
+    : '0';
+
+  return (
+    <TextInput
+      disabled
+      value={formatWeiAmount(votingPower)}
+      title="Voting Power Received"
+    />
+  );
+};
+
+const FeeEstimator = ({
+  control,
+  stakedAmount,
+  estimateExtendFee,
+}: FeeEstimatorProps) => {
+  const watchUnlockDate = useWatch({
+    name: ExtendStakeFields.unlockDate,
+    control,
+  });
+
+  const estimatedFee = useEstimateFee({
+    amount: stakedAmount,
+    timestamp: watchUnlockDate,
+    estimator: estimateExtendFee,
+  });
+
+  return (
+    <Typography>Tx Fee: {formatWeiAmount(estimatedFee, 7)} RBTC</Typography>
+  );
+};

@@ -15,8 +15,12 @@ export const ControlledInputWithButtonPillGroup = <
   ...props
 }: ControlledInputWithButtonPillGroupProps<FormValues>) => {
   const onButtonChange = (newValue: string) => {
-    setValue(name, newValue, { shouldValidate: true });
+    setValue(name, newValue as FormValues[typeof name], {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
   };
+
   return (
     <Controller
       render={({ field: { onChange, value, onBlur }, fieldState }) => (
