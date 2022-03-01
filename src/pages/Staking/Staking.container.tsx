@@ -24,7 +24,7 @@ const mockRewards: RewardBlockProps[] = [
 
 const Container = () => {
   const dispatch = useDispatch();
-  const { fishBalance } = useSelector(fishTokenDataSelector);
+  const { totalStaked } = useSelector(fishTokenDataSelector);
   const fishLoadingState = useSelector(fishLoadingStateSelector);
   const combinedVotingPower = useSelector(combinedVotingPowerSelector);
 
@@ -41,7 +41,7 @@ const Container = () => {
       rewards={mockRewards}
       totalRewards={mockTotalRewards}
       votingPower={combinedVotingPower}
-      fishStaked={{ state: fishLoadingState, data: fishBalance }}
+      fishStaked={{ state: fishLoadingState, data: totalStaked }}
     />
   );
 };
