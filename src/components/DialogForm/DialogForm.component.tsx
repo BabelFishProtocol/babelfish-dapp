@@ -5,7 +5,7 @@ import { Button } from '../Button/Button.component';
 import { CenteredBox } from '../PageView/PageView.component';
 import { AppDialogTitle } from '../AppDialog/AppDialog.component';
 
-import { DialogFormProps } from './DialogForm.types';
+import { DialogFormProps, DialogButtonsAlignerProps } from './DialogForm.types';
 
 export const DialogForm = ({
   open,
@@ -40,16 +40,24 @@ export const DialogForm = ({
         {children}
       </Box>
 
-      <CenteredBox
-        sx={{ width: '100%', gap: 3, p: 3, '& button': { flexGrow: 1 } }}
-      >
+      <DialogButtonsAligner>
         <Button type="submit" disabled={!isValid}>
           {leftButtonText}
         </Button>
         <Button variant="outlined" onClick={onClose}>
           {rightButtonText}
         </Button>
-      </CenteredBox>
+      </DialogButtonsAligner>
     </form>
   </Dialog>
+);
+
+export const DialogButtonsAligner = ({
+  children,
+}: DialogButtonsAlignerProps) => (
+  <CenteredBox
+    sx={{ width: '100%', gap: 3, p: 3, '& button': { flexGrow: 1 } }}
+  >
+    {children}
+  </CenteredBox>
 );
