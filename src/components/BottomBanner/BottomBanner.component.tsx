@@ -1,12 +1,17 @@
-import { Link, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
+import Link from '@mui/material/Link';
+import Typography from '@mui/material/Typography';
 import React, { useState } from 'react';
 import closeIcon from '../../assets/icons/cross.svg';
 
 export const BottomBanner = () => {
   const [bannerShow, setBannerShow] = useState(true);
 
-  return bannerShow ? (
+  if (!bannerShow) {
+    return null;
+  }
+
+  return (
     <Box
       sx={{
         position: 'fixed',
@@ -49,7 +54,5 @@ export const BottomBanner = () => {
         />
       </Box>
     </Box>
-  ) : (
-    <div />
   );
 };
