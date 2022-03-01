@@ -6,6 +6,7 @@ import errorIcon from './assets/icons/error.svg';
 import loadingIcon from './assets/icons/loading.svg';
 import successIcon from './assets/icons/success.svg';
 import { AppDialog } from './components/AppDialog/AppDialog.component';
+import { BottomBanner } from './components/BottomBanner/BottomBanner.component';
 import { DateSelector } from './components/DateSelector/DateSelector.component';
 import { Header } from './components/Header/Header.component';
 import { MintingInfo } from './components/MintingInfo/MintingInfo.component';
@@ -157,6 +158,8 @@ function App() {
         />
         <Route path={Urls.Agregator} element={<AgregatorContainer />} />
       </Routes>
+
+      <BottomBanner />
     </div>
   );
 }
