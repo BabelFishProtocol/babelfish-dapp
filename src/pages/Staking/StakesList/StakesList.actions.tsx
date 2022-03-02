@@ -1,10 +1,12 @@
 import { useDispatch } from 'react-redux';
+import { useMemo } from 'react';
 
 import { stakingActions } from '../../../store/staking/staking.slice';
 
 import { TableAction } from '../../../components/TableActions/TableActions.types';
 import { CustomColumn } from '../../../components/DataTable/DataTable.types';
 import { TableActionsComponent } from '../../../components/TableActions/TableActions.component';
+import { isTimeStampLocked } from '../../../utils/helpers';
 
 import { useStakeModalForm } from '../Staking.hooks';
 import { ExtendStakeContainer } from './ExtendStake/ExtendStake.container';
@@ -12,8 +14,16 @@ import { IncreaseStakeContainer } from './IncreaseStake/IncreaseStake.container'
 import { WithdrawStakeContainer } from './WithdrawStake/WithdrawStake.container';
 import { DelegateStakeContainer } from './DelegateStake/DelegateStake.container';
 
-export const StakeActionColumn: CustomColumn = ({ value }) => {
+export const StakeActionColumn: CustomColumn = ({
+  value,
+  rowData: { unlockDate },
+}) => {
   const dispatch = useDispatch();
+
+  const isActionDisabled = useMemo(
+    () => isTimeStampLocked(unlockDate),
+    [unlockDate]
+  );
 
   const selectStake = () => {
     dispatch(stakingActions.selectStake(Number(value)));
@@ -36,6 +46,7 @@ export const StakeActionColumn: CustomColumn = ({ value }) => {
 
   const actions: TableAction[] = [
     {
+      isDisable: isActionDisabled,
       label: 'Increase',
       onClick: handleOpenIncreaseForm,
     },
@@ -48,6 +59,7 @@ export const StakeActionColumn: CustomColumn = ({ value }) => {
       onClick: handleOpenWithdrawForm,
     },
     {
+      isDisable: isActionDisabled,
       label: 'Delegate',
       onClick: handleOpenDelegateForm,
     },

@@ -42,6 +42,7 @@ export const TableActionsComponent = ({ actions }: TableActionsProps) => {
         {actions.map((action, index) => (
           <MenuItem
             key={index}
+            disabled={action.isDisable}
             onClick={(e) => {
               action.onClick(e);
               handleClose();
