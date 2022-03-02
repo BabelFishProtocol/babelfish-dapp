@@ -33,6 +33,7 @@ import {
 export const WithdrawStakeComponent = ({
   open,
   onClose,
+  isLocked,
   onWithdraw,
   forfeitPercent,
   forfeitWithdraw,
@@ -67,7 +68,9 @@ export const WithdrawStakeComponent = ({
       title="Unstake Fish"
       leftButtonText="Confirm"
       isValid={formState.isValid}
-      handleSubmit={handleSubmit(handleOpenConfirmation)}
+      handleSubmit={handleSubmit(
+        isLocked ? onWithdraw : handleOpenConfirmation
+      )}
     >
       <CurrencyInput
         disabled
@@ -86,11 +89,15 @@ export const WithdrawStakeComponent = ({
         setValue={setValue}
       />
 
-      <TextInput
-        disabled
-        value={`${forfeitPercent}% ≈  ${formatWeiAmount(forfeitWithdraw)} FISH`}
-        title="Early Unstake Forfeit"
-      />
+      {!isLocked && (
+        <TextInput
+          disabled
+          value={`${forfeitPercent}% ≈  ${formatWeiAmount(
+            forfeitWithdraw
+          )} FISH`}
+          title="Early Unstake Forfeit"
+        />
+      )}
 
       <FeeEstimator
         control={control}

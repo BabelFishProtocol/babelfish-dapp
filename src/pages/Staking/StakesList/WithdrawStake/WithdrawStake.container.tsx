@@ -9,6 +9,7 @@ import {
 import {
   stakingConstantsSelector,
   selectedStakeSelector,
+  isSelectedStakeLockedSelector,
 } from '../../../../store/staking/staking.selectors';
 import { useContractCall } from '../../../../hooks/useContractCall';
 import { SubmitStatusDialog } from '../../../../components/TxDialog/TxDialog.component';
@@ -81,6 +82,7 @@ export const WithdrawStakeContainer = ({
   const staking = useSelector(stakingContractSelector);
   const { kickoffTs } = useSelector(stakingConstantsSelector);
   const selectedStakeData = useSelector(selectedStakeSelector);
+  const isLocked = useSelector(isSelectedStakeLockedSelector);
 
   const { forfeitPercent, forfeitWithdraw, calculateFeeAndForfeit } =
     useWithdrawCalculations();
@@ -111,6 +113,7 @@ export const WithdrawStakeContainer = ({
       <WithdrawStakeComponent
         open={open}
         onClose={onClose}
+        isLocked={!!isLocked}
         onWithdraw={onWithdraw}
         forfeitPercent={forfeitPercent}
         forfeitWithdraw={forfeitWithdraw}

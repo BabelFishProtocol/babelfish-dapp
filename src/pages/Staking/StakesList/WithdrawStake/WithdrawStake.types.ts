@@ -10,6 +10,7 @@ export type WithdrawStakeContainerProps = Pick<
 >;
 
 export type WithdrawStakeComponentProps = WithdrawStakeContainerProps & {
+  isLocked: boolean;
   forfeitPercent: string;
   forfeitWithdraw: string;
   currentStakeAmount: string;
