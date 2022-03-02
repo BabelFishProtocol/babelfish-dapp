@@ -18,5 +18,5 @@ const mainnetBaseChains: BaseChainType[] = [
 export const mainnetPool = {
   baseChains: mainnetBaseChains,
   masset: tokens.XUSD,
-  masterChain: chains.RSK,
+  masterChain: chains[ChainEnum.RSK],
 };
