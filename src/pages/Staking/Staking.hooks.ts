@@ -63,17 +63,19 @@ export const useVotingPower = (amount: string, unlockDate: number) => {
 
   useEffect(() => {
     const calculateVotingPower = async () => {
+      const currentTimestamp = getCurrentTimestamp();
+
       if (
         !staking ||
         !WEIGHT_FACTOR ||
         !debouncedUnlockDate ||
-        debouncedAmount === ''
+        debouncedAmount === '' ||
+        currentTimestamp > debouncedUnlockDate
       ) {
         setVotingPower('0');
         return;
       }
 
-      const currentTimestamp = getCurrentTimestamp();
       const weight = await staking.computeWeightByDate(
         debouncedUnlockDate,
         currentTimestamp
