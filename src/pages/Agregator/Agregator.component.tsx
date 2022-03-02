@@ -2,11 +2,11 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
-import { utils } from 'ethers';
-import { useState, useEffect } from 'react';
+import { BigNumber, utils } from 'ethers';
+import { useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { baseChains, ChainEnum, chains } from '../../config/chains';
+import { ChainType } from '../../config/chains';
 import { TokenTypeBase } from '../../config/tokens';
 import { ControlledDropdown } from '../../components/ControlledDropdown/ControlledDropdown.component';
 import { PageView } from '../../components/PageView/PageView.component';
@@ -14,54 +14,117 @@ import { ControlledInputWithButtonPillGroup } from '../../components/ControlledI
 import { ControlledCurrencyInput } from '../../components/ControlledCurrencyInput/ControlledCurrencyInput.component';
 import { ControlledInput } from '../../components/ControlledInput/ControlledInput.component';
 
-import { AggregatorInputs } from './Agregator.fields';
+import { AgregatorInputs } from './Agregator.fields';
 import {
   AgregatorComponentProps,
   AgregatorFormValues,
 } from './Agregator.types';
+import { mainnetPool } from '../../config/pools';
+import { AgregatorInfo } from './AgregatorInfo/AgregatorInfo.component';
 
 export const AgregatorComponent = ({
-  availableBalance,
   getTokenAvaliableBalance,
   getReceiveAmount,
   onSubmit,
 }: AgregatorComponentProps) => {
-  const [bassetOptions, setBassetOptions] = useState<TokenTypeBase[]>();
-  const [tokenDropdownDisabled, setTokenDropdownDisabled] = useState(true);
-
   const { handleSubmit, watch, setValue, control } =
     useForm<AgregatorFormValues>({
       defaultValues: {
-        [AggregatorInputs.ChainDropdown]: '',
-        [AggregatorInputs.TokenDropdown]: '',
-        [AggregatorInputs.SendAmount]: '',
-        [AggregatorInputs.DestinationChain]: ChainEnum.RSK,
-        [AggregatorInputs.ReceiveAmount]: '',
-        [AggregatorInputs.ReceiveAddress]: '',
+        [AgregatorInputs.StartingChain]: '',
+        [AgregatorInputs.StartingToken]: '',
+        [AgregatorInputs.SendAmount]: '',
+        [AgregatorInputs.DestinationChain]: '',
+        [AgregatorInputs.DestinationToken]: '',
+        [AgregatorInputs.ReceiveAmount]: '',
+        [AgregatorInputs.ReceiveAddress]: '',
       },
     });
-  const watchChain = watch(AggregatorInputs.ChainDropdown);
-  const watchToken = watch(AggregatorInputs.TokenDropdown);
-  const watchAmount = watch(AggregatorInputs.SendAmount);
+  const watchStartingChain = watch(AgregatorInputs.StartingChain);
+  const watchStartingToken = watch(AgregatorInputs.StartingToken);
+  const watchDestinationChain = watch(AgregatorInputs.DestinationChain);
+  const watchDestinationToken = watch(AgregatorInputs.DestinationToken);
+
+  const startingTokenOptions = useMemo<TokenTypeBase[]>(() => {
+    if (watchStartingChain === undefined) {
+      return [];
+    }
+
+    if (watchStartingChain === mainnetPool.masterChain.id) {
+      return [mainnetPool.masset];
+    }
+
+    return mainnetPool.baseChains[watchStartingChain];
+  }, [watchStartingChain]);
+
+  const [availableBalance, setAvailableBalance] = useState<BigNumber>();
+
+  const [destinationChainOptions, setDestinationChainOptions] = useState<
+    ChainType[]
+  >([]);
+
+  const [destinationTokenOptions, setDestinationTokenOptions] = useState<
+    TokenTypeBase[]
+  >([]);
+
+  const watchAmount = watch(AgregatorInputs.SendAmount);
 
   useEffect(() => {
-    const chosenChain = baseChains.find(({ id }) => id === watchChain);
-    const currentOptions = chosenChain && chosenChain.bassets;
+    console.log('nie');
+    setAvailableBalance(undefined);
+    if (watchStartingChain === mainnetPool.masterChain.id) {
+      setStartingTokenOptions([mainnetPool.masset]);
+      setValue(AgregatorInputs.StartingToken, mainnetPool.masset.id);
+
+      setDestinationChainOptions(mainnetPool.baseChains);
+
+      setDestinationTokenOptions(startingTokenOptions);
+      setValue(AgregatorInputs.DestinationToken, watchStartingToken);
+    } else {
+      const chosenChain = mainnetPool.baseChains.find(
+        ({ id }) => id === watchStartingChain
+      );
+      const currentOptions = chosenChain?.bassets;
+      if (currentOptions) {
+        setStartingTokenOptions(currentOptions);
+        setValue(AgregatorInputs.StartingToken, watchDestinationToken);
+        setDestinationChainOptions([mainnetPool.masterChain]);
+        setValue(AgregatorInputs.DestinationChain, mainnetPool.masterChain.id);
+        setDestinationTokenOptions([mainnetPool.masset]);
+        setValue(AgregatorInputs.DestinationToken, mainnetPool.masset.id);
+      }
+    }
+  }, [watchStartingChain]);
+
+  useEffect(() => {
+    const chosenChain = mainnetPool.baseChains.find(
+      ({ id }) => id === watchDestinationChain
+    );
+    const currentOptions = chosenChain?.bassets;
     if (currentOptions) {
-      setBassetOptions(currentOptions);
-      setTokenDropdownDisabled(!currentOptions);
+      setDestinationTokenOptions(currentOptions);
+      setValue(AgregatorInputs.DestinationToken, '');
     }
-  }, [watchChain]);
+  }, [watchDestinationChain]);
 
   useEffect(() => {
-    if (watchToken) {
-      getTokenAvaliableBalance();
+    if (watchStartingToken) {
+      setAvailableBalance(getTokenAvaliableBalance());
     }
-  }, [watchToken, getTokenAvaliableBalance]);
+  }, [watchStartingToken, getTokenAvaliableBalance]);
+
+  const changeDirection = () => {
+    if (watchDestinationChain === mainnetPool.masterChain.id) {
+      setDestinationChainOptions(mainnetPool.baseChains);
+      setValue(AgregatorInputs.DestinationChain, watchStartingChain);
+    } else {
+      setDestinationChainOptions([mainnetPool.masterChain]);
+      setValue(AgregatorInputs.StartingChain, watchStartingChain);
+    }
+  };
 
   useEffect(() => {
     if (watchAmount) {
-      setValue(AggregatorInputs.ReceiveAmount, getReceiveAmount(watchAmount));
+      setValue(AgregatorInputs.ReceiveAmount, getReceiveAmount(watchAmount));
     }
   }, [watchAmount, getReceiveAmount, setValue]);
 
@@ -95,20 +158,19 @@ export const AgregatorComponent = ({
         >
           <ControlledDropdown
             autoFocus
-            name={AggregatorInputs.ChainDropdown}
+            name={AgregatorInputs.StartingChain}
             title="Select Network"
             placeholder="Select Chain"
             control={control}
-            options={baseChains}
+            options={[...mainnetPool.baseChains, mainnetPool.masterChain]}
             sx={{ mb: 4 }}
           />
           <ControlledDropdown
-            name={AggregatorInputs.TokenDropdown}
-            title="Deposit stablecoin"
+            name={AgregatorInputs.StartingToken}
+            title="stablecoin"
             placeholder="Select Coin"
             control={control}
-            disabled={tokenDropdownDisabled}
-            options={bassetOptions ?? []}
+            options={startingTokenOptions}
           />
           <Box sx={{ mb: 8, position: 'relative' }}>
             {availableBalance && (
@@ -117,15 +179,15 @@ export const AgregatorComponent = ({
                 sx={{ position: 'absolute', top: 14 }}
               >
                 Available Balance:{' '}
-                {`${utils.formatUnits(availableBalance)} ${watchToken}`}
+                {`${utils.formatUnits(availableBalance)} ${watchStartingToken}`}
               </Typography>
             )}
           </Box>
 
           <ControlledInputWithButtonPillGroup
-            name={AggregatorInputs.SendAmount}
-            title="Deposit amount"
-            symbol="USDT"
+            name={AgregatorInputs.SendAmount}
+            title="Amount"
+            symbol={watchStartingToken}
             disabled={!availableBalance}
             totalAmount={availableBalance}
             control={control}
@@ -133,6 +195,7 @@ export const AgregatorComponent = ({
           />
         </Box>
       </PageView>
+      <AgregatorInfo onClick={changeDirection} />
       <PageView
         title={
           <Box
@@ -152,26 +215,34 @@ export const AgregatorComponent = ({
           }}
         >
           <ControlledDropdown
-            disabled
-            name={AggregatorInputs.DestinationChain}
+            name={AgregatorInputs.DestinationChain}
             title="Network"
+            placeholder="Select Chain"
             control={control}
-            options={[chains.RSK]}
+            options={destinationChainOptions}
+            sx={{ mb: 4 }}
+          />
+          <ControlledDropdown
+            name={AgregatorInputs.DestinationToken}
+            title="Stablecoin"
+            placeholder="Select Coin"
+            control={control}
+            options={destinationTokenOptions}
             sx={{ mb: 4 }}
           />
           <ControlledCurrencyInput
             disabled
             title="Receive amount"
-            symbol="XUSD"
+            symbol={watchDestinationToken}
             placeholder="0.00"
-            name={AggregatorInputs.ReceiveAmount}
+            name={AgregatorInputs.ReceiveAmount}
             control={control}
             sx={{ mb: 5 }}
           />
           <ControlledInput
             title="Receiving address"
             placeholder="Enter or paste address"
-            name={AggregatorInputs.ReceiveAddress}
+            name={AgregatorInputs.ReceiveAddress}
             control={control}
             sx={{ mb: 5 }}
           />

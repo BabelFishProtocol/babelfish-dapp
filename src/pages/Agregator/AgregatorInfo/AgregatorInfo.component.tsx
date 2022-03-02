@@ -10,7 +10,7 @@ const mockInfo = [
   { label: 'Day Limit', value: '100,000,000.0000 ETH' },
 ];
 
-export const AgregatorInfo = () => (
+export const AgregatorInfo = ({ onClick }: { onClick: () => void }) => (
   <Box
     sx={{
       display: 'flex',
@@ -20,7 +20,7 @@ export const AgregatorInfo = () => (
       mb: 14,
     }}
   >
-    <IconButton sx={{ width: 144, height: 144 }}>
+    <IconButton sx={{ width: 144, height: 144 }} onClick={onClick}>
       <img alt="exchange icon" width={40} src={exchangeIcon} />
     </IconButton>
     <Box

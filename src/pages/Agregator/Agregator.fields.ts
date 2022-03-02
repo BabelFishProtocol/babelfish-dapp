@@ -1,8 +1,9 @@
-export enum AggregatorInputs {
-  ChainDropdown = 'ChainDropdown',
-  TokenDropdown = 'TokenDropdown',
+export enum AgregatorInputs {
+  StartingChain = 'StartingChain',
+  StartingToken = 'StartingToken',
   SendAmount = 'SendAmount',
   DestinationChain = 'DestinationChain',
+  DestinationToken = 'DestinationToken',
   ReceiveAmount = 'ReceiveAmount',
   ReceiveAddress = 'ReceiveAddress',
 }

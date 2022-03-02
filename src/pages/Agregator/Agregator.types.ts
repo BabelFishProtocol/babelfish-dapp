@@ -1,20 +1,21 @@
 import { BigNumber } from 'ethers';
 import { ChainEnum } from '../../config/chains';
 import { TokenEnum } from '../../config/tokens';
-import { AggregatorInputs } from './Agregator.fields';
+import { AgregatorInputs } from './Agregator.fields';
 
 export type AgregatorFormValues = {
-  [AggregatorInputs.ChainDropdown]: ChainEnum | '';
-  [AggregatorInputs.TokenDropdown]: TokenEnum | '';
-  [AggregatorInputs.SendAmount]: string;
-  [AggregatorInputs.DestinationChain]: ChainEnum;
-  [AggregatorInputs.ReceiveAmount]: string;
-  [AggregatorInputs.ReceiveAddress]: string;
+  [AgregatorInputs.StartingChain]: ChainEnum | '';
+  [AgregatorInputs.StartingToken]: TokenEnum | '';
+  [AgregatorInputs.SendAmount]: string;
+  [AgregatorInputs.DestinationChain]: ChainEnum | '';
+  [AgregatorInputs.DestinationToken]: TokenEnum | '';
+  [AgregatorInputs.ReceiveAmount]: string;
+  [AgregatorInputs.ReceiveAddress]: string;
 };
 
 export type AgregatorComponentProps = {
   availableBalance?: BigNumber;
-  getTokenAvaliableBalance: () => void;
+  getTokenAvaliableBalance: () => BigNumber;
   getReceiveAmount: (sendAmount: string) => string;
   onSubmit: (data: AgregatorFormValues) => void;
 };

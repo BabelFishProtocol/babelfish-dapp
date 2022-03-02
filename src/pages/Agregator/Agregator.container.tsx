@@ -6,24 +6,22 @@ import { AgregatorFormValues } from './Agregator.types';
 const mockAvailableBalance = '81.123';
 
 export const AgregatorContainer = () => {
-  const [availableBalance, setAvailableBalance] = useState<BigNumber>();
-
   // WIP: use useCallback here
-  const getTokenAvaliableBalance = useCallback(() => {
-    // todo: implement
-    setAvailableBalance(utils.parseEther(mockAvailableBalance));
-  }, [mockAvailableBalance]);
-
-  const getReceiveAmount = useCallback(
-    (sendAmount: string) =>
+  const getTokenAvaliableBalance = useCallback(
+    () =>
       // todo: implement
-      utils.formatUnits(
-        utils
-          .parseUnits(sendAmount)
-          .mul(BigNumber.from(95))
-          .div(BigNumber.from(100))
-      ),
-    [availableBalance]
+      utils.parseEther(mockAvailableBalance),
+    [mockAvailableBalance]
+  );
+
+  const getReceiveAmount = useCallback((sendAmount: string) =>
+    // todo: implement
+    utils.formatUnits(
+      utils
+        .parseUnits(sendAmount)
+        .mul(BigNumber.from(95))
+        .div(BigNumber.from(100))
+    )
   );
   const onSubmit = (data: AgregatorFormValues) => {
     // TODO: implement
@@ -32,7 +30,6 @@ export const AgregatorContainer = () => {
   };
   return (
     <AgregatorComponent
-      availableBalance={availableBalance}
       getTokenAvaliableBalance={getTokenAvaliableBalance}
       getReceiveAmount={getReceiveAmount}
       onSubmit={onSubmit}
