@@ -14,12 +14,15 @@ import { IncreaseStakeContainer } from './IncreaseStake/IncreaseStake.container'
 import { WithdrawStakeContainer } from './WithdrawStake/WithdrawStake.container';
 import { DelegateStakeContainer } from './DelegateStake/DelegateStake.container';
 
-export const StakeActionColumn: CustomColumn = ({ value, rowData }) => {
+export const StakeActionColumn: CustomColumn = ({
+  value,
+  rowData: { unlockDate },
+}) => {
   const dispatch = useDispatch();
 
   const isActionDisabled = useMemo(
-    () => (isTimeStampLocked(rowData.unlockDate)),
-    [rowData.unlockDate],
+    () => isTimeStampLocked(unlockDate),
+    [unlockDate]
   );
 
   const selectStake = () => {

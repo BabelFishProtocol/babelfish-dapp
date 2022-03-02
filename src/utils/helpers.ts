@@ -56,7 +56,7 @@ export const isTimeStampLocked = (timestamp: number | string): boolean => {
   const parsedDate = timestampToDate(Number(timestamp));
 
   return dayjs().isAfter(parsedDate);
-}
+};
 
 const truncate = (str: string, digits = 4) => {
   if (str.includes('.')) {
