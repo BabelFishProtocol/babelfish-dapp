@@ -1,26 +1,38 @@
-import { useState } from 'react';
-
 import Box from '@mui/material/Box';
+import { useForm, useWatch } from 'react-hook-form';
 
 import Typography from '@mui/material/Typography';
+
 import { formatWeiAmount, isRskAddress } from '../../../../utils/helpers';
 import { Button } from '../../../../components/Button/Button.component';
 import { TextInput } from '../../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../../components/DialogForm/DialogForm.component';
+import { ControlledAddressInput } from '../../../../components/AddressInput/AddressInput.controlled';
 
-import { DelegateStakeComponentProps } from './DelegateStake.types';
+import { useEstiateDelegateFee } from '../../Staking.hooks';
+import {
+  DelegateStakeComponentProps,
+  FeeEstimatorProps,
+} from './DelegateStake.types';
+import {
+  delegateStakeDefaultValues,
+  DelegateStakeFields,
+  DelegateStakeValues,
+} from './DelegateStake.fields';
 
 export const DelegateStakeComponent = ({
   open,
   onClose,
   account,
+  onDelegate,
+  estimateFee,
   currentDelegate,
+  onCancelDelegation,
 }: DelegateStakeComponentProps) => {
-  const [delegate, setDelegate] = useState('');
-
-  const onDelegateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDelegate(e.target.value);
-  };
+  const { control, formState, handleSubmit } = useForm<DelegateStakeValues>({
+    mode: 'onChange',
+    defaultValues: delegateStakeDefaultValues,
+  });
 
   const hasDelegate =
     isRskAddress(currentDelegate) && currentDelegate !== account;
@@ -28,9 +40,10 @@ export const DelegateStakeComponent = ({
   return (
     <DialogForm
       open={open}
-      isValid
+      isValid={formState.isValid}
       onClose={onClose}
       title="Delegate"
+      handleSubmit={handleSubmit(onDelegate)}
       leftButtonText="Confirm"
     >
       {hasDelegate && (
@@ -41,24 +54,36 @@ export const DelegateStakeComponent = ({
             title="Current Delegation"
           />
           <Box sx={{ width: '100%', textAlign: 'center' }}>
-            <Button>Cancel Delegation</Button>
+            <Button onClick={onCancelDelegation}>Cancel Delegation</Button>
           </Box>
         </>
       )}
 
-      <TextInput
+      <ControlledAddressInput
         autoFocus
-        value={delegate}
+        name={DelegateStakeFields.delegateTo}
+        control={control}
         title="Delegate To"
-        onChange={onDelegateChange}
         placeholder="Enter or paste delegate address"
       />
 
-      <FeeEstimator />
+      <FeeEstimator control={control} estimateFee={estimateFee} />
     </DialogForm>
   );
 };
 
-const FeeEstimator = () => (
-  <Typography>Tx Fee: {formatWeiAmount('30000000000000', 7)} RBTC</Typography>
-);
+const FeeEstimator = ({ control, estimateFee }: FeeEstimatorProps) => {
+  const watchDelegateTo = useWatch({
+    control,
+    name: DelegateStakeFields.delegateTo,
+  });
+
+  const estimatedFee = useEstiateDelegateFee({
+    delegateTo: watchDelegateTo,
+    estimator: estimateFee,
+  });
+
+  return (
+    <Typography>Tx Fee: {formatWeiAmount(estimatedFee, 7)} RBTC</Typography>
+  );
+};

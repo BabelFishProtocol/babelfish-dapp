@@ -42,6 +42,7 @@ export const monthNames = [
 
 export const fieldsErrors = {
   required: 'Field Required',
+  addressFormat: 'Value must be a proper RSK address',
   amountGreaterThanBalance: 'Value cannot be greater than your token balance',
 };
 

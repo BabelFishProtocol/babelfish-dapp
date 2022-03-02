@@ -3,17 +3,21 @@ import { BigNumber, utils } from 'ethers';
 import { useSelector } from 'react-redux';
 import { FieldPath, FieldValues, UseFormWatch } from 'react-hook-form';
 
+import { Web3Provider } from '@ethersproject/providers';
 import {
   fishTokenDataSelector,
   stakingConstantsSelector,
 } from '../../store/staking/staking.selectors';
 import { useDebounce } from '../../hooks/useDebounce';
-import { getCurrentTimestamp } from '../../utils/helpers';
+import { getCurrentTimestamp, isRskAddress } from '../../utils/helpers';
 import {
   providerSelector,
   stakingContractSelector,
 } from '../../store/app/app.selectors';
-import { UseEstimateFeeConfig } from './Staking.types';
+import {
+  UseEstimateDelegateFeeConfig,
+  UseEstimateFeeConfig,
+} from './Staking.types';
 
 export const useStakeModalForm = (
   selectStake: () => void,
@@ -95,6 +99,11 @@ export const useVotingPower = (amount: string, unlockDate: number) => {
   return votingPower;
 };
 
+const calculateFee = async (provider: Web3Provider, estimated: BigNumber) => {
+  const gasPrice = await provider.getGasPrice();
+  return estimated.mul(gasPrice).toString();
+};
+
 export const useEstimateFee = ({
   amount,
   timestamp,
@@ -113,19 +122,46 @@ export const useEstimateFee = ({
         return;
       }
 
-      const estimatedValue = await estimator(
-        debouncedAmount,
-        debouncedTimestamp
-      );
-      const gasPrice = await provider.getGasPrice();
+      const estimatedGas = await estimator(debouncedAmount, debouncedTimestamp);
 
-      if (estimatedValue) {
-        setEstimatedFee(estimatedValue.mul(gasPrice).toString());
+      if (estimatedGas) {
+        const fee = await calculateFee(provider, estimatedGas);
+        setEstimatedFee(fee);
       }
     };
 
     estimate();
   }, [debouncedAmount, estimator, provider, debouncedTimestamp]);
+
+  return estimatedFee;
+};
+
+export const useEstiateDelegateFee = ({
+  delegateTo,
+  estimator,
+}: UseEstimateDelegateFeeConfig) => {
+  const provider = useSelector(providerSelector);
+  const [estimatedFee, setEstimatedFee] = useState('0');
+
+  const debouncedDelegate = useDebounce(delegateTo);
+
+  useEffect(() => {
+    const estimate = async () => {
+      if (!isRskAddress(debouncedDelegate) || !provider) {
+        setEstimatedFee('0');
+        return;
+      }
+
+      const estimatedGas = await estimator(debouncedDelegate);
+
+      if (estimatedGas) {
+        const fee = await calculateFee(provider, estimatedGas);
+        setEstimatedFee(fee);
+      }
+    };
+
+    estimate();
+  }, [estimator, provider, debouncedDelegate]);
 
   return estimatedFee;
 };
