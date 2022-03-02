@@ -52,7 +52,7 @@ describe('useDateSelector', () => {
     const someRandomStakesInTheFuture = [
       kickoffTs + TWO_WEEKS * 11,
       kickoffTs + TWO_WEEKS * 21,
-      kickoffTs + TWO_WEEKS * 48,
+      kickoffTs + TWO_WEEKS * 47,
     ];
 
     // stake checkpoints in the future should be available
@@ -67,6 +67,16 @@ describe('useDateSelector', () => {
         ])
       );
     });
+
+    expect(result.current.availableDates).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          timestamp: kickoffTs + TWO_WEEKS * 48,
+          isPast: false,
+          isAlreadyUsed: false,
+        } as CheckpointInfo),
+      ])
+    );
 
     expect(result.current.availableDatesForYear).toEqual({});
     expect(result.current.availableYears).toEqual([2021, 2022, 2023]);

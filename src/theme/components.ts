@@ -52,6 +52,12 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
         ':hover': {
           opacity: 0.8,
         },
+        '&.Mui-disabled': {
+          backgroundImage: `linear-gradient(to left, ${alpha(
+            palette.primary.light,
+            0.6
+          )} , ${alpha(palette.primary.light, 0.6)} )`,
+        },
       },
       outlined: {
         borderRadius: '8px',
@@ -114,6 +120,9 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
     styleOverrides: {
       root: {
         borderRadius: 0,
+        '&.Mui-error': {
+          borderWidth: 1,
+        },
       },
     },
   },
@@ -224,7 +233,7 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
       paper: {
         backgroundImage: palette.boxGradient,
         minHeight: '500px',
-        minWidth: '500px',
+        width: '500px',
         borderRadius: '8px',
       },
     },
@@ -249,7 +258,8 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
         alignItems: 'center',
         flexDirection: 'column',
         justifyContent: 'center',
-        padding: '20px 30px',
+        padding: '30px',
+        paddingTop: '30px !important',
       },
     },
   },

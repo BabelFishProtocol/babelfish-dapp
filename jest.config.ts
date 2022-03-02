@@ -14,5 +14,9 @@ export default () => {
     testEnvironment: 'jsdom',
     collectCoverage: true,
     coverageDirectory: 'coverage',
+    transform: {
+      '^.+\\.tsx?$': 'ts-jest',
+      '.+\\.(svg)$': 'jest-transform-stub',
+    },
   };
 };

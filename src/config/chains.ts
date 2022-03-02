@@ -1,20 +1,21 @@
+import { utils } from 'ethers';
 import ethIcon from '../assets/icons/chains/eth.svg';
 import bscIcon from '../assets/icons/chains/bsc.svg';
 import rskIcon from '../assets/icons/chains/rsk.svg';
 
-// const IS_MAINNET = process.env.REACT_APP_PRODUCTION_CHAINS === 'TRUE';
-const IS_MAINNET = false;
-
 export enum ChainEnum {
-  ETH = 'ETH',
-  BSC = 'BSC',
-  RSK = 'RSK',
+  ETH = 1,
+  ETH_TESTNET = 3,
+  BSC = 56,
+  BSC_TESTNET = 97,
+  RSK = 30,
+  RSK_TESTNET = 31,
 }
 
 export type ChainType = {
   name: string;
-  id: ChainEnum;
   icon: string;
+  id: ChainEnum;
   chainId: string;
   rpcUrls: string[];
   nativeCurrency: {
@@ -23,17 +24,24 @@ export type ChainType = {
   };
 };
 
-export const chains = {
+export const chains: Record<ChainEnum, ChainType> = {
   [ChainEnum.ETH]: {
     name: 'ETH Network',
-    id: ChainEnum.ETH,
     icon: ethIcon,
-    chainId: `0x${(IS_MAINNET ? 1 : 3).toString(16)}`,
-    rpcUrls: [
-      IS_MAINNET
-        ? 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'
-        : 'https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
-    ],
+    id: ChainEnum.ETH,
+    chainId: utils.hexlify(ChainEnum.ETH),
+    rpcUrls: ['https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
+    nativeCurrency: {
+      symbol: 'ETH',
+      decimals: 18,
+    },
+  },
+  [ChainEnum.ETH_TESTNET]: {
+    name: 'Ropsten',
+    icon: ethIcon,
+    id: ChainEnum.ETH_TESTNET,
+    chainId: utils.hexlify(ChainEnum.ETH_TESTNET),
+    rpcUrls: ['https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
     nativeCurrency: {
       symbol: 'ETH',
       decimals: 18,
@@ -41,14 +49,21 @@ export const chains = {
   },
   [ChainEnum.BSC]: {
     name: 'BSC Network',
-    id: ChainEnum.BSC,
     icon: bscIcon,
-    chainId: `0x${Number(IS_MAINNET ? 56 : 97).toString(16)}`,
-    rpcUrls: [
-      IS_MAINNET
-        ? 'https://bsc-dataseed.binance.org'
-        : 'https://data-seed-prebsc-2-s3.binance.org:8545',
-    ],
+    id: ChainEnum.BSC,
+    chainId: utils.hexlify(ChainEnum.BSC),
+    rpcUrls: ['https://bsc-dataseed.binance.org'],
+    nativeCurrency: {
+      symbol: 'BNB',
+      decimals: 18,
+    },
+  },
+  [ChainEnum.BSC_TESTNET]: {
+    name: 'BSC Testnet Network',
+    icon: bscIcon,
+    id: ChainEnum.BSC_TESTNET,
+    chainId: utils.hexlify(ChainEnum.BSC_TESTNET),
+    rpcUrls: ['https://data-seed-prebsc-2-s3.binance.org:8545'],
     nativeCurrency: {
       symbol: 'BNB',
       decimals: 18,
@@ -56,14 +71,21 @@ export const chains = {
   },
   [ChainEnum.RSK]: {
     name: 'RSK Network',
-    id: ChainEnum.RSK,
     icon: rskIcon,
-    chainId: `0x${Number(IS_MAINNET ? 30 : 31).toString(16)}`,
-    rpcUrls: [
-      IS_MAINNET
-        ? 'https://public-node.rsk.co'
-        : 'https://testnet.sovryn.app/rpc',
-    ],
+    id: ChainEnum.RSK,
+    chainId: utils.hexlify(ChainEnum.RSK),
+    rpcUrls: ['https://public-node.rsk.co'],
+    nativeCurrency: {
+      symbol: 'RBTC',
+      decimals: 18,
+    },
+  },
+  [ChainEnum.RSK_TESTNET]: {
+    name: 'RSK Testnet Network',
+    icon: rskIcon,
+    id: ChainEnum.RSK_TESTNET,
+    chainId: utils.hexlify(ChainEnum.RSK_TESTNET),
+    rpcUrls: ['https://testnet.sovryn.app/rpc'],
     nativeCurrency: {
       symbol: 'RBTC',
       decimals: 18,

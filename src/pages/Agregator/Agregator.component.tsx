@@ -8,11 +8,11 @@ import { useForm } from 'react-hook-form';
 
 import { ChainType } from '../../config/chains';
 import { TokenTypeBase } from '../../config/tokens';
-import { ControlledDropdown } from '../../components/ControlledDropdown/ControlledDropdown.component';
 import { PageView } from '../../components/PageView/PageView.component';
-import { ControlledInputWithButtonPillGroup } from '../../components/ControlledInputWithButtonPillGroup/ControlledInputWithButtonPillGroup.component';
-import { ControlledCurrencyInput } from '../../components/ControlledCurrencyInput/ControlledCurrencyInput.component';
-import { ControlledInput } from '../../components/ControlledInput/ControlledInput.component';
+import { ControlledCurrencyInput } from '../../components/CurrencyInput/CurrencyInput.controlled';
+import { ControlledInput } from '../../components/TextInput/TextInput.controlled';
+import { ControlledDropdown } from '../../components/Dropdown/Dropdown.controlled';
+import { ControlledInputWithButtonPillGroup } from '../../components/InputPillGroup/InputWithButtonPillGroup.controlled';
 
 import { AgregatorInputs } from './Agregator.fields';
 import {

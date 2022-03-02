@@ -23,6 +23,7 @@ export enum Reducers {
 
 export const MAX_STAKING_PERIODS = 78;
 export const TWO_WEEKS = 1209600;
+export const ONE_DAY = 86400;
 
 export const monthNames = [
   'Jan',
@@ -38,5 +39,10 @@ export const monthNames = [
   'Nov',
   'Dec',
 ];
+
+export const fieldsErrors = {
+  required: 'Field Required',
+  amountGreaterThanBalance: 'Value cannot be greater than your token balance',
+};
 
 export const decimalRegex = /^\d*\.?\d*$/;

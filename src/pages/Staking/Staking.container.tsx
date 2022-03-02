@@ -1,45 +1,47 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { WalletConnectionChecker } from '../../components/WalletConnectionChecker/WalletConnectionChecker.component';
+import {
+  fishTokenDataSelector,
+  combinedVotingPowerSelector,
+  fishLoadingStateSelector,
+} from '../../store/staking/staking.selectors';
+import { stakingActions } from '../../store/staking/staking.slice';
+import { LoadableAmount } from '../../store/types';
 
-import { initStakePageThunk } from '../../store/staking/staking.thunks';
-import { LoadableAmount } from '../../utils/types';
 import { StakingComponent } from './Staking.component';
 import { RewardBlockProps } from './Staking.types';
 
-const mockFishStaked: LoadableAmount = {
-  amount: '9,552.8567',
-  isLoading: false,
-};
-
 const mockTotalRewards: LoadableAmount = {
-  amount: '2000.0000',
-  isLoading: false,
-};
-
-const mockVotingPower: LoadableAmount = {
-  amount: '0.0000',
-  isLoading: false,
+  data: '0',
+  state: 'success',
 };
 
 const mockRewards: RewardBlockProps[] = [
-  { amount: '0.0000', asset: 'XUSD', usdAmount: '0.0000' },
-  { amount: '0.0000', asset: 'FISH', usdAmount: '0.0000' },
+  { amount: '0', asset: 'XUSD', usdAmount: '0.00' },
+  { amount: '0', asset: 'FISH', usdAmount: '0.00' },
 ];
 
 const Container = () => {
   const dispatch = useDispatch();
+  const { totalStaked } = useSelector(fishTokenDataSelector);
+  const fishLoadingState = useSelector(fishLoadingStateSelector);
+  const combinedVotingPower = useSelector(combinedVotingPowerSelector);
 
   useEffect(() => {
-    dispatch(initStakePageThunk());
+    dispatch(stakingActions.watchStakingData());
+
+    return () => {
+      dispatch(stakingActions.stopWatchingStakingData());
+    };
   }, [dispatch]);
 
   return (
     <StakingComponent
       rewards={mockRewards}
-      fishStaked={mockFishStaked}
       totalRewards={mockTotalRewards}
-      votingPower={mockVotingPower}
+      votingPower={combinedVotingPower}
+      fishStaked={{ state: fishLoadingState, data: totalStaked }}
     />
   );
 };

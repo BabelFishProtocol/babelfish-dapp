@@ -1,4 +1,5 @@
-import { LoadableAmount } from '../../utils/types';
+import { BigNumber } from 'ethers';
+import { LoadableAmount } from '../../store/types';
 
 export type RewardBlockProps = {
   amount: string;
@@ -11,4 +12,15 @@ export type StakingComponentProps = Record<
   LoadableAmount
 > & {
   rewards: RewardBlockProps[];
+};
+
+export type StakingFeeEstimator = (
+  amount: string,
+  timestamp: number
+) => Promise<BigNumber | undefined>;
+
+export type UseEstimateFeeConfig = {
+  amount: string;
+  estimator: StakingFeeEstimator;
+  timestamp?: number;
 };

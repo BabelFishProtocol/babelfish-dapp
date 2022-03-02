@@ -6,7 +6,9 @@ export type CustomColumnProps<Data extends BaseRowData = BaseRowData> = {
   rowData: Data;
 };
 
-export type CustomColumn = (props: CustomColumnProps) => JSX.Element;
+export type CustomColumn<Data extends BaseRowData = BaseRowData> = (
+  props: CustomColumnProps<Data>
+) => JSX.Element;
 
 type CellData = string | number;
 
@@ -17,10 +19,14 @@ export type BaseRowData = {
 export type CellParser = (val: CellData) => CellData;
 
 export type DataTableColumn<Data extends BaseRowData = BaseRowData> = {
+  /** label of the column */
   label: React.ReactNode;
+  /** property from row data that will be shown as the column value */
   name: keyof Data;
+  /** function to parse column value */
   format?: CellParser;
-  component?: CustomColumn;
+  /** component that will be rendered inside column cells */
+  component?: CustomColumn<Data>;
 };
 
 export type DataTableProps<Data extends BaseRowData = BaseRowData> = {

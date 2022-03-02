@@ -1,15 +1,30 @@
 import React from 'react';
+import dayjs from 'dayjs';
 
 import Typography from '@mui/material/Typography';
 
+import { useSelector } from 'react-redux';
+import {
+  formatWeiAmount,
+  isRskAddress,
+  timestampToDate,
+} from '../../utils/helpers';
 import { PrettyTx } from '../../components/PrettyTx/PrettyTx.component';
-import { CustomColumn } from '../../components/DataTable/DataTable.types';
-import { isRskAddress } from '../../utils/helpers';
+import {
+  BaseRowData,
+  CellParser,
+  CustomColumn,
+} from '../../components/DataTable/DataTable.types';
+import {
+  StakeListItem,
+  VestsListItem,
+} from '../../store/staking/staking.state';
+import { accountSelector } from '../../store/app/app.selectors';
 
-const mockAccount = '0x0000000000000000000000000000000000000000';
+type ColumnComponent = CustomColumn<StakeListItem | VestsListItem>;
 
-export const VotingDelegationColumn: CustomColumn = ({ value }) => {
-  const account = mockAccount;
+export const VotingDelegationColumn: ColumnComponent = ({ value }) => {
+  const account = useSelector(accountSelector);
 
   return isRskAddress(String(value)) && value !== account ? (
     <>
@@ -19,3 +34,24 @@ export const VotingDelegationColumn: CustomColumn = ({ value }) => {
     <Typography variant="body2">No Delegate</Typography>
   );
 };
+
+export const getAmountColumn =
+  <RowData extends BaseRowData>(name: keyof RowData): CustomColumn<RowData> =>
+  ({ rowData }) =>
+    (
+      <>
+        {formatWeiAmount(rowData[name])} {rowData.asset}
+      </>
+    );
+
+export const formatStakingPeriod: CellParser = (val) => {
+  const parsedDate = timestampToDate(Number(val));
+
+  const isLocked = dayjs().isAfter(parsedDate);
+  const daysDiff = Math.abs(dayjs().diff(parsedDate, 'days'));
+
+  return isLocked ? 'Expired' : `${daysDiff} days`;
+};
+
+export const formatFishAmountColumn: CellParser = (val) =>
+  `${formatWeiAmount(val)} FISH`;

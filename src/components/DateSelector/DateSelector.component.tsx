@@ -5,6 +5,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 import { monthNames } from '../../constants';
+import { FieldErrorMessage } from '../FieldErrorMessage/FieldErrorMessage.component';
 
 import { useDateSelector } from './DateSelector.hooks';
 import {
@@ -17,6 +18,7 @@ import {
 export const DateSelector = ({
   stakes,
   value,
+  error,
   onChange,
   kickoffTs,
   prevDate,
@@ -28,8 +30,8 @@ export const DateSelector = ({
     availableDatesForYear,
   } = useDateSelector({ stakes, kickoffTs, prevDate });
 
-  const onChangeDate = (_: React.MouseEvent, val: string) => {
-    onChange(Number(val));
+  const onChangeDate = (_: React.MouseEvent, val: number | undefined) => {
+    onChange(val);
   };
   const onChangeYear = (_: React.MouseEvent, val: string) => {
     setSelectedYear(Number(val));
@@ -41,6 +43,7 @@ export const DateSelector = ({
       <Typography variant="h3" sx={{ mb: 1.5 }}>
         Select Date
       </Typography>
+
       <ToggleButtonGroup
         exclusive
         color="primary"
@@ -76,6 +79,8 @@ export const DateSelector = ({
           ))}
         </Box>
       )}
+
+      <FieldErrorMessage error={error} />
     </Box>
   );
 };
@@ -138,7 +143,7 @@ const ToggleButtonWithTooltip = ({
 const getTooltipMessage = (dateInfo: CheckpointInfo) => {
   if (dateInfo.isBeforePrevDate)
     return 'Cannot use dates prior to current stake';
-  if (dateInfo.isPast) return 'Cannot use past dates';
+  if (dateInfo.isPast) return 'Cannot use past and current checkpoints';
   if (dateInfo.isAlreadyUsed) return 'You already have a stake on this date';
   return '';
 };

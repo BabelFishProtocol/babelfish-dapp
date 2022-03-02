@@ -6,7 +6,6 @@ export type DelegateVestContainerProps = Pick<
 >;
 
 export type DelegateVestComponentProps = DelegateVestContainerProps & {
-  txFee: string;
   votingPower: string;
   currentDelegate: string;
 };

@@ -1,39 +1,55 @@
-import { LoadableValue } from '../types';
+import { LoadableAmount, LoadableValue } from '../types';
 
 export type StakeListItem = {
   asset: string;
   lockedAmount: string;
-  votingPower: string;
+  // votingPower: string;
   votingDelegation: string;
-  stakingPeriod: string;
   unlockDate: number;
 };
 
 export type VestsListItem = StakeListItem & {
-  stakingDate: string;
+  stakingPeriodStart: number;
 };
 
-export type StakingData = { kickoffTs?: number };
+export type FishTokenInfo = {
+  fishBalance?: string;
+  totalStaked?: string;
+  allowanceForStaking?: string;
+};
+
+export type StakeConstants = {
+  kickoffTs?: number;
+  WEIGHT_FACTOR?: string;
+};
 
 export class StakingState {
-  stakesList: LoadableValue<StakeListItem[]> = {
-    data: [],
-    state: 'idle',
-  };
+  selectedVest?: number;
+  selectedStake?: number;
 
-  vestsList: LoadableValue<VestsListItem[]> = {
-    data: [],
+  constants: LoadableValue<StakeConstants> = {
     state: 'idle',
+    data: { WEIGHT_FACTOR: undefined, kickoffTs: undefined },
   };
-
-  pageData: LoadableValue<StakingData> = {
+  combinedVotingPower: LoadableAmount = {
+    state: 'idle',
+    data: undefined,
+  };
+  fishToken: LoadableValue<FishTokenInfo> = {
     data: {
-      kickoffTs: undefined,
+      fishBalance: undefined,
+      totalStaked: undefined,
+      allowanceForStaking: undefined,
     },
     state: 'idle',
   };
 
-  selectedStake?: number;
-
-  selectedVest?: number;
+  stakesList: LoadableValue<StakeListItem[]> = {
+    data: [],
+    state: 'idle',
+  };
+  vestsList: LoadableValue<VestsListItem[]> = {
+    data: [],
+    state: 'idle',
+  };
 }
