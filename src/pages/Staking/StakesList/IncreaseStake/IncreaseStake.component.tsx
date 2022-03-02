@@ -1,21 +1,22 @@
 import { utils } from 'ethers';
-
 import { useForm } from 'react-hook-form';
-import { Button } from '../../../../components/Button/Button.component';
+
+import Typography from '@mui/material/Typography';
+
+import { formatWeiAmount } from '../../../../utils/helpers';
 import { TextInput } from '../../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../../components/DialogForm/DialogForm.component';
 import { CurrencyInput } from '../../../../components/CurrencyInput/CurrencyInput.component';
+import { ControlledInputWithButtonPillGroup } from '../../../../components/InputPillGroup/InputWithButtonPillGroup.controlled';
 
 import {
   IncreaseStakeComponentProps,
   IncreaseStakeFormValues,
 } from './IncreaseStake.types';
-import { ControlledInputWithButtonPillGroup } from '../../../../components/ControlledInputWithButtonPillGroup/ControlledInputWithButtonPillGroup.component';
 import { IncreaseStakeFields } from './IncreaseStake.fields';
 
 export const IncreaseStakeComponent = ({
   open,
-  txFee,
   onClose,
   votingPower,
   currentStakeAmount,
@@ -29,10 +30,10 @@ export const IncreaseStakeComponent = ({
   return (
     <DialogForm
       open={open}
-      txFee={txFee}
+      isValid
       onClose={onClose}
       title="Add To Stake"
-      leftButton={<Button>Stake</Button>}
+      leftButtonText="Stake"
     >
       <CurrencyInput
         disabled
@@ -42,6 +43,7 @@ export const IncreaseStakeComponent = ({
       />
 
       <ControlledInputWithButtonPillGroup
+        autoFocus
         symbol="FISH"
         title="Amount To Add"
         totalAmount={utils.parseUnits('2.234')}
@@ -51,6 +53,12 @@ export const IncreaseStakeComponent = ({
       />
 
       <TextInput disabled value={votingPower} title="New Voting Power" />
+
+      <FeeEstimator />
     </DialogForm>
   );
 };
+
+const FeeEstimator = () => (
+  <Typography>Tx Fee: {formatWeiAmount('30000000000000', 7)} RBTC</Typography>
+);

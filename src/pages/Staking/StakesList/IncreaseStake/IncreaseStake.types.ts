@@ -7,7 +7,6 @@ export type IncreaseStakeContainerProps = Pick<
 >;
 
 export type IncreaseStakeComponentProps = IncreaseStakeContainerProps & {
-  txFee: string;
   votingPower: string;
   currentStakeAmount: string;
 };

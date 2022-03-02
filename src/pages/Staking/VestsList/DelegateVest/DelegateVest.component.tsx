@@ -1,9 +1,9 @@
 import { useState } from 'react';
-
 import Box from '@mui/material/Box';
+
 import Typography from '@mui/material/Typography';
 
-import { Button } from '../../../../components/Button/Button.component';
+import { formatWeiAmount } from '../../../../utils/helpers';
 import { TextInput } from '../../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../../components/DialogForm/DialogForm.component';
 
@@ -11,7 +11,6 @@ import { DelegateVestComponentProps } from './DelegateVest.types';
 
 export const DelegateVestComponent = ({
   open,
-  txFee,
   onClose,
   votingPower,
   currentDelegate,
@@ -25,10 +24,10 @@ export const DelegateVestComponent = ({
   return (
     <DialogForm
       open={open}
-      txFee={txFee}
+      isValid
       onClose={onClose}
       title="Delegate"
-      leftButton={<Button>Confirm</Button>}
+      leftButtonText="Confirm"
     >
       <Box
         sx={{
@@ -55,6 +54,12 @@ export const DelegateVestComponent = ({
         onChange={onDelegateChange}
         placeholder="Enter or paste delegate address"
       />
+
+      <FeeEstimator />
     </DialogForm>
   );
 };
+
+const FeeEstimator = () => (
+  <Typography>Tx Fee: {formatWeiAmount('30000000000000', 7)} RBTC</Typography>
+);

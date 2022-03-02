@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
-import { Button } from '../../../../components/Button/Button.component';
+import Typography from '@mui/material/Typography';
+
+import { formatWeiAmount } from '../../../../utils/helpers';
 import { TextInput } from '../../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../../components/DialogForm/DialogForm.component';
 import { CurrencyInput } from '../../../../components/CurrencyInput/CurrencyInput.component';
@@ -9,7 +11,6 @@ import { WithdrawVestComponentProps } from './WithdrawVest.types';
 
 export const WithdrawVestComponent = ({
   open,
-  txFee,
   onClose,
   delegate,
   unlockedAmount,
@@ -23,10 +24,10 @@ export const WithdrawVestComponent = ({
   return (
     <DialogForm
       open={open}
-      txFee={txFee}
+      isValid
       onClose={onClose}
       title="UnStake Fish"
-      leftButton={<Button>Confirm</Button>}
+      leftButtonText="Confirm"
     >
       <TextInput
         autoFocus
@@ -42,6 +43,12 @@ export const WithdrawVestComponent = ({
         value={unlockedAmount}
         title="Unlocked FISH"
       />
+
+      <FeeEstimator />
     </DialogForm>
   );
 };
+
+const FeeEstimator = () => (
+  <Typography>Tx Fee: {formatWeiAmount('30000000000000', 7)} RBTC</Typography>
+);

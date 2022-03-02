@@ -1,6 +1,8 @@
+import React from 'react';
+
 export type MintingProcessInfo = {
   label: string;
-  value: string;
+  value: React.ReactNode;
   isProminant?: boolean;
 };
 

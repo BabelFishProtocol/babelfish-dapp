@@ -13,6 +13,7 @@ export const MintingInfo = ({ data }: MintingInfoPros) => (
           gridTemplateColumns: 'repeat(2, 1fr)',
           gap: 2,
           my: '5px',
+          alignItems: 'center',
         }}
       >
         <Typography

@@ -7,7 +7,6 @@ import loadingIcon from './assets/icons/loading.svg';
 import successIcon from './assets/icons/success.svg';
 import { AppDialog } from './components/AppDialog/AppDialog.component';
 import { BottomBanner } from './components/BottomBanner/BottomBanner.component';
-import { DateSelector } from './components/DateSelector/DateSelector.component';
 import { Header } from './components/Header/Header.component';
 import { MintingInfo } from './components/MintingInfo/MintingInfo.component';
 import { MintingProcessInfo } from './components/MintingInfo/MintingInfo.types';
@@ -19,7 +18,6 @@ import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.cont
 import { StakingContainer } from './pages/Staking/Staking.container';
 
 function App() {
-  const [selectedDate, setSelectedDate] = useState<number>();
   const [openDialogType, setOpenDialogType] = useState<
     'success' | 'error' | 'pending'
   >();
@@ -139,12 +137,6 @@ function App() {
               <Button variant="text">Text</Button>
               <br />
               <br />
-              <DateSelector
-                kickoffTs={1635379200}
-                stakes={[]}
-                value={selectedDate}
-                onChange={setSelectedDate}
-              />
             </>
           }
         />

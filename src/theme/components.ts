@@ -52,6 +52,12 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
         ':hover': {
           opacity: 0.8,
         },
+        '&.Mui-disabled': {
+          backgroundImage: `linear-gradient(to left, ${alpha(
+            palette.primary.light,
+            0.6
+          )} , ${alpha(palette.primary.light, 0.6)} )`,
+        },
       },
       outlined: {
         borderRadius: '8px',
@@ -136,6 +142,9 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
     styleOverrides: {
       root: {
         borderRadius: 0,
+        '&.Mui-error': {
+          borderWidth: 1,
+        },
       },
     },
   },

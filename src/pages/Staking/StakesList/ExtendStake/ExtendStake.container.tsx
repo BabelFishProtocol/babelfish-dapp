@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import {
-  kickoffTsSelector,
+  stakingConstantsSelector,
   selectedStakeSelector,
   stakesDatesSelector,
 } from '../../../../store/staking/staking.selectors';
@@ -8,18 +8,17 @@ import {
 import { ExtendStakeComponent } from './ExtendStake.component';
 import { ExtendStakeContainerProps } from './ExtendStake.types';
 
-const mockTxFee = '0.00012';
 const mockNewVotingPower = '10.0000';
 
 export const ExtendStakeContainer = ({
   open,
   onClose,
 }: ExtendStakeContainerProps) => {
-  const kickoffTs = useSelector(kickoffTsSelector);
+  const { kickoffTs } = useSelector(stakingConstantsSelector);
   const currentStakes = useSelector(stakesDatesSelector);
   const selectedStakeData = useSelector(selectedStakeSelector);
 
-  if (!kickoffTs.data || !selectedStakeData) {
+  if (!kickoffTs || !selectedStakeData) {
     return null;
   }
 
@@ -27,9 +26,8 @@ export const ExtendStakeContainer = ({
     <ExtendStakeComponent
       open={open}
       onClose={onClose}
-      txFee={mockTxFee}
       stakes={currentStakes}
-      kickoffTs={kickoffTs.data}
+      kickoffTs={kickoffTs}
       votingPower={mockNewVotingPower}
       prevDate={selectedStakeData.unlockDate}
       stakedAmount={selectedStakeData.lockedAmount}

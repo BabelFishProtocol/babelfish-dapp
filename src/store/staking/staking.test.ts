@@ -6,17 +6,21 @@ import { combineReducers, DeepPartial } from '@reduxjs/toolkit';
 
 import { pick } from '../../utils/helpers';
 import { Reducers } from '../../constants';
-import { Staking } from '../../contracts/types';
+import { ERC20__factory, Staking } from '../../contracts/types';
 import { Staking__factory } from '../../contracts/types/factories/Staking__factory';
 import { rootReducer, RootState } from '..';
 
 import { createMockedContract, mockSigner } from '../../testUtils';
 
-import { accountSelector, stakingContractSelector } from '../app/app.selectors';
+import {
+  accountSelector,
+  fishTokenSelector,
+  stakingContractSelector,
+} from '../app/app.selectors';
 
 import {
-  fetchKickoffTs,
-  fetchTotalStaked,
+  fetchStakeConstants,
+  fetchFishTokenData,
   fetchVotingPower,
   fetchStakesList,
 } from './staking.sagas';
@@ -25,6 +29,10 @@ import { StakeListItem, StakingState } from './staking.state';
 
 const mockStaking = createMockedContract(
   Staking__factory.connect(constants.AddressZero, mockSigner),
+  true
+);
+const mockFishToken = createMockedContract(
+  ERC20__factory.connect(constants.AddressZero, mockSigner),
   true
 );
 
@@ -40,14 +48,19 @@ describe('staking store', () => {
     [Reducers.Staking]: { ...new StakingState() },
   };
 
-  describe('fetchTotalStaked', () => {
+  describe('fetchFishTokenData', () => {
     const totalStaked = '55566456546';
+    const fishBalance = '232347482374623';
+    const allowanceForStaking = '1000000';
 
     const successState: DeepPartial<RootState> = {
       ...initialState,
       [Reducers.Staking]: {
         ...initialState[Reducers.Staking],
-        totalStaked: { state: 'success', data: totalStaked },
+        fishToken: {
+          state: 'success',
+          data: { allowanceForStaking, fishBalance, totalStaked },
+        },
       },
     };
 
@@ -55,29 +68,47 @@ describe('staking store', () => {
       ...initialState,
       [Reducers.Staking]: {
         ...initialState[Reducers.Staking],
-        totalStaked: { state: 'failure', data: undefined },
+        fishToken: { state: 'failure', data: {} },
       },
     };
 
     const getBasePath = () =>
-      expectSaga(fetchTotalStaked)
+      expectSaga(fetchFishTokenData)
         .withReducer(reducer)
         .withState(initialState)
         .select(accountSelector)
-        .select(stakingContractSelector);
+        .select(stakingContractSelector)
+        .select(fishTokenSelector);
 
     it('happy path', async () => {
       const runResult = await getBasePath()
         .provide([
           [matchers.select(accountSelector), testAccount],
           [matchers.select(stakingContractSelector), mockStaking],
+          [matchers.select(fishTokenSelector), mockFishToken],
           [
             matchers.call.fn(mockStaking.balanceOf),
             BigNumber.from(totalStaked),
           ],
+          [
+            matchers.call.fn(mockFishToken.allowance),
+            BigNumber.from(allowanceForStaking),
+          ],
+          [
+            matchers.call.fn(mockFishToken.balanceOf),
+            BigNumber.from(fishBalance),
+          ],
         ])
         .call(mockStaking.balanceOf, testAccount)
-        .put(stakingActions.setTotalStaked(totalStaked))
+        .call(mockFishToken.balanceOf, testAccount)
+        .call(mockFishToken.allowance, testAccount, mockStaking.address)
+        .put(
+          stakingActions.setFishTokenData({
+            allowanceForStaking,
+            fishBalance,
+            totalStaked,
+          })
+        )
         .hasFinalState(successState)
         .run();
 
@@ -90,7 +121,7 @@ describe('staking store', () => {
           [matchers.select(accountSelector), testAccount],
           [matchers.select(stakingContractSelector), undefined],
         ])
-        .put(stakingActions.fetchTotalStakedFailure())
+        .put(stakingActions.fetchFishTokenDataFailure())
         .hasFinalState(failureState)
         .run();
 
@@ -104,8 +135,7 @@ describe('staking store', () => {
           [matchers.select(stakingContractSelector), mockStaking],
           [matchers.call.fn(mockStaking.balanceOf), throwError()],
         ])
-        .call(mockStaking.balanceOf, testAccount)
-        .put(stakingActions.fetchTotalStakedFailure())
+        .put(stakingActions.fetchFishTokenDataFailure())
         .hasFinalState(failureState)
         .run();
 
@@ -113,14 +143,18 @@ describe('staking store', () => {
     });
   });
 
-  describe('fetchKickoffTs', () => {
+  describe('fetchStakeConstants', () => {
     const kickoffTS = 435767887;
+    const WEIGHT_FACTOR = '1000';
 
     const successState: DeepPartial<RootState> = {
       ...initialState,
       [Reducers.Staking]: {
         ...initialState[Reducers.Staking],
-        kickoffTs: { state: 'success', data: kickoffTS },
+        constants: {
+          data: { kickoffTs: kickoffTS, WEIGHT_FACTOR },
+          state: 'success',
+        },
       },
     };
 
@@ -128,12 +162,12 @@ describe('staking store', () => {
       ...initialState,
       [Reducers.Staking]: {
         ...initialState[Reducers.Staking],
-        kickoffTs: { state: 'failure', data: undefined },
+        constants: { state: 'failure', data: {} },
       },
     };
 
     const getBasePath = () =>
-      expectSaga(fetchKickoffTs)
+      expectSaga(fetchStakeConstants)
         .withReducer(reducer)
         .withState(initialState)
         .select(stakingContractSelector);
@@ -143,9 +177,16 @@ describe('staking store', () => {
         .provide([
           [matchers.select(stakingContractSelector), mockStaking],
           [matchers.call.fn(mockStaking.kickoffTS), BigNumber.from(kickoffTS)],
+          [
+            matchers.call.fn(mockStaking.WEIGHT_FACTOR),
+            BigNumber.from(WEIGHT_FACTOR),
+          ],
         ])
         .call(mockStaking.kickoffTS)
-        .put(stakingActions.setKickoffTs(kickoffTS))
+        .call(mockStaking.WEIGHT_FACTOR)
+        .put(
+          stakingActions.setConstants({ WEIGHT_FACTOR, kickoffTs: kickoffTS })
+        )
         .hasFinalState(successState)
         .run();
 
@@ -155,7 +196,7 @@ describe('staking store', () => {
     it('when wallet is not connected', async () => {
       await getBasePath()
         .provide([[matchers.select(stakingContractSelector), undefined]])
-        .put(stakingActions.fetchKickoffTsFailure())
+        .put(stakingActions.fetchConstantsFailure())
         .hasFinalState(failureState)
         .run();
 
@@ -169,7 +210,8 @@ describe('staking store', () => {
           [matchers.call.fn(mockStaking.balanceOf), throwError()],
         ])
         .call(mockStaking.kickoffTS)
-        .put(stakingActions.fetchKickoffTsFailure())
+        .call(mockStaking.WEIGHT_FACTOR)
+        .put(stakingActions.fetchConstantsFailure())
         .hasFinalState(failureState)
         .run();
 

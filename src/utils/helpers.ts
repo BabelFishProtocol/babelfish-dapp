@@ -35,6 +35,8 @@ export const prettyTx = (
 
 export const isRskAddress = (address: string) => utils.isAddress(address || '');
 
+export const getCurrentTimestamp = () => dayjs().unix();
+
 export const timestampToDate = (timestamp: number) =>
   new Date(timestamp * 1000);
 
@@ -44,7 +46,7 @@ export const formatDateUTC = (date: Date) =>
 export const formatDate = (date: Date) =>
   dayjs(date).format('MMMM D, YYYY h:mm a');
 
-export const formatTimestamp: CellParser = (timestamp) =>
+export const formatTimestamp = (timestamp?: number | string) =>
   timestamp ? formatDate(timestampToDate(Number(timestamp))) : '';
 
 export const formatTimestampToUTC: CellParser = (timestamp) =>

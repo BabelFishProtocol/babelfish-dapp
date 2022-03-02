@@ -9,6 +9,7 @@ import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 
+import CircularProgress from '@mui/material/CircularProgress';
 import {
   BaseRowData,
   DataTableProps,
@@ -23,48 +24,58 @@ export const DataTable = <Data extends BaseRowData = BaseRowData>({
   tableTitle,
   tableAction,
   containerSx,
-}: DataTableProps<Data>) => (
-  <TableContainer
-    sx={{
-      maxHeight: 400,
-      borderRadius: 2,
-      backgroundImage: (theme) => theme.palette.boxGradient,
-      ...containerSx,
-    }}
-  >
-    <Table>
-      <TableHead>
-        <TableRow sx={{ border: 'none' }}>
-          <TableCell colSpan={columns.length - 1}>
-            <Typography variant="h4">{tableTitle}</Typography>
-          </TableCell>
-          <TableCell colSpan={1}>{tableAction}</TableCell>
-        </TableRow>
-      </TableHead>
+}: DataTableProps<Data>) => {
+  const isUpdate = isLoading && data.length;
+  const isInitialLoad = isLoading && !data.length;
 
-      <TableHead>
-        <TableRow>
-          {columns.map(({ label }, headIndex) => (
-            <TableCell key={headIndex}>{label}</TableCell>
-          ))}
-        </TableRow>
-      </TableHead>
+  return (
+    <TableContainer
+      sx={{
+        maxHeight: 400,
+        borderRadius: 2,
+        backgroundImage: (theme) => theme.palette.boxGradient,
+        ...containerSx,
+      }}
+    >
+      <Table>
+        <TableHead>
+          <TableRow sx={{ border: 'none' }}>
+            <TableCell colSpan={columns.length - 1}>
+              <Typography variant="h4" component="div" sx={{ display: 'flex' }}>
+                {tableTitle}
+                {isUpdate && (
+                  <CircularProgress size={16} color="primary" sx={{ ml: 1 }} />
+                )}
+              </Typography>
+            </TableCell>
+            <TableCell colSpan={1}>{tableAction}</TableCell>
+          </TableRow>
+        </TableHead>
 
-      <TableBody>
-        {isLoading && <LoadingStateRow columns={columns} />}
-        {!isLoading &&
-          data.map((rowData, rowIndex) => (
-            <DataTableRow
-              key={rowIndex}
-              columns={columns}
-              rowIndex={rowIndex}
-              rowData={rowData}
-            />
-          ))}
-      </TableBody>
-    </Table>
-  </TableContainer>
-);
+        <TableHead>
+          <TableRow>
+            {columns.map(({ label }, headIndex) => (
+              <TableCell key={headIndex}>{label}</TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+
+        <TableBody>
+          {isInitialLoad && <LoadingStateRow columns={columns} />}
+          {!isInitialLoad &&
+            data.map((rowData, rowIndex) => (
+              <DataTableRow
+                key={rowIndex}
+                columns={columns}
+                rowIndex={rowIndex}
+                rowData={rowData}
+              />
+            ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+};
 
 DataTable.defaultProps = {
   isLoading: false,

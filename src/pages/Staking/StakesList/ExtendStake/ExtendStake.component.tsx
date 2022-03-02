@@ -2,9 +2,8 @@ import { useState } from 'react';
 
 import Typography from '@mui/material/Typography';
 
-import { formatTimestamp } from '../../../../utils/helpers';
+import { formatTimestamp, formatWeiAmount } from '../../../../utils/helpers';
 
-import { Button } from '../../../../components/Button/Button.component';
 import { DialogForm } from '../../../../components/DialogForm/DialogForm.component';
 import { DateSelector } from '../../../../components/DateSelector/DateSelector.component';
 import { CurrencyInput } from '../../../../components/CurrencyInput/CurrencyInput.component';
@@ -13,7 +12,6 @@ import { ExtendStakeComponentProps } from './ExtendStake.types';
 
 export const ExtendStakeComponent = ({
   open,
-  txFee,
   stakes,
   onClose,
   prevDate,
@@ -26,10 +24,10 @@ export const ExtendStakeComponent = ({
   return (
     <DialogForm
       open={open}
-      txFee={txFee}
+      isValid
       onClose={onClose}
       title="Extend Fish Stake"
-      leftButton={<Button>Confirm</Button>}
+      leftButtonText="Confirm"
     >
       <Typography>Previous Until: {formatTimestamp(prevDate)}</Typography>
 
@@ -54,6 +52,12 @@ export const ExtendStakeComponent = ({
         value={votingPower}
         title="Voting Power Received"
       />
+
+      <FeeEstimator />
     </DialogForm>
   );
 };
+
+const FeeEstimator = () => (
+  <Typography>Tx Fee: {formatWeiAmount('30000000000000', 7)} RBTC</Typography>
+);

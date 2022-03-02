@@ -1,5 +1,7 @@
+import { FieldError } from 'react-hook-form';
 import { ToggleButtonProps } from '@mui/material/ToggleButton';
 import { ToggleButtonGroupProps } from '@mui/material/ToggleButtonGroup';
+import { ControlledInputType } from '../TextInput/TextInput.types';
 
 export type DatesFilterConfig = {
   kickoffTs: number;
@@ -32,7 +34,9 @@ export type GroupedDates = {
   [monthName: string]: CheckpointInfo[];
 };
 
-export type DateSelectorProps = DatesFilterConfig;
+export type DateSelectorProps = DatesFilterConfig & {
+  error?: FieldError;
+};
 
 export type DatesInMonthProps = {
   dates: CheckpointInfo[];
@@ -44,3 +48,9 @@ export type DatesInMonthProps = {
 export type ToggleButtonWithTooltipProps = ToggleButtonProps & {
   dateInfo: CheckpointInfo;
 };
+
+export type ControlledDateSelectorProps<FormValues> = Omit<
+  DateSelectorProps,
+  'value' | 'onChange' | 'error'
+> &
+  ControlledInputType<FormValues>;
