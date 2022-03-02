@@ -15,13 +15,12 @@ export const DropdownOptions = <
   options,
   value,
   placeholder,
-  disabled,
   sx,
   error,
   autoFocus,
   onChange,
 }: DropdownProps<ItemSelected, ValueType>) => (
-  <FormControl fullWidth disabled={disabled} sx={sx}>
+  <FormControl fullWidth disabled={options.length <= 1} sx={sx}>
     <Typography variant="h3" sx={{ mb: 1.5 }}>
       {title}
     </Typography>
