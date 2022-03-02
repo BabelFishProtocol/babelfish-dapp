@@ -1,6 +1,6 @@
 import React from 'react';
 import { BigNumber } from 'ethers';
-import { FieldError, SetFieldValue } from 'react-hook-form';
+import { FieldError, UseFormSetValue } from 'react-hook-form';
 
 import { OutlinedInputProps } from '@mui/material/OutlinedInput';
 import { ControlledInputType } from '../TextInput/TextInput.types';
@@ -21,6 +21,6 @@ export type ControlledInputWithButtonPillGroupProps<FormValues> = Omit<
   'value' | 'onInputChange' | 'onButtonChange' | 'error'
 > &
   ControlledInputType<FormValues> & {
-    setValue: SetFieldValue<FormValues>;
+    setValue: UseFormSetValue<FormValues>;
     totalAmount?: BigNumber;
   };

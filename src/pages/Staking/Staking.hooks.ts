@@ -58,22 +58,24 @@ export const useVotingPower = (amount: string, unlockDate: number) => {
   const staking = useSelector(stakingContractSelector);
   const { WEIGHT_FACTOR } = useSelector(stakingConstantsSelector);
 
-  const debouncedAmount = useDebounce(amount, 500);
-  const debouncedUnlockDate = useDebounce(unlockDate, 500);
+  const debouncedAmount = useDebounce(amount);
+  const debouncedUnlockDate = useDebounce(unlockDate);
 
   useEffect(() => {
     const calculateVotingPower = async () => {
+      const currentTimestamp = getCurrentTimestamp();
+
       if (
         !staking ||
         !WEIGHT_FACTOR ||
         !debouncedUnlockDate ||
-        debouncedAmount === ''
+        debouncedAmount === '' ||
+        currentTimestamp > debouncedUnlockDate
       ) {
         setVotingPower('0');
         return;
       }
 
-      const currentTimestamp = getCurrentTimestamp();
       const weight = await staking.computeWeightByDate(
         debouncedUnlockDate,
         currentTimestamp
@@ -101,8 +103,8 @@ export const useEstimateFee = ({
   const provider = useSelector(providerSelector);
   const [estimatedFee, setEstimatedFee] = useState('0');
 
-  const debouncedAmount = useDebounce(amount, 500);
-  const debouncedTimestamp = useDebounce(timestamp, 500);
+  const debouncedAmount = useDebounce(amount);
+  const debouncedTimestamp = useDebounce(timestamp);
 
   useEffect(() => {
     const estimate = async () => {
