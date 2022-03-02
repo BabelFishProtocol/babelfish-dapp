@@ -13,7 +13,7 @@ const mockVests: VestsListItem[] = [
   {
     asset: 'FISH',
     lockedAmount: '9552856700000000000000',
-    votingPower: '10000000000000000000',
+    // votingPower: '10000000000000000000',
     votingDelegation: '0x0000000000000000000000000000000000000000',
     stakingPeriodStart: 1659571200,
     unlockDate: 1659571200,
@@ -21,7 +21,7 @@ const mockVests: VestsListItem[] = [
   {
     asset: 'FISH',
     lockedAmount: '2552856700000000000000',
-    votingPower: '12000000000000000000',
+    // votingPower: '12000000000000000000',
     votingDelegation: '0x94e907f6B903A393E14FE549113137CA6483b5ef',
     stakingPeriodStart: 1659571200,
     unlockDate: 1639008000,

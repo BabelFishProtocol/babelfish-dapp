@@ -40,6 +40,7 @@ export const AddNewStakeComponent = ({
       leftButton={<Button>Stake</Button>}
     >
       <ControlledInputWithButtonPillGroup
+        autoFocus
         symbol="FISH"
         title="Amount To Stake"
         totalAmount={utils.parseUnits('2.234')}
