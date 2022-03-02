@@ -52,6 +52,12 @@ export const formatTimestamp = (timestamp?: number | string) =>
 export const formatTimestampToUTC: CellParser = (timestamp) =>
   timestamp ? formatDateUTC(timestampToDate(Number(timestamp))) : '';
 
+export const isTimeStampLocked = (timestamp: number | string): boolean => {
+  const parsedDate = timestampToDate(Number(timestamp));
+
+  return dayjs().isAfter(parsedDate);
+};
+
 const truncate = (str: string, digits = 4) => {
   if (str.includes('.')) {
     const [integer, decimals] = str.split('.');
