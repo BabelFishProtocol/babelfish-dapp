@@ -1,7 +1,6 @@
 import ethIcon from '../assets/icons/chains/eth.svg';
 import bscIcon from '../assets/icons/chains/bsc.svg';
 import rskIcon from '../assets/icons/chains/rsk.svg';
-import { tokensCatalog, TokenTypeBase } from './tokens';
 
 // const IS_MAINNET = process.env.REACT_APP_PRODUCTION_CHAINS === 'TRUE';
 const IS_MAINNET = false;
@@ -22,10 +21,6 @@ export type ChainType = {
     symbol: string;
     decimals: number;
   };
-};
-
-export type BaseChainType = ChainType & {
-  bassets: TokenTypeBase[];
 };
 
 export const chains = {
@@ -75,25 +70,3 @@ export const chains = {
     },
   },
 };
-
-export const baseChains: BaseChainType[] = [
-  {
-    ...chains[ChainEnum.ETH],
-    bassets: [
-      tokensCatalog.USDT,
-      tokensCatalog.USDC,
-      tokensCatalog.DAI,
-      tokensCatalog.USDP,
-    ],
-  },
-  {
-    ...chains[ChainEnum.BSC],
-    bassets: [
-      tokensCatalog.USDT,
-      tokensCatalog.USDC,
-      tokensCatalog.BUSD,
-      tokensCatalog.DAI,
-      tokensCatalog.USDP,
-    ],
-  },
-];

@@ -4,6 +4,7 @@ import daiIcon from '../assets/icons/tokens/dai.svg';
 import usdcIcon from '../assets/icons/tokens/usdc.svg';
 import busdIcon from '../assets/icons/tokens/busd.svg';
 import usdpIcon from '../assets/icons/tokens/usdp.svg';
+import xusdIcon from '../assets/icons/tokens/xusd.svg';
 
 export enum TokenEnum {
   USDT = 'USDT',
@@ -11,6 +12,7 @@ export enum TokenEnum {
   BUSD = 'BUSD',
   DAI = 'DAI',
   USDP = 'USDP',
+  XUSD = 'XUSD',
 }
 
 export type TokenOnNetworkType = {
@@ -34,7 +36,7 @@ export interface TokenTypeBase {
 //   TokenEnum.USDP,
 // ];
 
-export const tokensCatalog = {
+export const tokens = {
   [TokenEnum.USDT]: {
     id: 'USDT',
     name: 'USDT',
@@ -59,5 +61,10 @@ export const tokensCatalog = {
     id: 'PAX',
     name: 'PAX',
     icon: usdpIcon,
+  },
+  [TokenEnum.XUSD]: {
+    id: TokenEnum.XUSD,
+    name: TokenEnum.XUSD,
+    icon: xusdIcon,
   },
 };
