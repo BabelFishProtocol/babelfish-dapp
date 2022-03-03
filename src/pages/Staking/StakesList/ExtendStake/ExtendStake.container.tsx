@@ -71,7 +71,11 @@ export const ExtendStakeContainer = ({
       />
 
       {extendTxData.status !== 'idle' && (
-        <SubmitStatusDialog operationName="Extending stake" {...extendTxData} />
+        <SubmitStatusDialog
+          successCallback={onClose}
+          operationName="Extending stake"
+          {...extendTxData}
+        />
       )}
     </>
   );

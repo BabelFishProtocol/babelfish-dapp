@@ -10,3 +10,7 @@ export type DialogFormProps = {
   rightButtonText?: ReactNode;
   handleSubmit?: FormEventHandler<HTMLFormElement>;
 };
+
+export type DialogButtonsAlignerProps = {
+  children: ReactNode;
+};
