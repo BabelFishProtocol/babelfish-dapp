@@ -18,5 +18,6 @@ export default () => {
       '^.+\\.tsx?$': 'ts-jest',
       '.+\\.(svg)$': 'jest-transform-stub',
     },
+    setupFilesAfterEnv: ['<rootDir>/setup-tests.ts'],
   };
 };

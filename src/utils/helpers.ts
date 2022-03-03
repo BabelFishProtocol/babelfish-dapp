@@ -1,9 +1,9 @@
 import { BigNumberish, utils } from 'ethers';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 
-import * as utc from 'dayjs/plugin/utc';
-import * as timezone from 'dayjs/plugin/timezone';
-import * as advanced from 'dayjs/plugin/advancedFormat';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import advanced from 'dayjs/plugin/advancedFormat';
 
 import { CellParser } from '../components/DataTable/DataTable.types';
 
