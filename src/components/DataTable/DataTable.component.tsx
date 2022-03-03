@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 
 import CircularProgress from '@mui/material/CircularProgress';
+import { Box } from '@mui/material';
 import {
   BaseRowData,
   DataTableProps,
@@ -63,6 +64,7 @@ export const DataTable = <Data extends BaseRowData = BaseRowData>({
         <TableBody>
           {isInitialLoad && <LoadingStateRow columns={columns} />}
           {!isInitialLoad &&
+            data.length > 0 &&
             data.map((rowData, rowIndex) => (
               <DataTableRow
                 key={rowIndex}
@@ -71,6 +73,7 @@ export const DataTable = <Data extends BaseRowData = BaseRowData>({
                 rowData={rowData}
               />
             ))}
+          {!isInitialLoad && data.length === 0 && <TableEmpty />}
         </TableBody>
       </Table>
     </TableContainer>
@@ -118,5 +121,13 @@ const LoadingStateRow = <Data extends BaseRowData = BaseRowData>({
         <Skeleton />
       </TableCell>
     ))}
+  </TableRow>
+);
+
+const TableEmpty: React.FC = () => (
+  <TableRow>
+    <Box py={3} px={1.25} color="rgba(255,255,255,0.5)">
+      No stakes yet.
+    </Box>
   </TableRow>
 );
