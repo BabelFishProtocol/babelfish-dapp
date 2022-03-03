@@ -46,7 +46,6 @@ export const AgregatorComponent = ({
   const watchAmount = watch(AgregatorInputs.SendAmount);
 
   const startingTokenOptions: TokenTypeBase[] = useMemo(() => {
-    console.log('stoken', { watchStartingChain });
     if (!watchStartingChain) {
       setValue(AgregatorInputs.StartingToken, '');
       return [];
@@ -63,11 +62,8 @@ export const AgregatorComponent = ({
   }, [watchStartingChain]);
 
   const destinationChainOptions: ChainType[] = useMemo(() => {
-    console.log('dchain', { watchStartingChain });
-
     if (!watchStartingChain) {
       setValue(AgregatorInputs.DestinationChain, '');
-
       return [];
     }
 
@@ -79,8 +75,6 @@ export const AgregatorComponent = ({
   }, [watchStartingChain]);
 
   const destinationTokenOptions = useMemo(() => {
-    console.log('dtoken', { watchDestinationChain });
-
     if (!watchDestinationChain) {
       return [];
     }
@@ -94,9 +88,15 @@ export const AgregatorComponent = ({
     );
   }, [watchDestinationChain]);
 
-  const [availableBalance, setAvailableBalance] = useState<BigNumber>();
+  useEffect(() => {
+    setValue(AgregatorInputs.StartingToken, '');
+  }, [watchStartingChain]);
 
-  console.log('rerender');
+  useEffect(() => {
+    setValue(AgregatorInputs.DestinationToken, '');
+  }, [watchDestinationChain]);
+
+  const [availableBalance, setAvailableBalance] = useState<BigNumber>();
 
   const changeDirection = () => {
     setValue(AgregatorInputs.StartingChain, watchDestinationChain);
