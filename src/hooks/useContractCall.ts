@@ -1,11 +1,15 @@
 import { useState } from 'react';
-import { FieldValues } from 'react-hook-form';
 import { ContractReceipt, ContractTransaction } from 'ethers';
 
 import { FiniteStates } from '../utils/types';
 
-export const useContractCall = <Values extends FieldValues>(
-  submitFunction: (values: Values) => Promise<ContractTransaction | undefined>
+type BaseContractCall = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ...args: any[]
+) => Promise<ContractTransaction | undefined>;
+
+export const useContractCall = <SubmitFn extends BaseContractCall>(
+  submitFunction: SubmitFn
 ) => {
   const [status, setStatus] = useState<FiniteStates>('idle');
   const [tx, setTx] = useState<ContractTransaction>();
@@ -17,10 +21,10 @@ export const useContractCall = <Values extends FieldValues>(
     setTxReceipt(undefined);
   };
 
-  const handleSubmit = async (formValues: Values) => {
+  const handleSubmit = async (...args: Parameters<SubmitFn>) => {
     setStatus('loading');
     try {
-      const txData = await submitFunction(formValues);
+      const txData = await submitFunction(...args);
       setTx(txData);
 
       const receipt = await txData?.wait();
