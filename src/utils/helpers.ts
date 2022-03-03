@@ -1,9 +1,9 @@
 import { BigNumberish, utils } from 'ethers';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 
-import * as utc from 'dayjs/plugin/utc';
-import * as timezone from 'dayjs/plugin/timezone';
-import * as advanced from 'dayjs/plugin/advancedFormat';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import advanced from 'dayjs/plugin/advancedFormat';
 
 import { CellParser } from '../components/DataTable/DataTable.types';
 
@@ -51,6 +51,12 @@ export const formatTimestamp = (timestamp?: number | string) =>
 
 export const formatTimestampToUTC: CellParser = (timestamp) =>
   timestamp ? formatDateUTC(timestampToDate(Number(timestamp))) : '';
+
+export const isTimeStampLocked = (timestamp: number | string): boolean => {
+  const parsedDate = timestampToDate(Number(timestamp));
+
+  return dayjs().isAfter(parsedDate);
+};
 
 const truncate = (str: string, digits = 4) => {
   if (str.includes('.')) {
