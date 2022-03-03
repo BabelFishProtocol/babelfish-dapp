@@ -13,11 +13,11 @@ const mockInfo = [
 export const AgregatorInfo = ({ onClick }: { onClick: () => void }) => (
   <Box
     sx={{
+      alignSelf: 'stretch',
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'flex-end',
       alignItems: 'center',
-      mb: 14,
+      mt: 24,
     }}
   >
     <IconButton sx={{ width: 144, height: 144 }} onClick={onClick}>

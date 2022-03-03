@@ -7,3 +7,13 @@ export enum AgregatorInputs {
   ReceiveAmount = 'ReceiveAmount',
   ReceiveAddress = 'ReceiveAddress',
 }
+
+export const agregatorDefaultValues = {
+  [AgregatorInputs.StartingChain]: '',
+  [AgregatorInputs.StartingToken]: '',
+  [AgregatorInputs.SendAmount]: '',
+  [AgregatorInputs.DestinationChain]: '',
+  [AgregatorInputs.DestinationToken]: '',
+  [AgregatorInputs.ReceiveAmount]: '',
+  [AgregatorInputs.ReceiveAddress]: '',
+} as const;

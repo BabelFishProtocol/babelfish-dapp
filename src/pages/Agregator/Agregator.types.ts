@@ -15,7 +15,7 @@ export type AgregatorFormValues = {
 
 export type AgregatorComponentProps = {
   availableBalance?: BigNumber;
-  getTokenAvaliableBalance: () => BigNumber;
+  getTokenAvaliableBalance: (token: TokenEnum) => BigNumber;
   getReceiveAmount: (sendAmount: string) => string;
   onSubmit: (data: AgregatorFormValues) => void;
 };

@@ -48,7 +48,7 @@ export const tokens = {
     icon: usdcIcon,
   },
   [TokenEnum.DAI]: {
-    id: TokenEnum.USDC,
+    id: TokenEnum.DAI,
     name: 'DAI',
     icon: daiIcon,
   },

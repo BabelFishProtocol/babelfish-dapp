@@ -52,12 +52,14 @@ export const InputWithButtonPillGroup = ({
         onChange={handleInputChange}
         {...inputProps}
       />
-      <ButtonPillGroup
-        availableValues={availablePercentValues}
-        disabled={disabled}
-        value={percentValue}
-        handleChange={handleButtonChange}
-      />
+      {totalAmount && (
+        <ButtonPillGroup
+          availableValues={availablePercentValues}
+          disabled={disabled}
+          value={percentValue}
+          handleChange={handleButtonChange}
+        />
+      )}
     </Box>
   );
 };
