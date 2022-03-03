@@ -44,8 +44,10 @@ export const TableActionsComponent = ({ actions }: TableActionsProps) => {
             key={index}
             disabled={action.isDisable}
             onClick={(e) => {
-              action.onClick(e);
-              handleClose();
+              if (!action.isDisable) {
+                action.onClick(e);
+                handleClose();
+              }
             }}
           >
             {action.label}
