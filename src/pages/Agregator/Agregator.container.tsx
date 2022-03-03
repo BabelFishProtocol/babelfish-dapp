@@ -1,5 +1,5 @@
 import { BigNumber, utils } from 'ethers';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { AgregatorComponent } from './Agregator.component';
 import { AgregatorFormValues } from './Agregator.types';
 
@@ -14,15 +14,15 @@ export const AgregatorContainer = () => {
     [mockAvailableBalance]
   );
 
-  const getReceiveAmount = useCallback((sendAmount: string) =>
+  const getReceiveAmount = (sendAmount: string) =>
     // todo: implement
     utils.formatUnits(
       utils
         .parseUnits(sendAmount)
         .mul(BigNumber.from(95))
         .div(BigNumber.from(100))
-    )
-  );
+    );
+
   const onSubmit = (data: AgregatorFormValues) => {
     // TODO: implement
     // eslint-disable-next-line no-console
