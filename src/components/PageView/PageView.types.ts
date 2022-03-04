@@ -1,4 +1,4 @@
-import { ContainerProps } from '@mui/material';
+import { ContainerProps } from '@mui/material/Container';
 import { BoxProps } from '@mui/material/Box';
 
 export type PageViewProps = {
