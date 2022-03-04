@@ -1,10 +1,13 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import MuiLink from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+
+import { Proposal } from '../../store/proposals/proposals.state';
+import { ProposalState, proposalStateNames } from '../../constants';
+import { formatBlockNumber, formatTimestamp } from '../../utils/helpers';
 
 import {
   CustomColumn,
@@ -13,21 +16,26 @@ import {
 import { DataTable } from '../../components/DataTable/DataTable.component';
 import { PageView } from '../../components/PageView/PageView.component';
 
-import { Proposal, ProposalsListComponentProps } from './ProposalsList.types';
+import { ProposalsListComponentProps } from './ProposalsList.types';
 
-const ViewProposalComponent: CustomColumn = ({ value }) => (
+// /** Needed because DataTable is not accepting booleans */
+type RowData = Omit<Proposal, 'canceled' | 'executed'>;
+
+const ViewProposalComponent: CustomColumn<RowData> = ({ value }) => (
   <MuiLink component={Link} color="textPrimary" to={String(value)}>
     View Proposal
   </MuiLink>
 );
 
-const formatBlockNumber = (val: string | number) => `#${val}`;
-
-const proposalsListColumns: DataTableColumn<Proposal>[] = [
-  { label: 'title', name: 'name' },
+const proposalsListColumns: DataTableColumn<RowData>[] = [
+  { label: 'title', name: 'id' },
   { label: 'start block', name: 'startBlock', format: formatBlockNumber },
-  { label: 'vote weight', name: 'voteVeight' },
-  { label: 'voting ends', name: 'endDate' },
+  {
+    label: 'vote weight',
+    name: 'state',
+    format: (val) => proposalStateNames[val as ProposalState],
+  },
+  { label: 'voting ends', name: 'endTime', format: formatTimestamp },
   { label: 'action', name: 'id', component: ViewProposalComponent },
 ];
 
@@ -43,7 +51,7 @@ export const ProposalsListComponent = ({
     }
   >
     <DataTable
-      data={proposals}
+      data={proposals as RowData[]}
       isLoading={state === 'loading'}
       columns={proposalsListColumns}
       tableTitle="GOVERNANCE PROPOSALS"

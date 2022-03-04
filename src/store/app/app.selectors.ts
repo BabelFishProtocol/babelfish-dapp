@@ -8,7 +8,12 @@ import {
 } from '../../config/contracts';
 import { Reducers } from '../../constants';
 import { chains } from '../../config/chains';
-import { ERC20__factory, Staking__factory } from '../../contracts/types';
+import {
+  ERC20__factory,
+  Staking__factory,
+  Multicall__factory,
+  GovernorAdmin__factory,
+} from '../../contracts/types';
 import { BaseContractFactory } from '../types';
 
 const appState = (state: RootState) => state[Reducers.App];
@@ -73,4 +78,16 @@ export const stakingContractSelector = createContractSelector(
 export const fishTokenSelector = createContractSelector(
   ERC20__factory,
   'fishToken'
+);
+export const governorAdminSelector = createContractSelector(
+  GovernorAdmin__factory,
+  'governorAdmin'
+);
+export const governorOwnerSelector = createContractSelector(
+  GovernorAdmin__factory,
+  'governorOwner'
+);
+export const multicallSelector = createContractSelector(
+  Multicall__factory,
+  'multicall'
 );

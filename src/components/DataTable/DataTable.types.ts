@@ -10,7 +10,7 @@ export type CustomColumn<Data extends BaseRowData = BaseRowData> = (
   props: CustomColumnProps<Data>
 ) => JSX.Element;
 
-type CellData = string | number;
+export type CellData = string | number;
 
 export type BaseRowData = {
   [key: string]: CellData;

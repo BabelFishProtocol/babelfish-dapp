@@ -3015,6 +3015,7 @@ __metadata:
     eslint-plugin-react: ^7.28.0
     eslint-plugin-react-hooks: ^4.3.0
     ethers: ^5.5.4
+    ethers-multicall: ^0.2.2
     jest: ^27.5.1
     jest-transform-stub: ^2.0.0
     prettier: ^2.5.1
@@ -4901,7 +4902,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:^5.5.4":
+"ethers-multicall@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "ethers-multicall@npm:0.2.2"
+  dependencies:
+    ethers: ^5.0.0
+  peerDependencies:
+    ethers: ^5.0.0
+  checksum: bd257e780bfecbf3e69d2a3d0f1fb9aad1dcfee62f79dc998ba2be5711e2567d6c25dacc620ea3d69065f13e49d4d5ca52745b205831b7b5a31ee990cda146fa
+  languageName: node
+  linkType: hard
+
+"ethers@npm:^5.0.0, ethers@npm:^5.5.4":
   version: 5.5.4
   resolution: "ethers@npm:5.5.4"
   dependencies:

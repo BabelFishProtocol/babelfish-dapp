@@ -80,3 +80,5 @@ const truncate = (str: string, digits = 4) => {
 
 export const formatWeiAmount = (weiAmount: BigNumberish, decimalDigits = 4) =>
   truncate(utils.commify(utils.formatEther(weiAmount)), decimalDigits);
+
+export const formatBlockNumber = (val: string | number) => `#${val}`;

@@ -16,6 +16,17 @@ export enum ProposalState {
   Executed = '7',
 }
 
+export const proposalStateNames = {
+  [ProposalState.Pending]: 'Pending',
+  [ProposalState.Active]: 'Active',
+  [ProposalState.Canceled]: 'Canceled',
+  [ProposalState.Defeated]: 'Defeated',
+  [ProposalState.Succeeded]: 'Succeeded',
+  [ProposalState.Queued]: 'Queued',
+  [ProposalState.Expired]: 'Expired',
+  [ProposalState.Executed]: 'Executed',
+};
+
 export enum Reducers {
   App = 'app',
   Staking = 'staking',
