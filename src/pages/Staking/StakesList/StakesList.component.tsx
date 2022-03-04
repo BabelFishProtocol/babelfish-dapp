@@ -49,6 +49,7 @@ export const StakesListComponent = ({
     columns={stakesColumns}
     isLoading={state === 'loading'}
     tableTitle="Current Stakes"
+    tableEmptyMessage="No stakes yet."
     containerSx={{ p: 1, minHeight: 250 }}
   />
 );

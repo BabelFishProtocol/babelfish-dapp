@@ -32,6 +32,7 @@ export type DataTableColumn<Data extends BaseRowData = BaseRowData> = {
 export type DataTableProps<Data extends BaseRowData = BaseRowData> = {
   tableTitle: React.ReactNode;
   tableAction?: React.ReactNode;
+  tableEmptyMessage?: string;
   columns: DataTableColumn<Data>[];
   data: Data[];
   isLoading?: boolean;
@@ -47,4 +48,8 @@ export type DataTableRowProps<Data extends BaseRowData = BaseRowData> = {
   rowIndex: number;
   columns: DataTableColumn<Data>[];
   rowData: Data;
+};
+
+export type TableEmptyProps = {
+  message: string;
 };
