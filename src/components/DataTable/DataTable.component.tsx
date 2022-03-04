@@ -10,22 +10,25 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 
 import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 import {
   BaseRowData,
   DataTableProps,
   DataTableRowProps,
   LoadingStateRowProps,
+  TableEmptyProps,
 } from './DataTable.types';
 
 export const DataTable = <Data extends BaseRowData = BaseRowData>({
   data,
   columns,
+  containerSx,
   isLoading,
   tableTitle,
   tableAction,
-  containerSx,
+  tableEmptyMessage = 'No items yet',
 }: DataTableProps<Data>) => {
-  const isUpdate = isLoading && data.length;
+  const isUpdate = isLoading && data.length > 0;
   const isInitialLoad = isLoading && !data.length;
 
   return (
@@ -63,6 +66,7 @@ export const DataTable = <Data extends BaseRowData = BaseRowData>({
         <TableBody>
           {isInitialLoad && <LoadingStateRow columns={columns} />}
           {!isInitialLoad &&
+            data.length > 0 &&
             data.map((rowData, rowIndex) => (
               <DataTableRow
                 key={rowIndex}
@@ -71,6 +75,9 @@ export const DataTable = <Data extends BaseRowData = BaseRowData>({
                 rowData={rowData}
               />
             ))}
+          {!isInitialLoad && data.length === 0 && (
+            <TableEmpty message={tableEmptyMessage} />
+          )}
         </TableBody>
       </Table>
     </TableContainer>
@@ -112,11 +119,19 @@ const DataTableRow = <Data extends BaseRowData = BaseRowData>({
 const LoadingStateRow = <Data extends BaseRowData = BaseRowData>({
   columns,
 }: LoadingStateRowProps<Data>) => (
-  <TableRow>
+  <TableRow data-testid="loading-state-row">
     {columns.map((_, cellIndex) => (
       <TableCell key={cellIndex}>
         <Skeleton />
       </TableCell>
     ))}
+  </TableRow>
+);
+
+const TableEmpty = ({ message }: TableEmptyProps) => (
+  <TableRow>
+    <Box component="td" py={3} px={1.25} color="rgba(255,255,255,0.5)">
+      {message}
+    </Box>
   </TableRow>
 );

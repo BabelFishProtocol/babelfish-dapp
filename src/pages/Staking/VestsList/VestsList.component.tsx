@@ -43,6 +43,7 @@ export const VestsListComponent = ({
     data={vests}
     columns={vestsColumns}
     tableTitle="Current Vests"
+    tableEmptyMessage="You don't have any vesting contracts."
     isLoading={state === 'loading'}
     containerSx={{ p: 1, minHeight: 250 }}
   />
