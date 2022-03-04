@@ -1,3 +1,6 @@
+import { DefaultValues } from 'react-hook-form';
+import { AgregatorFormValues } from './Agregator.types';
+
 export enum AgregatorInputs {
   StartingChain = 'StartingChain',
   StartingToken = 'StartingToken',
@@ -8,7 +11,7 @@ export enum AgregatorInputs {
   ReceiveAddress = 'ReceiveAddress',
 }
 
-export const agregatorDefaultValues = {
+export const agregatorDefaultValues: DefaultValues<AgregatorFormValues> = {
   [AgregatorInputs.StartingChain]: '',
   [AgregatorInputs.StartingToken]: '',
   [AgregatorInputs.SendAmount]: '',
@@ -16,4 +19,4 @@ export const agregatorDefaultValues = {
   [AgregatorInputs.DestinationToken]: '',
   [AgregatorInputs.ReceiveAmount]: '',
   [AgregatorInputs.ReceiveAddress]: '',
-} as const;
+};
