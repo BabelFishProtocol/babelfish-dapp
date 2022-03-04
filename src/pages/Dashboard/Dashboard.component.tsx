@@ -35,7 +35,11 @@ export const DashboardComponent = ({
           width: { sm: '100%', md: 'fit-content' },
         }}
       >
-        <Button sx={{ width: 'max-content', pl: 3, pr: 3 }}>
+        <Button
+          sx={{ width: 'max-content', px: 3 }}
+          component={Link}
+          to={Urls.Agregator}
+        >
           Deposit/Withdraw XUSD
         </Button>
         <Button variant="outlined" component={Link} to={Urls.Staking}>

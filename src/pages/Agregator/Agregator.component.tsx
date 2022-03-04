@@ -27,8 +27,9 @@ export const AgregatorComponent = ({
   getReceiveAmount,
   onSubmit,
 }: AgregatorComponentProps) => {
-  const { handleSubmit, watch, setValue, control } =
+  const { handleSubmit, watch, setValue, control, formState } =
     useForm<AgregatorFormValues>({
+      mode: 'onChange',
       defaultValues: agregatorDefaultValues,
     });
   const watchStartingChain = watch(AgregatorInputs.StartingChain);
@@ -106,6 +107,8 @@ export const AgregatorComponent = ({
     }
   }, [watchAmount, getReceiveAmount, setValue]);
 
+  const showDestinationTokenDropdown =
+    watchStartingChain === mainnetPool.masterChain.id;
   return (
     <form
       style={{
@@ -205,7 +208,7 @@ export const AgregatorComponent = ({
             options={destinationChainOptions}
             sx={{ mb: 4 }}
           />
-          {watchDestinationChain !== mainnetPool.masterChain.id && (
+          {showDestinationTokenDropdown && (
             <ControlledDropdown
               name={AgregatorInputs.DestinationToken}
               title="Stablecoin"
@@ -232,7 +235,7 @@ export const AgregatorComponent = ({
             control={control}
             sx={{ mb: 5 }}
           />
-          <Button type="submit" fullWidth>
+          <Button type="submit" fullWidth disabled={!formState.isValid}>
             Transfer
           </Button>
         </Box>
