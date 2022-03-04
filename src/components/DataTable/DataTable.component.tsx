@@ -26,7 +26,7 @@ export const DataTable = <Data extends BaseRowData = BaseRowData>({
   tableAction,
   containerSx,
 }: DataTableProps<Data>) => {
-  const isUpdate = isLoading && data.length;
+  const isUpdate = isLoading && data.length > 0;
   const isInitialLoad = isLoading && !data.length;
 
   return (
@@ -115,7 +115,7 @@ const DataTableRow = <Data extends BaseRowData = BaseRowData>({
 const LoadingStateRow = <Data extends BaseRowData = BaseRowData>({
   columns,
 }: LoadingStateRowProps<Data>) => (
-  <TableRow>
+  <TableRow data-testId="loading-state-row">
     {columns.map((_, cellIndex) => (
       <TableCell key={cellIndex}>
         <Skeleton />
