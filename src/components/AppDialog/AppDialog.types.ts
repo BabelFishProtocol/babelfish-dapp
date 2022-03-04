@@ -7,7 +7,7 @@ export type AppDialogProps = {
   onClose?: () => void;
   icon?: string;
   title?: string;
-  description?: string;
+  description?: React.ReactNode;
   children?: React.ReactNode;
   dialogProps?: Partial<DialogProps>;
   dialogContentProps?: Partial<DialogContentProps>;

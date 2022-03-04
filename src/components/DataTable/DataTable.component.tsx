@@ -115,7 +115,7 @@ const DataTableRow = <Data extends BaseRowData = BaseRowData>({
 const LoadingStateRow = <Data extends BaseRowData = BaseRowData>({
   columns,
 }: LoadingStateRowProps<Data>) => (
-  <TableRow data-testId="loading-state-row">
+  <TableRow data-testid="loading-state-row">
     {columns.map((_, cellIndex) => (
       <TableCell key={cellIndex}>
         <Skeleton />
@@ -126,7 +126,7 @@ const LoadingStateRow = <Data extends BaseRowData = BaseRowData>({
 
 const TableEmpty: React.FC = () => (
   <TableRow>
-    <Box py={3} px={1.25} color="rgba(255,255,255,0.5)">
+    <Box component="td" py={3} px={1.25} color="rgba(255,255,255,0.5)">
       No stakes yet.
     </Box>
   </TableRow>

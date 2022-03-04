@@ -51,7 +51,7 @@ export const AppDialog = ({
       )}
 
       {description && (
-        <Typography sx={{ my: 5 }} variant="body2">
+        <Typography component="div" sx={{ my: 5 }} variant="body2">
           {description}
         </Typography>
       )}
