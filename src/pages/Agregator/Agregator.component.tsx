@@ -3,73 +3,80 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
 import { utils } from 'ethers';
-import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { baseChains, ChainEnum, chains } from '../../config/chains';
-import { TokenTypeBase } from '../../config/tokens';
+import { useEffect } from 'react';
 import { PageView } from '../../components/PageView/PageView.component';
 import { ControlledCurrencyInput } from '../../components/CurrencyInput/CurrencyInput.controlled';
 import { ControlledInput } from '../../components/TextInput/TextInput.controlled';
 import { ControlledDropdown } from '../../components/Dropdown/Dropdown.controlled';
 import { ControlledInputWithButtonPillGroup } from '../../components/InputPillGroup/InputWithButtonPillGroup.controlled';
 
-import { AggregatorInputs } from './Agregator.fields';
+import { agregatorDefaultValues, AgregatorInputs } from './Agregator.fields';
 import {
   AgregatorComponentProps,
   AgregatorFormValues,
 } from './Agregator.types';
+import { AgregatorInfo } from './AgregatorInfo/AgregatorInfo.component';
+import { useAgregatorDropdowns, useAvailableBalance } from './Agregator.hooks';
+import { mainnetPool } from '../../config/pools';
 
 export const AgregatorComponent = ({
-  availableBalance,
   getTokenAvaliableBalance,
   getReceiveAmount,
   onSubmit,
 }: AgregatorComponentProps) => {
-  const [bassetOptions, setBassetOptions] = useState<TokenTypeBase[]>();
-  const [tokenDropdownDisabled, setTokenDropdownDisabled] = useState(true);
+  const {
+    handleSubmit,
+    watch,
+    resetField,
+    setValue,
+    control,
+    formState: { isValid },
+  } = useForm<AgregatorFormValues>({
+    mode: 'onChange',
+    defaultValues: agregatorDefaultValues,
+  });
+  const startingChain = watch(AgregatorInputs.StartingChain);
+  const startingToken = watch(AgregatorInputs.StartingToken);
+  const destinationChain = watch(AgregatorInputs.DestinationChain);
+  const destinationToken = watch(AgregatorInputs.DestinationToken);
+  const amount = watch(AgregatorInputs.SendAmount);
 
-  const { handleSubmit, watch, setValue, control } =
-    useForm<AgregatorFormValues>({
-      defaultValues: {
-        [AggregatorInputs.ChainDropdown]: '',
-        [AggregatorInputs.TokenDropdown]: '',
-        [AggregatorInputs.SendAmount]: '',
-        [AggregatorInputs.DestinationChain]: ChainEnum.RSK,
-        [AggregatorInputs.ReceiveAmount]: '',
-        [AggregatorInputs.ReceiveAddress]: '',
-      },
-    });
-  const watchChain = watch(AggregatorInputs.ChainDropdown);
-  const watchToken = watch(AggregatorInputs.TokenDropdown);
-  const watchAmount = watch(AggregatorInputs.SendAmount);
+  const {
+    startingChainOptions,
+    startingTokenOptions,
+    destinationChainOptions,
+    destinationTokenOptions,
+    changeDirection,
+  } = useAgregatorDropdowns(
+    startingChain,
+    destinationChain,
+    resetField,
+    setValue
+  );
+
+  const { availableBalance } = useAvailableBalance(
+    startingToken,
+    getTokenAvaliableBalance,
+    resetField
+  );
 
   useEffect(() => {
-    const chosenChain = baseChains.find(({ id }) => id === watchChain);
-    const currentOptions = chosenChain && chosenChain.bassets;
-    if (currentOptions) {
-      setBassetOptions(currentOptions);
-      setTokenDropdownDisabled(!currentOptions);
+    if (amount) {
+      setValue(AgregatorInputs.ReceiveAmount, getReceiveAmount(amount));
     }
-  }, [watchChain]);
+  }, [amount, getReceiveAmount, setValue]);
 
-  useEffect(() => {
-    if (watchToken) {
-      getTokenAvaliableBalance();
-    }
-  }, [watchToken, getTokenAvaliableBalance]);
-
-  useEffect(() => {
-    if (watchAmount) {
-      setValue(AggregatorInputs.ReceiveAmount, getReceiveAmount(watchAmount));
-    }
-  }, [watchAmount, getReceiveAmount, setValue]);
+  const showDestinationTokenDropdown =
+    startingChain === mainnetPool.masterChain.id;
 
   return (
     <form
       style={{
         display: 'flex',
         justifyContent: 'space-between',
+        alignItems: 'flex-start',
         maxWidth: 1120,
         margin: '0 auto',
       }}
@@ -86,6 +93,9 @@ export const AgregatorComponent = ({
             <Typography variant="h2">Starting chain</Typography>
           </Box>
         }
+        sx={{
+          height: 'min-content',
+        }}
       >
         <Box
           sx={{
@@ -95,20 +105,19 @@ export const AgregatorComponent = ({
         >
           <ControlledDropdown
             autoFocus
-            name={AggregatorInputs.ChainDropdown}
+            name={AgregatorInputs.StartingChain}
             title="Select Network"
             placeholder="Select Chain"
             control={control}
-            options={baseChains}
+            options={startingChainOptions}
             sx={{ mb: 4 }}
           />
           <ControlledDropdown
-            name={AggregatorInputs.TokenDropdown}
-            title="Deposit stablecoin"
+            name={AgregatorInputs.StartingToken}
+            title="stablecoin"
             placeholder="Select Coin"
             control={control}
-            disabled={tokenDropdownDisabled}
-            options={bassetOptions ?? []}
+            options={startingTokenOptions}
           />
           <Box sx={{ mb: 8, position: 'relative' }}>
             {availableBalance && (
@@ -117,22 +126,24 @@ export const AgregatorComponent = ({
                 sx={{ position: 'absolute', top: 14 }}
               >
                 Available Balance:{' '}
-                {`${utils.formatUnits(availableBalance)} ${watchToken}`}
+                {`${utils.formatUnits(availableBalance)} ${startingToken}`}
               </Typography>
             )}
           </Box>
 
           <ControlledInputWithButtonPillGroup
-            name={AggregatorInputs.SendAmount}
-            title="Deposit amount"
-            symbol="USDT"
-            disabled={!availableBalance}
+            name={AgregatorInputs.SendAmount}
+            title="Amount"
+            placeholder="0.00"
+            disabled={!startingToken}
+            symbol={startingToken}
             totalAmount={availableBalance}
             control={control}
             setValue={setValue}
           />
         </Box>
       </PageView>
+      <AgregatorInfo onClick={changeDirection} />
       <PageView
         title={
           <Box
@@ -152,30 +163,41 @@ export const AgregatorComponent = ({
           }}
         >
           <ControlledDropdown
-            disabled
-            name={AggregatorInputs.DestinationChain}
+            name={AgregatorInputs.DestinationChain}
             title="Network"
+            placeholder="Select Chain"
             control={control}
-            options={[chains[ChainEnum.RSK]]}
+            options={destinationChainOptions}
             sx={{ mb: 4 }}
           />
+          {showDestinationTokenDropdown && (
+            <ControlledDropdown
+              name={AgregatorInputs.DestinationToken}
+              title="Stablecoin"
+              placeholder="Select Coin"
+              control={control}
+              options={destinationTokenOptions}
+              sx={{ mb: 4 }}
+            />
+          )}
+
           <ControlledCurrencyInput
             disabled
             title="Receive amount"
-            symbol="XUSD"
+            symbol={destinationToken}
             placeholder="0.00"
-            name={AggregatorInputs.ReceiveAmount}
+            name={AgregatorInputs.ReceiveAmount}
             control={control}
             sx={{ mb: 5 }}
           />
           <ControlledInput
             title="Receiving address"
             placeholder="Enter or paste address"
-            name={AggregatorInputs.ReceiveAddress}
+            name={AgregatorInputs.ReceiveAddress}
             control={control}
             sx={{ mb: 5 }}
           />
-          <Button type="submit" fullWidth>
+          <Button type="submit" fullWidth disabled={!isValid}>
             Transfer
           </Button>
         </Box>

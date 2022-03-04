@@ -31,6 +31,7 @@ export const PageView = ({
   title,
   children,
   contentContainerSx = {},
+  sx,
 }: PageViewProps) => (
   <PageAligner>
     <Container
@@ -39,6 +40,7 @@ export const PageView = ({
         maxWidth: { xs: 1300 },
         width: '90%',
         height: '100%',
+        ...sx,
       }}
     >
       <PageHeaderContainer>{title}</PageHeaderContainer>
