@@ -28,6 +28,7 @@ export const StakingHistoryComponent = ({
   <DataTable
     data={stakes}
     tableTitle="Staking History"
+    tableEmptyMessage="No stakes yet."
     columns={stakingHistoryColumns}
     containerSx={{ p: 1, minHeight: 250 }}
   />

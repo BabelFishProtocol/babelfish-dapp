@@ -51,6 +51,7 @@ export const vestListItem: VestsListItem[] = [
 
 export const mockDataTable: DataTableProps<VestsListItem> = {
   tableTitle: 'Current Vests',
+  tableEmptyMessage: 'No stakes yet.',
   isLoading: false,
   columns: vestListColumns,
   data: vestListItem,
