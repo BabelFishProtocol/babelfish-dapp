@@ -21,4 +21,4 @@ export type ControlledInputType<FormValues> = {
 };
 
 export type ControlledInputProps<FormValues> = ControlledInputType<FormValues> &
-  TextInputProps;
+  Omit<TextInputProps, 'error'>;

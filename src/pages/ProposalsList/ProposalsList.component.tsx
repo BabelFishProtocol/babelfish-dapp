@@ -14,7 +14,7 @@ import { DataTable } from '../../components/DataTable/DataTable.component';
 import { PageView } from '../../components/PageView/PageView.component';
 
 import { Proposal, ProposalsListComponentProps } from './ProposalsList.types';
-import { AddProposal } from '../../components/AddProposal/AddProposal.component';
+import { AddProposalContainer } from '../AddProposal/AddProposal.container';
 
 const ViewProposalComponent: CustomColumn = ({ value }) => (
   <MuiLink component={Link} color="textPrimary" to={String(value)}>
@@ -44,12 +44,11 @@ export const ProposalsListComponent = ({
         </Typography>
       }
     >
-      <AddProposal
+      <AddProposalContainer
         isOpenDialog={isAddDialogOpen}
         onClose={() => {
           setIsAddDialogOpen(false);
         }}
-        onSubmit={() => {}}
       />
       <DataTable
         data={proposals}

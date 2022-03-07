@@ -1,10 +1,10 @@
-import { AddProposalInputs } from './AddProposalFields';
+import { AddProposalInputs } from './AddProposal.fields';
 
 export type AddProposalValues = {
   [AddProposalInputs.Target]: string;
   [AddProposalInputs.Value]: string;
   [AddProposalInputs.Signature]: string;
-  [AddProposalInputs.Calidata]: string;
+  [AddProposalInputs.Calldata]: string;
 };
 
 export type AddProposalFields = {
@@ -18,3 +18,8 @@ export type AddProposalProps = {
   onClose: () => void;
   onSubmit: (data: AddProposalFields) => void;
 };
+
+export type AddProposalContainerProps = Pick<
+  AddProposalProps,
+  'onClose' | 'isOpenDialog'
+>;

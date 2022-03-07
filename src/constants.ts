@@ -43,7 +43,12 @@ export const monthNames = [
 export const fieldsErrors = {
   required: 'Field Required',
   addressFormat: 'Value must be a proper RSK address',
+  invalidSignature: 'Value must be a valid Signature',
+  invalidCalldata: 'Value must be a valid Calldata',
   amountGreaterThanBalance: 'Value cannot be greater than your token balance',
 };
 
 export const decimalRegex = /^\d*\.?\d*$/;
+
+export const signatureRegex = /^(0x|)[a-zA-Z0-9]{10}$/g;
+export const calldataRegex = /^(0x)(..)*$/g;

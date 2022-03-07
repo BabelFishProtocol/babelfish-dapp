@@ -1,12 +1,20 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useFieldArray, useForm } from 'react-hook-form';
-import { AppDialog } from '../AppDialog/AppDialog.component';
-import { Button } from '../Button/Button.component';
-import { ControlledDropdown } from '../Dropdown/Dropdown.controlled';
-import { ControlledInput } from '../TextInput/TextInput.controlled';
+import { ControlledAddressInput } from '../../components/AddressInput/AddressInput.controlled';
+import { AppDialog } from '../../components/AppDialog/AppDialog.component';
+import { Button } from '../../components/Button/Button.component';
+import { ControlledCurrencyInput } from '../../components/CurrencyInput/CurrencyInput.controlled';
+import { ControlledDropdown } from '../../components/Dropdown/Dropdown.controlled';
+import { ControlledInput } from '../../components/TextInput/TextInput.controlled';
+import { fieldsErrors } from '../../constants';
+import { isValidCalldata, isValidSignature } from '../../utils/helpers';
+import {
+  AddProposalDefaultValues,
+  AddProposalInputs,
+  AddProposalNewSetValues,
+} from './AddProposal.fields';
 import { AddProposalFields, AddProposalProps } from './AddProposal.types';
-import { AddProposalInputs } from './AddProposalFields';
 
 const AP_DD_OPTIONS = [
   { id: '1', name: 'Governer Admin' },
@@ -18,19 +26,13 @@ export const AddProposal = ({
   onClose,
   onSubmit,
 }: AddProposalProps) => {
-  const { control, handleSubmit, formState } = useForm<AddProposalFields>({
-    defaultValues: {
-      [AddProposalInputs.SendProposalContract]: '1',
-      [AddProposalInputs.Description]: '',
-      [AddProposalInputs.Values]: [
-        {
-          [AddProposalInputs.Target]: '',
-          [AddProposalInputs.Value]: '',
-          [AddProposalInputs.Calidata]: '',
-          [AddProposalInputs.Signature]: '',
-        },
-      ],
-    },
+  const {
+    control,
+    handleSubmit,
+    formState: { isValid },
+  } = useForm<AddProposalFields>({
+    mode: 'onChange',
+    defaultValues: AddProposalDefaultValues,
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -81,7 +83,6 @@ export const AddProposal = ({
             placeholder="Description"
             multiline
             rows={4}
-            error={formState.errors[AddProposalInputs.Description]}
           />
 
           {fields.map((_, index) => (
@@ -94,16 +95,18 @@ export const AddProposal = ({
                 border: `1px solid ${palette.primary.main}`,
               })}
             >
-              <Button
-                variant="text"
-                size="small"
-                onClick={() => {
-                  remove(index);
-                }}
-                sx={{ float: 'right' }}
-              >
-                Delete
-              </Button>
+              {index > 0 && (
+                <Button
+                  variant="text"
+                  size="small"
+                  onClick={() => {
+                    remove(index);
+                  }}
+                  sx={{ float: 'right' }}
+                >
+                  Delete
+                </Button>
+              )}
               <Box
                 sx={() => ({
                   width: '100%',
@@ -112,45 +115,38 @@ export const AddProposal = ({
                   gap: 2,
                 })}
               >
-                <ControlledInput
+                <ControlledAddressInput
                   placeholder="Target"
                   name={`${AddProposalInputs.Values}.${index}.${AddProposalInputs.Target}`}
                   control={control}
-                  error={
-                    formState.errors[AddProposalInputs.Values]?.[index]?.[
-                      AddProposalInputs.Target
-                    ]
-                  }
                 />
-                <ControlledInput
+                <ControlledCurrencyInput
+                  symbol="RBTC"
                   placeholder="Value"
                   name={`${AddProposalInputs.Values}.${index}.${AddProposalInputs.Value}`}
                   control={control}
-                  error={
-                    formState.errors[AddProposalInputs.Values]?.[index]?.[
-                      AddProposalInputs.Value
-                    ]
-                  }
                 />
                 <ControlledInput
                   placeholder="Signature"
                   name={`${AddProposalInputs.Values}.${index}.${AddProposalInputs.Signature}`}
                   control={control}
-                  error={
-                    formState.errors[AddProposalInputs.Values]?.[index]?.[
-                      AddProposalInputs.Signature
-                    ]
-                  }
+                  rules={{
+                    validate: (val) =>
+                      isValidSignature(val)
+                        ? true
+                        : fieldsErrors.invalidSignature,
+                  }}
                 />
                 <ControlledInput
-                  placeholder="Calidata"
-                  name={`${AddProposalInputs.Values}.${index}.${AddProposalInputs.Calidata}`}
+                  placeholder="Callata"
+                  name={`${AddProposalInputs.Values}.${index}.${AddProposalInputs.Calldata}`}
                   control={control}
-                  error={
-                    formState.errors[AddProposalInputs.Values]?.[index]?.[
-                      AddProposalInputs.Calidata
-                    ]
-                  }
+                  rules={{
+                    validate: (val) =>
+                      isValidCalldata(val)
+                        ? true
+                        : fieldsErrors.invalidCalldata,
+                  }}
                 />
               </Box>
             </Box>
@@ -160,7 +156,7 @@ export const AddProposal = ({
               variant="outlined"
               sx={{ width: '100%', my: 2 }}
               onClick={() => {
-                append({});
+                append(AddProposalNewSetValues);
               }}
             >
               +
@@ -174,7 +170,9 @@ export const AddProposal = ({
               gap: 2,
             }}
           >
-            <Button type="submit">Confirm</Button>
+            <Button type="submit" disabled={!isValid}>
+              Confirm
+            </Button>
             <Button variant="outlined" onClick={onClose}>
               Cancel
             </Button>
