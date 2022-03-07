@@ -51,7 +51,10 @@ export const DropdownOptions = <
       )}
       {options.map(({ id, name, icon }) => (
         <MenuItem key={id} value={id}>
-          <NameWithIcon name={name} icon={icon} />
+          <>
+            {icon && <NameWithIcon name={name} icon={icon} />}
+            {!icon && name}
+          </>
         </MenuItem>
       ))}
       <FieldErrorMessage error={error} />
