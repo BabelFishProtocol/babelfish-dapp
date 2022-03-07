@@ -80,30 +80,8 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
   MuiIconButton: {
     styleOverrides: {
       root: {
-        position: 'relative',
-        border: '1px solid transparent',
-        borderRadius: 8,
-        backgroundImage: palette.boxGradient,
-        backgroundClip: 'padding-box',
-        ':after': {
-          content: '""',
-          position: 'absolute',
-          top: -1,
-          right: -1,
-          bottom: -1,
-          left: -1,
-          borderRadius: 'inherit',
-          backgroundImage: `linear-gradient(45deg, #2a303c, ${palette.primary.light} 30%, ${palette.primary.main}, ${palette.primary.light} 70% , #2a303c)`,
-          backgroundPosition: '0% 100%',
-          backgroundSize: '200% 200%',
-          transition: `background-position ${transition}`,
-          zIndex: -1,
-        },
-        ':hover': {
-          ':after': {
-            backgroundPosition: '100% 0%',
-          },
-        },
+        borderRadius: '50%',
+        background: palette.grey[800],
       },
     },
   },
