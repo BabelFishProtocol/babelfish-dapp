@@ -137,17 +137,19 @@ function* triggerUpdate() {
   yield* put(stakingActions.updateStakingData());
 }
 
-function* runBalancesUpdater() {
+function* triggerFetch() {
   yield* put(stakingActions.fetchStakingData());
+}
+
+function* runBalancesUpdater() {
+  yield* triggerFetch();
 
   yield* takeLatest(
-    [
-      appActions.setChainId.type,
-      appActions.setAccount.type,
-      appActions.setBlockNumber.type,
-    ],
+    [appActions.setAccount.type, appActions.setBlockNumber.type],
     triggerUpdate
   );
+
+  yield* takeLatest([appActions.walletConnected.type], triggerFetch);
 }
 
 function* watchStakingData() {
