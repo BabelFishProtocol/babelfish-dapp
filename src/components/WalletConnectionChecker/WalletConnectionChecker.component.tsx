@@ -1,11 +1,12 @@
 import Typography from '@mui/material/Typography';
+import { ChainEnum } from '../../config/chains';
 
 import { useActiveWeb3React } from '../../hooks/useActiveWeb3React';
 import { WalletConnectionCheckerProps } from './WalletConnectionChecker.types';
 
 export const WalletConnectionChecker = ({
   expectedChainName = 'RSK',
-  expectedChains = [30, 31],
+  expectedChains = [ChainEnum.RSK, ChainEnum.RSK_TESTNET],
   children,
 }: WalletConnectionCheckerProps) => {
   const web3Data = useActiveWeb3React();
