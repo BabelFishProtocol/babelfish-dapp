@@ -6,7 +6,7 @@ import { ControlledInputType } from '../TextInput/TextInput.types';
 export type DropdownOptionType = {
   id: string | number;
   name: string;
-  icon: string;
+  icon?: string;
 };
 
 export type DropdownProps<OptionType, ValueType = unknown> = {

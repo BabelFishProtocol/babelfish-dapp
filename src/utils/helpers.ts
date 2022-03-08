@@ -6,6 +6,7 @@ import timezone from 'dayjs/plugin/timezone';
 import advanced from 'dayjs/plugin/advancedFormat';
 
 import { CellParser } from '../components/DataTable/DataTable.types';
+import { calldataRegex, signatureRegex } from '../constants';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -77,6 +78,10 @@ const truncate = (str: string, digits = 4) => {
 
   return str;
 };
+
+export const isValidSignature = (val: string) => val.match(signatureRegex);
+
+export const isValidCalldata = (val: string) => val.match(calldataRegex);
 
 export const formatWeiAmount = (weiAmount: BigNumberish, decimalDigits = 4) =>
   truncate(utils.commify(utils.formatEther(weiAmount)), decimalDigits);

@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
@@ -16,6 +17,7 @@ import {
 import { DataTable } from '../../components/DataTable/DataTable.component';
 import { PageView } from '../../components/PageView/PageView.component';
 
+import { AddProposalContainer } from '../AddProposal/AddProposal.container';
 import { ProposalsListComponentProps } from './ProposalsList.types';
 
 // /** Needed because DataTable is not accepting booleans */
@@ -42,32 +44,54 @@ const proposalsListColumns: DataTableColumn<RowData>[] = [
 export const ProposalsListComponent = ({
   state,
   proposals,
-}: ProposalsListComponentProps) => (
-  <PageView
-    title={
-      <Typography variant="h2" padding={1}>
-        BABELFISH BITOCRACY
-      </Typography>
-    }
-  >
-    <DataTable
-      data={proposals as RowData[]}
-      isLoading={state === 'loading'}
-      columns={proposalsListColumns}
-      tableTitle="GOVERNANCE PROPOSALS"
-      tableAction={<Button variant="text">+CREATE PROPOSAL</Button>}
-      containerSx={{ minHeight: 250 }}
-    />
+}: ProposalsListComponentProps) => {
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
-    <Box
-      sx={{
-        pt: 3,
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-      }}
+  return (
+    <PageView
+      title={
+        <Typography variant="h2" padding={1}>
+          BABELFISH BITOCRACY
+        </Typography>
+      }
     >
-      <Button variant="outlined">View All Proposals</Button>
-    </Box>
-  </PageView>
-);
+      <DataTable
+        data={proposals as RowData[]}
+        isLoading={state === 'loading'}
+        columns={proposalsListColumns}
+        tableTitle="GOVERNANCE PROPOSALS"
+        tableAction={
+          <Button
+            variant="text"
+            onClick={() => {
+              setIsAddDialogOpen(true);
+            }}
+          >
+            +CREATE PROPOSAL
+          </Button>
+        }
+        containerSx={{ minHeight: 250 }}
+      />
+
+      <Box
+        sx={{
+          pt: 3,
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        <Button variant="outlined">View All Proposals</Button>
+      </Box>
+
+      {isAddDialogOpen && (
+        <AddProposalContainer
+          isOpenDialog={isAddDialogOpen}
+          onClose={() => {
+            setIsAddDialogOpen(false);
+          }}
+        />
+      )}
+    </PageView>
+  );
+};
