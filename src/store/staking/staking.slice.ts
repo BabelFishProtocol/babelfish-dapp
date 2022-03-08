@@ -14,11 +14,7 @@ export const stakingSlice = createSlice({
   name: Reducers.Staking,
   initialState,
   reducers: {
-    watchStakingData: (state) => {
-      state.fishToken.data = {};
-      state.combinedVotingPower.data = undefined;
-      state.stakesList.data = [];
-    },
+    watchStakingData: (_) => {},
     stopWatchingStakingData: (state) => {
       state.fishToken.state = 'idle';
       state.combinedVotingPower.state = 'idle';
@@ -29,6 +25,9 @@ export const stakingSlice = createSlice({
       state.fishToken.state = 'loading';
       state.combinedVotingPower.state = 'loading';
       state.stakesList.state = 'loading';
+      state.fishToken.data = {};
+      state.combinedVotingPower.data = undefined;
+      state.stakesList.data = [];
     },
     updateStakingData: (state) => {
       state.fishToken.state = 'loading';
