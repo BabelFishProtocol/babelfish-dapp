@@ -43,7 +43,7 @@ export const monthNames = [
 export const fieldsErrors = {
   required: 'Field Required',
   addressFormat: 'Value must be a proper RSK address',
-  invalidSignature: 'Value must be a valid Signature',
+  invalidSignature: 'Value must be a valid Function Signature',
   invalidCalldata: 'Value must be a valid Calldata',
   amountGreaterThanBalance: 'Value cannot be greater than your token balance',
 };
