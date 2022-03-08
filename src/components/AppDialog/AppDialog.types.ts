@@ -1,6 +1,7 @@
-import React from 'react';
 import { DialogProps } from '@mui/material/Dialog';
 import { DialogContentProps } from '@mui/material/DialogContent';
+import { PaperProps } from '@mui/material/Paper';
+import React from 'react';
 
 export type AppDialogProps = {
   isOpenDialog: boolean;
@@ -11,6 +12,7 @@ export type AppDialogProps = {
   children?: React.ReactNode;
   dialogProps?: Partial<DialogProps>;
   dialogContentProps?: Partial<DialogContentProps>;
+  dialogPaperProps?: Partial<PaperProps>;
 };
 
 export type AppDialogTitleProps = Pick<AppDialogProps, 'title' | 'onClose'>;

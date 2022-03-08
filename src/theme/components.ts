@@ -234,6 +234,7 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
         backgroundImage: palette.boxGradient,
         minHeight: '500px',
         width: '500px',
+        maxWidth: '800px',
         borderRadius: '8px',
       },
     },

@@ -9,8 +9,13 @@ export const ControlledInput = <FormValues extends FieldValues>({
   ...inputProps
 }: ControlledInputProps<FormValues>) => (
   <Controller
-    render={({ field: { onChange, value } }) => (
-      <TextInput {...inputProps} onChange={onChange} value={value} />
+    render={({ field: { onChange, value }, fieldState: { error } }) => (
+      <TextInput
+        {...inputProps}
+        onChange={onChange}
+        error={error}
+        value={value}
+      />
     )}
     name={name}
     control={control}
