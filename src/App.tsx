@@ -1,15 +1,15 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import { useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import errorIcon from './assets/icons/error.svg';
-import loadingIcon from './assets/icons/loading.svg';
-import successIcon from './assets/icons/success.svg';
-import { AppDialog } from './components/AppDialog/AppDialog.component';
+// import Box from '@mui/material/Box';
+// import Button from '@mui/material/Button';
+// import { useState } from 'react';
+import { Route, Routes, Navigate } from 'react-router-dom';
+// import errorIcon from './assets/icons/error.svg';
+// import loadingIcon from './assets/icons/loading.svg';
+// import successIcon from './assets/icons/success.svg';
+// import { AppDialog } from './components/AppDialog/AppDialog.component';
 import { BottomBanner } from './components/BottomBanner/BottomBanner.component';
 import { Header } from './components/Header/Header.component';
-import { MintingInfo } from './components/MintingInfo/MintingInfo.component';
-import { MintingProcessInfo } from './components/MintingInfo/MintingInfo.types';
+// import { MintingInfo } from './components/MintingInfo/MintingInfo.component';
+// import { MintingProcessInfo } from './components/MintingInfo/MintingInfo.types';
 import { Urls } from './constants';
 import { AgregatorContainer } from './pages/Agregator/Agregator.container';
 import { DashboardContainer } from './pages/Dashboard/Dashboard.container';
@@ -18,29 +18,29 @@ import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.cont
 import { StakingContainer } from './pages/Staking/Staking.container';
 
 function App() {
-  const [openDialogType, setOpenDialogType] = useState<
-    'success' | 'error' | 'pending'
-  >();
+  // const [openDialogType, setOpenDialogType] = useState<
+  //   'success' | 'error' | 'pending'
+  // >();
 
-  const dialogVals: MintingProcessInfo[] = [
-    { label: 'Date/Time', value: '21/01/21-14:34 GMT' },
-    { label: 'Amount Sent', value: '50.00 USDT' },
-    { label: 'Amount Minted', value: '50.00 XUSD' },
-    { label: 'GAS Fees', value: 'XXX ETH' },
-    { label: 'ETH Deposit ID', value: '0X413.89054', isProminant: true },
-    {
-      label: 'RSK Relay Hash',
-      value: '0X413.89054',
-      isProminant: true,
-    },
-  ];
+  // const dialogVals: MintingProcessInfo[] = [
+  //   { label: 'Date/Time', value: '21/01/21-14:34 GMT' },
+  //   { label: 'Amount Sent', value: '50.00 USDT' },
+  //   { label: 'Amount Minted', value: '50.00 XUSD' },
+  //   { label: 'GAS Fees', value: 'XXX ETH' },
+  //   { label: 'ETH Deposit ID', value: '0X413.89054', isProminant: true },
+  //   {
+  //     label: 'RSK Relay Hash',
+  //     value: '0X413.89054',
+  //     isProminant: true,
+  //   },
+  // ];
 
   return (
     <div className="App">
       <Header />
 
       {/* Error Dialog */}
-      <AppDialog
+      {/* <AppDialog
         isOpenDialog={openDialogType === 'error'}
         icon={errorIcon}
         title="Minting Error"
@@ -50,10 +50,10 @@ function App() {
         }}
       >
         <Button variant="outlined">Try Again</Button>
-      </AppDialog>
+      </AppDialog> */}
 
       {/* Success Dialog */}
-      <AppDialog
+      {/* <AppDialog
         isOpenDialog={openDialogType === 'success'}
         icon={successIcon}
         title="Minting Complete"
@@ -67,20 +67,20 @@ function App() {
         <Button sx={{ my: 5 }} size="small">
           View on Explorer
         </Button>
-      </AppDialog>
+      </AppDialog> */}
 
       {/* Pending Dialog */}
-      <AppDialog
+      {/* <AppDialog
         isOpenDialog={openDialogType === 'pending'}
         icon={loadingIcon}
         title="Minting In Progress"
         description="Minting can take a couple minutes, please make sure to approve the transaction in your wallet when prompted, and wait for minting to be complete"
       >
         <MintingInfo data={dialogVals} />
-      </AppDialog>
+      </AppDialog> */}
 
       <Routes>
-        <Route
+        {/* <Route
           path="/"
           element={
             <>
@@ -139,8 +139,7 @@ function App() {
               <br />
             </>
           }
-        />
-        <Route path="about" element={<div>About</div>} />
+        /> */}
         <Route path={Urls.Proposals} element={<ProposalsListContainer />} />
         <Route path={Urls.Staking} element={<StakingContainer />} />
         <Route path={Urls.Dashboard} element={<DashboardContainer />} />
@@ -149,6 +148,7 @@ function App() {
           element={<ProposalDetailsContainer />}
         />
         <Route path={Urls.Agregator} element={<AgregatorContainer />} />
+        <Route path="*" element={<Navigate to={Urls.Dashboard} />} />
       </Routes>
 
       <BottomBanner />
