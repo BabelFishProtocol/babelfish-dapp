@@ -4,17 +4,14 @@ import { UseFormResetField, UseFormSetValue } from 'react-hook-form';
 import { ChainEnum, ChainType } from '../../config/chains';
 import { mainnetPool } from '../../config/pools';
 import { TokenEnum, TokenTypeBase } from '../../config/tokens';
-import { AgregatorInputs } from './Agregator.fields';
-import {
-  AgregatorComponentProps,
-  AgregatorFormValues,
-} from './Agregator.types';
+import { AggregatorInputs, AggregatorFormValues } from './Aggregator.fields';
+import { AggregatorComponentProps } from './Aggregator.types';
 
-export const useAgregatorDropdowns = (
+export const useAggregatorDropdowns = (
   startingChain: ChainEnum | '',
   destinationChain: ChainEnum | '',
-  resetField: UseFormResetField<AgregatorFormValues>,
-  setValue: UseFormSetValue<AgregatorFormValues>
+  resetField: UseFormResetField<AggregatorFormValues>,
+  setValue: UseFormSetValue<AggregatorFormValues>
 ) => {
   const [startingTokenOptions, setStartingTokenOptions] = useState<
     TokenTypeBase[]
@@ -32,16 +29,16 @@ export const useAgregatorDropdowns = (
   ];
 
   useEffect(() => {
-    resetField(AgregatorInputs.StartingToken);
+    resetField(AggregatorInputs.StartingToken);
     if (!startingChain) {
       setStartingTokenOptions([]);
       setDestinationChainOptions([]);
     } else if (startingChain === mainnetPool.masterChain.id) {
       if (destinationChain === mainnetPool.masterChain.id) {
-        resetField(AgregatorInputs.DestinationChain);
+        resetField(AggregatorInputs.DestinationChain);
       }
       setStartingTokenOptions([mainnetPool.masset]);
-      setValue(AgregatorInputs.StartingToken, mainnetPool.masset.id);
+      setValue(AggregatorInputs.StartingToken, mainnetPool.masset.id);
       setDestinationChainOptions(mainnetPool.baseChains);
     } else {
       setStartingTokenOptions(
@@ -49,17 +46,17 @@ export const useAgregatorDropdowns = (
           ?.bassets ?? []
       );
       setDestinationChainOptions([mainnetPool.masterChain]);
-      setValue(AgregatorInputs.DestinationChain, mainnetPool.masterChain.id);
+      setValue(AggregatorInputs.DestinationChain, mainnetPool.masterChain.id);
     }
   }, [startingChain, destinationChain, resetField, setValue]);
 
   useEffect(() => {
-    resetField(AgregatorInputs.DestinationToken);
+    resetField(AggregatorInputs.DestinationToken);
     if (!destinationChain) {
       setDestinationTokenOptions([]);
     } else if (destinationChain === mainnetPool.masterChain.id) {
       setDestinationTokenOptions([mainnetPool.masset]);
-      setValue(AgregatorInputs.DestinationToken, mainnetPool.masset.id);
+      setValue(AggregatorInputs.DestinationToken, mainnetPool.masset.id);
     } else {
       setDestinationTokenOptions(
         mainnetPool.baseChains.find((item) => item.id === destinationChain)
@@ -69,8 +66,8 @@ export const useAgregatorDropdowns = (
   }, [destinationChain, resetField, setValue]);
 
   const changeDirection = () => {
-    setValue(AgregatorInputs.StartingChain, destinationChain);
-    setValue(AgregatorInputs.DestinationChain, startingChain);
+    setValue(AggregatorInputs.StartingChain, destinationChain);
+    setValue(AggregatorInputs.DestinationChain, startingChain);
   };
 
   return {
@@ -84,19 +81,19 @@ export const useAgregatorDropdowns = (
 
 export const useAvailableBalance = (
   token: TokenEnum | '',
-  getTokenAvaliableBalance: AgregatorComponentProps['getTokenAvaliableBalance'],
-  resetField: UseFormResetField<AgregatorFormValues>
+  getTokenAvailableBalance: AggregatorComponentProps['getTokenAvailableBalance'],
+  resetField: UseFormResetField<AggregatorFormValues>
 ) => {
   const [availableBalance, setAvailableBalance] = useState<BigNumber>();
 
   useEffect(() => {
     if (token) {
-      setAvailableBalance(getTokenAvaliableBalance(token));
+      setAvailableBalance(getTokenAvailableBalance(token));
     } else {
-      resetField(AgregatorInputs.SendAmount);
+      resetField(AggregatorInputs.SendAmount);
       setAvailableBalance(undefined);
     }
-  }, [token, getTokenAvaliableBalance, resetField]);
+  }, [token, getTokenAvailableBalance, resetField]);
 
   return { availableBalance };
 };

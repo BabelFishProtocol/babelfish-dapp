@@ -1,13 +1,13 @@
 import { BigNumber, utils } from 'ethers';
 import { useCallback } from 'react';
-import { AgregatorComponent } from './Agregator.component';
-import { AgregatorFormValues } from './Agregator.types';
+import { AggregatorComponent } from './Aggregator.component';
+import { AggregatorFormValues } from './Aggregator.fields';
 
 const mockAvailableBalance = '81.123';
 
-export const AgregatorContainer = () => {
+export const AggregatorContainer = () => {
   // WIP: use useCallback here
-  const getTokenAvaliableBalance = useCallback(
+  const getTokenAvailableBalance = useCallback(
     () =>
       // todo: implement
       utils.parseEther(mockAvailableBalance),
@@ -23,14 +23,14 @@ export const AgregatorContainer = () => {
         .div(BigNumber.from(100))
     );
 
-  const onSubmit = (data: AgregatorFormValues) => {
+  const onSubmit = (data: AggregatorFormValues) => {
     // TODO: implement
     // eslint-disable-next-line no-console
     console.log(data);
   };
   return (
-    <AgregatorComponent
-      getTokenAvaliableBalance={getTokenAvaliableBalance}
+    <AggregatorComponent
+      getTokenAvailableBalance={getTokenAvailableBalance}
       getReceiveAmount={getReceiveAmount}
       onSubmit={onSubmit}
     />

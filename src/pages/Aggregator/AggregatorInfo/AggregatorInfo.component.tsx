@@ -10,7 +10,7 @@ const mockInfo = [
   { label: 'Day Limit', value: '100,000,000.0000 ETH' },
 ];
 
-export const AgregatorInfo = ({ onClick }: { onClick: () => void }) => (
+export const AggregatorInfo = ({ onClick }: { onClick: () => void }) => (
   <Box
     sx={{
       alignSelf: 'stretch',
