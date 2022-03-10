@@ -1,7 +1,7 @@
-import { VestsListItem } from '../../../store/staking/staking.state';
+import { VestListItem } from '../../../store/staking/staking.state';
 import { FiniteStates } from '../../../utils/types';
 
 export type VestsListComponentProps = {
-  vests: VestsListItem[];
+  vests: VestListItem[];
   state: FiniteStates;
 };
