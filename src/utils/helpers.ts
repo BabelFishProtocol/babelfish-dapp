@@ -59,6 +59,13 @@ export const isTimeStampLocked = (timestamp: number | string): boolean => {
   return dayjs().isAfter(parsedDate);
 };
 
+export const getFutureTimestamp = (
+  startTime: number,
+  startBlock: number,
+  endBlock: number,
+  blockTime: number
+) => startTime + (endBlock - startBlock) * blockTime * 1000;
+
 const truncate = (str: string, digits = 4) => {
   if (str.includes('.')) {
     const [integer, decimals] = str.split('.');
@@ -87,3 +94,6 @@ export const formatWeiAmount = (weiAmount: BigNumberish, decimalDigits = 4) =>
   truncate(utils.commify(utils.formatEther(weiAmount)), decimalDigits);
 
 export const formatBlockNumber = (val: string | number) => `#${val}`;
+
+export const truncateString = (text: string, maxLength = 25) =>
+  text.length > maxLength ? `${text.substring(0, maxLength)} ...` : text;

@@ -8,7 +8,11 @@ import Typography from '@mui/material/Typography';
 
 import { Proposal } from '../../store/proposals/proposals.state';
 import { ProposalState, proposalStateNames } from '../../constants';
-import { formatBlockNumber, formatTimestamp } from '../../utils/helpers';
+import {
+  formatBlockNumber,
+  formatTimestamp,
+  truncateString,
+} from '../../utils/helpers';
 
 import {
   CustomColumn,
@@ -30,7 +34,7 @@ const ViewProposalComponent: CustomColumn<RowData> = ({ value }) => (
 );
 
 const proposalsListColumns: DataTableColumn<RowData>[] = [
-  { label: 'title', name: 'id' },
+  { label: 'title', name: 'title', format: truncateString },
   { label: 'start block', name: 'startBlock', format: formatBlockNumber },
   {
     label: 'vote weight',

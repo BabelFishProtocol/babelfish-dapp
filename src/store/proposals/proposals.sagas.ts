@@ -1,4 +1,4 @@
-import { ContractCall, Provider } from 'ethers-multicall';
+import { Provider as MulticallProvider } from 'ethers-multicall';
 import {
   all,
   put,
@@ -10,78 +10,68 @@ import {
   takeLatest,
 } from 'typed-redux-saga';
 
-import { ProposalState } from '../../constants';
 import { GovernorAdmin } from '../../contracts/types';
+import { convertForMulticall } from '../utils';
 
 import {
   providerSelector,
   governorAdminSelector,
   governorOwnerSelector,
+  subgraphClientSelector,
+  multicallProviderSelector,
 } from '../app/app.selectors';
 import { appActions } from '../app/app.slice';
 
 import { Proposal } from './proposals.state';
+import { parseProposals } from './proposals.utils';
 import { proposalsActions } from './proposals.slice';
-import { convertForMulticall, getMulticallSaga } from '../utils';
+import {
+  ProposalListQueryItem,
+  proposalsListQuery,
+} from '../../queries/proposalListQuery';
 
-type ProposalsResult = Awaited<ReturnType<GovernorAdmin['proposals']>>;
 type ProposalStateResult = Awaited<ReturnType<GovernorAdmin['state']>>;
 
-export function* fetchProposalsForContract(
+function* fetchProposalStates(
+  proposals: ProposalListQueryItem[],
   governor: GovernorAdmin,
-  multicall: Provider
+  multicallProvider: MulticallProvider
 ) {
-  const provider = yield* select(providerSelector);
-  const proposalsCount = yield* call(governor.proposalCount);
-
-  if (!provider) throw new Error('Wallet not connected!');
-
-  const proposalsCalls: ContractCall[] = [];
-  const proposalsStatesCalls: ContractCall[] = [];
-
-  for (let index = proposalsCount; index.gt(0); index = index.sub(1)) {
-    proposalsCalls.push(
-      convertForMulticall(governor, 'proposals', 'proposals(uint256)', index)
-    );
-    proposalsStatesCalls.push(
-      convertForMulticall(governor, 'state', 'state(uint256)', index)
-    );
-  }
-
-  const proposalsData: ProposalsResult[] = yield* call(
-    [multicall, multicall.all],
-    proposalsCalls
+  const proposalStateCalls = proposals.map(({ proposalId }) =>
+    convertForMulticall(governor, 'state', 'state(uint256)', proposalId)
   );
+
   const proposalsStates: ProposalStateResult[] = yield* call(
-    [multicall, multicall.all],
-    proposalsStatesCalls
-  );
-  const proposalsEndDates = yield* all(
-    proposalsData.map(({ endBlock }) =>
-      call([provider, provider.getBlock], endBlock)
-    )
+    [multicallProvider, multicallProvider.all],
+    proposalStateCalls
   );
 
-  const parsedProposals: Proposal[] = proposalsData.map((proposal, index) => {
-    const { id, eta, quorum, startTime, forVotes, againstVotes } = proposal;
+  return proposalsStates;
+}
 
-    const proposalState = proposalsStates[index];
-    const { timestamp } = proposalsEndDates[index];
+export function* fetchProposalsForContract(governor: GovernorAdmin) {
+  const provider = yield* select(providerSelector);
+  const multicallProvider = yield* select(multicallProviderSelector);
+  const subgraphClient = yield* select(subgraphClientSelector);
 
-    const parsedProposal: Proposal = {
-      ...proposal,
-      id: id.toString(),
-      eta: eta.toNumber(),
-      quorum: quorum.toString(),
-      startTime: startTime.toNumber(),
-      forVotes: forVotes.toString(),
-      againstVotes: againstVotes.toString(),
-      endTime: timestamp,
-      state: proposalState as unknown as ProposalState,
-    };
+  if (!provider || !subgraphClient || !multicallProvider)
+    throw new Error('Wallet not connected!');
 
-    return parsedProposal;
+  const { proposals } = yield* call(proposalsListQuery, subgraphClient, {
+    contractAddress: governor.address,
   });
+
+  const proposalsStates = yield* fetchProposalStates(
+    proposals,
+    governor,
+    multicallProvider
+  );
+
+  const parsedProposals = yield* call(
+    parseProposals,
+    proposals,
+    proposalsStates
+  );
 
   return parsedProposals;
 }
@@ -90,24 +80,17 @@ export function* fetchProposalsList() {
   try {
     const governorAdmin = yield* select(governorAdminSelector);
     const governorOwner = yield* select(governorOwnerSelector);
-    const multicallProvider = yield* getMulticallSaga();
 
     if (!governorAdmin) {
       throw new Error('Wallet not connected');
     }
 
-    const adminItems = yield* fetchProposalsForContract(
-      governorAdmin,
-      multicallProvider
-    );
+    const adminItems = yield* fetchProposalsForContract(governorAdmin);
 
     let ownerItems: Proposal[] = [];
 
     if (governorOwner && governorOwner.address !== governorAdmin.address) {
-      ownerItems = yield* fetchProposalsForContract(
-        governorOwner,
-        multicallProvider
-      );
+      ownerItems = yield* fetchProposalsForContract(governorOwner);
     }
 
     const mergedProposals = [...adminItems, ...ownerItems].sort(

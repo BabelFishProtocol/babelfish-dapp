@@ -1,6 +1,10 @@
 import { utils } from 'ethers';
 import { createSelector } from '@reduxjs/toolkit';
 
+import {
+  Provider as MulticallProvider,
+  setMulticallAddress,
+} from 'ethers-multicall';
 import { RootState } from '..';
 import {
   contractsAddresses,
@@ -8,6 +12,7 @@ import {
 } from '../../config/contracts';
 import { Reducers } from '../../constants';
 import { chains } from '../../config/chains';
+import { subgraphClients } from '../../config/subgraph';
 import {
   ERC20__factory,
   Staking__factory,
@@ -46,6 +51,16 @@ export const currentChainSelector = createSelector(
     return chainConfig;
   }
 );
+
+export const subgraphClientSelector = createSelector(
+  currentChainSelector,
+  (chainConfig) => {
+    if (!chainConfig || !subgraphClients[chainConfig.id]) return undefined;
+
+    return subgraphClients[chainConfig.id];
+  }
+);
+
 export const addressesSelector = createSelector(
   currentChainSelector,
   (chainConfig) => {
@@ -87,7 +102,18 @@ export const governorOwnerSelector = createContractSelector(
   GovernorAdmin__factory,
   'governorOwner'
 );
-export const multicallSelector = createContractSelector(
+export const multicallContractSelector = createContractSelector(
   Multicall__factory,
   'multicall'
+);
+export const multicallProviderSelector = createSelector(
+  [providerSelector, chainIdSelector, multicallContractSelector],
+  (provider, chainId, multicallContract) => {
+    if (!provider || !chainId || !multicallContract) return undefined;
+
+    setMulticallAddress(chainId, multicallContract.address);
+    const multicallProvider = new MulticallProvider(provider, chainId);
+
+    return multicallProvider;
+  }
 );
