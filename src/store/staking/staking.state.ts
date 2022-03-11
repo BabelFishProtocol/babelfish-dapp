@@ -8,8 +8,13 @@ export type StakeListItem = {
   unlockDate: number;
 };
 
-export type VestsListItem = StakeListItem & {
+export type VestListItem = StakeListItem & {
   stakingPeriodStart: number;
+};
+
+export type VestListAddress = {
+  address: string;
+  type: 'genesis' | 'team';
 };
 
 export type FishTokenInfo = {
@@ -48,7 +53,7 @@ export class StakingState {
     data: [],
     state: 'idle',
   };
-  vestsList: LoadableValue<VestsListItem[]> = {
+  vestsList: LoadableValue<VestListItem[]> = {
     data: [],
     state: 'idle',
   };

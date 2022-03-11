@@ -27,7 +27,7 @@ export const createMockedContract = <C extends Contract>(
   return mockedContract;
 };
 
-export const mockprovider = new Web3Provider({
+export const mockProvider = new Web3Provider({
   // host: 'tets host',
   isMetaMask: true,
   isStatus: false,
@@ -37,4 +37,4 @@ export const mockprovider = new Web3Provider({
   sendAsync: async () => {},
 });
 
-export const mockSigner: Signer = mockprovider.getSigner();
+export const mockSigner: Signer = mockProvider.getSigner();
