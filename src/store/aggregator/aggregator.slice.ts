@@ -9,30 +9,44 @@ const aggregatorSlice = createSlice({
   name: Reducers.Aggregator,
   initialState,
   reducers: {
-    setBridgeFee: (
-      state,
-      { payload }: PayloadAction<AggregatorState['bridgeFee']>
-    ) => {
-      state.bridgeFee = payload;
+    fetchAllowTokensAddressFailure: (state) => {
+      state.allowTokensAddress.state = 'failure';
+      state.allowTokensAddress.data = undefined;
     },
-    setMinTransfer: (
-      state,
-      { payload }: PayloadAction<AggregatorState['minTransfer']>
-    ) => {
-      state.minTransfer = payload;
+    setAllowTokensAddress: (state, { payload }: PayloadAction<string>) => {
+      state.allowTokensAddress.state = 'success';
+      state.allowTokensAddress.data = payload;
     },
-    setMaxTransfer: (
+    setTokenFrom: (
       state,
-      { payload }: PayloadAction<AggregatorState['maxTransfer']>
+      { payload }: PayloadAction<AggregatorState['tokenFrom']>
     ) => {
-      state.maxTransfer = payload;
+      state.tokenFrom = payload;
     },
-    setDailyLimit: (
-      state,
-      { payload }: PayloadAction<AggregatorState['dailyLimit']>
-    ) => {
-      state.dailyLimit = payload;
-    },
+    // setBridgeFee: (
+    //   state,
+    //   { payload }: PayloadAction<AggregatorState['bridgeFee']>
+    // ) => {
+    //   state.bridgeFee = payload;
+    // },
+    // setMinTransfer: (
+    //   state,
+    //   { payload }: PayloadAction<AggregatorState['minTransfer']>
+    // ) => {
+    //   state.minTransfer = payload;
+    // },
+    // setMaxTransfer: (
+    //   state,
+    //   { payload }: PayloadAction<AggregatorState['maxTransfer']>
+    // ) => {
+    //   state.maxTransfer = payload;
+    // },
+    // setDailyLimit: (
+    //   state,
+    //   { payload }: PayloadAction<AggregatorState['dailyLimit']>
+    // ) => {
+    //   state.dailyLimit = payload;
+    // },
   },
 });
 

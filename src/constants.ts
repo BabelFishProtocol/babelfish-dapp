@@ -17,6 +17,7 @@ export enum ProposalState {
 }
 
 export enum Reducers {
+  Aggregator = 'aggregator',
   App = 'app',
   Staking = 'staking',
 }
