@@ -1,5 +1,5 @@
 import { formatTimestamp } from '../../../utils/helpers';
-import { VestsListItem } from '../../../store/staking/staking.state';
+import { VestListItem } from '../../../store/staking/staking.state';
 
 import { DataTable } from '../../../components/DataTable/DataTable.component';
 import { DataTableColumn } from '../../../components/DataTable/DataTable.types';
@@ -12,7 +12,7 @@ import {
 import { VestsListComponentProps } from './VestsList.types';
 import { VestsActionColumn } from './VestsList.actions';
 
-const vestsColumns: DataTableColumn<VestsListItem>[] = [
+const vestsColumns: DataTableColumn<VestListItem>[] = [
   { label: 'Asset', name: 'asset' },
   {
     label: 'Locked Amount',

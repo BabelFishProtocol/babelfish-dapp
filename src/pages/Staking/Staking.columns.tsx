@@ -15,13 +15,10 @@ import {
   CellParser,
   CustomColumn,
 } from '../../components/DataTable/DataTable.types';
-import {
-  StakeListItem,
-  VestsListItem,
-} from '../../store/staking/staking.state';
+import { StakeListItem, VestListItem } from '../../store/staking/staking.state';
 import { accountSelector } from '../../store/app/app.selectors';
 
-type ColumnComponent = CustomColumn<StakeListItem | VestsListItem>;
+type ColumnComponent = CustomColumn<StakeListItem | VestListItem>;
 
 export const VotingDelegationColumn: ColumnComponent = ({ value }) => {
   const account = useSelector(accountSelector);
