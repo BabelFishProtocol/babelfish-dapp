@@ -38,7 +38,7 @@ export const DashboardComponent = ({
         <Button
           sx={{ width: 'max-content', px: 3 }}
           component={Link}
-          to={Urls.Agregator}
+          to={Urls.Aggregator}
         >
           Deposit/Withdraw XUSD
         </Button>
