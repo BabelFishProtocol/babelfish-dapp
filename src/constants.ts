@@ -19,6 +19,7 @@ export enum ProposalState {
 export enum Reducers {
   App = 'app',
   Staking = 'staking',
+  Proposal = 'proposal',
 }
 
 export const MAX_STAKING_PERIODS = 78;
@@ -39,6 +40,17 @@ export const monthNames = [
   'Nov',
   'Dec',
 ];
+
+export const GOVERNANCE_OPTIONS = {
+  GOVERNER_OWNER: {
+    name: 'Governor Owner',
+    id: 'governorOwner',
+  },
+  GOVERNER_ADMIN: {
+    name: 'Governor Admin',
+    id: 'governorAdmin',
+  },
+};
 
 export const fieldsErrors = {
   required: 'Field Required',
