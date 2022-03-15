@@ -14,7 +14,7 @@ export const WalletConnector = () => {
   const [connectedWallet, setConnectedWallet] = useState<number>();
   const { active, account, deactivate, activate } = useActiveWeb3React();
 
-  const onDissconnect = () => {
+  const onDisconnect = () => {
     deactivate();
     setConnectedWallet(undefined);
   };
@@ -26,7 +26,7 @@ export const WalletConnector = () => {
       return (
         <SelectedWallet
           wallet={wallet}
-          onDissconnect={onDissconnect}
+          onDisconnect={onDisconnect}
           account={account}
         />
       );
