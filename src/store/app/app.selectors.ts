@@ -18,6 +18,7 @@ import {
   Staking__factory,
   Multicall__factory,
   GovernorAdmin__factory,
+  VestingRegistry__factory,
 } from '../../contracts/types';
 import { BaseContractFactory } from '../types';
 
@@ -106,6 +107,11 @@ export const multicallContractSelector = createContractSelector(
   Multicall__factory,
   'multicall'
 );
+export const vestingRegistrySelector = createContractSelector(
+  VestingRegistry__factory,
+  'vestingRegistry'
+);
+
 export const multicallProviderSelector = createSelector(
   [providerSelector, chainIdSelector, multicallContractSelector],
   (provider, chainId, multicallContract) => {

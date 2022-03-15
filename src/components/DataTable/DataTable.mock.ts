@@ -1,7 +1,7 @@
-import { VestsListItem } from '../../store/staking/staking.state';
+import { VestListItem } from '../../store/staking/staking.state';
 import { DataTableColumn, DataTableProps } from './DataTable.types';
 
-export const vestListColumns: DataTableColumn<VestsListItem>[] = [
+export const vestListColumns: DataTableColumn<VestListItem>[] = [
   {
     label: 'Asset',
     name: 'asset',
@@ -32,7 +32,7 @@ export const vestListColumns: DataTableColumn<VestsListItem>[] = [
   },
 ];
 
-export const vestListItem: VestsListItem[] = [
+export const vestListItem: VestListItem[] = [
   {
     asset: 'FISH',
     lockedAmount: '9552856700000000000000',
@@ -49,7 +49,7 @@ export const vestListItem: VestsListItem[] = [
   },
 ];
 
-export const mockDataTable: DataTableProps<VestsListItem> = {
+export const mockDataTable: DataTableProps<VestListItem> = {
   tableTitle: 'Current Vests',
   tableEmptyMessage: 'No stakes yet.',
   isLoading: false,
