@@ -136,7 +136,7 @@ export const useEstimateFee = ({
   return estimatedFee;
 };
 
-export const useEstiateDelegateFee = ({
+export const useEstimateDelegateFee = ({
   delegateTo,
   estimator,
 }: UseEstimateDelegateFeeConfig) => {

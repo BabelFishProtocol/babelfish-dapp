@@ -39,6 +39,8 @@ export const vestListItem: VestListItem[] = [
     votingDelegation: '0x0000000000000000000000000000000000000000',
     stakingPeriodStart: 1659571200,
     unlockDate: 1659571200,
+    address: '0x0000000000000000000000000000000000000000',
+    addressType: 'team',
   },
   {
     asset: 'FISH',
@@ -46,6 +48,8 @@ export const vestListItem: VestListItem[] = [
     votingDelegation: '0x94e907f6B903A393E14FE549113137CA6483b5ef',
     stakingPeriodStart: 1659571200,
     unlockDate: 1639008000,
+    address: '0x84e907f6B903A393E14FE549113137CA6483b5ef',
+    addressType: 'genesis',
   },
 ];
 

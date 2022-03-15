@@ -9,8 +9,9 @@ import { TableActionsComponent } from '../../../components/TableActions/TableAct
 import { useStakeModalForm } from '../Staking.hooks';
 import { DelegateVestContainer } from './DelegateVest/DelegateVest.container';
 import { WithdrawVestContainer } from './WithdrawVest/WithdrawVest.container';
+import { VestListItem } from '../../../store/staking/staking.state';
 
-export const VestsActionColumn: CustomColumn = ({ value }) => {
+export const VestsActionColumn: CustomColumn<VestListItem> = ({ value }) => {
   const dispatch = useDispatch();
 
   const selectVest = () => {

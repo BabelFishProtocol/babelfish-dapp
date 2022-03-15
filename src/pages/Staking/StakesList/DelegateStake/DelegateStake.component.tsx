@@ -9,7 +9,7 @@ import { TextInput } from '../../../../components/TextInput/TextInput.component'
 import { DialogForm } from '../../../../components/DialogForm/DialogForm.component';
 import { ControlledAddressInput } from '../../../../components/AddressInput/AddressInput.controlled';
 
-import { useEstiateDelegateFee } from '../../Staking.hooks';
+import { useEstimateDelegateFee } from '../../Staking.hooks';
 import {
   DelegateStakeComponentProps,
   FeeEstimatorProps,
@@ -78,7 +78,7 @@ const FeeEstimator = ({ control, estimateFee }: FeeEstimatorProps) => {
     name: DelegateStakeFields.delegateTo,
   });
 
-  const estimatedFee = useEstiateDelegateFee({
+  const estimatedFee = useEstimateDelegateFee({
     delegateTo: watchDelegateTo,
     estimator: estimateFee,
   });
