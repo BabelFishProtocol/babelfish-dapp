@@ -2,22 +2,19 @@ import Box from '@mui/material/Box';
 
 import Typography from '@mui/material/Typography';
 
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { formatWeiAmount } from '../../../../utils/helpers';
 import { TextInput } from '../../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../../components/DialogForm/DialogForm.component';
 
-import {
-  DelegateVestComponentProps,
-  FeeEstimatorProps,
-} from './DelegateVest.types';
+import { DelegateVestComponentProps } from './DelegateVest.types';
 import {
   delegateVestDefaultValues,
   DelegateVestFields,
   DelegateVestValues,
 } from './DelegateVest.fields';
 import { ControlledAddressInput } from '../../../../components/AddressInput/AddressInput.controlled';
-import { useEstimateDelegateFee } from '../../Staking.hooks';
+import { FeeEstimator } from '../../DelegateFeeEstimator/DelegateFeeEstimator.component';
 
 export const DelegateVestComponent = ({
   open,
@@ -67,21 +64,5 @@ export const DelegateVestComponent = ({
       />
       <FeeEstimator control={control} estimateFee={estimateFee} />
     </DialogForm>
-  );
-};
-
-const FeeEstimator = ({ control, estimateFee }: FeeEstimatorProps) => {
-  const watchDelegateTo = useWatch({
-    control,
-    name: DelegateVestFields.delegateTo,
-  });
-
-  const estimatedFee = useEstimateDelegateFee({
-    delegateTo: watchDelegateTo,
-    estimator: estimateFee,
-  });
-
-  return (
-    <Typography>Tx Fee: {formatWeiAmount(estimatedFee, 7)} RBTC</Typography>
   );
 };

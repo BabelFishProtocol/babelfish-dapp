@@ -1,24 +1,19 @@
 import Box from '@mui/material/Box';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
-import Typography from '@mui/material/Typography';
-
-import { formatWeiAmount, isRskAddress } from '../../../../utils/helpers';
+import { isRskAddress } from '../../../../utils/helpers';
 import { Button } from '../../../../components/Button/Button.component';
 import { TextInput } from '../../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../../components/DialogForm/DialogForm.component';
 import { ControlledAddressInput } from '../../../../components/AddressInput/AddressInput.controlled';
 
-import { useEstimateDelegateFee } from '../../Staking.hooks';
+import { DelegateStakeComponentProps } from './DelegateStake.types';
 import {
-  DelegateStakeComponentProps,
-  FeeEstimatorProps,
-} from './DelegateStake.types';
-import {
-  delegateStakeDefaultValues,
-  DelegateStakeFields,
   DelegateStakeValues,
+  DelegateStakeFields,
+  delegateStakeDefaultValues,
 } from './DelegateStake.fields';
+import { FeeEstimator } from '../../DelegateFeeEstimator/DelegateFeeEstimator.component';
 
 export const DelegateStakeComponent = ({
   open,
@@ -69,21 +64,5 @@ export const DelegateStakeComponent = ({
 
       <FeeEstimator control={control} estimateFee={estimateFee} />
     </DialogForm>
-  );
-};
-
-const FeeEstimator = ({ control, estimateFee }: FeeEstimatorProps) => {
-  const watchDelegateTo = useWatch({
-    control,
-    name: DelegateStakeFields.delegateTo,
-  });
-
-  const estimatedFee = useEstimateDelegateFee({
-    delegateTo: watchDelegateTo,
-    estimator: estimateFee,
-  });
-
-  return (
-    <Typography>Tx Fee: {formatWeiAmount(estimatedFee, 7)} RBTC</Typography>
   );
 };

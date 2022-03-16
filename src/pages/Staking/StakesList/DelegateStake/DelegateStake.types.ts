@@ -1,6 +1,5 @@
-import { Control } from 'react-hook-form';
 import { DialogFormProps } from '../../../../components/DialogForm/DialogForm.types';
-import { DelegateFeeEstimator } from '../../Staking.types';
+import { FeeEstimatorProps } from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
 import { DelegateStakeValues } from './DelegateStake.fields';
 
 export type DelegateStakeContainerProps = Pick<
@@ -15,8 +14,3 @@ export type DelegateStakeComponentProps = DelegateStakeContainerProps &
     onCancelDelegation: () => Promise<void>;
     currentDelegate: string;
   };
-
-export type FeeEstimatorProps = {
-  estimateFee: DelegateFeeEstimator;
-  control: Control<DelegateStakeValues>;
-};

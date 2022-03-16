@@ -1,11 +1,9 @@
-export enum DelegateVestFields {
-  delegateTo = 'delegateTo',
-}
+import {
+  DelegateFields,
+  DelegateValues,
+  delegateDefaultValues,
+} from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
 
-export type DelegateVestValues = {
-  [DelegateVestFields.delegateTo]: string;
-};
-
-export const delegateVestDefaultValues = {
-  [DelegateVestFields.delegateTo]: '',
-};
+export type DelegateVestValues = DelegateValues;
+export const DelegateVestFields = DelegateFields;
+export const delegateVestDefaultValues = delegateDefaultValues;

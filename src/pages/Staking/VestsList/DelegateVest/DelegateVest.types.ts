@@ -1,7 +1,8 @@
-import { Control } from 'react-hook-form';
 import { DialogFormProps } from '../../../../components/DialogForm/DialogForm.types';
-import { DelegateFeeEstimator } from '../../Staking.types';
-import { DelegateVestValues } from './DelegateVest.fields';
+import {
+  DelegateValues,
+  FeeEstimatorProps,
+} from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
 
 export type DelegateVestContainerProps = Pick<
   DialogFormProps,
@@ -12,10 +13,5 @@ export type DelegateVestComponentProps = DelegateVestContainerProps &
   Pick<FeeEstimatorProps, 'estimateFee'> & {
     votingPower: string;
     currentDelegate: string;
-    onDelegate: (formValues: DelegateVestValues) => Promise<void>;
+    onDelegate: (formValues: DelegateValues) => Promise<void>;
   };
-
-export type FeeEstimatorProps = {
-  estimateFee: DelegateFeeEstimator;
-  control: Control<DelegateVestValues>;
-};

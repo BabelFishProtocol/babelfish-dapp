@@ -24,12 +24,3 @@ export type UseEstimateFeeConfig = {
   estimator: StakingFeeEstimator;
   timestamp?: number;
 };
-
-export type DelegateFeeEstimator = (
-  delegateTo: string
-) => Promise<BigNumber | undefined>;
-
-export type UseEstimateDelegateFeeConfig = {
-  delegateTo: string;
-  estimator: DelegateFeeEstimator;
-};
