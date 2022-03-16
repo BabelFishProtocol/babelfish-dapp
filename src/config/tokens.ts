@@ -3,7 +3,7 @@ import usdtIcon from '../assets/icons/tokens/usdt.svg';
 import daiIcon from '../assets/icons/tokens/dai.svg';
 import usdcIcon from '../assets/icons/tokens/usdc.svg';
 import busdIcon from '../assets/icons/tokens/busd.svg';
-import usdpIcon from '../assets/icons/tokens/usdp.svg';
+// import usdpIcon from '../assets/icons/tokens/usdp.svg';
 import xusdIcon from '../assets/icons/tokens/xusd.svg';
 
 export enum TokenEnum {
@@ -11,23 +11,19 @@ export enum TokenEnum {
   USDC = 'USDC',
   BUSD = 'BUSD',
   DAI = 'DAI',
-  USDP = 'USDP',
+  // USDP = 'USDP',
   XUSD = 'XUSD',
 }
 
-export type TokenOnNetworkType = {
-  symbol: string;
-  address: string;
-  oAddress?: string;
-  decimals: number;
-};
-
 export interface TokenTypeBase {
-  id: string;
+  id: TokenEnum;
   name: string;
   icon: string;
+  decimals: number;
 }
-
+export type TokenOnNetworkType = TokenTypeBase & {
+  address: string;
+};
 // export const tokensOrder = [
 //   TokenEnum.USDT,
 //   TokenEnum.USDC,
@@ -36,35 +32,35 @@ export interface TokenTypeBase {
 //   TokenEnum.USDP,
 // ];
 
-export const tokens = {
+export const tokens: Record<Partial<TokenEnum>, TokenTypeBase> = {
   [TokenEnum.USDT]: {
     id: TokenEnum.USDT,
     name: 'USDT',
     icon: usdtIcon,
+    decimals: 6,
   },
   [TokenEnum.USDC]: {
     id: TokenEnum.USDC,
     name: 'USDC',
     icon: usdcIcon,
+    decimals: 6,
   },
   [TokenEnum.DAI]: {
     id: TokenEnum.DAI,
     name: 'DAI',
     icon: daiIcon,
+    decimals: 18,
   },
   [TokenEnum.BUSD]: {
     id: TokenEnum.BUSD,
     name: 'BUSD',
     icon: busdIcon,
-  },
-  [TokenEnum.USDP]: {
-    id: TokenEnum.USDP,
-    name: 'PAX',
-    icon: usdpIcon,
+    decimals: 6,
   },
   [TokenEnum.XUSD]: {
     id: TokenEnum.XUSD,
     name: TokenEnum.XUSD,
     icon: xusdIcon,
+    decimals: 18,
   },
 };

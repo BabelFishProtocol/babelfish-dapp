@@ -1,7 +1,7 @@
 import { ChainEnum } from './chains';
 import { tokens, TokenTypeBase } from './tokens';
 
-type TokenAllowed = TokenTypeBase & {
+export type TokenAllowed = TokenTypeBase & {
   originalAddress: string;
   rskSovrynAddress?: string;
 };
@@ -9,7 +9,8 @@ type TokenAllowed = TokenTypeBase & {
 type Bridge = {
   from: ChainEnum;
   to: ChainEnum;
-  address: string;
+  bridgeAddress: string;
+  // allowTokensAddress: string;
   tokensAllowed?: TokenAllowed[];
 };
 
@@ -18,7 +19,7 @@ export class BridgeDictionary {
     {
       from: ChainEnum.BSC,
       to: ChainEnum.RSK,
-      address: '0xdfc7127593c8af1a17146893f10e08528f4c2aa7',
+      bridgeAddress: '0xdfc7127593c8af1a17146893f10e08528f4c2aa7',
       tokensAllowed: [
         {
           ...tokens.DAI,
@@ -45,7 +46,8 @@ export class BridgeDictionary {
     {
       from: ChainEnum.BSC_TESTNET,
       to: ChainEnum.RSK_TESTNET,
-      address: '0x862e8aff917319594cc7faaae5350d21196c086f',
+      bridgeAddress: '0x862e8aff917319594cc7faaae5350d21196c086f',
+      // allowTokensAddress: '0xeb23e848ceca88b7d0c019c7186bb86cefadd0bd',
       tokensAllowed: [
         {
           ...tokens.DAI,
@@ -73,7 +75,7 @@ export class BridgeDictionary {
     {
       from: ChainEnum.ETH,
       to: ChainEnum.RSK,
-      address: '0x33C0D33a0d4312562ad622F91d12B0AC47366EE1',
+      bridgeAddress: '0x33C0D33a0d4312562ad622F91d12B0AC47366EE1',
       tokensAllowed: [
         {
           ...tokens.DAI,
@@ -93,13 +95,14 @@ export class BridgeDictionary {
     {
       from: ChainEnum.ETH_TESTNET,
       to: ChainEnum.RSK_TESTNET,
-      address: '0x2b456e230225C4670FBF10b9dA506C019a24cAC7',
+      bridgeAddress: '0x2b456e230225C4670FBF10b9dA506C019a24cAC7',
     },
     // {
     //   from: ChainEnum.RSK_TESTNET,
     //   to: ChainEnum.BSC_TESTNET,
-    //   address: '0x2b2bcad081fa773dc655361d1bb30577caa556f8',
+    //   bridgeAddress: '0x2b2bcad081fa773dc655361d1bb30577caa556f8',
     // },
+
     // {
     //   from: ChainEnum.RSK,
     //   to: ChainEnum.BSC,
@@ -121,5 +124,8 @@ export class BridgeDictionary {
     return this.bridges.find(
       (bridge) => bridge.from === from && bridge.to === to
     );
+  }
+  public static getAll(from: ChainEnum) {
+    return this.bridges.find((bridge) => bridge.from === from);
   }
 }
