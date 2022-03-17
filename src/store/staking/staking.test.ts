@@ -441,6 +441,8 @@ describe('staking store', () => {
         lockedAmount: stakes[0],
         votingDelegation: delegates[0],
         stakingPeriodStart: dates[0].toNumber(),
+        address: getVestingResult,
+        addressType: 'genesis',
       },
     ];
 

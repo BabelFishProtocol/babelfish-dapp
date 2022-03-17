@@ -81,7 +81,6 @@ const createContractSelector = <Factory extends BaseContractFactory>(
       if (!addresses || !provider) {
         return undefined;
       }
-
       const contract = factory.connect(addresses[name], provider.getSigner());
       return contract as ReturnType<Factory['connect']>;
     }
