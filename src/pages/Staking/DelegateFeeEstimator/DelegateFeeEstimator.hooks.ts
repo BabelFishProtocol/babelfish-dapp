@@ -8,12 +8,13 @@ import { UseEstimateDelegateFeeConfig } from './DelegateFeeEstimator.fields';
 
 export const useEstimateDelegateFee = ({
   delegateTo,
+  withdrawTo,
   estimator,
 }: UseEstimateDelegateFeeConfig) => {
   const provider = useSelector(providerSelector);
   const [estimatedFee, setEstimatedFee] = useState('0');
 
-  const debouncedDelegate = useDebounce(delegateTo);
+  const debouncedDelegate = useDebounce(withdrawTo || delegateTo);
 
   useEffect(() => {
     const estimate = async () => {

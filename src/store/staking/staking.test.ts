@@ -427,6 +427,7 @@ describe('staking store', () => {
     const stakes = ['100000', '150000'];
     const dates = [BigNumber.from(1645564671), BigNumber.from(1645564672)];
     const delegates = ['0x3443'];
+    const cliff = BigNumber.from(2419200);
 
     const getStakesResult: Partial<Awaited<ReturnType<Staking['getStakes']>>> =
       {
@@ -443,6 +444,7 @@ describe('staking store', () => {
         stakingPeriodStart: dates[0].toNumber(),
         address: getVestingResult,
         addressType: 'genesis',
+        cliff: cliff.toNumber(),
       },
     ];
 
@@ -498,6 +500,7 @@ describe('staking store', () => {
           ],
           [matchers.call(mockVestingFactoryConnect.startDate), dates[0]],
           [matchers.call(mockVestingFactoryConnect.endDate), dates[0]],
+          [matchers.call(mockVestingFactoryConnect.cliff), cliff],
         ])
         .put(stakingActions.setVestsList(combinedVestsList))
         .hasFinalState(successState)

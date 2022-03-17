@@ -52,3 +52,5 @@ export const decimalRegex = /^\d*\.?\d*$/;
 
 export const signatureRegex = /^(0x|)[a-zA-Z0-9]{10}$/g;
 export const calldataRegex = /^(0x)(..)*$/g;
+
+export const FOUR_WEEKS = 2419200;

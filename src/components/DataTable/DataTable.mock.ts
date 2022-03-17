@@ -41,6 +41,7 @@ export const vestListItem: VestListItem[] = [
     unlockDate: 1659571200,
     address: '0x0000000000000000000000000000000000000000',
     addressType: 'team',
+    cliff: 2419200,
   },
   {
     asset: 'FISH',
@@ -50,6 +51,7 @@ export const vestListItem: VestListItem[] = [
     unlockDate: 1639008000,
     address: '0x84e907f6B903A393E14FE549113137CA6483b5ef',
     addressType: 'genesis',
+    cliff: 2419200,
   },
 ];
 
