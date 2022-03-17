@@ -10,7 +10,7 @@ export type ProposalListQueryItem = {
   startBlock: string;
 };
 
-type ProposalListQueryResult = {
+export type ProposalListQueryResult = {
   proposals: ProposalListQueryItem[];
 };
 
