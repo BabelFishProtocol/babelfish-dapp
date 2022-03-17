@@ -10,6 +10,8 @@ export type StakeListItem = {
 
 export type VestListItem = StakeListItem & {
   stakingPeriodStart: number;
+  address: string;
+  addressType: VestListAddress['type'];
 };
 
 export type VestListAddress = {
@@ -54,6 +56,10 @@ export class StakingState {
     state: 'idle',
   };
   vestsList: LoadableValue<VestListItem[]> = {
+    data: [],
+    state: 'idle',
+  };
+  vestsAddressesList: LoadableValue<VestListAddress[]> = {
     data: [],
     state: 'idle',
   };

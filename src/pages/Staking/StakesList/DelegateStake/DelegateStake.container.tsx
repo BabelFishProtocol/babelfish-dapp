@@ -7,12 +7,12 @@ import {
 import { selectedStakeSelector } from '../../../../store/staking/staking.selectors';
 import { useContractCall } from '../../../../hooks/useContractCall';
 
-import { DelegateFeeEstimator } from '../../Staking.types';
 import { SubmitStatusDialog } from '../../../../components/TxDialog/TxDialog.component';
 
 import { DelegateStakeComponent } from './DelegateStake.component';
-import { DelegateStakeValues } from './DelegateStake.fields';
 import { DelegateStakeContainerProps } from './DelegateStake.types';
+import { DelegateStakeValues } from './DelegateStake.fields';
+import { DelegateFeeEstimator } from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
 
 export const DelegateStakeContainer = ({
   open,

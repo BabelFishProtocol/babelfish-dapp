@@ -122,17 +122,17 @@ export function* fetchStakesList() {
 
 function* setSingleVest(
   staking: Staking,
-  address: string,
+  vestAddress: VestListAddress,
   vestsList: VestListItem[],
   provider: Web3Provider
 ) {
-  const vesting = yield* call(getVesting, address, provider);
-  const { dates } = yield* call(staking.getStakes, address);
-  const balanceOf = yield* call(staking.balanceOf, address);
+  const vesting = yield* call(getVesting, vestAddress.address, provider);
+  const { dates } = yield* call(staking.getStakes, vestAddress.address);
+  const balanceOf = yield* call(staking.balanceOf, vestAddress.address);
 
   const delegate = yield* call(
     staking.delegates,
-    address,
+    vestAddress.address,
     dates[dates.length - 2].toNumber() // TODO: base on governance-dapp, check if we can use below endDate as we need to use date of the end of the stake
   );
 
@@ -144,6 +144,8 @@ function* setSingleVest(
     votingDelegation: delegate,
     lockedAmount: balanceOf.toString(),
     stakingPeriodStart: startDate.toNumber(),
+    address: vestAddress.address,
+    addressType: vestAddress.type,
   });
 }
 
@@ -174,7 +176,7 @@ export function* fetchVestsList() {
 
     yield* all(
       addresses.map((address) =>
-        call(setSingleVest, staking, address.address, vestsList, provider)
+        call(setSingleVest, staking, address, vestsList, provider)
       )
     );
     yield* put(stakingActions.setVestsList(vestsList));
