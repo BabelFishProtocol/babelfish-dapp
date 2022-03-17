@@ -111,3 +111,27 @@ export const erc20TokenContractSelector = createSelector(
     return contract as ReturnType<typeof ERC20__factory['connect']>;
   }
 );
+
+export const allowTokensContractSelector = createSelector(
+  [providerSelector, allowTokensAddressSelector],
+  (provider, allowTokensAddress) => {
+    if (!provider || !allowTokensAddress) {
+      return undefined;
+    }
+    const contract = AllowTokens__factory.connect(
+      allowTokensAddress,
+      provider.getSigner()
+    );
+    return contract;
+  }
+);
+
+// export const allowTokensContractSelector = createSelector(
+//   [providerSelector, ], (provider, bridge) => {
+//     if(!provider || !bridge) {
+//       return undefined
+//     }
+
+//     const
+//   }
+// )

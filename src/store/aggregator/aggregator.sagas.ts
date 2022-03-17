@@ -22,7 +22,6 @@ export function* fetchAllowTokenAddress() {
     }
 
     const allowTokensAddress = yield* call(bridge.allowTokens);
-
     yield* put(aggregatorActions.setAllowTokensAddress(allowTokensAddress));
   } catch (e) {
     yield* put(aggregatorActions.fetchAllowTokensAddressFailure());

@@ -23,7 +23,9 @@ import {
   useAggregatorDropdowns,
   useAvailableBalance,
 } from './Aggregator.hooks';
-import { mainnetPool } from '../../config/pools';
+import { /* mainnetPool, */ testnetPool } from '../../config/pools';
+
+const pool = testnetPool;
 
 export const AggregatorComponent = ({
   getTokenAvailableBalance,
@@ -72,8 +74,7 @@ export const AggregatorComponent = ({
     }
   }, [amount, getReceiveAmount, setValue]);
 
-  const showDestinationTokenDropdown =
-    startingChain === mainnetPool.masterChain.id;
+  const showDestinationTokenDropdown = startingChain === pool.masterChain.id;
 
   return (
     <form
@@ -134,7 +135,6 @@ export const AggregatorComponent = ({
               </Typography>
             )}
           </Box>
-
           <ControlledInputWithButtonPillGroup
             name={AggregatorInputs.SendAmount}
             title="Amount"
