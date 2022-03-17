@@ -64,7 +64,7 @@ export const getFutureTimestamp = (
   startBlock: number,
   endBlock: number,
   blockTime: number
-) => startTime + (endBlock - startBlock) * blockTime * 1000;
+) => startTime + (endBlock - startBlock) * blockTime;
 
 const truncate = (str: string, digits = 4) => {
   if (str.includes('.')) {
