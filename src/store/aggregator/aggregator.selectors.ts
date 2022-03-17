@@ -1,8 +1,13 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { BridgeDictionary } from '../../config/bridges';
+import { tokens } from '../../config/tokens';
 import { Reducers } from '../../constants';
-import { AllowTokens__factory, Bridge__factory } from '../../contracts/types';
+import {
+  AllowTokens__factory,
+  Bridge__factory,
+  ERC20__factory,
+} from '../../contracts/types';
 import { providerSelector } from '../app/app.selectors';
 
 const aggregatorState = (state: RootState) => state[Reducers.Aggregator];
@@ -73,5 +78,36 @@ export const allowTokensContractSelector = createSelector(
     );
 
     return contract as ReturnType<typeof AllowTokens__factory['connect']>;
+  }
+);
+
+// const createERC20ContractSelector = <Factory extends BaseContractFactory>(
+//   factory: Factory,
+//   address: string
+// ) => {
+//   createSelector([providerSelector], (provider) => {
+//     if (!provider) {
+//       return undefined;
+//     }
+//     const contract = factory.connect(address, provider.getSigner());
+//     return contract as ReturnType<Factory['connect']>;
+//   });
+// };
+
+export const erc20TokenContractSelector = createSelector(
+  [providerSelector, startingChainSelector, startingTokenSelector],
+  (provider, startingChain, startingToken) => {
+    if (!provider || !startingChain || !startingToken) {
+      return undefined;
+    }
+
+    const address = tokens[startingToken].addresses[startingChain];
+
+    if (!address) {
+      return undefined;
+    }
+
+    const contract = ERC20__factory.connect(address, provider.getSigner());
+    return contract as ReturnType<typeof ERC20__factory['connect']>;
   }
 );

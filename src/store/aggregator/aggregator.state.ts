@@ -1,13 +1,12 @@
-import { BigNumber } from 'ethers';
 import { ChainEnum } from '../../config/chains';
 import { TokenEnum } from '../../config/tokens';
 import { LoadableAmount, LoadableValue } from '../types';
 
 export type FeesAndLimitsType = {
-  bridgeFee?: BigNumber;
-  minTransfer?: BigNumber;
-  maxTransfer?: BigNumber;
-  dailyLimit?: BigNumber;
+  bridgeFee?: string;
+  minTransfer?: string;
+  maxTransfer?: string;
+  dailyLimit?: string;
 };
 export class AggregatorState {
   flowState: 'deposit' | 'withdraw' = 'deposit';
@@ -24,6 +23,10 @@ export class AggregatorState {
   startingChain?: ChainEnum;
   destinationChain?: ChainEnum;
   wrongChainConnectedError?: boolean;
+  startingTokenBalance: LoadableAmount = {
+    state: 'idle',
+    data: undefined,
+  };
   allowTokensAddress: LoadableAmount = {
     state: 'idle',
     data: undefined,

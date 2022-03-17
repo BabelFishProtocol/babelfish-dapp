@@ -1,12 +1,13 @@
 import { select, call, put, all, takeLatest } from 'typed-redux-saga';
 import { BridgeDictionary } from '../../config/bridges';
 import { mainnetPool, testnetPool } from '../../config/pools';
-import { currentChainSelector } from '../app/app.selectors';
+import { accountSelector, currentChainSelector } from '../app/app.selectors';
 import { appActions } from '../app/app.slice';
 import {
   allowTokensContractSelector,
   bridgeContractSelector,
   destinationChainSelector,
+  erc20TokenContractSelector,
   startingChainSelector,
   startingTokenSelector,
 } from './aggregator.selectors';
@@ -32,14 +33,14 @@ export function* fetchBridgeFeesAndLimits() {
   try {
     const allowTokens = yield* select(allowTokensContractSelector);
     const startingChain = yield* select(startingChainSelector);
-    const destinationChainId = yield* select(destinationChainSelector);
+    const destinationChain = yield* select(destinationChainSelector);
     const startingToken = yield* select(startingTokenSelector);
 
-    if (!allowTokens || !startingChain || !destinationChainId) {
+    if (!allowTokens || !startingChain || !destinationChain) {
       throw new Error('Not enough data to fetch bridge fees');
     }
 
-    const bridge = BridgeDictionary.get(startingChain, destinationChainId);
+    const bridge = BridgeDictionary.get(startingChain, destinationChain);
     const tokenAddress = bridge?.tokensAllowed?.find(
       (item) => item.id === startingToken
     )?.originalAddress;
@@ -55,10 +56,10 @@ export function* fetchBridgeFeesAndLimits() {
 
     yield* put(
       aggregatorActions.setFeesAndLimits({
-        bridgeFee,
-        minTransfer,
-        maxTransfer,
-        dailyLimit,
+        bridgeFee: bridgeFee.toString(),
+        minTransfer: minTransfer.toString(),
+        maxTransfer: maxTransfer.toString(),
+        dailyLimit: dailyLimit.toString(),
       })
     );
   } catch (e) {
@@ -91,6 +92,27 @@ export function* setCurrentChain() {
   }
 }
 
+export function* fetchStartingTokenBalance() {
+  try {
+    const account = yield* select(accountSelector);
+    const tokenContract = yield* select(erc20TokenContractSelector);
+
+    if (!tokenContract) {
+      throw new Error('Could not find token contract');
+    }
+    if (!account) {
+      throw new Error('Please connect wallet first');
+    }
+
+    const startingTokenBalance = yield* call(tokenContract.balanceOf, account);
+    yield* put(
+      aggregatorActions.setStartingTokenBalance(startingTokenBalance.toString())
+    );
+  } catch (e) {
+    yield* put(aggregatorActions.fetchStartingTokenBalanceFailure());
+  }
+}
+
 export function* aggregatorSaga() {
   yield* all([
     takeLatest(aggregatorActions.setStartingChain, setFlowState),
@@ -103,6 +125,7 @@ export function* aggregatorSaga() {
       fetchBridgeFeesAndLimits
     ),
     takeLatest(aggregatorActions.setDestinationChain, fetchAllowTokenAddress),
+    takeLatest(aggregatorActions.setStartingChain, fetchAllowTokenAddress),
     takeLatest(appActions.walletConnected, fetchAllowTokenAddress),
   ]);
 }

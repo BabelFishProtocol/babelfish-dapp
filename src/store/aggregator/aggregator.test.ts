@@ -1,4 +1,4 @@
-import { BigNumber, constants } from 'ethers';
+import { constants } from 'ethers';
 import { expectSaga } from 'redux-saga-test-plan';
 import { throwError } from 'redux-saga-test-plan/providers';
 import * as matchers from 'redux-saga-test-plan/matchers';
@@ -6,7 +6,11 @@ import { combineReducers, DeepPartial } from '@reduxjs/toolkit';
 
 import { pick } from '../../utils/helpers';
 import { Reducers } from '../../constants';
-import { AllowTokens__factory, Bridge__factory } from '../../contracts/types';
+import {
+  AllowTokens__factory,
+  Bridge__factory,
+  ERC20__factory,
+} from '../../contracts/types';
 import { rootReducer, RootState } from '..';
 
 import { createMockedContract, mockSigner } from '../../testUtils';
@@ -14,6 +18,7 @@ import { createMockedContract, mockSigner } from '../../testUtils';
 import {
   fetchAllowTokenAddress,
   fetchBridgeFeesAndLimits,
+  fetchStartingTokenBalance,
   setFlowState,
 } from './aggregator.sagas';
 import { aggregatorActions } from './aggregator.slice';
@@ -22,10 +27,12 @@ import {
   allowTokensContractSelector,
   bridgeContractSelector,
   destinationChainSelector,
+  erc20TokenContractSelector,
   startingChainSelector,
   startingTokenSelector,
 } from './aggregator.selectors';
 import { ChainEnum } from '../../config/chains';
+import { accountSelector } from '../app/app.selectors';
 
 const mockBridge = createMockedContract(
   Bridge__factory.connect(constants.AddressZero, mockSigner),
@@ -37,13 +44,16 @@ const mockAllowTokens = createMockedContract(
   true
 );
 
+const mockToken = createMockedContract(
+  ERC20__factory.connect(constants.AddressZero, mockSigner),
+  true
+);
+
 afterEach(() => {
   jest.clearAllMocks();
 });
 
 describe('aggregator store', () => {
-  const allowTokensAddress = '0x10892374akb23xz0q9w8q6123dcasedq21345as0';
-
   const reducer = combineReducers(pick(rootReducer, [Reducers.Aggregator]));
 
   const initialState: DeepPartial<RootState> = {
@@ -51,6 +61,8 @@ describe('aggregator store', () => {
   };
 
   describe('fetchBridgeData', () => {
+    const allowTokensAddress = '0x10892374akb23xz0q9w8q6123dcasedq21345as0';
+
     const successState: DeepPartial<RootState> = {
       ...initialState,
       [Reducers.Aggregator]: {
@@ -125,10 +137,10 @@ describe('aggregator store', () => {
     const testStartingTokenAddress =
       '0xdAC17F958D2ee523a2206206994597C13D831ec7';
 
-    const bridgeFee = BigNumber.from('0x29a2241af62c0000');
-    const minTransfer = BigNumber.from('0x1a055690d9db80000');
-    const maxTransfer = BigNumber.from('0xd3c21bcecceda1000000');
-    const dailyLimit = BigNumber.from('0x84595161401484a000000');
+    const bridgeFee = '0x29a2241af62c0000';
+    const minTransfer = '0x1a055690d9db80000';
+    const maxTransfer = '0xd3c21bcecceda1000000';
+    const dailyLimit = '0x84595161401484a000000';
 
     const successState: DeepPartial<RootState> = {
       ...initialState,
@@ -273,5 +285,81 @@ describe('aggregator store', () => {
       expect(runResult.effects).toEqual({});
     });
   });
-  describe('set');
+  describe('fetchStartingTokenBalance', () => {
+    const testAccount = '0x0123';
+    const testStartingTokenBalance = '0x232347482374623';
+
+    const successState: DeepPartial<RootState> = {
+      ...initialState,
+      [Reducers.Aggregator]: {
+        ...initialState[Reducers.Aggregator],
+        startingTokenBalance: {
+          state: 'success',
+          data: testStartingTokenBalance,
+        },
+      },
+    };
+
+    const failureState: DeepPartial<RootState> = {
+      ...initialState,
+      [Reducers.Aggregator]: {
+        ...initialState[Reducers.Aggregator],
+        startingTokenBalance: {
+          state: 'failure',
+          data: undefined,
+        },
+      },
+    };
+
+    const getBasePath = () =>
+      expectSaga(fetchStartingTokenBalance)
+        .withReducer(reducer)
+        .withState(initialState)
+        .select(accountSelector)
+        .select(erc20TokenContractSelector);
+
+    it('happy path', async () => {
+      const runResult = await getBasePath()
+        .provide([
+          [matchers.select(accountSelector), testAccount],
+          [matchers.select(erc20TokenContractSelector), mockToken],
+          [matchers.call.fn(mockToken.balanceOf), testStartingTokenBalance],
+        ])
+        .call(mockToken.balanceOf, testAccount)
+        .put(
+          aggregatorActions.setStartingTokenBalance(testStartingTokenBalance)
+        )
+        .hasFinalState(successState)
+        .run();
+
+      expect(runResult.effects).toEqual({});
+    });
+    it('when wallet not connected', async () => {
+      const runResult = await getBasePath()
+        .provide([
+          [matchers.select(accountSelector), undefined],
+          [matchers.select(erc20TokenContractSelector), mockToken],
+          [matchers.call.fn(mockToken.balanceOf), testStartingTokenBalance],
+        ])
+        .put(aggregatorActions.fetchStartingTokenBalanceFailure())
+        .hasFinalState(failureState)
+        .run();
+
+      expect(runResult.effects).toEqual({});
+    });
+    it('when call throws an error', async () => {
+      const runResult = await getBasePath()
+        .provide([
+          [matchers.select(accountSelector), testAccount],
+          [matchers.select(erc20TokenContractSelector), mockToken],
+          [matchers.call.fn(mockToken.balanceOf), throwError()],
+        ])
+        .call(mockToken.balanceOf, testAccount)
+        .put(aggregatorActions.fetchStartingTokenBalanceFailure())
+        .hasFinalState(failureState)
+        .run();
+
+      expect(runResult.effects).toEqual({});
+    });
+  });
 });
