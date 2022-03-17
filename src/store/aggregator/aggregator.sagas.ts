@@ -6,7 +6,8 @@ import { appActions } from '../app/app.slice';
 import {
   allowTokensContractSelector,
   bridgeContractSelector,
-  destinationChainIdSelector,
+  destinationChainSelector,
+  startingChainSelector,
   startingTokenSelector,
 } from './aggregator.selectors';
 import { aggregatorActions } from './aggregator.slice';
@@ -30,15 +31,15 @@ export function* fetchAllowTokenAddress() {
 export function* fetchBridgeFeesAndLimits() {
   try {
     const allowTokens = yield* select(allowTokensContractSelector);
-    const currentChain = yield* select(currentChainSelector);
-    const destinationChainId = yield* select(destinationChainIdSelector);
+    const startingChain = yield* select(startingChainSelector);
+    const destinationChainId = yield* select(destinationChainSelector);
     const startingToken = yield* select(startingTokenSelector);
 
-    if (!allowTokens || !currentChain || !destinationChainId) {
+    if (!allowTokens || !startingChain || !destinationChainId) {
       throw new Error('Not enough data to fetch bridge fees');
     }
 
-    const bridge = BridgeDictionary.get(currentChain.id, destinationChainId);
+    const bridge = BridgeDictionary.get(startingChain, destinationChainId);
     const tokenAddress = bridge?.tokensAllowed?.find(
       (item) => item.id === startingToken
     )?.originalAddress;
@@ -66,12 +67,12 @@ export function* fetchBridgeFeesAndLimits() {
 }
 
 export function* setFlowState() {
-  const currentChain = yield* select(currentChainSelector);
+  const startingChain = yield* select(startingChainSelector);
 
-  // TODO enable mainnet
+  // TODO add current pool to the store
   if (
-    currentChain?.id === testnetPool.masterChain.id ||
-    currentChain?.id === mainnetPool.masterChain.id
+    startingChain === testnetPool.masterChain.id ||
+    startingChain === mainnetPool.masterChain.id
   ) {
     yield* put(aggregatorActions.setFlowStateWithdraw());
   } else {
@@ -79,10 +80,20 @@ export function* setFlowState() {
   }
 }
 
+export function* setCurrentChain() {
+  const startingChain = yield* select(startingChainSelector);
+  const currentChain = yield* select(currentChainSelector);
+
+  if (startingChain !== currentChain?.chainId) {
+    yield* put(aggregatorActions.setWrongChainConnectedError(true));
+  } else {
+    yield* put(aggregatorActions.setWrongChainConnectedError(false));
+  }
+}
+
 export function* aggregatorSaga() {
   yield* all([
-    takeLatest(appActions.setChainId, setFlowState),
-    takeLatest(appActions.walletConnected, fetchAllowTokenAddress),
+    takeLatest(aggregatorActions.setStartingChain, setFlowState),
     takeLatest(
       aggregatorActions.setStartingToken.type,
       fetchBridgeFeesAndLimits
@@ -92,5 +103,6 @@ export function* aggregatorSaga() {
       fetchBridgeFeesAndLimits
     ),
     takeLatest(aggregatorActions.setDestinationChain, fetchAllowTokenAddress),
+    takeLatest(appActions.walletConnected, fetchAllowTokenAddress),
   ]);
 }

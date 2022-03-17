@@ -32,11 +32,23 @@ const aggregatorSlice = createSlice({
     ) => {
       state.startingToken = payload;
     },
+    setStartingChain: (
+      state,
+      { payload }: PayloadAction<AggregatorState['startingChain']>
+    ) => {
+      state.startingChain = payload;
+    },
     setDestinationChain: (
       state,
-      { payload }: PayloadAction<AggregatorState['destinationChainId']>
+      { payload }: PayloadAction<AggregatorState['destinationChain']>
     ) => {
-      state.destinationChainId = payload;
+      state.destinationChain = payload;
+    },
+    setWrongChainConnectedError: (
+      state,
+      { payload }: PayloadAction<AggregatorState['wrongChainConnectedError']>
+    ) => {
+      state.wrongChainConnectedError = payload;
     },
     fetchFeesAndLimitsFailure: (state) => {
       state.feesAndLimits.state = 'failure';

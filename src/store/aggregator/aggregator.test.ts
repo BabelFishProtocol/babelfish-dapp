@@ -11,7 +11,6 @@ import { rootReducer, RootState } from '..';
 
 import { createMockedContract, mockSigner } from '../../testUtils';
 
-import { currentChainSelector } from '../app/app.selectors';
 import {
   fetchAllowTokenAddress,
   fetchBridgeFeesAndLimits,
@@ -22,9 +21,11 @@ import { AggregatorState } from './aggregator.state';
 import {
   allowTokensContractSelector,
   bridgeContractSelector,
-  destinationChainIdSelector,
+  destinationChainSelector,
+  startingChainSelector,
   startingTokenSelector,
 } from './aggregator.selectors';
+import { ChainEnum } from '../../config/chains';
 
 const mockBridge = createMockedContract(
   Bridge__factory.connect(constants.AddressZero, mockSigner),
@@ -41,8 +42,7 @@ afterEach(() => {
 });
 
 describe('aggregator store', () => {
-  // const testAccount = '0x0123';
-  const allowTokensAddress = '0x01212411234';
+  const allowTokensAddress = '0x10892374akb23xz0q9w8q6123dcasedq21345as0';
 
   const reducer = combineReducers(pick(rootReducer, [Reducers.Aggregator]));
 
@@ -119,8 +119,8 @@ describe('aggregator store', () => {
   });
 
   describe('fetchBridgeFeesAndLimits', () => {
-    const testStartingChain = { id: 1 };
-    const testDestinationChainId = 30;
+    const testStartingChain = ChainEnum.ETH;
+    const testDestinationChain = ChainEnum.RSK;
     const testStartingToken = 'USDT';
     const testStartingTokenAddress =
       '0xdAC17F958D2ee523a2206206994597C13D831ec7';
@@ -162,16 +162,16 @@ describe('aggregator store', () => {
         .withReducer(reducer)
         .withState(initialState)
         .select(allowTokensContractSelector)
-        .select(currentChainSelector)
-        .select(destinationChainIdSelector)
+        .select(startingChainSelector)
+        .select(destinationChainSelector)
         .select(startingTokenSelector);
 
     it('happy path', async () => {
       const runResult = await getBasePath()
         .provide([
           [matchers.select(allowTokensContractSelector), mockAllowTokens],
-          [matchers.select(currentChainSelector), testStartingChain],
-          [matchers.select(destinationChainIdSelector), testDestinationChainId],
+          [matchers.select(startingChainSelector), testStartingChain],
+          [matchers.select(destinationChainSelector), testDestinationChain],
           [matchers.select(startingTokenSelector), testStartingToken],
           [matchers.call.fn(mockAllowTokens.getFeePerToken), bridgeFee],
           [matchers.call.fn(mockAllowTokens.getMinPerToken), minTransfer],
@@ -200,8 +200,8 @@ describe('aggregator store', () => {
       await getBasePath()
         .provide([
           [matchers.select(allowTokensContractSelector), undefined],
-          [matchers.select(currentChainSelector), testStartingChain],
-          [matchers.select(destinationChainIdSelector), testDestinationChainId],
+          [matchers.select(startingChainSelector), testStartingChain],
+          [matchers.select(destinationChainSelector), testDestinationChain],
           [matchers.select(startingTokenSelector), testStartingToken],
         ])
         .put(aggregatorActions.fetchFeesAndLimitsFailure())
@@ -215,8 +215,8 @@ describe('aggregator store', () => {
       const runResult = await getBasePath()
         .provide([
           [matchers.select(allowTokensContractSelector), mockAllowTokens],
-          [matchers.select(currentChainSelector), testStartingChain],
-          [matchers.select(destinationChainIdSelector), testDestinationChainId],
+          [matchers.select(startingChainSelector), testStartingChain],
+          [matchers.select(destinationChainSelector), testDestinationChain],
           [matchers.select(startingTokenSelector), testStartingToken],
           [matchers.call.fn(mockAllowTokens.getFeePerToken), throwError()],
         ])
@@ -234,7 +234,7 @@ describe('aggregator store', () => {
       expectSaga(setFlowState)
         .withReducer(reducer)
         .withState(initialState)
-        .select(currentChainSelector);
+        .select(startingChainSelector);
 
     const withdrawState: DeepPartial<RootState> = {
       ...initialState,
@@ -253,9 +253,9 @@ describe('aggregator store', () => {
     };
 
     it('deposit path', async () => {
-      const testCurrentChain = { id: 1 };
+      const testStartingChain = ChainEnum.ETH;
       const runResult = await getBasePath()
-        .provide([[matchers.select(currentChainSelector), testCurrentChain]])
+        .provide([[matchers.select(startingChainSelector), testStartingChain]])
         .put(aggregatorActions.setFlowStateDeposit())
         .hasFinalState(depositState)
         .run();
@@ -263,9 +263,9 @@ describe('aggregator store', () => {
       expect(runResult.effects).toEqual({});
     });
     it('withdraw path', async () => {
-      const testCurrentChain = { id: 30 };
+      const testStartingChain = ChainEnum.RSK;
       const runResult = await getBasePath()
-        .provide([[matchers.select(currentChainSelector), testCurrentChain]])
+        .provide([[matchers.select(startingChainSelector), testStartingChain]])
         .put(aggregatorActions.setFlowStateWithdraw())
         .hasFinalState(withdrawState)
         .run();
@@ -273,4 +273,5 @@ describe('aggregator store', () => {
       expect(runResult.effects).toEqual({});
     });
   });
+  describe('set');
 });

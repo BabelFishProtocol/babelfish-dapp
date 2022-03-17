@@ -3,7 +3,7 @@ import { RootState } from '..';
 import { BridgeDictionary } from '../../config/bridges';
 import { Reducers } from '../../constants';
 import { AllowTokens__factory, Bridge__factory } from '../../contracts/types';
-import { currentChainSelector, providerSelector } from '../app/app.selectors';
+import { providerSelector } from '../app/app.selectors';
 
 const aggregatorState = (state: RootState) => state[Reducers.Aggregator];
 
@@ -17,14 +17,24 @@ export const feesInfoSelector = createSelector(
   (state) => state.feesAndLimits.data
 );
 
-export const destinationChainIdSelector = createSelector(
-  aggregatorState,
-  (state) => state.destinationChainId
-);
-
 export const startingTokenSelector = createSelector(
   aggregatorState,
   (state) => state.startingToken
+);
+
+export const startingChainSelector = createSelector(
+  aggregatorState,
+  (state) => state.startingChain
+);
+
+export const destinationChainSelector = createSelector(
+  aggregatorState,
+  (state) => state.destinationChain
+);
+
+export const wrongChainConnectedErrorSelector = createSelector(
+  aggregatorState,
+  (state) => state.wrongChainConnectedError
 );
 
 export const allowTokensAddressSelector = createSelector(
@@ -33,12 +43,12 @@ export const allowTokensAddressSelector = createSelector(
 );
 
 export const bridgeContractSelector = createSelector(
-  [providerSelector, currentChainSelector, destinationChainIdSelector],
-  (provider, chainFrom, destinationChain) => {
-    if (!provider || !chainFrom || !destinationChain) {
+  [providerSelector, startingChainSelector, destinationChainSelector],
+  (provider, startingChain, destinationChain) => {
+    if (!provider || !startingChain || !destinationChain) {
       return undefined;
     }
-    const bridgeAddress = BridgeDictionary.get(chainFrom.id, destinationChain);
+    const bridgeAddress = BridgeDictionary.get(startingChain, destinationChain);
 
     if (!bridgeAddress) {
       return undefined;
@@ -65,13 +75,3 @@ export const allowTokensContractSelector = createSelector(
     return contract as ReturnType<typeof AllowTokens__factory['connect']>;
   }
 );
-
-// export const allowTokensContractSelector = createSelector(
-//   [providerSelector, ], (provider, bridge) => {
-//     if(!provider || !bridge) {
-//       return undefined
-//     }
-
-//     const
-//   }
-// )

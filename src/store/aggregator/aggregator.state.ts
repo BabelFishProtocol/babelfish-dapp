@@ -21,7 +21,9 @@ export class AggregatorState {
     },
   };
   startingToken?: TokenEnum;
-  destinationChainId?: ChainEnum;
+  startingChain?: ChainEnum;
+  destinationChain?: ChainEnum;
+  wrongChainConnectedError?: boolean;
   allowTokensAddress: LoadableAmount = {
     state: 'idle',
     data: undefined,
