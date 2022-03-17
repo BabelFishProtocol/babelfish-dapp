@@ -15,6 +15,7 @@ import {
 } from '../../utils/helpers';
 
 import {
+  CellParser,
   CustomColumn,
   DataTableColumn,
 } from '../../components/DataTable/DataTable.types';
@@ -24,7 +25,7 @@ import { PageView } from '../../components/PageView/PageView.component';
 import { AddProposalContainer } from '../AddProposal/AddProposal.container';
 import { ProposalsListComponentProps } from './ProposalsList.types';
 
-// /** Needed because DataTable is not accepting booleans */
+/** Needed because DataTable is not accepting booleans */
 type RowData = Omit<Proposal, 'canceled' | 'executed'>;
 
 const ViewProposalComponent: CustomColumn<RowData> = ({ value }) => (
@@ -34,7 +35,7 @@ const ViewProposalComponent: CustomColumn<RowData> = ({ value }) => (
 );
 
 const proposalsListColumns: DataTableColumn<RowData>[] = [
-  { label: 'title', name: 'title', format: truncateString },
+  { label: 'title', name: 'title', format: truncateString as CellParser },
   { label: 'start block', name: 'startBlock', format: formatBlockNumber },
   {
     label: 'vote weight',
