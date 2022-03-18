@@ -81,19 +81,6 @@ export const allowTokensContractSelector = createSelector(
   }
 );
 
-// const createERC20ContractSelector = <Factory extends BaseContractFactory>(
-//   factory: Factory,
-//   address: string
-// ) => {
-//   createSelector([providerSelector], (provider) => {
-//     if (!provider) {
-//       return undefined;
-//     }
-//     const contract = factory.connect(address, provider.getSigner());
-//     return contract as ReturnType<Factory['connect']>;
-//   });
-// };
-
 export const erc20TokenContractSelector = createSelector(
   [providerSelector, startingChainSelector, startingTokenSelector],
   (provider, startingChain, startingToken) => {
@@ -111,27 +98,3 @@ export const erc20TokenContractSelector = createSelector(
     return contract as ReturnType<typeof ERC20__factory['connect']>;
   }
 );
-
-export const allowTokensContractSelector = createSelector(
-  [providerSelector, allowTokensAddressSelector],
-  (provider, allowTokensAddress) => {
-    if (!provider || !allowTokensAddress) {
-      return undefined;
-    }
-    const contract = AllowTokens__factory.connect(
-      allowTokensAddress,
-      provider.getSigner()
-    );
-    return contract;
-  }
-);
-
-// export const allowTokensContractSelector = createSelector(
-//   [providerSelector, ], (provider, bridge) => {
-//     if(!provider || !bridge) {
-//       return undefined
-//     }
-
-//     const
-//   }
-// )

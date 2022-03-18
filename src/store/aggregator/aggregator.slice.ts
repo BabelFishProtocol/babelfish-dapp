@@ -69,30 +69,6 @@ const aggregatorSlice = createSlice({
       state.startingTokenBalance.state = 'success';
       state.startingTokenBalance.data = payload;
     },
-    // setBridgeFee: (
-    //   state,
-    //   { payload }: PayloadAction<AggregatorState['bridgeFee']>
-    // ) => {
-    //   state.bridgeFee = payload;
-    // },
-    // setMinTransfer: (
-    //   state,
-    //   { payload }: PayloadAction<AggregatorState['minTransfer']>
-    // ) => {
-    //   state.minTransfer = payload;
-    // },
-    // setMaxTransfer: (
-    //   state,
-    //   { payload }: PayloadAction<AggregatorState['maxTransfer']>
-    // ) => {
-    //   state.maxTransfer = payload;
-    // },
-    // setDailyLimit: (
-    //   state,
-    //   { payload }: PayloadAction<AggregatorState['dailyLimit']>
-    // ) => {
-    //   state.dailyLimit = payload;
-    // },
   },
 });
 

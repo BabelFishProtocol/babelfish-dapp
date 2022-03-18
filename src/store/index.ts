@@ -7,7 +7,7 @@ import { indexSaga } from './saga';
 import { stakingReducer } from './staking/staking.slice';
 
 export const rootReducer = {
-  // [Reducers.Aggregator]: aggregatorReducer,
+  [Reducers.Aggregator]: aggregatorReducer,
   [Reducers.App]: appReducer,
   [Reducers.Staking]: stakingReducer,
 };

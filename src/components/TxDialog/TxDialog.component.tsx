@@ -55,7 +55,7 @@ export const TxSuccessDialog = ({
     ? [
         {
           label: 'Gas used',
-          value: txReceipt.cumulativeGasUsed,
+          value: txReceipt.cumulativeGasUsed.toString(),
         },
         {
           label: 'Transaction Hash',
