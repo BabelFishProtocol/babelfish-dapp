@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
@@ -20,44 +20,50 @@ export const DropdownOptions = <
   error,
   autoFocus,
   onChange,
-}: DropdownProps<ItemSelected, ValueType>) => (
-  <FormControl fullWidth disabled={disabled} sx={sx}>
-    <Typography variant="h3" sx={{ mb: 1.5 }}>
-      {title}
-    </Typography>
-    <Select
-      value={value}
-      error={!!error}
-      onChange={onChange}
-      displayEmpty
-      SelectDisplayProps={{
-        style: {
-          display: 'flex',
-          alignItems: 'center',
-          height: 32,
-          paddingTop: '12px',
-          paddingBottom: '12px',
-          paddingLeft: '16px',
-        },
-      }}
-      inputProps={{
-        autoFocus,
-      }}
-    >
-      {placeholder && (
-        <MenuItem disabled value="" style={{ display: 'none' }}>
-          {placeholder}
-        </MenuItem>
-      )}
-      {options.map(({ id, name, icon }) => (
-        <MenuItem key={id} value={id}>
-          <>
-            {icon && <NameWithIcon name={name} icon={icon} />}
-            {!icon && name}
-          </>
-        </MenuItem>
-      ))}
-      <FieldErrorMessage error={error} />
-    </Select>
-  </FormControl>
-);
+  setValueWhenOneOption,
+}: DropdownProps<ItemSelected, ValueType>) => {
+  useEffect(() => {
+    setValueWhenOneOption?.();
+  }, [options]);
+  return (
+    <FormControl fullWidth disabled={disabled || options.length === 1} sx={sx}>
+      <Typography variant="h3" sx={{ mb: 1.5 }}>
+        {title}
+      </Typography>
+      <Select
+        value={value}
+        error={!!error}
+        onChange={onChange}
+        displayEmpty
+        SelectDisplayProps={{
+          style: {
+            display: 'flex',
+            alignItems: 'center',
+            height: 32,
+            paddingTop: '12px',
+            paddingBottom: '12px',
+            paddingLeft: '16px',
+          },
+        }}
+        inputProps={{
+          autoFocus,
+        }}
+      >
+        {placeholder && (
+          <MenuItem disabled value="" style={{ display: 'none' }}>
+            {placeholder}
+          </MenuItem>
+        )}
+        {options.map(({ id, name, icon }) => (
+          <MenuItem key={id} value={id}>
+            <>
+              {icon && <NameWithIcon name={name} icon={icon} />}
+              {!icon && name}
+            </>
+          </MenuItem>
+        ))}
+        <FieldErrorMessage error={error} />
+      </Select>
+    </FormControl>
+  );
+};

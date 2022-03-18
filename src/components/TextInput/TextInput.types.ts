@@ -18,6 +18,7 @@ export type ControlledInputType<FormValues> = {
   name: FieldPath<FormValues>;
   control: Control<FormValues>;
   rules?: ControllerProps['rules'];
+  showField?: boolean;
 };
 
 export type ControlledInputProps<FormValues> = ControlledInputType<FormValues> &

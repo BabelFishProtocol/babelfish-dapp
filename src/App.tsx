@@ -148,7 +148,7 @@ function App() {
           element={<ProposalDetailsContainer />}
         />
         <Route path={Urls.Aggregator} element={<AggregatorContainer />} />
-        {/* <Route path="*" element={<Navigate to={Urls.Dashboard} />} /> */}
+        <Route path="*" element={<Navigate to={Urls.Dashboard} />} />
       </Routes>
 
       <BottomBanner />
