@@ -108,17 +108,19 @@ function* triggerFetch() {
   yield* put(proposalsActions.fetchProposalsList());
 }
 
+function* triggerUpdate() {
+  yield* put(proposalsActions.updateProposalsList());
+}
+
 function* runUpdater() {
   yield* triggerFetch();
 
   yield* takeLatest(
-    [
-      appActions.setChainId.type,
-      appActions.setAccount.type,
-      appActions.setBlockNumber.type,
-    ],
-    triggerFetch
+    [appActions.setAccount.type, appActions.setBlockNumber.type],
+    triggerUpdate
   );
+
+  yield* takeLatest([appActions.walletConnected.type], triggerFetch);
 }
 
 function* watchProposalsData() {
@@ -132,6 +134,7 @@ function* watchProposalsData() {
 export function* proposalsSaga() {
   yield* all([
     takeLatest(proposalsActions.fetchProposalsList.type, fetchProposalsList),
+    takeLatest(proposalsActions.updateProposalsList.type, fetchProposalsList),
     takeLatest(proposalsActions.watchProposalsList.type, watchProposalsData),
   ]);
 }

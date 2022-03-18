@@ -9,13 +9,15 @@ export const appSlice = createSlice({
   name: Reducers.Proposals,
   initialState,
   reducers: {
-    watchProposalsList: (state) => {
-      state.proposalsList.data = [];
-    },
+    watchProposalsList: () => {},
     stopWatchingProposalsList: (state) => {
       state.proposalsList.state = 'idle';
     },
     fetchProposalsList: (state) => {
+      state.proposalsList.data = [];
+      state.proposalsList.state = 'loading';
+    },
+    updateProposalsList: (state) => {
       state.proposalsList.state = 'loading';
     },
     fetchProposalsListFailure: (state) => {
