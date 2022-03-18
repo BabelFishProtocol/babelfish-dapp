@@ -17,8 +17,8 @@ import {
   ERC20__factory,
   Staking__factory,
   Multicall__factory,
-  GovernorAdmin__factory,
   VestingRegistry__factory,
+  GovernorAlpha__factory,
 } from '../../contracts/types';
 import { BaseContractFactory } from '../types';
 
@@ -95,11 +95,11 @@ export const fishTokenSelector = createContractSelector(
   'fishToken'
 );
 export const governorAdminSelector = createContractSelector(
-  GovernorAdmin__factory,
+  GovernorAlpha__factory,
   'governorAdmin'
 );
 export const governorOwnerSelector = createContractSelector(
-  GovernorAdmin__factory,
+  GovernorAlpha__factory,
   'governorOwner'
 );
 export const multicallContractSelector = createContractSelector(

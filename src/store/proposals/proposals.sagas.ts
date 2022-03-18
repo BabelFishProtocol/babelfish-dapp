@@ -10,8 +10,13 @@ import {
   takeLatest,
 } from 'typed-redux-saga';
 
-import { GovernorAdmin } from '../../contracts/types';
+import { GovernorAlpha } from '../../contracts/types';
 import { convertForMulticall } from '../utils';
+
+import {
+  ProposalListQueryItem,
+  proposalsListQuery,
+} from '../../queries/proposalListQuery';
 
 import {
   providerSelector,
@@ -25,16 +30,12 @@ import { appActions } from '../app/app.slice';
 import { Proposal } from './proposals.state';
 import { parseProposals } from './proposals.utils';
 import { proposalsActions } from './proposals.slice';
-import {
-  ProposalListQueryItem,
-  proposalsListQuery,
-} from '../../queries/proposalListQuery';
 
-type ProposalStateResult = Awaited<ReturnType<GovernorAdmin['state']>>;
+type ProposalStateResult = Awaited<ReturnType<GovernorAlpha['state']>>;
 
 function* fetchProposalStates(
   proposals: ProposalListQueryItem[],
-  governor: GovernorAdmin,
+  governor: GovernorAlpha,
   multicallProvider: MulticallProvider
 ) {
   const proposalStateCalls = proposals.map(({ proposalId }) =>
@@ -49,7 +50,7 @@ function* fetchProposalStates(
   return proposalsStates;
 }
 
-export function* fetchProposalsForContract(governor: GovernorAdmin) {
+export function* fetchProposalsForContract(governor: GovernorAlpha) {
   const provider = yield* select(providerSelector);
   const multicallProvider = yield* select(multicallProviderSelector);
   const subgraphClient = yield* select(subgraphClientSelector);
@@ -85,12 +86,12 @@ export function* fetchProposalsList() {
       throw new Error('Wallet not connected');
     }
 
-    const adminItems = yield* fetchProposalsForContract(governorAdmin);
+    const adminItems = yield* call(fetchProposalsForContract, governorAdmin);
 
     let ownerItems: Proposal[] = [];
 
     if (governorOwner && governorOwner.address !== governorAdmin.address) {
-      ownerItems = yield* fetchProposalsForContract(governorOwner);
+      ownerItems = yield* call(fetchProposalsForContract, governorOwner);
     }
 
     const mergedProposals = [...adminItems, ...ownerItems].sort(
