@@ -1,11 +1,16 @@
 import { BigNumber } from 'ethers';
 import { useEffect, useState } from 'react';
 import { UseFormResetField, UseFormSetValue } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
 import { ChainEnum, ChainType } from '../../config/chains';
-import { mainnetPool } from '../../config/pools';
+import { /* mainnetPool, */ testnetPool } from '../../config/pools';
 import { TokenEnum, TokenTypeBase } from '../../config/tokens';
+import { flowStateSelector } from '../../store/aggregator/aggregator.selectors';
+import { aggregatorActions } from '../../store/aggregator/aggregator.slice';
 import { AggregatorInputs, AggregatorFormValues } from './Aggregator.fields';
 import { AggregatorComponentProps } from './Aggregator.types';
+
+const pool = testnetPool;
 
 export const useAggregatorDropdowns = (
   startingChain: ChainEnum | '',
@@ -13,6 +18,12 @@ export const useAggregatorDropdowns = (
   resetField: UseFormResetField<AggregatorFormValues>,
   setValue: UseFormSetValue<AggregatorFormValues>
 ) => {
+  const flowState = useSelector(flowStateSelector);
+
+  const [startingChainOptions, setStartingChainOptions] = useState<ChainType[]>(
+    []
+  );
+
   const [startingTokenOptions, setStartingTokenOptions] = useState<
     TokenTypeBase[]
   >([]);
@@ -23,51 +34,56 @@ export const useAggregatorDropdowns = (
     TokenTypeBase[]
   >([]);
 
-  const startingChainOptions = [
-    ...mainnetPool.baseChains,
-    mainnetPool.masterChain,
-  ];
-
   useEffect(() => {
-    resetField(AggregatorInputs.StartingToken);
-    if (!startingChain) {
+    if (flowState === 'deposit') {
+      setValue(AggregatorInputs.StartingChain, destinationChain);
+      setStartingChainOptions(pool.baseChains);
+
+      resetField(AggregatorInputs.StartingToken);
       setStartingTokenOptions([]);
-      setDestinationChainOptions([]);
-    } else if (startingChain === mainnetPool.masterChain.id) {
-      if (destinationChain === mainnetPool.masterChain.id) {
-        resetField(AggregatorInputs.DestinationChain);
-      }
-      setStartingTokenOptions([mainnetPool.masset]);
-      setValue(AggregatorInputs.StartingToken, mainnetPool.masset.id);
-      setDestinationChainOptions(mainnetPool.baseChains);
+
+      resetField(AggregatorInputs.DestinationChain);
+      resetField(AggregatorInputs.DestinationToken);
+
+      setDestinationChainOptions([pool.masterChain]);
+      setDestinationTokenOptions([pool.masset]);
     } else {
-      setStartingTokenOptions(
-        mainnetPool.baseChains.find((item) => item.id === startingChain)
-          ?.bassets ?? []
-      );
-      setDestinationChainOptions([mainnetPool.masterChain]);
-      setValue(AggregatorInputs.DestinationChain, mainnetPool.masterChain.id);
+      resetField(AggregatorInputs.DestinationChain);
+      setDestinationChainOptions(pool.baseChains);
+      setValue(AggregatorInputs.DestinationChain, startingChain);
+
+      resetField(AggregatorInputs.DestinationToken);
+      setDestinationTokenOptions([]);
+
+      resetField(AggregatorInputs.StartingChain);
+      resetField(AggregatorInputs.StartingToken);
+
+      setStartingChainOptions([pool.masterChain]);
+      setStartingTokenOptions([pool.masset]);
     }
-  }, [startingChain, destinationChain, resetField, setValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flowState, setValue, resetField]);
 
   useEffect(() => {
-    resetField(AggregatorInputs.DestinationToken);
-    if (!destinationChain) {
-      setDestinationTokenOptions([]);
-    } else if (destinationChain === mainnetPool.masterChain.id) {
-      setDestinationTokenOptions([mainnetPool.masset]);
-      setValue(AggregatorInputs.DestinationToken, mainnetPool.masset.id);
-    } else {
-      setDestinationTokenOptions(
-        mainnetPool.baseChains.find((item) => item.id === destinationChain)
-          ?.bassets ?? []
+    if (flowState === 'deposit' && startingChain) {
+      resetField(AggregatorInputs.StartingToken);
+      setStartingTokenOptions(
+        pool.baseChains.find((item) => item.id === startingChain)?.bassets ?? []
       );
     }
-  }, [destinationChain, resetField, setValue]);
+    if (flowState === 'withdraw' && destinationChain) {
+      resetField(AggregatorInputs.DestinationToken);
+      setDestinationTokenOptions(
+        pool.baseChains.find((item) => item.id === destinationChain)?.bassets ??
+          []
+      );
+    }
+  }, [flowState, startingChain, destinationChain, resetField]);
+
+  const dispatch = useDispatch();
 
   const changeDirection = () => {
-    setValue(AggregatorInputs.StartingChain, destinationChain);
-    setValue(AggregatorInputs.DestinationChain, startingChain);
+    dispatch(aggregatorActions.toggleFlowState());
   };
 
   return {

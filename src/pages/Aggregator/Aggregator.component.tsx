@@ -23,12 +23,17 @@ import {
   useAggregatorDropdowns,
   useAvailableBalance,
 } from './Aggregator.hooks';
-import { mainnetPool } from '../../config/pools';
+import { /* mainnetPool, */ testnetPool } from '../../config/pools';
+
+const pool = testnetPool;
 
 export const AggregatorComponent = ({
   getTokenAvailableBalance,
   getReceiveAmount,
   onSubmit,
+  onStartingChainChange,
+  onDestinationChainChange,
+  onStartingTokenChange,
 }: AggregatorComponentProps) => {
   const {
     handleSubmit,
@@ -41,6 +46,7 @@ export const AggregatorComponent = ({
     mode: 'onChange',
     defaultValues: aggregatorDefaultValues,
   });
+
   const startingChain = watch(AggregatorInputs.StartingChain);
   const startingToken = watch(AggregatorInputs.StartingToken);
   const destinationChain = watch(AggregatorInputs.DestinationChain);
@@ -67,13 +73,30 @@ export const AggregatorComponent = ({
   );
 
   useEffect(() => {
+    if (startingChain) {
+      onStartingChainChange(startingChain);
+    }
+  }, [startingChain, onStartingChainChange]);
+
+  useEffect(() => {
+    if (startingToken) {
+      onStartingTokenChange(startingToken);
+    }
+  }, [startingToken, onStartingTokenChange]);
+
+  useEffect(() => {
+    if (destinationChain) {
+      onDestinationChainChange(destinationChain);
+    }
+  }, [destinationChain, onDestinationChainChange]);
+
+  useEffect(() => {
     if (amount) {
       setValue(AggregatorInputs.ReceiveAmount, getReceiveAmount(amount));
     }
   }, [amount, getReceiveAmount, setValue]);
 
-  const showDestinationTokenDropdown =
-    startingChain === mainnetPool.masterChain.id;
+  const hideDestinationTokenDropdown = destinationChain === pool.masterChain.id;
 
   return (
     <form
@@ -115,6 +138,7 @@ export const AggregatorComponent = ({
             control={control}
             options={startingChainOptions}
             sx={{ mb: 4 }}
+            setValue={setValue}
           />
           <ControlledDropdown
             name={AggregatorInputs.StartingToken}
@@ -122,6 +146,7 @@ export const AggregatorComponent = ({
             placeholder="Select Coin"
             control={control}
             options={startingTokenOptions}
+            setValue={setValue}
           />
           <Box sx={{ mb: 8, position: 'relative' }}>
             {availableBalance && (
@@ -134,7 +159,6 @@ export const AggregatorComponent = ({
               </Typography>
             )}
           </Box>
-
           <ControlledInputWithButtonPillGroup
             name={AggregatorInputs.SendAmount}
             title="Amount"
@@ -173,17 +197,19 @@ export const AggregatorComponent = ({
             control={control}
             options={destinationChainOptions}
             sx={{ mb: 4 }}
+            setValue={setValue}
           />
-          {showDestinationTokenDropdown && (
-            <ControlledDropdown
-              name={AggregatorInputs.DestinationToken}
-              title="Stablecoin"
-              placeholder="Select Coin"
-              control={control}
-              options={destinationTokenOptions}
-              sx={{ mb: 4 }}
-            />
-          )}
+
+          <ControlledDropdown
+            name={AggregatorInputs.DestinationToken}
+            title="Stablecoin"
+            placeholder="Select Coin"
+            control={control}
+            options={destinationTokenOptions}
+            sx={{ mb: 4 }}
+            hideField={hideDestinationTokenDropdown}
+            setValue={setValue}
+          />
 
           <ControlledCurrencyInput
             disabled

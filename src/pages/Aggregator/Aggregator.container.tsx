@@ -1,12 +1,28 @@
 import { BigNumber, utils } from 'ethers';
 import { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { ChainEnum } from '../../config/chains';
+import { TokenEnum } from '../../config/tokens';
+import { aggregatorActions } from '../../store/aggregator/aggregator.slice';
 import { AggregatorComponent } from './Aggregator.component';
 import { AggregatorFormValues } from './Aggregator.fields';
 
 const mockAvailableBalance = '81.123';
 
 export const AggregatorContainer = () => {
-  // WIP: use useCallback here
+  const dispatch = useDispatch();
+
+  const onStartingChainChange = (chain: ChainEnum) => {
+    dispatch(aggregatorActions.setStartingChain(chain));
+  };
+  const onStartingTokenChange = (token: TokenEnum) => {
+    dispatch(aggregatorActions.setStartingToken(token));
+  };
+
+  const onDestinationChainChange = (chain: ChainEnum) => {
+    dispatch(aggregatorActions.setDestinationChain(chain));
+  };
+
   const getTokenAvailableBalance = useCallback(
     () =>
       // todo: implement
@@ -33,6 +49,9 @@ export const AggregatorContainer = () => {
       getTokenAvailableBalance={getTokenAvailableBalance}
       getReceiveAmount={getReceiveAmount}
       onSubmit={onSubmit}
+      onStartingChainChange={onStartingChainChange}
+      onDestinationChainChange={onDestinationChainChange}
+      onStartingTokenChange={onStartingTokenChange}
     />
   );
 };

@@ -5,8 +5,10 @@ import { indexSaga } from './saga';
 import { appReducer } from './app/app.slice';
 import { stakingReducer } from './staking/staking.slice';
 import { proposalsReducer } from './proposals/proposals.slice';
+import { aggregatorReducer } from './aggregator/aggregator.slice';
 
 export const rootReducer = {
+  [Reducers.Aggregator]: aggregatorReducer,
   [Reducers.App]: appReducer,
   [Reducers.Staking]: stakingReducer,
   [Reducers.Proposals]: proposalsReducer,
