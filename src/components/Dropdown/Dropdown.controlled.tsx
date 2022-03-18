@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   Controller,
   Path,
@@ -22,7 +22,7 @@ export const ControlledDropdown = <
   setValue,
   ...dropdownProps
 }: ControlledDropdownProps<OptionType, FormValues>) => {
-  const setValueWhenOneOption = () => {
+  const setValueWhenOneOption = useCallback(() => {
     if (options.length === 1) {
       setValue(
         name,
@@ -34,7 +34,7 @@ export const ControlledDropdown = <
         }
       );
     }
-  };
+  }, [name, options, setValue]);
 
   return (
     <Controller
