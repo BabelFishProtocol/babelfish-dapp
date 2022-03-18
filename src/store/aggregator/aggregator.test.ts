@@ -27,7 +27,7 @@ import {
   allowTokensContractSelector,
   bridgeContractSelector,
   destinationChainSelector,
-  erc20TokenContractSelector,
+  startingTokenContractSelector,
   startingChainSelector,
   startingTokenSelector,
 } from './aggregator.selectors';
@@ -316,13 +316,13 @@ describe('aggregator store', () => {
         .withReducer(reducer)
         .withState(initialState)
         .select(accountSelector)
-        .select(erc20TokenContractSelector);
+        .select(startingTokenContractSelector);
 
     it('happy path', async () => {
       const runResult = await getBasePath()
         .provide([
           [matchers.select(accountSelector), testAccount],
-          [matchers.select(erc20TokenContractSelector), mockToken],
+          [matchers.select(startingTokenContractSelector), mockToken],
           [matchers.call.fn(mockToken.balanceOf), testStartingTokenBalance],
         ])
         .call(mockToken.balanceOf, testAccount)
@@ -338,7 +338,7 @@ describe('aggregator store', () => {
       const runResult = await getBasePath()
         .provide([
           [matchers.select(accountSelector), undefined],
-          [matchers.select(erc20TokenContractSelector), mockToken],
+          [matchers.select(startingTokenContractSelector), mockToken],
           [matchers.call.fn(mockToken.balanceOf), testStartingTokenBalance],
         ])
         .put(aggregatorActions.fetchStartingTokenBalanceFailure())
@@ -351,7 +351,7 @@ describe('aggregator store', () => {
       const runResult = await getBasePath()
         .provide([
           [matchers.select(accountSelector), testAccount],
-          [matchers.select(erc20TokenContractSelector), mockToken],
+          [matchers.select(startingTokenContractSelector), mockToken],
           [matchers.call.fn(mockToken.balanceOf), throwError()],
         ])
         .call(mockToken.balanceOf, testAccount)

@@ -77,11 +77,11 @@ export const allowTokensContractSelector = createSelector(
       provider.getSigner()
     );
 
-    return contract as ReturnType<typeof AllowTokens__factory['connect']>;
+    return contract;
   }
 );
 
-export const erc20TokenContractSelector = createSelector(
+export const startingTokenContractSelector = createSelector(
   [providerSelector, startingChainSelector, startingTokenSelector],
   (provider, startingChain, startingToken) => {
     if (!provider || !startingChain || !startingToken) {
@@ -95,6 +95,6 @@ export const erc20TokenContractSelector = createSelector(
     }
 
     const contract = ERC20__factory.connect(address, provider.getSigner());
-    return contract as ReturnType<typeof ERC20__factory['connect']>;
+    return contract;
   }
 );

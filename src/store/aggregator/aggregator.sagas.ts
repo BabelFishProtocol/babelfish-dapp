@@ -7,7 +7,7 @@ import {
   allowTokensContractSelector,
   bridgeContractSelector,
   destinationChainSelector,
-  erc20TokenContractSelector,
+  startingTokenContractSelector,
   startingChainSelector,
   startingTokenSelector,
 } from './aggregator.selectors';
@@ -94,7 +94,7 @@ export function* setCurrentChain() {
 export function* fetchStartingTokenBalance() {
   try {
     const account = yield* select(accountSelector);
-    const tokenContract = yield* select(erc20TokenContractSelector);
+    const tokenContract = yield* select(startingTokenContractSelector);
 
     if (!tokenContract) {
       throw new Error('Could not find token contract');

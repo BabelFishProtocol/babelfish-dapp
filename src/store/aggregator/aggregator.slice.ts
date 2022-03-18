@@ -76,4 +76,4 @@ const { actions: aggregatorActions, reducer: aggregatorReducer } =
   aggregatorSlice;
 export { aggregatorActions, aggregatorReducer };
 
-export type AppActions = ActionsType<typeof aggregatorActions>;
+export type AggregatorActions = ActionsType<typeof aggregatorActions>;
