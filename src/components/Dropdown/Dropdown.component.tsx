@@ -24,7 +24,8 @@ export const DropdownOptions = <
 }: DropdownProps<ItemSelected, ValueType>) => {
   useEffect(() => {
     setValueWhenOneOption?.();
-  }, [options]);
+  }, [options, setValueWhenOneOption]);
+
   return (
     <FormControl fullWidth disabled={disabled || options.length === 1} sx={sx}>
       <Typography variant="h3" sx={{ mb: 1.5 }}>
