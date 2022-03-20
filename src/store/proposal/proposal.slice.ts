@@ -1,11 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
+import { AddProposalFields } from '../../pages/AddProposal/AddProposal.types';
 import { ActionsType } from '../types';
-import {
-  ProposalGovernorInput,
-  ProposalState,
-  ProposalThresholdState,
-} from './proposal.state';
+import { ProposalState } from './proposal.state';
 
 const initialState = { ...new ProposalState() };
 
@@ -13,22 +10,16 @@ export const proposalSlice = createSlice({
   name: Reducers.Proposal,
   initialState,
   reducers: {
-    startFetchThreshold: (
-      state,
-      { payload }: PayloadAction<ProposalGovernorInput>
-    ) => {
+    startProposal: (state, { payload }: PayloadAction<AddProposalFields>) => {
       state.constants.state = 'loading';
-      state.selectedGovernorType = payload.governorType;
+      state.proposalValues = payload;
     },
-    fetchThresholdFailure: (state) => {
+    porposalFailure: (state, { payload }: PayloadAction<string>) => {
       state.constants.state = 'failure';
+      state.errorReason = payload;
     },
-    setThreshold: (
-      state,
-      { payload }: PayloadAction<ProposalThresholdState>
-    ) => {
+    proposalSuccess: (state) => {
       state.constants.state = 'success';
-      state.threshold = payload.threshold;
     },
   },
 });

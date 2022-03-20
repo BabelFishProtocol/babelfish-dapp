@@ -4,7 +4,12 @@ import { Reducers } from '../../constants';
 
 export const proposalState = (state: RootState) => state[Reducers.Proposal];
 
-export const thresholdSelector = createSelector(
+export const proposalStateSelector = createSelector(
   proposalState,
-  (prop) => prop.threshold
+  (state) => state.constants.state
+);
+
+export const proposalErrorSelector = createSelector(
+  proposalState,
+  (state) => state.errorReason
 );

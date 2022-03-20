@@ -1,21 +1,15 @@
-import { BigNumber } from 'ethers';
+import { AddProposalFields } from '../../pages/AddProposal/AddProposal.types';
 import { LoadableValue } from '../types';
 
-export type ProposalConstants = {
-  threshold?: BigNumber;
-};
-
-export type ProposalThresholdState = {
-  threshold: BigNumber;
-};
+export type ProposalConstants = {};
 
 export type ProposalGovernorInput = {
   governorType: string;
 };
 
 export class ProposalState {
-  threshold?: BigNumber;
-  selectedGovernorType?: string;
+  proposalValues?: AddProposalFields;
+  errorReason?: string;
 
   constants: LoadableValue<ProposalConstants> = {
     state: 'idle',
