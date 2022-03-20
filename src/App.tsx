@@ -11,7 +11,7 @@ import { Header } from './components/Header/Header.component';
 // import { MintingInfo } from './components/MintingInfo/MintingInfo.component';
 // import { MintingProcessInfo } from './components/MintingInfo/MintingInfo.types';
 import { Urls } from './constants';
-import { AgregatorContainer } from './pages/Agregator/Agregator.container';
+import { AggregatorContainer } from './pages/Aggregator/Aggregator.container';
 import { DashboardContainer } from './pages/Dashboard/Dashboard.container';
 import { ProposalDetailsContainer } from './pages/ProposalDetails/ProposalDetails.container';
 import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.container';
@@ -147,7 +147,7 @@ function App() {
           path={`${Urls.Proposals}/:id`}
           element={<ProposalDetailsContainer />}
         />
-        <Route path={Urls.Agregator} element={<AgregatorContainer />} />
+        <Route path={Urls.Aggregator} element={<AggregatorContainer />} />
         <Route path="*" element={<Navigate to={Urls.Dashboard} />} />
       </Routes>
 

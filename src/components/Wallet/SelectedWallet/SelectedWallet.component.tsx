@@ -10,7 +10,7 @@ import { SelectedWalletProps } from './SelectedWallet.types';
 export const SelectedWallet = ({
   account,
   wallet,
-  onDissconnect,
+  onDisconnect,
 }: SelectedWalletProps) => (
   <Box
     sx={{
@@ -34,7 +34,7 @@ export const SelectedWallet = ({
     </Box>
     <Button
       variant="text"
-      onClick={onDissconnect}
+      onClick={onDisconnect}
       sx={{
         p: 1,
         minWidth: 0,

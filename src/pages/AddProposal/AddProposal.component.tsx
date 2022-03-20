@@ -30,6 +30,7 @@ export const AddProposal = ({
     control,
     handleSubmit,
     formState: { isValid },
+    setValue,
   } = useForm<AddProposalFields>({
     mode: 'onChange',
     defaultValues: AddProposalDefaultValues,
@@ -74,6 +75,7 @@ export const AddProposal = ({
               name={AddProposalInputs.SendProposalContract}
               control={control}
               options={AP_DD_OPTIONS}
+              setValue={setValue}
             />
           </Box>
 

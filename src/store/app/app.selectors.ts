@@ -12,6 +12,7 @@ import {
   ERC20__factory,
   Staking__factory,
   GovernorAdmin__factory,
+  VestingRegistry__factory,
 } from '../../contracts/types';
 import { BaseContractFactory } from '../types';
 
@@ -64,7 +65,6 @@ const createContractSelector = <Factory extends BaseContractFactory>(
       if (!addresses || !provider) {
         return undefined;
       }
-
       const contract = factory.connect(addresses[name], provider.getSigner());
       return contract as ReturnType<Factory['connect']>;
     }
@@ -85,4 +85,8 @@ export const governerAdminSelector = createContractSelector(
 export const governerOwnerSelector = createContractSelector(
   GovernorAdmin__factory,
   'governorOwner'
+);
+export const vestingRegistrySelector = createContractSelector(
+  VestingRegistry__factory,
+  'vestingRegistry'
 );

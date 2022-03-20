@@ -12,20 +12,29 @@ import { ControlledInput } from '../../components/TextInput/TextInput.controlled
 import { ControlledDropdown } from '../../components/Dropdown/Dropdown.controlled';
 import { ControlledInputWithButtonPillGroup } from '../../components/InputPillGroup/InputWithButtonPillGroup.controlled';
 
-import { agregatorDefaultValues, AgregatorInputs } from './Agregator.fields';
 import {
-  AgregatorComponentProps,
-  AgregatorFormValues,
-} from './Agregator.types';
-import { AgregatorInfo } from './AgregatorInfo/AgregatorInfo.component';
-import { useAgregatorDropdowns, useAvailableBalance } from './Agregator.hooks';
-import { mainnetPool } from '../../config/pools';
+  aggregatorDefaultValues,
+  AggregatorInputs,
+  AggregatorFormValues,
+} from './Aggregator.fields';
+import { AggregatorComponentProps } from './Aggregator.types';
+import { AggregatorInfo } from './AggregatorInfo/AggregatorInfo.component';
+import {
+  useAggregatorDropdowns,
+  useAvailableBalance,
+} from './Aggregator.hooks';
+import { /* mainnetPool, */ testnetPool } from '../../config/pools';
 
-export const AgregatorComponent = ({
-  getTokenAvaliableBalance,
+const pool = testnetPool;
+
+export const AggregatorComponent = ({
+  getTokenAvailableBalance,
   getReceiveAmount,
   onSubmit,
-}: AgregatorComponentProps) => {
+  onStartingChainChange,
+  onDestinationChainChange,
+  onStartingTokenChange,
+}: AggregatorComponentProps) => {
   const {
     handleSubmit,
     watch,
@@ -33,15 +42,16 @@ export const AgregatorComponent = ({
     setValue,
     control,
     formState: { isValid },
-  } = useForm<AgregatorFormValues>({
+  } = useForm<AggregatorFormValues>({
     mode: 'onChange',
-    defaultValues: agregatorDefaultValues,
+    defaultValues: aggregatorDefaultValues,
   });
-  const startingChain = watch(AgregatorInputs.StartingChain);
-  const startingToken = watch(AgregatorInputs.StartingToken);
-  const destinationChain = watch(AgregatorInputs.DestinationChain);
-  const destinationToken = watch(AgregatorInputs.DestinationToken);
-  const amount = watch(AgregatorInputs.SendAmount);
+
+  const startingChain = watch(AggregatorInputs.StartingChain);
+  const startingToken = watch(AggregatorInputs.StartingToken);
+  const destinationChain = watch(AggregatorInputs.DestinationChain);
+  const destinationToken = watch(AggregatorInputs.DestinationToken);
+  const amount = watch(AggregatorInputs.SendAmount);
 
   const {
     startingChainOptions,
@@ -49,7 +59,7 @@ export const AgregatorComponent = ({
     destinationChainOptions,
     destinationTokenOptions,
     changeDirection,
-  } = useAgregatorDropdowns(
+  } = useAggregatorDropdowns(
     startingChain,
     destinationChain,
     resetField,
@@ -58,18 +68,35 @@ export const AgregatorComponent = ({
 
   const { availableBalance } = useAvailableBalance(
     startingToken,
-    getTokenAvaliableBalance,
+    getTokenAvailableBalance,
     resetField
   );
 
   useEffect(() => {
+    if (startingChain) {
+      onStartingChainChange(startingChain);
+    }
+  }, [startingChain, onStartingChainChange]);
+
+  useEffect(() => {
+    if (startingToken) {
+      onStartingTokenChange(startingToken);
+    }
+  }, [startingToken, onStartingTokenChange]);
+
+  useEffect(() => {
+    if (destinationChain) {
+      onDestinationChainChange(destinationChain);
+    }
+  }, [destinationChain, onDestinationChainChange]);
+
+  useEffect(() => {
     if (amount) {
-      setValue(AgregatorInputs.ReceiveAmount, getReceiveAmount(amount));
+      setValue(AggregatorInputs.ReceiveAmount, getReceiveAmount(amount));
     }
   }, [amount, getReceiveAmount, setValue]);
 
-  const showDestinationTokenDropdown =
-    startingChain === mainnetPool.masterChain.id;
+  const hideDestinationTokenDropdown = destinationChain === pool.masterChain.id;
 
   return (
     <form
@@ -105,19 +132,21 @@ export const AgregatorComponent = ({
         >
           <ControlledDropdown
             autoFocus
-            name={AgregatorInputs.StartingChain}
+            name={AggregatorInputs.StartingChain}
             title="Select Network"
             placeholder="Select Chain"
             control={control}
             options={startingChainOptions}
             sx={{ mb: 4 }}
+            setValue={setValue}
           />
           <ControlledDropdown
-            name={AgregatorInputs.StartingToken}
+            name={AggregatorInputs.StartingToken}
             title="stablecoin"
             placeholder="Select Coin"
             control={control}
             options={startingTokenOptions}
+            setValue={setValue}
           />
           <Box sx={{ mb: 8, position: 'relative' }}>
             {availableBalance && (
@@ -130,9 +159,8 @@ export const AgregatorComponent = ({
               </Typography>
             )}
           </Box>
-
           <ControlledInputWithButtonPillGroup
-            name={AgregatorInputs.SendAmount}
+            name={AggregatorInputs.SendAmount}
             title="Amount"
             placeholder="0.00"
             disabled={!startingToken}
@@ -143,7 +171,7 @@ export const AgregatorComponent = ({
           />
         </Box>
       </PageView>
-      <AgregatorInfo onClick={changeDirection} />
+      <AggregatorInfo onClick={changeDirection} />
       <PageView
         title={
           <Box
@@ -163,37 +191,39 @@ export const AgregatorComponent = ({
           }}
         >
           <ControlledDropdown
-            name={AgregatorInputs.DestinationChain}
+            name={AggregatorInputs.DestinationChain}
             title="Network"
             placeholder="Select Chain"
             control={control}
             options={destinationChainOptions}
             sx={{ mb: 4 }}
+            setValue={setValue}
           />
-          {showDestinationTokenDropdown && (
-            <ControlledDropdown
-              name={AgregatorInputs.DestinationToken}
-              title="Stablecoin"
-              placeholder="Select Coin"
-              control={control}
-              options={destinationTokenOptions}
-              sx={{ mb: 4 }}
-            />
-          )}
+
+          <ControlledDropdown
+            name={AggregatorInputs.DestinationToken}
+            title="Stablecoin"
+            placeholder="Select Coin"
+            control={control}
+            options={destinationTokenOptions}
+            sx={{ mb: 4 }}
+            hideField={hideDestinationTokenDropdown}
+            setValue={setValue}
+          />
 
           <ControlledCurrencyInput
             disabled
             title="Receive amount"
             symbol={destinationToken}
             placeholder="0.00"
-            name={AgregatorInputs.ReceiveAmount}
+            name={AggregatorInputs.ReceiveAmount}
             control={control}
             sx={{ mb: 5 }}
           />
           <ControlledInput
             title="Receiving address"
             placeholder="Enter or paste address"
-            name={AgregatorInputs.ReceiveAddress}
+            name={AggregatorInputs.ReceiveAddress}
             control={control}
             sx={{ mb: 5 }}
           />

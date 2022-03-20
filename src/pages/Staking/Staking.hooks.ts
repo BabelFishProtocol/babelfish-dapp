@@ -9,15 +9,12 @@ import {
   stakingConstantsSelector,
 } from '../../store/staking/staking.selectors';
 import { useDebounce } from '../../hooks/useDebounce';
-import { getCurrentTimestamp, isRskAddress } from '../../utils/helpers';
+import { getCurrentTimestamp } from '../../utils/helpers';
 import {
   providerSelector,
   stakingContractSelector,
 } from '../../store/app/app.selectors';
-import {
-  UseEstimateDelegateFeeConfig,
-  UseEstimateFeeConfig,
-} from './Staking.types';
+import { UseEstimateFeeConfig } from './Staking.types';
 
 export const useStakeModalForm = (
   selectStake: () => void,
@@ -99,7 +96,10 @@ export const useVotingPower = (amount: string, unlockDate: number) => {
   return votingPower;
 };
 
-const calculateFee = async (provider: Web3Provider, estimated: BigNumber) => {
+export const calculateFee = async (
+  provider: Web3Provider,
+  estimated: BigNumber
+) => {
   const gasPrice = await provider.getGasPrice();
   return estimated.mul(gasPrice).toString();
 };
@@ -132,36 +132,6 @@ export const useEstimateFee = ({
 
     estimate();
   }, [debouncedAmount, estimator, provider, debouncedTimestamp]);
-
-  return estimatedFee;
-};
-
-export const useEstiateDelegateFee = ({
-  delegateTo,
-  estimator,
-}: UseEstimateDelegateFeeConfig) => {
-  const provider = useSelector(providerSelector);
-  const [estimatedFee, setEstimatedFee] = useState('0');
-
-  const debouncedDelegate = useDebounce(delegateTo);
-
-  useEffect(() => {
-    const estimate = async () => {
-      if (!isRskAddress(debouncedDelegate) || !provider) {
-        setEstimatedFee('0');
-        return;
-      }
-
-      const estimatedGas = await estimator(debouncedDelegate);
-
-      if (estimatedGas) {
-        const fee = await calculateFee(provider, estimatedGas);
-        setEstimatedFee(fee);
-      }
-    };
-
-    estimate();
-  }, [estimator, provider, debouncedDelegate]);
 
   return estimatedFee;
 };
