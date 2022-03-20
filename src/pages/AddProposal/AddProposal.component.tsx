@@ -12,7 +12,7 @@ import { isValidCalldata, isValidSignature } from '../../utils/helpers';
 import {
   AddProposalDefaultValues,
   AddProposalInputs,
-  AddProposalNewSetValues
+  AddProposalNewSetValues,
 } from './AddProposal.fields';
 import { AddProposalFields, AddProposalProps } from './AddProposal.types';
 
@@ -40,7 +40,7 @@ export const AddProposal = ({
     control,
     name: AddProposalInputs.Values,
   });
-  
+
   return (
     <AppDialog
       isOpenDialog={isOpenDialog}
