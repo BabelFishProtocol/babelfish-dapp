@@ -1,12 +1,7 @@
-export type Proposal = {
-  name: string;
-  startBlock: number;
-  voteVeight: 'Active' | 'Executed' | 'Queued' | 'Pending';
-  endDate: string;
-  isWinning: string;
-  id: string;
-};
+import { Proposal } from '../../store/proposals/proposals.state';
+import { FiniteStates } from '../../utils/types';
 
 export type ProposalsListComponentProps = {
   proposals: Proposal[];
+  state: FiniteStates;
 };

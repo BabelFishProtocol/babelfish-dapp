@@ -5,10 +5,10 @@ type MockedContract<C extends Contract> = {
   [k in keyof C]: C[k] extends Function ? jest.Mock : C[k];
 };
 
-export const createMockedContract = <C extends Contract>(
+export const createMockedContract = <C extends Contract, T extends boolean>(
   contract: C,
-  cast: true | false
-): typeof cast extends true ? C : MockedContract<C> => {
+  cast: T
+): T extends true ? C : MockedContract<C> => {
   const mockedContract = Object.keys(contract).reduce((prev, curr: keyof C) => {
     const currMethod = contract[curr];
     if (typeof currMethod === 'function') {
@@ -24,6 +24,8 @@ export const createMockedContract = <C extends Contract>(
   if (cast) {
     return mockedContract as C;
   }
+
+  // @ts-expect-error
   return mockedContract;
 };
 
