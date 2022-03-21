@@ -1,6 +1,10 @@
 import { utils } from 'ethers';
 import { createSelector } from '@reduxjs/toolkit';
 
+import {
+  Provider as MulticallProvider,
+  setMulticallAddress,
+} from 'ethers-multicall';
 import { RootState } from '..';
 import {
   contractsAddresses,
@@ -8,11 +12,13 @@ import {
 } from '../../config/contracts';
 import { Reducers } from '../../constants';
 import { chains } from '../../config/chains';
+import { subgraphClients } from '../../config/subgraph';
 import {
   ERC20__factory,
   Staking__factory,
-  GovernorAdmin__factory,
+  Multicall__factory,
   VestingRegistry__factory,
+  GovernorAlpha__factory,
 } from '../../contracts/types';
 import { BaseContractFactory } from '../types';
 
@@ -46,6 +52,16 @@ export const currentChainSelector = createSelector(
     return chainConfig;
   }
 );
+
+export const subgraphClientSelector = createSelector(
+  currentChainSelector,
+  (chainConfig) => {
+    if (!chainConfig || !subgraphClients[chainConfig.id]) return undefined;
+
+    return subgraphClients[chainConfig.id];
+  }
+);
+
 export const addressesSelector = createSelector(
   currentChainSelector,
   (chainConfig) => {
@@ -78,15 +94,31 @@ export const fishTokenSelector = createContractSelector(
   ERC20__factory,
   'fishToken'
 );
-export const governerAdminSelector = createContractSelector(
-  GovernorAdmin__factory,
+export const governorAdminSelector = createContractSelector(
+  GovernorAlpha__factory,
   'governorAdmin'
 );
-export const governerOwnerSelector = createContractSelector(
-  GovernorAdmin__factory,
+export const governorOwnerSelector = createContractSelector(
+  GovernorAlpha__factory,
   'governorOwner'
+);
+export const multicallContractSelector = createContractSelector(
+  Multicall__factory,
+  'multicall'
 );
 export const vestingRegistrySelector = createContractSelector(
   VestingRegistry__factory,
   'vestingRegistry'
+);
+
+export const multicallProviderSelector = createSelector(
+  [providerSelector, chainIdSelector, multicallContractSelector],
+  (provider, chainId, multicallContract) => {
+    if (!provider || !chainId || !multicallContract) return undefined;
+
+    setMulticallAddress(chainId, multicallContract.address);
+    const multicallProvider = new MulticallProvider(provider, chainId);
+
+    return multicallProvider;
+  }
 );

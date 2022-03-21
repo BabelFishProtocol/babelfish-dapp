@@ -6,36 +6,52 @@ import MuiLink from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
+import { Proposal } from '../../store/proposals/proposals.state';
+import { ProposalState, proposalStateNames } from '../../constants';
 import {
+  formatBlockNumber,
+  formatTimestamp,
+  truncateString,
+} from '../../utils/helpers';
+
+import {
+  CellParser,
   CustomColumn,
   DataTableColumn,
 } from '../../components/DataTable/DataTable.types';
 import { DataTable } from '../../components/DataTable/DataTable.component';
 import { PageView } from '../../components/PageView/PageView.component';
 
-import { Proposal, ProposalsListComponentProps } from './ProposalsList.types';
 import { AddProposalContainer } from '../AddProposal/AddProposal.container';
+import { ProposalsListComponentProps } from './ProposalsList.types';
 
-const ViewProposalComponent: CustomColumn = ({ value }) => (
+/** Needed because DataTable is not accepting booleans */
+type RowData = Omit<Proposal, 'canceled' | 'executed'>;
+
+const ViewProposalComponent: CustomColumn<RowData> = ({ value }) => (
   <MuiLink component={Link} color="textPrimary" to={String(value)}>
     View Proposal
   </MuiLink>
 );
 
-const formatBlockNumber = (val: string | number) => `#${val}`;
-
-const proposalsListColumns: DataTableColumn<Proposal>[] = [
-  { label: 'title', name: 'name' },
+const proposalsListColumns: DataTableColumn<RowData>[] = [
+  { label: 'title', name: 'title', format: truncateString as CellParser },
   { label: 'start block', name: 'startBlock', format: formatBlockNumber },
-  { label: 'vote weight', name: 'voteVeight' },
-  { label: 'voting ends', name: 'endDate' },
+  {
+    label: 'vote weight',
+    name: 'state',
+    format: (val) => proposalStateNames[val as ProposalState],
+  },
+  { label: 'voting ends', name: 'endTime', format: formatTimestamp },
   { label: 'action', name: 'id', component: ViewProposalComponent },
 ];
 
 export const ProposalsListComponent = ({
+  state,
   proposals,
 }: ProposalsListComponentProps) => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+
   return (
     <PageView
       title={
@@ -44,14 +60,9 @@ export const ProposalsListComponent = ({
         </Typography>
       }
     >
-      <AddProposalContainer
-        isOpenDialog={isAddDialogOpen}
-        onClose={() => {
-          setIsAddDialogOpen(false);
-        }}
-      />
       <DataTable
-        data={proposals}
+        data={proposals as RowData[]}
+        isLoading={state === 'loading'}
         columns={proposalsListColumns}
         tableTitle="GOVERNANCE PROPOSALS"
         tableAction={
@@ -64,7 +75,7 @@ export const ProposalsListComponent = ({
             +CREATE PROPOSAL
           </Button>
         }
-        containerSx={{ minHeight: 100 }}
+        containerSx={{ minHeight: 250 }}
       />
 
       <Box
@@ -77,6 +88,15 @@ export const ProposalsListComponent = ({
       >
         <Button variant="outlined">View All Proposals</Button>
       </Box>
+
+      {isAddDialogOpen && (
+        <AddProposalContainer
+          isOpenDialog={isAddDialogOpen}
+          onClose={() => {
+            setIsAddDialogOpen(false);
+          }}
+        />
+      )}
     </PageView>
   );
 };
