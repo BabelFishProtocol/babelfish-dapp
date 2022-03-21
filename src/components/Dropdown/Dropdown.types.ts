@@ -1,4 +1,4 @@
-import { FieldError } from 'react-hook-form';
+import { FieldError, UseFormSetValue } from 'react-hook-form';
 import { FormControlProps } from '@mui/material/FormControl';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { ControlledInputType } from '../TextInput/TextInput.types';
@@ -18,8 +18,13 @@ export type DropdownProps<OptionType, ValueType = unknown> = {
   sx?: FormControlProps['sx'];
   autoFocus?: boolean;
   error?: FieldError;
+  hideField?: boolean;
   onChange?: (e: SelectChangeEvent<ValueType>) => void;
+  setValueWhenOneOption?: () => void;
 };
 
 export type ControlledDropdownProps<OptionType, FormValues> =
-  ControlledInputType<FormValues> & Omit<DropdownProps<OptionType>, 'error'>;
+  ControlledInputType<FormValues> &
+    Omit<DropdownProps<OptionType>, 'error'> & {
+      setValue: UseFormSetValue<FormValues>;
+    };

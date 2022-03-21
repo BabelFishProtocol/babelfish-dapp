@@ -162,8 +162,10 @@ describe('staking store', () => {
         .provide([
           [matchers.select(accountSelector), testAccount],
           [matchers.select(stakingContractSelector), mockStaking],
+          [matchers.select(fishTokenSelector), mockFishToken],
           [matchers.call.fn(mockStaking.balanceOf), throwError()],
         ])
+        .call(mockStaking.balanceOf, testAccount)
         .put(stakingActions.fetchFishTokenDataFailure())
         .hasFinalState(failureState)
         .run();
