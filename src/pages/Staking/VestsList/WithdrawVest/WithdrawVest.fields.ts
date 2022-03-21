@@ -1,11 +1,9 @@
-export enum WithdrawVestFields {
-  WithdrawTo = 'withdrawVestTo',
-}
+import {
+  Fields,
+  withdrawDefaultValues,
+  WithdrawValues,
+} from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
 
-export type WithdrawVestFormValues = {
-  [WithdrawVestFields.WithdrawTo]: string;
-};
-
-export const withdrawVestDefaultValues = {
-  [WithdrawVestFields.WithdrawTo]: '',
-};
+export type WithdrawVestFormValues = WithdrawValues;
+export const WithdrawVestFields = Fields;
+export const withdrawVestDefaultValues = withdrawDefaultValues;

@@ -1,8 +1,6 @@
 import { DialogFormProps } from '../../../../components/DialogForm/DialogForm.types';
-import {
-  DelegateValues,
-  FeeEstimatorProps,
-} from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
+import { FeeEstimatorProps } from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
+import { DelegateVestValues } from './DelegateVest.fields';
 
 export type DelegateVestContainerProps = Pick<
   DialogFormProps,
@@ -10,8 +8,8 @@ export type DelegateVestContainerProps = Pick<
 >;
 
 export type DelegateVestComponentProps = DelegateVestContainerProps &
-  Pick<FeeEstimatorProps, 'estimateFee'> & {
+  Pick<FeeEstimatorProps<DelegateVestValues>, 'estimateFee'> & {
     votingPower: string;
     currentDelegate: string;
-    onDelegate: (formValues: DelegateValues) => Promise<void>;
+    onDelegate: (formValues: DelegateVestValues) => Promise<void>;
   };

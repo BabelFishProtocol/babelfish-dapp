@@ -8,7 +8,7 @@ export type WithdrawVestContainerProps = Pick<
 >;
 
 export type WithdrawVestComponentProps = WithdrawVestContainerProps &
-  Pick<FeeEstimatorProps, 'estimateFee'> & {
+  Pick<FeeEstimatorProps<WithdrawVestFormValues>, 'estimateFee'> & {
     isLocked: boolean;
     currentVestAmount: string;
     onWithdraw: (values: WithdrawVestFormValues) => void;

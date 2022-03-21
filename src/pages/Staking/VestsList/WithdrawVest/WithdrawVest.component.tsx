@@ -9,7 +9,7 @@ import {
   WithdrawVestFields,
   WithdrawVestFormValues,
 } from './WithdrawVest.fields';
-import { FeeEstimatorWithdraw } from '../../DelegateFeeEstimator/DelegateFeeEstimator.component';
+import { FeeEstimator } from '../../DelegateFeeEstimator/DelegateFeeEstimator.component';
 import { ControlledAddressInput } from '../../../../components/AddressInput/AddressInput.controlled';
 
 export const WithdrawVestComponent = ({
@@ -43,11 +43,15 @@ export const WithdrawVestComponent = ({
       <ControlledAddressInput
         autoFocus
         title="Address To Unstake"
-        name={WithdrawVestFields.WithdrawTo}
+        name={WithdrawVestFields.withdrawTo}
         control={control}
         placeholder="Enter or paste withdraw address"
       />
-      <FeeEstimatorWithdraw control={control} estimateFee={estimateFee} />
+      <FeeEstimator
+        control={control}
+        estimateFee={estimateFee}
+        name={WithdrawVestFields.withdrawTo}
+      />
     </DialogForm>
   );
 };

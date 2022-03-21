@@ -1,50 +1,35 @@
 import { BigNumber } from 'ethers';
-import { Control } from 'react-hook-form';
+import { Control, Path } from 'react-hook-form';
 
-export enum DelegateFields {
+export enum Fields {
   delegateTo = 'delegateTo',
+  withdrawTo = 'withdrawTo',
 }
 
 export type DelegateValues = {
-  [DelegateFields.delegateTo]: string;
+  [Fields.delegateTo]: string;
 };
 
-export enum WithdrawVestFields {
-  withdrawTo = 'withdrawVestTo',
-}
-
-export type WithdrawVestFormValues = {
-  [WithdrawVestFields.withdrawTo]: string;
-};
-
-export const withdrawVestDefaultValues = {
-  [WithdrawVestFields.withdrawTo]: '',
+export type WithdrawValues = {
+  [Fields.withdrawTo]: string;
 };
 
 export const delegateDefaultValues = {
-  [DelegateFields.delegateTo]: '',
+  [Fields.delegateTo]: '',
+};
+export const withdrawDefaultValues = {
+  [Fields.withdrawTo]: '',
 };
 
-export type DelegateFeeEstimator = (
-  delegateTo: string
-) => Promise<BigNumber | undefined>;
+export type FeeEstimator = (to: string) => Promise<BigNumber | undefined>;
 
-export type WithdrawFeeEstimator = (
-  withdrawTo: string
-) => Promise<BigNumber | undefined>;
-
-export type FeeEstimatorProps = {
-  estimateFee: DelegateFeeEstimator;
-  control: Control<DelegateValues>;
-};
-
-export type FeeEstimatorWithdrawProps = {
-  estimateFee: WithdrawFeeEstimator;
-  control: Control<WithdrawVestFormValues>;
-};
+export interface FeeEstimatorProps<FormValues> {
+  name: Path<FormValues>;
+  estimateFee: FeeEstimator;
+  control: Control<FormValues>;
+}
 
 export type UseEstimateDelegateFeeConfig = {
-  delegateTo: string;
-  withdrawTo?: string;
-  estimator: DelegateFeeEstimator;
+  to: string;
+  estimator: FeeEstimator;
 };

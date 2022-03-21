@@ -7,7 +7,7 @@ import {
   selectedVestSelector,
   selectedVestContractSelector,
 } from '../../../../store/staking/staking.selectors';
-import { WithdrawFeeEstimator } from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
+import { FeeEstimator } from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
 
 import { WithdrawVestComponent } from './WithdrawVest.component';
 import { useGetUnlockedVesting } from './WithdrawVest.hooks';
@@ -34,7 +34,7 @@ export const WithdrawVestContainer = ({
   const { handleSubmit: onWithdraw, ...withdrawTxData } =
     useContractCall(handleWithdraw);
 
-  const estimateFee: WithdrawFeeEstimator = useCallback(
+  const estimateFee: FeeEstimator = useCallback(
     (withdrawTo) => {
       if (!vesting || !selectedVestData) {
         throw new Error('missing data');

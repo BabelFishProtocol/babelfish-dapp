@@ -11,9 +11,9 @@ import { DelegateStakeComponentProps } from './DelegateStake.types';
 import {
   DelegateStakeValues,
   DelegateStakeFields,
-  delegateStakeDefaultValues,
 } from './DelegateStake.fields';
 import { FeeEstimator } from '../../DelegateFeeEstimator/DelegateFeeEstimator.component';
+import { delegateDefaultValues } from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
 
 export const DelegateStakeComponent = ({
   open,
@@ -26,7 +26,7 @@ export const DelegateStakeComponent = ({
 }: DelegateStakeComponentProps) => {
   const { control, formState, handleSubmit } = useForm<DelegateStakeValues>({
     mode: 'onChange',
-    defaultValues: delegateStakeDefaultValues,
+    defaultValues: delegateDefaultValues,
   });
 
   const hasDelegate =
@@ -62,7 +62,11 @@ export const DelegateStakeComponent = ({
         placeholder="Enter or paste delegate address"
       />
 
-      <FeeEstimator control={control} estimateFee={estimateFee} />
+      <FeeEstimator
+        control={control}
+        estimateFee={estimateFee}
+        name={DelegateStakeFields.delegateTo}
+      />
     </DialogForm>
   );
 };

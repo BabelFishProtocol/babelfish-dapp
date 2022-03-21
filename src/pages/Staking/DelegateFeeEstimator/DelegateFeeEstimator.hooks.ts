@@ -7,14 +7,13 @@ import { calculateFee } from '../Staking.hooks';
 import { UseEstimateDelegateFeeConfig } from './DelegateFeeEstimator.fields';
 
 export const useEstimateDelegateFee = ({
-  delegateTo,
-  withdrawTo,
+  to,
   estimator,
 }: UseEstimateDelegateFeeConfig) => {
   const provider = useSelector(providerSelector);
   const [estimatedFee, setEstimatedFee] = useState('0');
 
-  const debouncedDelegate = useDebounce(withdrawTo || delegateTo);
+  const debouncedDelegate = useDebounce(to);
 
   useEffect(() => {
     const estimate = async () => {
