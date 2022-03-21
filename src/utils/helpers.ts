@@ -34,7 +34,8 @@ export const prettyTx = (
   return `${start} ... ${end}`;
 };
 
-export const isRskAddress = (address: string) => utils.isAddress(address || '');
+export const isRskAddress = (address: string) =>
+  utils.isAddress(address ? address.toLowerCase() : '');
 
 export const getCurrentTimestamp = () => dayjs().unix();
 
