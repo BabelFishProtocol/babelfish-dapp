@@ -19,7 +19,6 @@ import {
   fetchAllowTokenAddress,
   fetchBridgeFeesAndLimits,
   fetchStartingTokenBalance,
-  setFlowState,
 } from './aggregator.sagas';
 import { aggregatorActions } from './aggregator.slice';
 import { AggregatorState } from './aggregator.state';
@@ -28,11 +27,10 @@ import {
   bridgeContractSelector,
   destinationChainSelector,
   startingTokenContractSelector,
-  startingChainSelector,
   startingTokenSelector,
 } from './aggregator.selectors';
 import { ChainEnum } from '../../config/chains';
-import { accountSelector } from '../app/app.selectors';
+import { accountSelector, chainIdSelector } from '../app/app.selectors';
 
 const mockBridge = createMockedContract(
   Bridge__factory.connect(constants.AddressZero, mockSigner),
@@ -174,7 +172,7 @@ describe('aggregator store', () => {
         .withReducer(reducer)
         .withState(initialState)
         .select(allowTokensContractSelector)
-        .select(startingChainSelector)
+        .select(chainIdSelector)
         .select(destinationChainSelector)
         .select(startingTokenSelector);
 
@@ -182,7 +180,7 @@ describe('aggregator store', () => {
       const runResult = await getBasePath()
         .provide([
           [matchers.select(allowTokensContractSelector), mockAllowTokens],
-          [matchers.select(startingChainSelector), testStartingChain],
+          [matchers.select(chainIdSelector), testStartingChain],
           [matchers.select(destinationChainSelector), testDestinationChain],
           [matchers.select(startingTokenSelector), testStartingToken],
           [matchers.call.fn(mockAllowTokens.getFeePerToken), bridgeFee],
@@ -212,7 +210,7 @@ describe('aggregator store', () => {
       await getBasePath()
         .provide([
           [matchers.select(allowTokensContractSelector), undefined],
-          [matchers.select(startingChainSelector), testStartingChain],
+          [matchers.select(chainIdSelector), testStartingChain],
           [matchers.select(destinationChainSelector), testDestinationChain],
           [matchers.select(startingTokenSelector), testStartingToken],
         ])
@@ -227,7 +225,7 @@ describe('aggregator store', () => {
       const runResult = await getBasePath()
         .provide([
           [matchers.select(allowTokensContractSelector), mockAllowTokens],
-          [matchers.select(startingChainSelector), testStartingChain],
+          [matchers.select(chainIdSelector), testStartingChain],
           [matchers.select(destinationChainSelector), testDestinationChain],
           [matchers.select(startingTokenSelector), testStartingToken],
           [matchers.call.fn(mockAllowTokens.getFeePerToken), throwError()],
@@ -241,50 +239,6 @@ describe('aggregator store', () => {
     });
   });
 
-  describe('setFlowState', () => {
-    const getBasePath = () =>
-      expectSaga(setFlowState)
-        .withReducer(reducer)
-        .withState(initialState)
-        .select(startingChainSelector);
-
-    const withdrawState: DeepPartial<RootState> = {
-      ...initialState,
-      [Reducers.Aggregator]: {
-        ...initialState[Reducers.Aggregator],
-        flowState: 'withdraw',
-      },
-    };
-
-    const depositState: DeepPartial<RootState> = {
-      ...initialState,
-      [Reducers.Aggregator]: {
-        ...initialState[Reducers.Aggregator],
-        flowState: 'deposit',
-      },
-    };
-
-    it('deposit path', async () => {
-      const testStartingChain = ChainEnum.ETH;
-      const runResult = await getBasePath()
-        .provide([[matchers.select(startingChainSelector), testStartingChain]])
-        .put(aggregatorActions.setFlowStateDeposit())
-        .hasFinalState(depositState)
-        .run();
-
-      expect(runResult.effects).toEqual({});
-    });
-    it('withdraw path', async () => {
-      const testStartingChain = ChainEnum.RSK;
-      const runResult = await getBasePath()
-        .provide([[matchers.select(startingChainSelector), testStartingChain]])
-        .put(aggregatorActions.setFlowStateWithdraw())
-        .hasFinalState(withdrawState)
-        .run();
-
-      expect(runResult.effects).toEqual({});
-    });
-  });
   describe('fetchStartingTokenBalance', () => {
     const testAccount = '0x0123';
     const testStartingTokenBalance = '0x232347482374623';
