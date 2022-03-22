@@ -20,9 +20,7 @@ export class AggregatorState {
     },
   };
   startingToken?: TokenEnum;
-  startingChain?: ChainEnum;
   destinationChain?: ChainEnum;
-  wrongChainConnectedError?: boolean;
   startingTokenBalance: LoadableAmount = {
     state: 'idle',
     data: undefined,

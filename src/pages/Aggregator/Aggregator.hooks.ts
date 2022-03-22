@@ -7,9 +7,14 @@ import { /* mainnetPool, */ testnetPool } from '../../config/pools';
 import { TokenEnum, TokenTypeBase } from '../../config/tokens';
 import { flowStateSelector } from '../../store/aggregator/aggregator.selectors';
 import { aggregatorActions } from '../../store/aggregator/aggregator.slice';
+import {
+  chainIdSelector,
+  providerSelector,
+} from '../../store/app/app.selectors';
 import { AggregatorInputs, AggregatorFormValues } from './Aggregator.fields';
 import { AggregatorComponentProps } from './Aggregator.types';
 
+// TODO: add current  pool to the store
 const pool = testnetPool;
 
 export const useAggregatorDropdowns = (
@@ -93,6 +98,35 @@ export const useAggregatorDropdowns = (
     destinationTokenOptions,
     changeDirection,
   };
+};
+
+export const useConnectedChain = (
+  startingChain: ChainEnum | '',
+  setValue: UseFormSetValue<AggregatorFormValues>
+) => {
+  const connectedChain = useSelector(chainIdSelector);
+  const provider = useSelector(providerSelector);
+
+  const wrongChainConnectedError = startingChain !== connectedChain;
+
+  useEffect(() => {
+    if (startingChain && wrongChainConnectedError) {
+      provider?.send('wallet_switchEthereumChain', [
+        { chainId: `0x${startingChain.toString(16)}` },
+      ]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startingChain]);
+
+  useEffect(() => {
+    if (connectedChain && setValue) {
+      // TODO : check if right pool is selected
+      setValue(AggregatorInputs.StartingChain, connectedChain);
+    }
+  }, [connectedChain, setValue]);
+
+  // TODO: add walletConnection guard to Aggregator
+  return wrongChainConnectedError;
 };
 
 export const useAvailableBalance = (

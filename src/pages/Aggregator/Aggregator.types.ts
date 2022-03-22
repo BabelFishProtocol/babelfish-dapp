@@ -8,7 +8,6 @@ export type AggregatorComponentProps = {
   getTokenAvailableBalance: (token: TokenEnum) => BigNumber;
   getReceiveAmount: (sendAmount: string) => string;
   onSubmit: (data: AggregatorFormValues) => void;
-  onStartingChainChange: (chain: ChainEnum) => void;
   onStartingTokenChange: (token: TokenEnum) => void;
   onDestinationChainChange: (chain: ChainEnum) => void;
 };

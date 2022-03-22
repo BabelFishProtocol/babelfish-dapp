@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { BridgeDictionary } from '../../config/bridges';
+import { ChainEnum } from '../../config/chains';
 import { tokens } from '../../config/tokens';
 import { Reducers } from '../../constants';
 import {
@@ -8,7 +9,7 @@ import {
   Bridge__factory,
   ERC20__factory,
 } from '../../contracts/types';
-import { providerSelector } from '../app/app.selectors';
+import { chainIdSelector, providerSelector } from '../app/app.selectors';
 
 const aggregatorState = (state: RootState) => state[Reducers.Aggregator];
 
@@ -27,19 +28,9 @@ export const startingTokenSelector = createSelector(
   (state) => state.startingToken
 );
 
-export const startingChainSelector = createSelector(
-  aggregatorState,
-  (state) => state.startingChain
-);
-
 export const destinationChainSelector = createSelector(
   aggregatorState,
   (state) => state.destinationChain
-);
-
-export const wrongChainConnectedErrorSelector = createSelector(
-  aggregatorState,
-  (state) => state.wrongChainConnectedError
 );
 
 export const allowTokensAddressSelector = createSelector(
@@ -48,7 +39,7 @@ export const allowTokensAddressSelector = createSelector(
 );
 
 export const bridgeContractSelector = createSelector(
-  [providerSelector, startingChainSelector, destinationChainSelector],
+  [providerSelector, chainIdSelector, destinationChainSelector],
   (provider, startingChain, destinationChain) => {
     if (!provider || !startingChain || !destinationChain) {
       return undefined;
@@ -82,13 +73,15 @@ export const allowTokensContractSelector = createSelector(
 );
 
 export const startingTokenContractSelector = createSelector(
-  [providerSelector, startingChainSelector, startingTokenSelector],
+  [providerSelector, chainIdSelector, startingTokenSelector],
   (provider, startingChain, startingToken) => {
     if (!provider || !startingChain || !startingToken) {
       return undefined;
     }
 
-    const address = tokens[startingToken].addresses[startingChain];
+    // TODO: assert startingChain typeof ChainEnum
+
+    const address = tokens[startingToken].addresses[startingChain as ChainEnum];
 
     if (!address) {
       return undefined;

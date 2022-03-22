@@ -22,16 +22,17 @@ import { AggregatorInfo } from './AggregatorInfo/AggregatorInfo.component';
 import {
   useAggregatorDropdowns,
   useAvailableBalance,
+  useConnectedChain,
 } from './Aggregator.hooks';
 import { /* mainnetPool, */ testnetPool } from '../../config/pools';
 
+// TODO: add current  pool to the store
 const pool = testnetPool;
 
 export const AggregatorComponent = ({
   getTokenAvailableBalance,
   getReceiveAmount,
   onSubmit,
-  onStartingChainChange,
   onDestinationChainChange,
   onStartingTokenChange,
 }: AggregatorComponentProps) => {
@@ -66,17 +67,13 @@ export const AggregatorComponent = ({
     setValue
   );
 
+  useConnectedChain(startingChain, setValue);
+
   const { availableBalance } = useAvailableBalance(
     startingToken,
     getTokenAvailableBalance,
     resetField
   );
-
-  useEffect(() => {
-    if (startingChain) {
-      onStartingChainChange(startingChain);
-    }
-  }, [startingChain, onStartingChainChange]);
 
   useEffect(() => {
     if (startingToken) {
