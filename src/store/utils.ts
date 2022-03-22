@@ -1,11 +1,10 @@
 import { BaseContract } from 'ethers';
 import { ParamType } from 'ethers/lib/utils';
 import { ContractCall } from 'ethers-multicall';
-import { SagaIterator } from 'redux-saga';
-import { ActionPattern } from 'redux-saga/effects';
 import { call, cancel, fork, take, takeLatest } from 'typed-redux-saga';
 
 import { appActions } from './app/app.slice';
+import { CreateWatcherSagaOptions } from './types';
 
 export const convertForMulticall = <
   Contract extends BaseContract,
@@ -29,12 +28,6 @@ export const convertForMulticall = <
   };
 
   return contractCall;
-};
-
-type CreateWatcherSagaOptions = {
-  fetchSaga: () => SagaIterator;
-  updateSaga: () => SagaIterator;
-  stopAction: ActionPattern;
 };
 
 /**
