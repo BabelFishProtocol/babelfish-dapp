@@ -62,7 +62,11 @@ export const DelegateVestComponent = ({
         title="Delegate To"
         placeholder="Enter or paste delegate address"
       />
-      <FeeEstimator control={control} estimateFee={estimateFee} />
+      <FeeEstimator
+        control={control}
+        estimateFee={estimateFee}
+        name={DelegateVestFields.delegateTo}
+      />
     </DialogForm>
   );
 };

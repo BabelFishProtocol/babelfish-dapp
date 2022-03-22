@@ -129,6 +129,8 @@ function* setSingleVest(
 
   const startDate = yield* call(vesting.startDate);
   const endDate = yield* call(vesting.endDate);
+  const cliff = yield* call(vesting.cliff);
+
   vestsList.push({
     asset: 'FISH',
     unlockDate: endDate.toNumber(),
@@ -137,6 +139,7 @@ function* setSingleVest(
     stakingPeriodStart: startDate.toNumber(),
     address: vestAddress.address,
     addressType: vestAddress.type,
+    cliff: cliff.toNumber(),
   });
 }
 

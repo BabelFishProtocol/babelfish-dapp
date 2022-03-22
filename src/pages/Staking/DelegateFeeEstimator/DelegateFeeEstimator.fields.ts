@@ -1,28 +1,20 @@
 import { BigNumber } from 'ethers';
-import { Control } from 'react-hook-form';
+import { Control, Path } from 'react-hook-form';
 
-export enum DelegateFields {
+export enum Fields {
   delegateTo = 'delegateTo',
+  withdrawTo = 'withdrawTo',
 }
 
-export type DelegateValues = {
-  [DelegateFields.delegateTo]: string;
-};
+export type FeeEstimator = (to: string) => Promise<BigNumber | undefined>;
 
-export const delegateDefaultValues = {
-  [DelegateFields.delegateTo]: '',
-};
-
-export type DelegateFeeEstimator = (
-  delegateTo: string
-) => Promise<BigNumber | undefined>;
-
-export type FeeEstimatorProps = {
-  estimateFee: DelegateFeeEstimator;
-  control: Control<DelegateValues>;
-};
+export interface FeeEstimatorProps<FormValues> {
+  name: Path<FormValues>;
+  estimateFee: FeeEstimator;
+  control: Control<FormValues>;
+}
 
 export type UseEstimateDelegateFeeConfig = {
-  delegateTo: string;
-  estimator: DelegateFeeEstimator;
+  to: string;
+  estimator: FeeEstimator;
 };

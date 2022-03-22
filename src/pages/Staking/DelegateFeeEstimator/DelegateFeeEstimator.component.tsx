@@ -1,24 +1,25 @@
 import Typography from '@mui/material/Typography';
 import { useWatch } from 'react-hook-form';
 import { formatWeiAmount } from '../../../utils/helpers';
-import {
-  DelegateFields,
-  FeeEstimatorProps,
-} from './DelegateFeeEstimator.fields';
+import { FeeEstimatorProps } from './DelegateFeeEstimator.fields';
 import { useEstimateDelegateFee } from './DelegateFeeEstimator.hooks';
 
-export const FeeEstimator = ({ control, estimateFee }: FeeEstimatorProps) => {
-  const watchDelegateTo = useWatch({
+export function FeeEstimator<FormValues>({
+  name,
+  control,
+  estimateFee,
+}: FeeEstimatorProps<FormValues>) {
+  const watchTo = useWatch({
     control,
-    name: DelegateFields.delegateTo,
+    name,
   });
 
   const estimatedFee = useEstimateDelegateFee({
-    delegateTo: watchDelegateTo,
+    to: watchTo as string,
     estimator: estimateFee,
   });
 
   return (
     <Typography>Tx Fee: {formatWeiAmount(estimatedFee, 7)} RBTC</Typography>
   );
-};
+}

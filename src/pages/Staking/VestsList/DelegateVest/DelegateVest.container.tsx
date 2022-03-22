@@ -14,7 +14,7 @@ import {
 } from '../../../../store/staking/staking.selectors';
 
 import { DelegateVestComponent } from './DelegateVest.component';
-import { DelegateFeeEstimator } from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
+import { FeeEstimator } from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
 import { DelegateVestContainerProps } from './DelegateVest.types';
 import { DelegateVestValues } from './DelegateVest.fields';
 
@@ -39,7 +39,7 @@ export const DelegateVestContainer = ({
   const { handleSubmit: onDelegate, ...delegateTxData } =
     useContractCall(handleDelegate);
 
-  const estimateFee: DelegateFeeEstimator = useCallback(
+  const estimateFee: FeeEstimator = useCallback(
     (delegateTo) => {
       if (!vesting || !selectedVestData) {
         throw new Error('missing data');

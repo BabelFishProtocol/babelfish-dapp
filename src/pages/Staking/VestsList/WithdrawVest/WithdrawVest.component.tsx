@@ -1,54 +1,57 @@
-import { useState } from 'react';
-
-import Typography from '@mui/material/Typography';
-
+import { useForm } from 'react-hook-form';
 import { formatWeiAmount } from '../../../../utils/helpers';
-import { TextInput } from '../../../../components/TextInput/TextInput.component';
 import { DialogForm } from '../../../../components/DialogForm/DialogForm.component';
 import { CurrencyInput } from '../../../../components/CurrencyInput/CurrencyInput.component';
 
 import { WithdrawVestComponentProps } from './WithdrawVest.types';
+import {
+  withdrawVestDefaultValues,
+  WithdrawVestFields,
+  WithdrawVestFormValues,
+} from './WithdrawVest.fields';
+import { FeeEstimator } from '../../DelegateFeeEstimator/DelegateFeeEstimator.component';
+import { ControlledAddressInput } from '../../../../components/AddressInput/AddressInput.controlled';
 
 export const WithdrawVestComponent = ({
   open,
   onClose,
-  delegate,
-  unlockedAmount,
+  onWithdraw,
+  isLocked,
+  currentVestAmount,
+  estimateFee,
 }: WithdrawVestComponentProps) => {
-  const [recipient, setRecipient] = useState(delegate);
-
-  const onRecipientChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRecipient(e.target.value);
-  };
+  const { control, handleSubmit, formState } = useForm<WithdrawVestFormValues>({
+    mode: 'onChange',
+    defaultValues: withdrawVestDefaultValues,
+  });
 
   return (
     <DialogForm
       open={open}
-      isValid
       onClose={onClose}
       title="UnStake Fish"
       leftButtonText="Confirm"
+      isValid={formState.isValid || !isLocked}
+      handleSubmit={handleSubmit(onWithdraw)}
     >
-      <TextInput
-        autoFocus
-        title="Receive FISH At"
-        value={recipient}
-        onChange={onRecipientChange}
-        placeholder="Enter or place address"
-      />
-
       <CurrencyInput
         disabled
         symbol="FISH"
-        value={unlockedAmount}
+        value={formatWeiAmount(currentVestAmount)}
         title="Unlocked FISH"
       />
-
-      <FeeEstimator />
+      <ControlledAddressInput
+        autoFocus
+        title="Address To Unstake"
+        name={WithdrawVestFields.withdrawTo}
+        control={control}
+        placeholder="Enter or paste withdraw address"
+      />
+      <FeeEstimator
+        control={control}
+        estimateFee={estimateFee}
+        name={WithdrawVestFields.withdrawTo}
+      />
     </DialogForm>
   );
 };
-
-const FeeEstimator = () => (
-  <Typography>Tx Fee: {formatWeiAmount('30000000000000', 7)} RBTC</Typography>
-);

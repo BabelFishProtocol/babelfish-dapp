@@ -12,6 +12,7 @@ export type VestListItem = StakeListItem & {
   stakingPeriodStart: number;
   address: string;
   addressType: VestListAddress['type'];
+  cliff: number;
 };
 
 export type VestListAddress = {
