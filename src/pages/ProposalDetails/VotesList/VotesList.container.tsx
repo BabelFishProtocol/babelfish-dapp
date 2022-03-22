@@ -1,46 +1,23 @@
+import { useSelector } from 'react-redux';
+import {
+  againstVotesSelector,
+  proposalDetailsStateSelector,
+  proVotesSelector,
+} from '../../../store/proposals/proposals.selectors';
 import { VotesListComponent } from './VotesList.component';
-import { VotesListItem } from './VotesList.types';
 
-const votesFor: VotesListItem[] = [
-  {
-    address: '0x94e907f6B903A393E14FE549113137CA6483b5ef',
-    txHash:
-      '0xadb9ea14f77e9e8bad80a78cbf0e84199e892a9b090e5f96dbc398e3a3778bf6',
-    votes: '100',
-  },
-  {
-    address: '0x94e907f6B903A393E14FE549113137CA6483b5ef',
-    txHash:
-      '0xadb9ea14f77e9e8bad80a78cbf0e84199e892a9b090e5f96dbc398e3a3778bf6',
-    votes: '100',
-  },
-  {
-    address: '0x94e907f6B903A393E14FE549113137CA6483b5ef',
-    txHash:
-      '0xadb9ea14f77e9e8bad80a78cbf0e84199e892a9b090e5f96dbc398e3a3778bf6',
-    votes: '100',
-  },
-];
+export const AgainstVotesListContainer = () => {
+  const againstVotes = useSelector(againstVotesSelector);
+  const state = useSelector(proposalDetailsStateSelector);
 
-const votesAgainst: VotesListItem[] = [
-  {
-    address: '0x94e907f6B903A393E14FE549113137CA6483b5ef',
-    txHash:
-      '0xadb9ea14f77e9e8bad80a78cbf0e84199e892a9b090e5f96dbc398e3a3778bf6',
-    votes: '200',
-  },
-  {
-    address: '0x94e907f6B903A393E14FE549113137CA6483b5ef',
-    txHash:
-      '0xadb9ea14f77e9e8bad80a78cbf0e84199e892a9b090e5f96dbc398e3a3778bf6',
-    votes: '300',
-  },
-];
+  return (
+    <VotesListComponent votes={againstVotes} state={state} type="against" />
+  );
+};
 
-export const AgainstVotesListContainer = () => (
-  <VotesListComponent votes={votesAgainst} type="against" />
-);
+export const ForVotesListContainer = () => {
+  const proVotes = useSelector(proVotesSelector);
+  const state = useSelector(proposalDetailsStateSelector);
 
-export const ForVotesListContainer = () => (
-  <VotesListComponent votes={votesFor} type="for" />
-);
+  return <VotesListComponent votes={proVotes} state={state} type="for" />;
+};

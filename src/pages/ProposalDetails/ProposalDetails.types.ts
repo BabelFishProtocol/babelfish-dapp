@@ -1,20 +1,8 @@
 import { ProposalState } from '../../constants';
+import { ProposalDetails } from '../../store/proposals/proposals.state';
 import { FiniteStates } from '../../utils/types';
 
-export type ProposalData = {
-  id: string;
-  name: string;
-  eta: number;
-  endDate: string;
-  endBlock: string;
-  startDate: string;
-  startBlock: string;
-  description: string;
-  proposedBy: string;
-  contractAddress: string;
-  functionToInvoke: string;
-  state: ProposalState;
-};
+export type ProposalData = Omit<ProposalDetails, 'votes'>;
 
 export type VoteStatus = {
   type?: 'for' | 'against';
@@ -23,21 +11,14 @@ export type VoteStatus = {
 
 export type VoteButtonProps = {
   voteStatus: VoteStatus;
-  proposalState: ProposalState;
+  proposalState?: ProposalState;
 };
 
-export type ProposalDetailsComponentProps = VotesRatioBlockProps & {
+export type ProposalDetailsComponentProps = {
   proposal: ProposalData;
   voteStatus: VoteStatus;
   /** flag to determine whether current account is the guardian of the proposal */
   isGuardian: boolean;
-};
-
-export type VotesRatioBlockProps = {
-  /** percentage of pro votes */
-  votesRatio: number;
-  forVotes: string;
-  againstVotes: string;
 };
 
 export type ProposalInfoItemProps = {

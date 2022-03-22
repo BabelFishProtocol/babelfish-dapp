@@ -1,12 +1,10 @@
-export type VotesListItem = {
-  address: string;
-  txHash: string;
-  votes: string;
-};
+import { Vote } from '../../../store/proposals/proposals.state';
+import { FiniteStates } from '../../../utils/types';
 
 export type VotesListComponentProps = {
-  votes: VotesListItem[];
+  votes: Vote[];
   type: 'for' | 'against';
+  state: FiniteStates;
 };
 
 export type TableIconProps = {

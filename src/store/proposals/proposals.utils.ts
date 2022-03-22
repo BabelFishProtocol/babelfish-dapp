@@ -4,11 +4,11 @@ import { getFutureTimestamp } from '../../utils/helpers';
 
 import { Proposal } from './proposals.state';
 
-const parseProposal = (
+export const parseProposal = (
   proposal: ProposalListQueryItem,
   proposalState: ProposalState
 ): Proposal => {
-  const { proposalId, description } = proposal;
+  const { proposalId, description, contractAddress } = proposal;
 
   const startTime = Number(proposal.startDate);
   const startBlock = Number(proposal.startBlock);
@@ -27,6 +27,7 @@ const parseProposal = (
     startBlock,
     startTime,
     id: proposalId,
+    contractAddress,
     state: proposalState,
     title: `${proposalId.padStart(3, '0')} • ${description}`,
   };

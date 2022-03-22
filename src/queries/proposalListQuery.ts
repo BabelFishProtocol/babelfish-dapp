@@ -8,6 +8,7 @@ export type ProposalListQueryItem = {
   startDate: string;
   endBlock: string;
   startBlock: string;
+  contractAddress: string;
 };
 
 export type ProposalListQueryResult = {
@@ -22,6 +23,7 @@ const findProposalsQuery = gql`
       startBlock
       endBlock
       proposalId
+      contractAddress
     }
   }
 `;

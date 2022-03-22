@@ -1,9 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
 import { ActionsType } from '../types';
-import { Proposal, ProposalsState } from './proposals.state';
+import { Proposal, ProposalDetails, ProposalsState } from './proposals.state';
 
 const initialState = { ...new ProposalsState() };
+
+type ProposalUrlParams = Partial<Pick<Proposal, 'id' | 'contractAddress'>>;
 
 export const appSlice = createSlice({
   name: Reducers.Proposals,
@@ -27,6 +29,34 @@ export const appSlice = createSlice({
     setProposalsList: (state, { payload }: PayloadAction<Proposal[]>) => {
       state.proposalsList.data = payload;
       state.proposalsList.state = 'success';
+    },
+    watchDetails: (state, { payload }: PayloadAction<ProposalUrlParams>) => {
+      state.selectedProposal = payload;
+    },
+    stopWatchingDetails: (state) => {
+      state.proposalDetails.state = 'idle';
+      state.selectedProposal = {};
+    },
+    fetchDetails: (state) => {
+      state.proposalDetails = {
+        data: undefined,
+        state: 'loading',
+      };
+    },
+    updateDetails: (state) => {
+      state.proposalDetails.state = 'loading';
+    },
+    fetchDetailsFailure: (state) => {
+      state.proposalDetails = {
+        data: undefined,
+        state: 'failure',
+      };
+    },
+    setDetails: (state, { payload }: PayloadAction<ProposalDetails>) => {
+      state.proposalDetails = {
+        data: payload,
+        state: 'success',
+      };
     },
   },
 });

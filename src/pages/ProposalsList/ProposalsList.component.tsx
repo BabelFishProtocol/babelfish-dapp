@@ -28,8 +28,12 @@ import { ProposalsListComponentProps } from './ProposalsList.types';
 /** Needed because DataTable is not accepting booleans */
 type RowData = Omit<Proposal, 'canceled' | 'executed'>;
 
-const ViewProposalComponent: CustomColumn<RowData> = ({ value }) => (
-  <MuiLink component={Link} color="textPrimary" to={String(value)}>
+const ViewProposalComponent: CustomColumn<RowData> = ({ value, rowData }) => (
+  <MuiLink
+    component={Link}
+    color="textPrimary"
+    to={`${rowData.contractAddress}/${value}`}
+  >
     View Proposal
   </MuiLink>
 );

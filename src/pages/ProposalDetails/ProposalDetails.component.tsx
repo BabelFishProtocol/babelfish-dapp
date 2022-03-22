@@ -28,14 +28,16 @@ import {
   VoteForButton,
 } from './ProposalDetails.voteButtons';
 import { VotesRatioBlock } from './ProposalDetails.votesRatio';
+import {
+  formatTimestamp,
+  formatWeiAmount,
+  truncateString,
+} from '../../utils/helpers';
 
 export const ProposalDetailsComponent = ({
   proposal,
-  forVotes,
   voteStatus,
-  votesRatio,
   isGuardian,
-  againstVotes,
 }: ProposalDetailsComponentProps) => (
   <PageView
     title={
@@ -55,24 +57,28 @@ export const ProposalDetailsComponent = ({
           >
             {'<'}
           </IconButton>
-          <Typography variant="h2">{proposal.name}</Typography>
+          <Typography variant="h2">
+            {truncateString(proposal.title, 70)}
+          </Typography>
         </CenteredBox>
 
-        <Typography variant="body1">Voting Ends {proposal.endDate}</Typography>
+        <Typography variant="body1">
+          Voting Ends: {formatTimestamp(proposal.endTime)}
+        </Typography>
       </Box>
     }
   >
     <Grid container>
       <Grid item sm={12} sx={{ p: ({ spacing }) => spacing(0, 2) }}>
-        <VotesRatioBlock
-          votesRatio={votesRatio}
-          forVotes={forVotes}
-          againstVotes={againstVotes}
-        />
+        <VotesRatioBlock />
       </Grid>
 
       <Grid item sm={6} p={1}>
-        <VoteActionBlock votesAmount={`${forVotes} VOTES FOR`}>
+        <VoteActionBlock
+          votesAmount={`${formatWeiAmount(
+            proposal.forVotesAmount || 0
+          )} VOTES FOR`}
+        >
           <VoteForButton
             voteStatus={voteStatus}
             proposalState={proposal.state}
@@ -81,27 +87,35 @@ export const ProposalDetailsComponent = ({
 
         <ForVotesListContainer />
 
-        <Container sx={{ p: 2, mt: 2, height: 220 }}>
-          <Typography variant="body2" sx={{ height: 130 }}>
+        <Container sx={{ p: 2, mt: 2, minHeight: 300 }}>
+          <Typography variant="body2" sx={{ mb: 2 }}>
             {proposal.description}
           </Typography>
 
-          <ProposalInfoItem label="Function to invoke" width={140}>
-            <Typography color="primary" variant="body2" component="span">
-              {proposal.functionToInvoke}
-            </Typography>
-          </ProposalInfoItem>
+          {(proposal.actions || []).map(({ contract, signature }, index) => (
+            <div key={index}>
+              <ProposalInfoItem label="Function to invoke" width={140}>
+                <Typography color="primary" variant="body2" component="span">
+                  {signature}
+                </Typography>
+              </ProposalInfoItem>
 
-          <ProposalInfoItem label="Contract Address" width={140}>
-            <Typography color="primary" variant="body2" component="span">
-              {proposal.contractAddress}
-            </Typography>
-          </ProposalInfoItem>
+              <ProposalInfoItem label="Contract Address" width={140}>
+                <Typography color="primary" variant="body2" component="span">
+                  {contract}
+                </Typography>
+              </ProposalInfoItem>
+            </div>
+          ))}
         </Container>
       </Grid>
 
       <Grid item sm={6} p={1}>
-        <VoteActionBlock votesAmount={`${againstVotes} VOTES AGAINST`}>
+        <VoteActionBlock
+          votesAmount={`${formatWeiAmount(
+            proposal.againstVotesAmount
+          )} VOTES AGAINST`}
+        >
           <VoteAgainstButton
             voteStatus={voteStatus}
             proposalState={proposal.state}
@@ -114,19 +128,21 @@ export const ProposalDetailsComponent = ({
           sx={{
             p: 2,
             mt: 2,
-            height: 220,
+            minHeight: 300,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-evenly',
           }}
         >
           <ProposalInfoItem label="Proposed by">
-            <PrettyTx value={proposal.proposedBy} />
+            <PrettyTx value={proposal.proposer} />
           </ProposalInfoItem>
 
           <ProposalInfoItem label="Proposed on">
             <Box>
-              <Typography variant="body2">{proposal.startDate}</Typography>
+              <Typography variant="body2">
+                {formatTimestamp(proposal.startTime)}
+              </Typography>
               <Typography color="primary" variant="body2">
                 #{proposal.startBlock}
               </Typography>
@@ -135,7 +151,9 @@ export const ProposalDetailsComponent = ({
 
           <ProposalInfoItem label="Deadline">
             <Box>
-              <Typography variant="body2">{proposal.endDate}</Typography>
+              <Typography variant="body2">
+                {formatTimestamp(proposal.endTime)}
+              </Typography>
               <Typography color="primary" variant="body2">
                 #{proposal.endBlock}
               </Typography>
@@ -160,7 +178,7 @@ export const ProposalDetailsComponent = ({
               </Button>
             )}
             {proposal.state === ProposalState.Queued &&
-              proposal.eta <= new Date().getTime() / 1000 && (
+              Number(proposal.eta) <= new Date().getTime() / 1000 && (
                 <Button variant="outlined" size="small">
                   Execute
                 </Button>
