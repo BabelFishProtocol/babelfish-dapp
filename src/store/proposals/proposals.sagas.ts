@@ -1,17 +1,8 @@
 import { Provider as MulticallProvider } from 'ethers-multicall';
-import {
-  all,
-  put,
-  call,
-  fork,
-  take,
-  cancel,
-  select,
-  takeLatest,
-} from 'typed-redux-saga';
+import { all, put, call, select, takeLatest } from 'typed-redux-saga';
 
 import { GovernorAlpha } from '../../contracts/types';
-import { convertForMulticall } from '../utils';
+import { convertForMulticall, createWatcherSaga } from '../utils';
 
 import {
   ProposalListQueryItem,
@@ -25,7 +16,6 @@ import {
   subgraphClientSelector,
   multicallProviderSelector,
 } from '../app/app.selectors';
-import { appActions } from '../app/app.slice';
 
 import { Proposal } from './proposals.state';
 import { parseProposals } from './proposals.utils';
@@ -112,29 +102,16 @@ function* triggerUpdate() {
   yield* put(proposalsActions.updateProposalsList());
 }
 
-function* runUpdater() {
-  yield* triggerFetch();
-
-  yield* takeLatest(
-    [appActions.setAccount.type, appActions.setBlockNumber.type],
-    triggerUpdate
-  );
-
-  yield* takeLatest([appActions.walletConnected.type], triggerFetch);
-}
-
-function* watchProposalsData() {
-  const updaterTask = yield* fork(runUpdater);
-
-  yield* take(proposalsActions.stopWatchingProposalsList.type);
-
-  yield* cancel(updaterTask);
-}
+const watchProposalsList = createWatcherSaga({
+  fetchSaga: triggerFetch,
+  updateSaga: triggerUpdate,
+  stopAction: proposalsActions.stopWatchingProposalsList.type,
+});
 
 export function* proposalsSaga() {
   yield* all([
     takeLatest(proposalsActions.fetchProposalsList.type, fetchProposalsList),
     takeLatest(proposalsActions.updateProposalsList.type, fetchProposalsList),
-    takeLatest(proposalsActions.watchProposalsList.type, watchProposalsData),
+    takeLatest(proposalsActions.watchProposalsList.type, watchProposalsList),
   ]);
 }

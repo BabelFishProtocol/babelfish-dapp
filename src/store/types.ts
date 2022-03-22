@@ -1,5 +1,7 @@
 import { ActionCreatorsMapObject } from '@reduxjs/toolkit';
 import { Contract, Signer } from 'ethers';
+import { SagaIterator } from 'redux-saga';
+import { ActionPattern } from 'redux-saga/effects';
 import { FiniteStates } from '../utils/types';
 
 export type LoadableValue<Data> = {
@@ -15,4 +17,10 @@ export type ActionsType<A extends ActionCreatorsMapObject> = {
 
 export type BaseContractFactory = {
   connect: (address: string, signer: Signer) => Contract;
+};
+
+export type CreateWatcherSagaOptions = {
+  fetchSaga: () => SagaIterator;
+  updateSaga: () => SagaIterator;
+  stopAction: ActionPattern;
 };
