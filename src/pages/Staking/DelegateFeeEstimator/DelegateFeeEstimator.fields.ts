@@ -6,21 +6,6 @@ export enum Fields {
   withdrawTo = 'withdrawTo',
 }
 
-export type DelegateValues = {
-  [Fields.delegateTo]: string;
-};
-
-export type WithdrawValues = {
-  [Fields.withdrawTo]: string;
-};
-
-export const delegateDefaultValues = {
-  [Fields.delegateTo]: '',
-};
-export const withdrawDefaultValues = {
-  [Fields.withdrawTo]: '',
-};
-
 export type FeeEstimator = (to: string) => Promise<BigNumber | undefined>;
 
 export interface FeeEstimatorProps<FormValues> {
