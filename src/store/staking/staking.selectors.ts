@@ -76,6 +76,11 @@ export const selectedVestSelector = createSelector(
   }
 );
 
+export const isSelectedVestLockedSelector = createSelector(
+  selectedVestSelector,
+  (vest) => (vest ? isTimeStampLocked(vest.unlockDate) : undefined)
+);
+
 export const selectedVestContractSelector = createSelector(
   [providerSelector, selectedVestSelector],
   (provider, selectedVest) => {

@@ -10,9 +10,11 @@ import { useContractCall } from '../../../../hooks/useContractCall';
 import { SubmitStatusDialog } from '../../../../components/TxDialog/TxDialog.component';
 
 import { DelegateStakeComponent } from './DelegateStake.component';
-import { DelegateStakeContainerProps } from './DelegateStake.types';
+import {
+  DelegateFeeEstimator,
+  DelegateStakeContainerProps,
+} from './DelegateStake.types';
 import { DelegateStakeValues } from './DelegateStake.fields';
-import { DelegateFeeEstimator } from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
 
 export const DelegateStakeContainer = ({
   open,
