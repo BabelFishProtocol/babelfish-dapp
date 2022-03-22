@@ -37,6 +37,14 @@ type CreateWatcherSagaOptions = {
   stopAction: ActionPattern;
 };
 
+/**
+ * @description function that creates sagas that triggers fetch and update with wallet updates
+ * @param options Object containing:
+ *  - fetchSaga: saga to fetch data. Will be triggered on: account and block number changes
+ *  - updateSaga: saga to update data. Will be triggered on: watching start, chainId changes
+ *  - stopAction: name of action that will stop saga watching
+ * @returns saga that should be hooked up to "watching start" action
+ */
 export const createWatcherSaga = ({
   fetchSaga,
   updateSaga,
