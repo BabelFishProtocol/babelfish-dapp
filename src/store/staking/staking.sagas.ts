@@ -1,15 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
 import { constants } from 'ethers';
-import {
-  all,
-  put,
-  call,
-  fork,
-  take,
-  cancel,
-  select,
-  takeLatest,
-} from 'typed-redux-saga';
+import { all, put, call, select, takeLatest } from 'typed-redux-saga';
 import { Staking } from '../../contracts/types';
 import {
   accountSelector,
@@ -18,7 +9,7 @@ import {
   vestingRegistrySelector,
   providerSelector,
 } from '../app/app.selectors';
-import { appActions } from '../app/app.slice';
+import { createWatcherSaga } from '../utils';
 import { stakingActions } from './staking.slice';
 import { StakeListItem, VestListAddress, VestListItem } from './staking.state';
 import { getVesting } from './staking.utils';
@@ -214,29 +205,16 @@ function* triggerFetch() {
   yield* put(stakingActions.fetchStakingData());
 }
 
-function* runBalancesUpdater() {
-  yield* triggerFetch();
-
-  yield* takeLatest(
-    [appActions.setAccount.type, appActions.setBlockNumber.type],
-    triggerUpdate
-  );
-
-  yield* takeLatest([appActions.walletConnected.type], triggerFetch);
-}
-
-function* watchStakingData() {
-  const updaterTask = yield* fork(runBalancesUpdater);
-
-  yield* take(stakingActions.stopWatchingStakingData.type);
-
-  yield* cancel(updaterTask);
-}
+const watchStaking = createWatcherSaga({
+  fetchSaga: triggerFetch,
+  updateSaga: triggerUpdate,
+  stopAction: stakingActions.stopWatchingStakingData.type,
+});
 
 export function* stakingSaga() {
   yield* all([
     takeLatest(stakingActions.fetchStakingData.type, fetchBalances),
     takeLatest(stakingActions.updateStakingData.type, updateBalances),
-    takeLatest(stakingActions.watchStakingData.type, watchStakingData),
+    takeLatest(stakingActions.watchStakingData.type, watchStaking),
   ]);
 }

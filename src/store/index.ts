@@ -16,13 +16,13 @@ export const rootReducer = {
 
 const sagaMiddleware = createSagaMiddleware();
 
-export const getStore = () => {
+export const getStore = (rootSaga = indexSaga, reducer = rootReducer) => {
   const store = configureStore({
-    reducer: rootReducer,
+    reducer,
     middleware: [sagaMiddleware],
   });
 
-  sagaMiddleware.run(indexSaga);
+  sagaMiddleware.run(rootSaga);
 
   return store;
 };
