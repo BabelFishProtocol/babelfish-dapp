@@ -26,7 +26,6 @@ export type AddProposalContainerProps = Pick<
 >;
 
 export type AddProposalStatusDialogProps = {
-  isOpenDialog: boolean;
   onClose: () => void;
   status: FiniteStates;
   message?: string;

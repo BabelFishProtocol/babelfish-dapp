@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDialog } from '../../components/AppDialog/AppDialog.component';
 import {
-  proposalErrorSelector,
-  proposalStateSelector,
-} from '../../store/proposal/proposal.selectors';
-import { proposalActions } from '../../store/proposal/proposal.slice';
+  addProposalErrorSelector,
+  addProposalStateSelector,
+} from '../../store/proposals/proposals.selectors';
+import { proposalsActions } from '../../store/proposals/proposals.slice';
 import { AddProposal } from './AddProposal.component';
 import {
   AddProposalContainerProps,
@@ -18,39 +18,31 @@ import successIcon from '../../assets/icons/success.svg';
 import errorIcon from '../../assets/icons/error.svg';
 
 const AddProposalStatusDialog = ({
-  isOpenDialog,
   onClose,
   status,
   message,
 }: AddProposalStatusDialogProps) => (
   <>
-    {status === 'loading' && (
-      <AppDialog
-        title="Please Wait"
-        description="Your proposal is being added. Please wait"
-        isOpenDialog={isOpenDialog}
-        onClose={onClose}
-        icon={loadingIcon}
-      />
-    )}
-    {status === 'success' && (
-      <AppDialog
-        title="Success"
-        description="Your proposal was added successfully"
-        isOpenDialog={isOpenDialog}
-        onClose={onClose}
-        icon={successIcon}
-      />
-    )}
-    {status === 'failure' && (
-      <AppDialog
-        title="Error Occured"
-        description={message ?? 'There was a problem while adding the proposal'}
-        isOpenDialog={isOpenDialog}
-        onClose={onClose}
-        icon={errorIcon}
-      />
-    )}
+    <AppDialog
+      isOpenDialog={status === 'loading'}
+      title="Please Wait"
+      description="Your proposal is being added. Please wait"
+      icon={loadingIcon}
+    />
+    <AppDialog
+      isOpenDialog={status === 'success'}
+      title="Success"
+      description="Your proposal was added successfully"
+      onClose={onClose}
+      icon={successIcon}
+    />
+    <AppDialog
+      isOpenDialog={status === 'failure'}
+      title="Error Occured"
+      description={message ?? 'There was a problem while adding the proposal'}
+      onClose={onClose}
+      icon={errorIcon}
+    />
   </>
 );
 export const AddProposalContainer = ({
@@ -59,30 +51,23 @@ export const AddProposalContainer = ({
 }: AddProposalContainerProps) => {
   const dispatch = useDispatch();
 
-  const state = useSelector(proposalStateSelector);
-  const errorReason = useSelector(proposalErrorSelector);
-
-  const [showDialog, setShowDialog] = useState(false);
+  const state = useSelector(addProposalStateSelector);
+  const errorReason = useSelector(addProposalErrorSelector);
 
   const onSubmit = (data: AddProposalFields) => {
-    dispatch(proposalActions.startProposal(data));
+    dispatch(proposalsActions.startProposal(data));
   };
 
-  useEffect(() => {
-    if (state !== 'idle') {
-      setShowDialog(true);
-    }
-  }, [state]);
+  const setStateIdle = () => {
+    dispatch(proposalsActions.setAddProposalState('idle'));
+  };
 
   return (
     <>
       <AddProposalStatusDialog
         status={state}
-        isOpenDialog={showDialog}
         message={errorReason}
-        onClose={() => {
-          setShowDialog(false);
-        }}
+        onClose={setStateIdle}
       />
       <AddProposal
         isOpenDialog={isOpenDialog}

@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
+import { AddProposalFields } from '../../pages/AddProposal/AddProposal.types';
+import { FiniteStates } from '../../utils/types';
 import { ActionsType } from '../types';
 import { Proposal, ProposalsState } from './proposals.state';
 
@@ -27,6 +29,19 @@ export const appSlice = createSlice({
     setProposalsList: (state, { payload }: PayloadAction<Proposal[]>) => {
       state.proposalsList.data = payload;
       state.proposalsList.state = 'success';
+    },
+    startProposal: (state, _: PayloadAction<AddProposalFields>) => {
+      state.addProposalState = 'loading';
+    },
+    porposalFailure: (state, { payload }: PayloadAction<string>) => {
+      state.addProposalState = 'failure';
+      state.addProposalErrorReason = payload;
+    },
+    proposalSuccess: (state) => {
+      state.addProposalState = 'success';
+    },
+    setAddProposalState: (state, { payload }: PayloadAction<FiniteStates>) => {
+      state.addProposalState = payload;
     },
   },
 });

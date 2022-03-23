@@ -8,3 +8,13 @@ export const proposalsListSelector = createSelector(
   proposalsState,
   (state) => state.proposalsList
 );
+
+export const addProposalStateSelector = createSelector(
+  proposalsState,
+  (state) => state.addProposalState
+);
+
+export const addProposalErrorSelector = createSelector(
+  proposalsState,
+  (state) => state.addProposalErrorReason
+);
