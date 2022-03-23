@@ -9,15 +9,9 @@ import {
   selectedProposalSelector,
 } from '../proposals.selectors';
 
-import { proposalsActions } from '../proposals.slice';
-import { ProposalDetails } from '../proposals.state';
 import { parseProposal } from '../proposals.utils';
-
-/**
- * figure out a way to get proposal id and contract address (governorAdmin vs governorOwner) - git
- * create selectedProposal state and populate in on page load, add both address and id to url? - git
- * add calldata, figure out good way to make all containers the same height
- */
+import { ProposalDetails } from '../proposals.state';
+import { proposalsActions } from '../proposals.slice';
 
 export function* fetchProposalDetails() {
   try {
@@ -50,9 +44,25 @@ export function* fetchProposalDetails() {
       proposalState as unknown as ProposalState
     );
 
+    const {
+      eta,
+      votes,
+      actions,
+      proposer,
+      description,
+      forVotesAmount,
+      againstVotesAmount,
+    } = proposalDetails;
+
     const parsedProposal: ProposalDetails = {
-      ...proposalDetails,
       ...baseProposal,
+      eta,
+      votes,
+      actions,
+      proposer,
+      description,
+      forVotesAmount,
+      againstVotesAmount,
     };
 
     yield* put(proposalsActions.setDetails(parsedProposal));
