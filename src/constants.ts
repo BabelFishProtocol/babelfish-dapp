@@ -32,9 +32,11 @@ export enum Reducers {
   App = 'app',
   Staking = 'staking',
   Proposals = 'proposals',
+  Vesting = 'vesting',
 }
 
 export const MAX_STAKING_PERIODS = 78;
+export const FOUR_WEEKS = 2419200;
 export const TWO_WEEKS = 1209600;
 export const ONE_DAY = 86400;
 
@@ -70,6 +72,10 @@ export const fieldsErrors = {
   invalidSignature: 'Value must be a valid Function Signature',
   invalidCalldata: 'Value must be a valid Calldata',
   amountGreaterThanBalance: 'Value cannot be greater than your token balance',
+};
+
+export const selectorsErrors = {
+  missingData: 'Missing data',
 };
 
 export const decimalRegex = /^\d*\.?\d*$/;

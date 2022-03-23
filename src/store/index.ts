@@ -6,23 +6,25 @@ import { appReducer } from './app/app.slice';
 import { stakingReducer } from './staking/staking.slice';
 import { proposalsReducer } from './proposals/proposals.slice';
 import { aggregatorReducer } from './aggregator/aggregator.slice';
+import { vestingReducer } from './vesting/vesting.slice';
 
 export const rootReducer = {
   [Reducers.Aggregator]: aggregatorReducer,
   [Reducers.App]: appReducer,
   [Reducers.Staking]: stakingReducer,
   [Reducers.Proposals]: proposalsReducer,
+  [Reducers.Vesting]: vestingReducer,
 };
 
 const sagaMiddleware = createSagaMiddleware();
 
-export const getStore = () => {
+export const getStore = (rootSaga = indexSaga, reducer = rootReducer) => {
   const store = configureStore({
-    reducer: rootReducer,
+    reducer,
     middleware: [sagaMiddleware],
   });
 
-  sagaMiddleware.run(indexSaga);
+  sagaMiddleware.run(rootSaga);
 
   return store;
 };

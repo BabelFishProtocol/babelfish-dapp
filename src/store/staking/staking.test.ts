@@ -6,27 +6,16 @@ import { combineReducers, DeepPartial } from '@reduxjs/toolkit';
 
 import { pick } from '../../utils/helpers';
 import { Reducers } from '../../constants';
-import {
-  ERC20__factory,
-  Staking,
-  Vesting__factory,
-} from '../../contracts/types';
+import { ERC20__factory, Staking } from '../../contracts/types';
 import { Staking__factory } from '../../contracts/types/factories/Staking__factory';
-import { VestingRegistry__factory } from '../../contracts/types/factories/VestingRegistry__factory';
 import { rootReducer, RootState } from '..';
 
-import {
-  createMockedContract,
-  mockSigner,
-  mockProvider,
-} from '../../testUtils';
+import { createMockedContract, mockSigner } from '../../testUtils';
 
 import {
   accountSelector,
   fishTokenSelector,
-  providerSelector,
   stakingContractSelector,
-  vestingRegistrySelector,
 } from '../app/app.selectors';
 
 import {
@@ -34,22 +23,9 @@ import {
   fetchFishTokenData,
   fetchVotingPower,
   fetchStakesList,
-  fetchVestsList,
 } from './staking.sagas';
 import { stakingActions } from './staking.slice';
-import { StakeListItem, StakingState, VestListItem } from './staking.state';
-
-const getVestingResult = '0x94e907f6B903A393E14FE549113137CA6483b5ef';
-
-const mockVestingFactoryConnect = Vesting__factory.connect(
-  getVestingResult,
-  mockSigner
-);
-
-jest.mock('./staking.utils', () => ({
-  ...jest.requireActual('./staking.utils'),
-  getVesting: jest.fn(() => mockVestingFactoryConnect),
-}));
+import { StakeListItem, StakingState } from './staking.state';
 
 const mockStaking = createMockedContract(
   Staking__factory.connect(constants.AddressZero, mockSigner),
@@ -58,10 +34,6 @@ const mockStaking = createMockedContract(
 
 const mockFishToken = createMockedContract(
   ERC20__factory.connect(constants.AddressZero, mockSigner),
-  true
-);
-const mockVestingRegistry = createMockedContract(
-  VestingRegistry__factory.connect(constants.AddressZero, mockSigner),
   true
 );
 
@@ -423,118 +395,6 @@ describe('staking store', () => {
         .run();
 
       expect(runResult.effects).toEqual({});
-    });
-  });
-  describe('fetchVestsList', () => {
-    const stakes = ['100000', '150000'];
-    const dates = [BigNumber.from(1645564671), BigNumber.from(1645564672)];
-    const delegates = ['0x3443'];
-
-    const getStakesResult: Partial<Awaited<ReturnType<Staking['getStakes']>>> =
-      {
-        dates: dates.map((date) => BigNumber.from(date)),
-        stakes: stakes.map((stake) => BigNumber.from(stake)),
-      };
-
-    const combinedVestsList: VestListItem[] = [
-      {
-        asset: 'FISH',
-        unlockDate: dates[0].toNumber(),
-        lockedAmount: stakes[0],
-        votingDelegation: delegates[0],
-        stakingPeriodStart: dates[0].toNumber(),
-        address: getVestingResult,
-        addressType: 'genesis',
-      },
-    ];
-
-    const successState: DeepPartial<RootState> = {
-      ...initialState,
-      [Reducers.Staking]: {
-        ...initialState[Reducers.Staking],
-        vestsList: { state: 'success', data: combinedVestsList },
-      },
-    };
-
-    const failureState: DeepPartial<RootState> = {
-      ...initialState,
-      [Reducers.Staking]: {
-        ...initialState[Reducers.Staking],
-        vestsList: { state: 'failure', data: [] },
-      },
-    };
-
-    const getBasePath = () =>
-      expectSaga(fetchVestsList)
-        .withReducer(reducer)
-        .withState(initialState)
-        .select(accountSelector)
-        .select(vestingRegistrySelector)
-        .select(stakingContractSelector)
-        .select(providerSelector);
-
-    it('happy path', async () => {
-      await getBasePath()
-        .provide([
-          [matchers.select(accountSelector), testAccount],
-          [matchers.select(stakingContractSelector), mockStaking],
-          [matchers.select(vestingRegistrySelector), mockVestingRegistry],
-          [matchers.select(providerSelector), mockProvider],
-          [matchers.call.fn(mockVestingRegistry.getVesting), getVestingResult],
-          [
-            matchers.call.fn(mockVestingRegistry.getTeamVesting),
-            constants.AddressZero,
-          ],
-          [
-            matchers.call(mockStaking.getStakes, getVestingResult),
-            getStakesResult,
-          ],
-          [matchers.call(mockStaking.balanceOf, getVestingResult), stakes[0]],
-          [
-            matchers.call(
-              mockStaking.delegates,
-              getVestingResult,
-              dates[0].toNumber()
-            ),
-            delegates[0],
-          ],
-          [matchers.call(mockVestingFactoryConnect.startDate), dates[0]],
-          [matchers.call(mockVestingFactoryConnect.endDate), dates[0]],
-        ])
-        .put(stakingActions.setVestsList(combinedVestsList))
-        .hasFinalState(successState)
-        .run();
-    });
-
-    it('when wallet is not connected', async () => {
-      await getBasePath()
-        .provide([
-          [matchers.select(accountSelector), testAccount],
-          [matchers.select(stakingContractSelector), mockStaking],
-          [matchers.select(providerSelector), mockProvider],
-          [matchers.select(vestingRegistrySelector), undefined],
-        ])
-        .put(stakingActions.fetchVestsListFailure())
-        .hasFinalState(failureState)
-        .run();
-
-      expect(mockVestingRegistry.getVesting).not.toHaveBeenCalled();
-      expect(mockVestingRegistry.getTeamVesting).not.toHaveBeenCalled();
-    });
-
-    it('fetching error', async () => {
-      await getBasePath()
-        .provide([
-          [matchers.select(accountSelector), testAccount],
-          [matchers.select(stakingContractSelector), mockStaking],
-          [matchers.select(vestingRegistrySelector), mockVestingRegistry],
-          [matchers.select(providerSelector), mockProvider],
-          [matchers.call.fn(mockVestingRegistry.getVesting), throwError()],
-        ])
-        .call(mockVestingRegistry.getVesting, testAccount)
-        .put(stakingActions.fetchVestsListFailure())
-        .hasFinalState(failureState)
-        .run();
     });
   });
 });

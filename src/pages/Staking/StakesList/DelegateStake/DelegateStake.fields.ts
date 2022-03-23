@@ -1,9 +1,11 @@
-import {
-  DelegateFields,
-  DelegateValues,
-  delegateDefaultValues,
-} from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
+import { Fields } from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
 
-export type DelegateStakeValues = DelegateValues;
-export const DelegateStakeFields = DelegateFields;
-export const delegateStakeDefaultValues = delegateDefaultValues;
+export const DelegateStakeFields = Fields;
+
+export type DelegateStakeValues = {
+  [DelegateStakeFields.delegateTo]: string;
+};
+
+export const delegateStakeDefaultValues = {
+  [DelegateStakeFields.delegateTo]: '',
+};

@@ -1,27 +1,12 @@
-import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
-import { constants } from 'ethers';
-import {
-  all,
-  put,
-  call,
-  fork,
-  take,
-  cancel,
-  select,
-  takeLatest,
-} from 'typed-redux-saga';
-import { Staking } from '../../contracts/types';
+import { all, put, call, select, takeLatest } from 'typed-redux-saga';
 import {
   accountSelector,
   fishTokenSelector,
   stakingContractSelector,
-  vestingRegistrySelector,
-  providerSelector,
 } from '../app/app.selectors';
-import { appActions } from '../app/app.slice';
+import { createWatcherSaga } from '../utils';
 import { stakingActions } from './staking.slice';
-import { StakeListItem, VestListAddress, VestListItem } from './staking.state';
-import { getVesting } from './staking.utils';
+import { StakeListItem } from './staking.state';
 
 export function* fetchFishTokenData() {
   try {
@@ -120,71 +105,6 @@ export function* fetchStakesList() {
   }
 }
 
-function* setSingleVest(
-  staking: Staking,
-  vestAddress: VestListAddress,
-  vestsList: VestListItem[],
-  provider: Web3Provider
-) {
-  const vesting = yield* call(getVesting, vestAddress.address, provider);
-  const { dates } = yield* call(staking.getStakes, vestAddress.address);
-  const balanceOf = yield* call(staking.balanceOf, vestAddress.address);
-
-  const delegate = yield* call(
-    staking.delegates,
-    vestAddress.address,
-    dates[dates.length - 2].toNumber() // TODO: base on governance-dapp, check if we can use below endDate as we need to use date of the end of the stake
-  );
-
-  const startDate = yield* call(vesting.startDate);
-  const endDate = yield* call(vesting.endDate);
-  vestsList.push({
-    asset: 'FISH',
-    unlockDate: endDate.toNumber(),
-    votingDelegation: delegate,
-    lockedAmount: balanceOf.toString(),
-    stakingPeriodStart: startDate.toNumber(),
-    address: vestAddress.address,
-    addressType: vestAddress.type,
-  });
-}
-
-export function* fetchVestsList() {
-  try {
-    const account = yield* select(accountSelector);
-    const vestingRegistry = yield* select(vestingRegistrySelector);
-    const staking = yield* select(stakingContractSelector);
-    const provider = yield* select(providerSelector);
-
-    if (!vestingRegistry || !account || !staking || !provider) {
-      throw new Error('Wallet not connected');
-    }
-
-    const vestsList: VestListItem[] = [];
-    const addresses: VestListAddress[] = [];
-    const vestAddress = yield* call(vestingRegistry.getVesting, account);
-    if (vestAddress && constants.AddressZero !== vestAddress) {
-      addresses.push({ address: vestAddress, type: 'genesis' });
-    }
-    const teamVestsAddresses = yield* call(
-      vestingRegistry.getTeamVesting,
-      account
-    );
-    if (teamVestsAddresses && constants.AddressZero !== teamVestsAddresses) {
-      addresses.push({ address: teamVestsAddresses, type: 'team' });
-    }
-
-    yield* all(
-      addresses.map((address) =>
-        call(setSingleVest, staking, address, vestsList, provider)
-      )
-    );
-    yield* put(stakingActions.setVestsList(vestsList));
-  } catch (e) {
-    yield* put(stakingActions.fetchVestsListFailure());
-  }
-}
-
 /** Fetch data needed for the stake page */
 function* fetchBalances() {
   yield* all([
@@ -192,7 +112,6 @@ function* fetchBalances() {
     call(fetchStakeConstants),
     call(fetchVotingPower),
     call(fetchStakesList),
-    call(fetchVestsList),
   ]);
 }
 
@@ -202,7 +121,6 @@ function* updateBalances() {
     call(fetchFishTokenData),
     call(fetchVotingPower),
     call(fetchStakesList),
-    call(fetchVestsList),
   ]);
 }
 
@@ -214,29 +132,16 @@ function* triggerFetch() {
   yield* put(stakingActions.fetchStakingData());
 }
 
-function* runBalancesUpdater() {
-  yield* triggerFetch();
-
-  yield* takeLatest(
-    [appActions.setAccount.type, appActions.setBlockNumber.type],
-    triggerUpdate
-  );
-
-  yield* takeLatest([appActions.walletConnected.type], triggerFetch);
-}
-
-function* watchStakingData() {
-  const updaterTask = yield* fork(runBalancesUpdater);
-
-  yield* take(stakingActions.stopWatchingStakingData.type);
-
-  yield* cancel(updaterTask);
-}
+const watchStaking = createWatcherSaga({
+  fetchSaga: triggerFetch,
+  updateSaga: triggerUpdate,
+  stopAction: stakingActions.stopWatchingStakingData.type,
+});
 
 export function* stakingSaga() {
   yield* all([
     takeLatest(stakingActions.fetchStakingData.type, fetchBalances),
     takeLatest(stakingActions.updateStakingData.type, updateBalances),
-    takeLatest(stakingActions.watchStakingData.type, watchStakingData),
+    takeLatest(stakingActions.watchStakingData.type, watchStaking),
   ]);
 }

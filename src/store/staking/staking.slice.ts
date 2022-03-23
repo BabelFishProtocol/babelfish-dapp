@@ -6,7 +6,6 @@ import {
   StakeConstants,
   StakeListItem,
   StakingState,
-  VestListItem,
 } from './staking.state';
 
 const initialState = { ...new StakingState() };
@@ -20,24 +19,20 @@ export const stakingSlice = createSlice({
       state.fishToken.state = 'idle';
       state.combinedVotingPower.state = 'idle';
       state.stakesList.state = 'idle';
-      state.vestsList.state = 'idle';
     },
     fetchStakingData: (state) => {
       state.constants.state = 'loading';
       state.fishToken.state = 'loading';
       state.combinedVotingPower.state = 'loading';
       state.stakesList.state = 'loading';
-      state.vestsList.state = 'loading';
       state.fishToken.data = {};
       state.combinedVotingPower.data = undefined;
       state.stakesList.data = [];
-      state.vestsList.data = [];
     },
     updateStakingData: (state) => {
       state.fishToken.state = 'loading';
       state.combinedVotingPower.state = 'loading';
       state.stakesList.state = 'loading';
-      state.vestsList.state = 'loading';
     },
 
     fetchFishTokenDataFailure: (state) => {
@@ -71,17 +66,9 @@ export const stakingSlice = createSlice({
       state.stakesList.data = [];
       state.stakesList.state = 'failure';
     },
-    fetchVestsListFailure: (state) => {
-      state.vestsList.data = [];
-      state.vestsList.state = 'failure';
-    },
     setStakesList: (state, { payload }: PayloadAction<StakeListItem[]>) => {
       state.stakesList.data = payload;
       state.stakesList.state = 'success';
-    },
-    setVestsList: (state, { payload }: PayloadAction<VestListItem[]>) => {
-      state.vestsList.data = payload;
-      state.vestsList.state = 'success';
     },
 
     selectStake: (state, { payload }: PayloadAction<number>) => {
@@ -89,12 +76,6 @@ export const stakingSlice = createSlice({
     },
     clearSelectedStake: (state) => {
       state.selectedStake = undefined;
-    },
-    selectVest: (state, { payload }: PayloadAction<number>) => {
-      state.selectedVest = payload;
-    },
-    clearSelectedVest: (state) => {
-      state.selectedVest = undefined;
     },
   },
 });

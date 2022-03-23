@@ -19,6 +19,7 @@ import {
   IncreaseStakeFormValues,
 } from './IncreaseStake.types';
 import { IncreaseStakeComponent } from './IncreaseStake.component';
+import { selectorsErrors } from '../../../../constants';
 
 export const IncreaseStakeContainer = ({
   open,
@@ -34,7 +35,7 @@ export const IncreaseStakeContainer = ({
   const estimateApproveFee: StakingFeeEstimator = useCallback(
     async (amount: string, _: number) => {
       if (!fishToken || !staking) {
-        throw new Error('missing data');
+        throw new Error(selectorsErrors.missingData);
       }
 
       return fishToken.estimateGas.approve(
@@ -49,7 +50,7 @@ export const IncreaseStakeContainer = ({
     increaseStakeAmount,
   }: IncreaseStakeFormValues) => {
     if (!staking || !fishToken) {
-      throw new Error('missing data');
+      throw new Error(selectorsErrors.missingData);
     }
 
     const tx = await fishToken.approve(
@@ -68,7 +69,7 @@ export const IncreaseStakeContainer = ({
   const estimateStakeFee: StakingFeeEstimator = useCallback(
     async (amount: string, _: number) => {
       if (!staking || !selectedStakeData) {
-        throw new Error('missing data');
+        throw new Error(selectorsErrors.missingData);
       }
 
       return staking.estimateGas.stake(
@@ -83,7 +84,7 @@ export const IncreaseStakeContainer = ({
 
   const onStake = async ({ increaseStakeAmount }: IncreaseStakeFormValues) => {
     if (!staking || !selectedStakeData) {
-      throw new Error('missing data');
+      throw new Error(selectorsErrors.missingData);
     }
 
     const tx = staking?.stake(

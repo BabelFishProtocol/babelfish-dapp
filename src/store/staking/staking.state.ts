@@ -8,17 +8,6 @@ export type StakeListItem = {
   unlockDate: number;
 };
 
-export type VestListItem = StakeListItem & {
-  stakingPeriodStart: number;
-  address: string;
-  addressType: VestListAddress['type'];
-};
-
-export type VestListAddress = {
-  address: string;
-  type: 'genesis' | 'team';
-};
-
 export type FishTokenInfo = {
   fishBalance?: string;
   totalStaked?: string;
@@ -31,7 +20,6 @@ export type StakeConstants = {
 };
 
 export class StakingState {
-  selectedVest?: number;
   selectedStake?: number;
 
   constants: LoadableValue<StakeConstants> = {
@@ -52,14 +40,6 @@ export class StakingState {
   };
 
   stakesList: LoadableValue<StakeListItem[]> = {
-    data: [],
-    state: 'idle',
-  };
-  vestsList: LoadableValue<VestListItem[]> = {
-    data: [],
-    state: 'idle',
-  };
-  vestsAddressesList: LoadableValue<VestListAddress[]> = {
     data: [],
     state: 'idle',
   };

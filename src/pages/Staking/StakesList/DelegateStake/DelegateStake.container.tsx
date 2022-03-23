@@ -10,9 +10,12 @@ import { useContractCall } from '../../../../hooks/useContractCall';
 import { SubmitStatusDialog } from '../../../../components/TxDialog/TxDialog.component';
 
 import { DelegateStakeComponent } from './DelegateStake.component';
-import { DelegateStakeContainerProps } from './DelegateStake.types';
+import {
+  DelegateFeeEstimator,
+  DelegateStakeContainerProps,
+} from './DelegateStake.types';
 import { DelegateStakeValues } from './DelegateStake.fields';
-import { DelegateFeeEstimator } from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
+import { selectorsErrors } from '../../../../constants';
 
 export const DelegateStakeContainer = ({
   open,
@@ -24,7 +27,7 @@ export const DelegateStakeContainer = ({
 
   const handleDelegate = ({ delegateTo }: DelegateStakeValues) => {
     if (!staking || !selectedStakeData) {
-      throw new Error('missing data');
+      throw new Error(selectorsErrors.missingData);
     }
 
     return staking.delegate(
@@ -38,7 +41,7 @@ export const DelegateStakeContainer = ({
 
   const handleCancelDelegation = () => {
     if (!staking || !selectedStakeData || !account) {
-      throw new Error('missing data');
+      throw new Error(selectorsErrors.missingData);
     }
 
     return staking.delegate(
@@ -53,7 +56,7 @@ export const DelegateStakeContainer = ({
   const estimateFee: DelegateFeeEstimator = useCallback(
     (delegateTo) => {
       if (!staking || !selectedStakeData) {
-        throw new Error('missing data');
+        throw new Error(selectorsErrors.missingData);
       }
 
       return staking.estimateGas.delegate(

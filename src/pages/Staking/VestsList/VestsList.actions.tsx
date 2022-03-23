@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 
-import { stakingActions } from '../../../store/staking/staking.slice';
+import { vestingActions } from '../../../store/vesting/vesting.slice';
 
 import { TableAction } from '../../../components/TableActions/TableActions.types';
 import { CustomColumn } from '../../../components/DataTable/DataTable.types';
@@ -9,16 +9,16 @@ import { TableActionsComponent } from '../../../components/TableActions/TableAct
 import { useStakeModalForm } from '../Staking.hooks';
 import { DelegateVestContainer } from './DelegateVest/DelegateVest.container';
 import { WithdrawVestContainer } from './WithdrawVest/WithdrawVest.container';
-import { VestListItem } from '../../../store/staking/staking.state';
+import { VestListItem } from '../../../store/vesting/vesting.state';
 
 export const VestsActionColumn: CustomColumn<VestListItem> = ({ value }) => {
   const dispatch = useDispatch();
 
   const selectVest = () => {
-    dispatch(stakingActions.selectVest(Number(value)));
+    dispatch(vestingActions.selectVest(Number(value)));
   };
   const clearSelectedVest = () => {
-    dispatch(stakingActions.clearSelectedVest());
+    dispatch(vestingActions.clearSelectedVest());
   };
 
   const [showDelegateForm, handleOpenDelegateForm, handleCloseDelegateForm] =
