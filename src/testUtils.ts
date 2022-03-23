@@ -1,5 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract, Signer } from 'ethers';
+import { Provider as MulticallProvider } from 'ethers-multicall';
+import { GraphQLClient } from 'graphql-request';
 
 type MockedContract<C extends Contract> = {
   [k in keyof C]: C[k] extends Function ? jest.Mock : C[k];
@@ -40,3 +42,13 @@ export const mockProvider = new Web3Provider({
 });
 
 export const mockSigner: Signer = mockProvider.getSigner();
+
+export const mockMulticallProvider: MulticallProvider = {
+  init: jest.fn(),
+  all: jest.fn(),
+  getEthBalance: jest.fn(),
+} as unknown as MulticallProvider;
+
+export const mockSubgraphClient: GraphQLClient = {
+  request: jest.fn(),
+} as unknown as GraphQLClient;
