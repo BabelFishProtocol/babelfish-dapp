@@ -18,6 +18,7 @@ import { StakingFeeEstimator } from '../../Staking.types';
 import { WithdrawStakeComponent } from './WithdrawStake.component';
 import { WithdrawStakeFormValues } from './WithdrawStake.fields';
 import { WithdrawStakeContainerProps } from './WithdrawStake.types';
+import { selectorsErrors } from '../../../../constants';
 
 const useWithdrawCalculations = () => {
   const account = useSelector(accountSelector);
@@ -30,7 +31,7 @@ const useWithdrawCalculations = () => {
   const calculateFeeAndForfeit: StakingFeeEstimator = useCallback(
     async (withdrawAmount) => {
       if (!staking || !selectedStakeData || !account) {
-        throw new Error('missing data');
+        throw new Error(selectorsErrors.missingData);
       }
 
       const getPunishmentAmount = async () => {
@@ -91,7 +92,7 @@ export const WithdrawStakeContainer = ({
     withdrawStakeAmount,
   }: WithdrawStakeFormValues) => {
     if (!staking || !selectedStakeData || !account) {
-      throw new Error('missing data');
+      throw new Error(selectorsErrors.missingData);
     }
 
     return staking.withdraw(
