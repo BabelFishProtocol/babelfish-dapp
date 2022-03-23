@@ -24,6 +24,7 @@ export type Vote = {
 export type ProposalAction = {
   contract: string;
   signature: string;
+  calldata: string;
 };
 
 export type ProposalDetails = Proposal & {

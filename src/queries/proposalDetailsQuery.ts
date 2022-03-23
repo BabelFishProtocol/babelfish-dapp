@@ -1,6 +1,6 @@
 import { gql, GraphQLClient } from 'graphql-request';
 
-type ProposalDetailsQueryParams = {
+export type ProposalDetailsQueryParams = {
   contractAddress: string;
   proposalId: string;
 };
@@ -23,6 +23,7 @@ export type ProposalDetailsQueryItem = {
     voter: string;
   }[];
   actions: {
+    calldata: string;
     contract: string;
     signature: string;
   }[];
@@ -54,6 +55,7 @@ const findProposalDetailsQuery = gql`
         voter
       }
       actions {
+        calldata
         contract
         signature
       }

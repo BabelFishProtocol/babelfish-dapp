@@ -88,25 +88,29 @@ export const ProposalDetailsComponent = ({
         <ForVotesListContainer />
 
         <Container sx={{ p: 2, mt: 2, minHeight: 300 }}>
-          <Typography variant="body2" sx={{ mb: 2 }}>
+          <Typography variant="body2" sx={{ mb: 2, minHeight: 50 }}>
             {proposal.description}
           </Typography>
 
-          {(proposal.actions || []).map(({ contract, signature }, index) => (
-            <div key={index}>
-              <ProposalInfoItem label="Function to invoke" width={140}>
-                <Typography color="primary" variant="body2" component="span">
-                  {signature}
-                </Typography>
-              </ProposalInfoItem>
+          {(proposal.actions || []).map(
+            ({ contract, signature, calldata }, index) => (
+              <div key={index}>
+                <ProposalInfoItem label="Function to invoke" width={140}>
+                  <Typography color="primary" variant="body2" component="span">
+                    {signature}
+                  </Typography>
+                </ProposalInfoItem>
 
-              <ProposalInfoItem label="Contract Address" width={140}>
-                <Typography color="primary" variant="body2" component="span">
-                  {contract}
-                </Typography>
-              </ProposalInfoItem>
-            </div>
-          ))}
+                <ProposalInfoItem label="Calldata" width={140}>
+                  <PrettyTx value={calldata} />
+                </ProposalInfoItem>
+
+                <ProposalInfoItem label="Contract Address" width={140}>
+                  <PrettyTx value={contract} />
+                </ProposalInfoItem>
+              </div>
+            )
+          )}
         </Container>
       </Grid>
 
