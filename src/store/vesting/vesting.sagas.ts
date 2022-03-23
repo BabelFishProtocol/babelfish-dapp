@@ -81,16 +81,6 @@ export function* fetchVestsList() {
   }
 }
 
-/** Fetch data needed for the stake page */
-function* fetchBalances() {
-  yield* all([call(fetchVestsList)]);
-}
-
-/** Update values that can potentially be changed after user actions */
-function* updateBalances() {
-  yield* all([call(fetchVestsList)]);
-}
-
 function* triggerUpdate() {
   yield* put(vestingActions.updateVestingData());
 }
@@ -107,8 +97,8 @@ const watchVesting = createWatcherSaga({
 
 export function* vestingSaga() {
   yield* all([
-    takeLatest(vestingActions.fetchVestingData.type, fetchBalances),
-    takeLatest(vestingActions.updateVestingData.type, updateBalances),
+    takeLatest(vestingActions.fetchVestingData.type, fetchVestsList),
+    takeLatest(vestingActions.updateVestingData.type, fetchVestsList),
     takeLatest(vestingActions.watchVestingData.type, watchVesting),
   ]);
 }
