@@ -1,5 +1,5 @@
 import { mockProvider } from '../../testUtils';
-import { getVesting } from './staking.utils';
+import { getVesting } from './vesting.utils';
 
 jest.mock('../../contracts/types/factories/Vesting__factory', () => ({
   Vesting__factory: {

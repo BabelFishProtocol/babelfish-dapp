@@ -15,6 +15,7 @@ import { SubmitStatusDialog } from '../../../../components/TxDialog/TxDialog.com
 import { ExtendStakeValues } from './ExtendStake.fields';
 import { ExtendStakeComponent } from './ExtendStake.component';
 import { ExtendStakeContainerProps } from './ExtendStake.types';
+import { selectorsErrors } from '../../../../constants';
 
 export const ExtendStakeContainer = ({
   open,
@@ -28,7 +29,7 @@ export const ExtendStakeContainer = ({
   const estimateExtendFee: StakingFeeEstimator = useCallback(
     async (_, unlockDate) => {
       if (!staking || !selectedStakeData) {
-        throw new Error('missing data');
+        throw new Error(selectorsErrors.missingData);
       }
 
       return staking.estimateGas.extendStakingDuration(
@@ -41,7 +42,7 @@ export const ExtendStakeContainer = ({
 
   const handleExtend = async ({ unlockDate }: ExtendStakeValues) => {
     if (!staking || !selectedStakeData) {
-      throw new Error('missing data');
+      throw new Error(selectorsErrors.missingData);
     }
 
     return staking.extendStakingDuration(

@@ -1,5 +1,5 @@
 import { formatTimestamp } from '../../../utils/helpers';
-import { VestListItem } from '../../../store/staking/staking.state';
+import { VestListItem } from '../../../store/vesting/vesting.state';
 
 import { DataTable } from '../../../components/DataTable/DataTable.component';
 import { DataTableColumn } from '../../../components/DataTable/DataTable.types';

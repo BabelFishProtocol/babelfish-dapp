@@ -1,4 +1,4 @@
-import { VestListItem } from '../../store/staking/staking.state';
+import { VestListItem } from '../../store/vesting/vesting.state';
 import { DataTableColumn, DataTableProps } from './DataTable.types';
 
 export const vestListColumns: DataTableColumn<VestListItem>[] = [

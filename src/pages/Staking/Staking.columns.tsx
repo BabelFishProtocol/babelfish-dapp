@@ -15,8 +15,9 @@ import {
   CellParser,
   CustomColumn,
 } from '../../components/DataTable/DataTable.types';
-import { StakeListItem, VestListItem } from '../../store/staking/staking.state';
+import { StakeListItem } from '../../store/staking/staking.state';
 import { accountSelector } from '../../store/app/app.selectors';
+import { VestListItem } from '../../store/vesting/vesting.state';
 
 type ColumnComponent = CustomColumn<StakeListItem | VestListItem>;
 

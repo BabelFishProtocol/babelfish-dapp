@@ -1,12 +1,12 @@
 import { BigNumber } from 'ethers';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { FOUR_WEEKS } from '../../../../constants';
+import { FOUR_WEEKS, selectorsErrors } from '../../../../constants';
 import {
   currentBlockSelector,
   stakingContractSelector,
 } from '../../../../store/app/app.selectors';
-import { selectedVestSelector } from '../../../../store/staking/staking.selectors';
+import { selectedVestSelector } from '../../../../store/vesting/vesting.selectors';
 
 export const useGetUnlockedVesting = () => {
   const staking = useSelector(stakingContractSelector);
@@ -17,7 +17,7 @@ export const useGetUnlockedVesting = () => {
   useEffect(() => {
     const getUnlockedStaking = async () => {
       if (!selectedVestData || !staking || !currentBlockNumber) {
-        throw new Error('missing data');
+        throw new Error(selectorsErrors.missingData);
       }
       let value = '0';
       const {

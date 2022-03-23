@@ -1,12 +1,13 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { SubmitStatusDialog } from '../../../../components/TxDialog/TxDialog.component';
+import { selectorsErrors } from '../../../../constants';
 import { useContractCall } from '../../../../hooks/useContractCall';
 import { accountSelector } from '../../../../store/app/app.selectors';
 import {
   selectedVestSelector,
   selectedVestContractSelector,
-} from '../../../../store/staking/staking.selectors';
+} from '../../../../store/vesting/vesting.selectors';
 import { FeeEstimator } from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
 
 import { WithdrawVestComponent } from './WithdrawVest.component';
@@ -25,7 +26,7 @@ export const WithdrawVestContainer = ({
 
   const handleWithdraw = async () => {
     if (!vesting || !selectedVestData || !account) {
-      throw new Error('missing data');
+      throw new Error(selectorsErrors.missingData);
     }
 
     return vesting.withdrawTokens(selectedVestData.address);
@@ -37,7 +38,7 @@ export const WithdrawVestContainer = ({
   const estimateFee: FeeEstimator = useCallback(
     (withdrawTo) => {
       if (!vesting || !selectedVestData) {
-        throw new Error('missing data');
+        throw new Error(selectorsErrors.missingData);
       }
 
       return vesting.estimateGas.withdrawTokens(withdrawTo);
