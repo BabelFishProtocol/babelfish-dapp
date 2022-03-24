@@ -1,8 +1,8 @@
-import { ProposalState } from '../../constants';
+import { GovernorTypes, ProposalState } from '../../constants';
 import { FiniteStates } from '../../utils/types';
 import { LoadableValue } from '../types';
 
-type ProposalUrlParams = Partial<Pick<Proposal, 'id' | 'contractAddress'>>;
+export type ProposalUrlParams = Pick<Proposal, 'id' | 'governorType'>;
 
 export type Proposal = {
   id: string;
@@ -13,6 +13,7 @@ export type Proposal = {
   state: ProposalState;
   title: string;
   contractAddress: string;
+  governorType: GovernorTypes;
 };
 
 export type Vote = {
@@ -50,5 +51,5 @@ export class ProposalsState {
     state: 'idle',
     data: undefined,
   };
-  selectedProposal: ProposalUrlParams = {};
+  selectedProposal?: ProposalUrlParams;
 }

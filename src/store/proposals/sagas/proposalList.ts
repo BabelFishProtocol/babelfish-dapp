@@ -20,6 +20,7 @@ import {
 import { Proposal } from '../proposals.state';
 import { parseProposals } from '../proposals.utils';
 import { proposalsActions } from '../proposals.slice';
+import { governorContractsSelector } from '../proposals.selectors';
 
 type ProposalStateResult = Awaited<ReturnType<GovernorAlpha['state']>>;
 
@@ -44,8 +45,9 @@ export function* fetchProposalsForContract(governor: GovernorAlpha) {
   const provider = yield* select(providerSelector);
   const multicallProvider = yield* select(multicallProviderSelector);
   const subgraphClient = yield* select(subgraphClientSelector);
+  const governorsAddresses = yield* select(governorContractsSelector);
 
-  if (!provider || !subgraphClient || !multicallProvider)
+  if (!provider || !subgraphClient || !multicallProvider || !governorsAddresses)
     throw new Error('Wallet not connected!');
 
   const { proposals } = yield* call(proposalsListQuery, subgraphClient, {
@@ -61,7 +63,8 @@ export function* fetchProposalsForContract(governor: GovernorAlpha) {
   const parsedProposals = yield* call(
     parseProposals,
     proposals,
-    proposalsStates
+    proposalsStates,
+    governorsAddresses
   );
 
   return parsedProposals;

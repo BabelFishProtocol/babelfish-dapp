@@ -3,11 +3,14 @@ import { Reducers } from '../../constants';
 import { AddProposalFields } from '../../pages/AddProposal/AddProposal.types';
 import { FiniteStates } from '../../utils/types';
 import { ActionsType } from '../types';
-import { Proposal, ProposalDetails, ProposalsState } from './proposals.state';
+import {
+  Proposal,
+  ProposalDetails,
+  ProposalsState,
+  ProposalUrlParams,
+} from './proposals.state';
 
 const initialState = { ...new ProposalsState() };
-
-type ProposalUrlParams = Partial<Pick<Proposal, 'id' | 'contractAddress'>>;
 
 export const appSlice = createSlice({
   name: Reducers.Proposals,
@@ -38,7 +41,7 @@ export const appSlice = createSlice({
     },
     stopWatchingDetails: (state) => {
       state.proposalDetails.state = 'idle';
-      state.selectedProposal = {};
+      state.selectedProposal = undefined;
     },
     fetchDetails: (state) => {
       state.proposalDetails = {

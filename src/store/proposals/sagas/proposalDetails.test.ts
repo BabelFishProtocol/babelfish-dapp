@@ -4,7 +4,7 @@ import { throwError } from 'redux-saga-test-plan/providers';
 import { combineReducers, DeepPartial } from '@reduxjs/toolkit';
 
 import { pick } from '../../../utils/helpers';
-import { ProposalState, Reducers } from '../../../constants';
+import { GovernorTypes, ProposalState, Reducers } from '../../../constants';
 import { GovernorAlpha__factory } from '../../../contracts/types';
 import { rootReducer, RootState } from '../..';
 
@@ -22,11 +22,13 @@ import {
 import { subgraphClientSelector } from '../../app/app.selectors';
 
 import {
+  governorContractsSelector,
   selectedProposalGovernor,
   selectedProposalSelector,
 } from '../proposals.selectors';
 import { proposalsActions } from '../proposals.slice';
 import { ProposalDetails, ProposalsState } from '../proposals.state';
+
 import { fetchProposalDetails } from './proposalDetails';
 
 const mockGovernorContract = createMockedContract(
@@ -41,11 +43,28 @@ afterEach(() => {
 describe('proposals details sagas', () => {
   const reducer = combineReducers(pick(rootReducer, [Reducers.Proposals]));
 
-  const initialState: DeepPartial<RootState> = {
-    [Reducers.Proposals]: { ...new ProposalsState() },
-  };
-
   describe('fetchProposalDetails', () => {
+    const mockGovernorAddress = '0x0';
+    const mockProposalType = GovernorTypes.GovernorAdmin;
+
+    const mockGovernorContracts = {
+      [GovernorTypes.GovernorOwner]: 'wrongGovernorAddress',
+      [mockProposalType]: mockGovernorAddress,
+    };
+
+    const mockSelectedProposal: ReturnType<typeof selectedProposalSelector> = {
+      governorType: mockProposalType,
+      id: '2',
+      contractAddress: mockGovernorAddress,
+    };
+
+    const initialState: DeepPartial<RootState> = {
+      [Reducers.Proposals]: {
+        ...new ProposalsState(),
+        selectedProposal: mockSelectedProposal,
+      },
+    };
+
     const mockQueryResult: DeepPartial<ProposalDetailsQueryResult> = {
       proposals: [
         {
@@ -61,7 +80,7 @@ describe('proposals details sagas', () => {
           proposalId: '2',
           startBlock: '900',
           startDate: '237958437',
-          contractAddress: '0x0',
+          contractAddress: mockGovernorAddress,
           againstVotesAmount: '100000000',
           forVotesAmount: '10000000',
           eta: '4234234',
@@ -93,7 +112,7 @@ describe('proposals details sagas', () => {
       startBlock: 900,
       startTime: 237958437,
       state: mockProposalState,
-      contractAddress: '0x0',
+      contractAddress: mockGovernorAddress,
       title: '002 • test admin proposal',
       description: 'test admin proposal',
       proposer: '0x03',
@@ -121,16 +140,12 @@ describe('proposals details sagas', () => {
       eta: '4234234',
       againstVotesAmount: '100000000',
       forVotesAmount: '10000000',
-    };
-
-    const mockSelectedProposal = {
-      contractAddress: '0x1',
-      id: '2',
+      governorType: mockProposalType,
     };
 
     const expectedQueryParams: ProposalDetailsQueryParams = {
       proposalId: mockSelectedProposal.id,
-      contractAddress: mockSelectedProposal.contractAddress,
+      contractAddress: mockGovernorAddress,
     };
 
     const successState: DeepPartial<RootState> = {
@@ -158,6 +173,7 @@ describe('proposals details sagas', () => {
         .withState(initialState)
         .select(selectedProposalSelector)
         .select(subgraphClientSelector)
+        .select(governorContractsSelector)
         .select(selectedProposalGovernor);
 
     it('happy path', async () => {
@@ -166,6 +182,7 @@ describe('proposals details sagas', () => {
           [matchers.select(selectedProposalSelector), mockSelectedProposal],
           [matchers.select(subgraphClientSelector), mockSubgraphClient],
           [matchers.select(selectedProposalGovernor), mockGovernorContract],
+          [matchers.select(governorContractsSelector), mockGovernorContracts],
           [
             matchers.call(
               proposalDetailsQuery,
@@ -191,9 +208,10 @@ describe('proposals details sagas', () => {
     it('when wallet is not connected', async () => {
       const runResult = await getBasePath()
         .provide([
-          [matchers.select(selectedProposalSelector), mockSelectedProposal],
           [matchers.select(subgraphClientSelector), mockSubgraphClient],
+          [matchers.select(governorContractsSelector), mockGovernorContracts],
           [matchers.select(selectedProposalGovernor), undefined],
+          [matchers.select(selectedProposalSelector), mockSelectedProposal],
           [
             matchers.call(
               proposalDetailsQuery,
@@ -217,9 +235,10 @@ describe('proposals details sagas', () => {
     it('fetching error', async () => {
       const runResult = await getBasePath()
         .provide([
-          [matchers.select(selectedProposalSelector), mockSelectedProposal],
           [matchers.select(subgraphClientSelector), mockSubgraphClient],
+          [matchers.select(governorContractsSelector), mockGovernorContracts],
           [matchers.select(selectedProposalGovernor), mockGovernorContract],
+          [matchers.select(selectedProposalSelector), mockSelectedProposal],
           [
             matchers.call(
               proposalDetailsQuery,

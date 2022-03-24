@@ -1,9 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { BigNumber } from 'ethers';
 import { RootState } from '..';
-import { Reducers } from '../../constants';
+import { GovernorTypes, Reducers } from '../../constants';
 import { GovernorAlpha__factory } from '../../contracts/types';
-import { providerSelector } from '../app/app.selectors';
+import { addressesSelector, providerSelector } from '../app/app.selectors';
 
 const proposalsState = (state: RootState) => state[Reducers.Proposals];
 
@@ -12,18 +12,40 @@ export const proposalsListSelector = createSelector(
   (state) => state.proposalsList
 );
 
+export const governorContractsSelector = createSelector(
+  addressesSelector,
+  (addresses) => {
+    if (!addresses) return undefined;
+
+    return {
+      [GovernorTypes.GovernorOwner]: addresses.governorOwner,
+      [GovernorTypes.GovernorAdmin]: addresses.governorAdmin,
+    };
+  }
+);
+
 export const selectedProposalSelector = createSelector(
-  proposalsState,
-  (state) => state.selectedProposal
+  [proposalsState, governorContractsSelector],
+
+  ({ selectedProposal }, governorAddresses) => {
+    if (!selectedProposal || !governorAddresses) {
+      return undefined;
+    }
+
+    return {
+      ...selectedProposal,
+      contractAddress: governorAddresses[selectedProposal.governorType],
+    };
+  }
 );
 
 export const selectedProposalGovernor = createSelector(
   [selectedProposalSelector, providerSelector],
-  ({ contractAddress }, provider) => {
-    if (!contractAddress || !provider) return undefined;
+  (selectedProposal, provider) => {
+    if (!selectedProposal || !provider) return undefined;
 
     return GovernorAlpha__factory.connect(
-      contractAddress,
+      selectedProposal.contractAddress,
       provider.getSigner()
     );
   }

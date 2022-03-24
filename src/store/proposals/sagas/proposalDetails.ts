@@ -6,6 +6,7 @@ import { proposalDetailsQuery } from '../../../queries/proposalDetailsQuery';
 import { subgraphClientSelector } from '../../app/app.selectors';
 
 import {
+  governorContractsSelector,
   selectedProposalGovernor,
   selectedProposalSelector,
 } from '../proposals.selectors';
@@ -15,24 +16,25 @@ import { proposalsActions } from '../proposals.slice';
 
 export function* fetchProposalDetails() {
   try {
-    const { id: proposalId, contractAddress: proposalAddress } = yield* select(
-      selectedProposalSelector
-    );
+    const selectedProposal = yield* select(selectedProposalSelector);
     const subgraphClient = yield* select(subgraphClientSelector);
     const governorContract = yield* select(selectedProposalGovernor);
+    const governorAddresses = yield* select(governorContractsSelector);
 
     if (
-      !proposalId ||
+      !selectedProposal ||
       !governorContract ||
-      !proposalAddress ||
-      !subgraphClient
+      !subgraphClient ||
+      !governorAddresses
     ) {
       throw new Error('Missing proposal data');
     }
 
+    const { id: proposalId, contractAddress } = selectedProposal;
+
     const { proposals } = yield* call(proposalDetailsQuery, subgraphClient, {
       proposalId,
-      contractAddress: proposalAddress,
+      contractAddress,
     });
 
     const [proposalDetails] = proposals;
@@ -41,7 +43,8 @@ export function* fetchProposalDetails() {
 
     const baseProposal = parseProposal(
       proposalDetails,
-      proposalState as unknown as ProposalState
+      proposalState as unknown as ProposalState,
+      governorAddresses
     );
 
     const {

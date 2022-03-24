@@ -5,7 +5,7 @@ import { combineReducers, DeepPartial } from '@reduxjs/toolkit';
 
 import { pick } from '../../../utils/helpers';
 import { convertForMulticall } from '../../utils';
-import { ProposalState, Reducers } from '../../../constants';
+import { GovernorTypes, ProposalState, Reducers } from '../../../constants';
 import { GovernorAlpha__factory } from '../../../contracts/types';
 import { rootReducer, RootState } from '../..';
 
@@ -33,6 +33,7 @@ import {
 import { parseProposals } from '../proposals.utils';
 import { proposalsActions } from '../proposals.slice';
 import { Proposal, ProposalsState } from '../proposals.state';
+import { governorContractsSelector } from '../proposals.selectors';
 
 import { fetchProposalsForContract, fetchProposalsList } from './proposalList';
 
@@ -76,6 +77,7 @@ describe('proposals list sagas', () => {
       state: ProposalState.Active,
       contractAddress: '0x1',
       title: '002 • test admin proposal',
+      governorType: GovernorTypes.GovernorAdmin,
     };
 
     const parsedOwnerProposal: Proposal = {
@@ -87,6 +89,7 @@ describe('proposals list sagas', () => {
       state: ProposalState.Pending,
       contractAddress: '0x2',
       title: '001 • test owner proposal',
+      governorType: GovernorTypes.GovernorOwner,
     };
 
     const combinedProposals: Proposal[] = [
@@ -222,6 +225,13 @@ describe('proposals list sagas', () => {
   });
 
   describe('fetchProposalsForContract', () => {
+    const mockAdminProposalAddress = '0x1';
+
+    const mockGovernorContracts = {
+      [GovernorTypes.GovernorOwner]: 'wrongGovernorAddress',
+      [GovernorTypes.GovernorAdmin]: mockAdminProposalAddress,
+    };
+
     const mockAdminProposalsQueryResult: ProposalListQueryResult = {
       proposals: [
         {
@@ -230,7 +240,7 @@ describe('proposals list sagas', () => {
           proposalId: '2',
           startBlock: '900',
           startDate: '237958437',
-          contractAddress: '0x0',
+          contractAddress: mockAdminProposalAddress,
         },
       ],
     };
@@ -245,7 +255,8 @@ describe('proposals list sagas', () => {
       startTime: 237958437,
       state: adminProposalStates[0],
       title: '002 • test admin proposal',
-      contractAddress: '0x0',
+      contractAddress: mockAdminProposalAddress,
+      governorType: GovernorTypes.GovernorAdmin,
     };
 
     it('happy path', async () => {
@@ -263,6 +274,7 @@ describe('proposals list sagas', () => {
       )
         .provide([
           [matchers.select(providerSelector), mockProvider],
+          [matchers.select(governorContractsSelector), mockGovernorContracts],
           [matchers.select(multicallProviderSelector), mockMulticallProvider],
           [matchers.select(subgraphClientSelector), mockSubgraphClient],
           [
@@ -282,6 +294,7 @@ describe('proposals list sagas', () => {
         .select(providerSelector)
         .select(multicallProviderSelector)
         .select(subgraphClientSelector)
+        .select(governorContractsSelector)
         .call(proposalsListQuery, mockSubgraphClient, {
           contractAddress: mockGovernorAdmin.address,
         })
@@ -292,7 +305,8 @@ describe('proposals list sagas', () => {
         .call(
           parseProposals,
           mockAdminProposalsQueryResult.proposals,
-          adminProposalStates
+          adminProposalStates,
+          mockGovernorContracts
         )
         .run();
 

@@ -144,7 +144,7 @@ function App() {
         <Route path={Urls.Staking} element={<StakingContainer />} />
         <Route path={Urls.Dashboard} element={<DashboardContainer />} />
         <Route
-          path={`${Urls.Proposals}/:contractAddress/:id`}
+          path={`${Urls.Proposals}/:governorType/:id`}
           element={<ProposalDetailsContainer />}
         />
         <Route path={Urls.Aggregator} element={<AggregatorContainer />} />

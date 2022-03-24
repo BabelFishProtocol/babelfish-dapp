@@ -55,14 +55,19 @@ export const monthNames = [
   'Dec',
 ];
 
+export enum GovernorTypes {
+  GovernorOwner = 'governorOwner',
+  GovernorAdmin = 'governorAdmin',
+}
+
 export const GOVERNANCE_OPTIONS = {
   GOVERNER_OWNER: {
     name: 'Governor Owner',
-    id: 'governorOwner',
+    id: GovernorTypes.GovernorOwner,
   },
   GOVERNER_ADMIN: {
     name: 'Governor Admin',
-    id: 'governorAdmin',
+    id: GovernorTypes.GovernorAdmin,
   },
 };
 

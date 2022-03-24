@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { proposalsActions } from '../../store/proposals/proposals.slice';
 import { proposalDetailsSelector } from '../../store/proposals/proposals.selectors';
+import { GovernorTypes } from '../../constants';
 
 import { WalletConnectionChecker } from '../../components/WalletConnectionChecker/WalletConnectionChecker.component';
 
@@ -17,17 +18,27 @@ const mockVoteStatus: VoteStatus = {
   status: 'idle',
 };
 
+const isProperGovernor = (
+  governorType: string | GovernorTypes | undefined
+): governorType is GovernorTypes =>
+  governorType === GovernorTypes.GovernorOwner ||
+  governorType === GovernorTypes.GovernorAdmin;
+
 const Container = () => {
   const dispatch = useDispatch();
-  const { id, contractAddress } = useParams();
+  const { id, governorType } = useParams();
   const { data, state } = useSelector(proposalDetailsSelector);
 
   useEffect(() => {
-    dispatch(proposalsActions.watchDetails({ id, contractAddress }));
-  }, [contractAddress, dispatch, id]);
+    if (isProperGovernor(governorType) && id) {
+      dispatch(proposalsActions.watchDetails({ id, governorType }));
+    }
+  }, [dispatch, governorType, id]);
 
-  if (!id || !contractAddress) {
-    return <>Missing proposal data</>;
+  if (!id) return <>Missing proposal data</>;
+
+  if (!isProperGovernor(governorType)) {
+    return <>Wrong governor contract</>;
   }
 
   if (state === 'failure') {

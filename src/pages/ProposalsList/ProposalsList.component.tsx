@@ -32,7 +32,7 @@ const ViewProposalComponent: CustomColumn<RowData> = ({ value, rowData }) => (
   <MuiLink
     component={Link}
     color="textPrimary"
-    to={`${rowData.contractAddress}/${value}`}
+    to={`${rowData.governorType}/${value}`}
   >
     View Proposal
   </MuiLink>
