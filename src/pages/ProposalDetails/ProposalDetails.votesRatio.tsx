@@ -1,6 +1,6 @@
+import { useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { useSelector } from 'react-redux';
 
 import {
   hasVotesSelector,

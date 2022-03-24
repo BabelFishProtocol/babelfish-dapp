@@ -94,7 +94,7 @@ export const ProposalDetailsComponent = ({
 
           {(proposal.actions || []).map(
             ({ contract, signature, calldata }, index) => (
-              <div key={index}>
+              <Box key={index} sx={{ mb: 2 }}>
                 <ProposalInfoItem label="Function to invoke" width={140}>
                   <Typography color="primary" variant="body2" component="span">
                     {signature}
@@ -108,7 +108,7 @@ export const ProposalDetailsComponent = ({
                 <ProposalInfoItem label="Contract Address" width={140}>
                   <PrettyTx value={contract} />
                 </ProposalInfoItem>
-              </div>
+              </Box>
             )
           )}
         </Container>
