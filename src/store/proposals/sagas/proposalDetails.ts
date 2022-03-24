@@ -1,14 +1,14 @@
 import { put, select, call } from 'typed-redux-saga';
+
 import { ProposalState } from '../../../constants';
+import { createWatcherSaga } from '../../utils';
 import { proposalDetailsQuery } from '../../../queries/proposalDetailsQuery';
 import { subgraphClientSelector } from '../../app/app.selectors';
 
-import { createWatcherSaga } from '../../utils';
 import {
   selectedProposalGovernor,
   selectedProposalSelector,
 } from '../proposals.selectors';
-
 import { parseProposal } from '../proposals.utils';
 import { ProposalDetails } from '../proposals.state';
 import { proposalsActions } from '../proposals.slice';
@@ -30,12 +30,12 @@ export function* fetchProposalDetails() {
       throw new Error('Missing proposal data');
     }
 
-    const results = yield* call(proposalDetailsQuery, subgraphClient, {
+    const { proposals } = yield* call(proposalDetailsQuery, subgraphClient, {
       proposalId,
       contractAddress: proposalAddress,
     });
 
-    const [proposalDetails] = results.proposals;
+    const [proposalDetails] = proposals;
 
     const proposalState = yield* call(governorContract.state, proposalId);
 
@@ -79,7 +79,7 @@ function* triggerUpdate() {
   yield* put(proposalsActions.updateDetails());
 }
 
-export const watchProposalsDetails = createWatcherSaga({
+export const watchProposalDetails = createWatcherSaga({
   fetchSaga: triggerFetch,
   updateSaga: triggerUpdate,
   stopAction: proposalsActions.stopWatchingDetails.type,
