@@ -1,14 +1,13 @@
 import { select, call, put, all, takeLatest } from 'typed-redux-saga';
 import { BridgeDictionary } from '../../config/bridges';
-import { mainnetPool, testnetPool } from '../../config/pools';
-import { accountSelector, currentChainSelector } from '../app/app.selectors';
+// import { mainnetPool, testnetPool } from '../../config/pools';
+import { accountSelector, chainIdSelector } from '../app/app.selectors';
 import { appActions } from '../app/app.slice';
 import {
   allowTokensContractSelector,
   bridgeContractSelector,
   destinationChainSelector,
   startingTokenContractSelector,
-  startingChainSelector,
   startingTokenSelector,
 } from './aggregator.selectors';
 import { aggregatorActions } from './aggregator.slice';
@@ -31,7 +30,7 @@ export function* fetchAllowTokenAddress() {
 export function* fetchBridgeFeesAndLimits() {
   try {
     const allowTokens = yield* select(allowTokensContractSelector);
-    const startingChain = yield* select(startingChainSelector);
+    const startingChain = yield* select(chainIdSelector);
     const destinationChain = yield* select(destinationChainSelector);
     const startingToken = yield* select(startingTokenSelector);
 
@@ -66,31 +65,6 @@ export function* fetchBridgeFeesAndLimits() {
   }
 }
 
-export function* setFlowState() {
-  const startingChain = yield* select(startingChainSelector);
-
-  // TODO add current pool to the store
-  if (
-    startingChain === testnetPool.masterChain.id ||
-    startingChain === mainnetPool.masterChain.id
-  ) {
-    yield* put(aggregatorActions.setFlowStateWithdraw());
-  } else {
-    yield* put(aggregatorActions.setFlowStateDeposit());
-  }
-}
-
-export function* setCurrentChain() {
-  const startingChain = yield* select(startingChainSelector);
-  const currentChain = yield* select(currentChainSelector);
-
-  if (startingChain !== currentChain?.chainId) {
-    yield* put(aggregatorActions.setWrongChainConnectedError(true));
-  } else {
-    yield* put(aggregatorActions.setWrongChainConnectedError(false));
-  }
-}
-
 export function* fetchStartingTokenBalance() {
   try {
     const account = yield* select(accountSelector);
@@ -114,7 +88,6 @@ export function* fetchStartingTokenBalance() {
 
 export function* aggregatorSaga() {
   yield* all([
-    takeLatest(aggregatorActions.setStartingChain, setFlowState),
     takeLatest(
       aggregatorActions.setStartingToken.type,
       fetchBridgeFeesAndLimits
@@ -124,7 +97,6 @@ export function* aggregatorSaga() {
       fetchBridgeFeesAndLimits
     ),
     takeLatest(aggregatorActions.setDestinationChain, fetchAllowTokenAddress),
-    takeLatest(aggregatorActions.setStartingChain, fetchAllowTokenAddress),
     takeLatest(appActions.walletConnected, fetchAllowTokenAddress),
   ]);
 }

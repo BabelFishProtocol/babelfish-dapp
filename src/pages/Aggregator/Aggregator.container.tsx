@@ -12,9 +12,6 @@ const mockAvailableBalance = '81.123';
 export const AggregatorContainer = () => {
   const dispatch = useDispatch();
 
-  const onStartingChainChange = (chain: ChainEnum) => {
-    dispatch(aggregatorActions.setStartingChain(chain));
-  };
   const onStartingTokenChange = (token: TokenEnum) => {
     dispatch(aggregatorActions.setStartingToken(token));
   };
@@ -49,7 +46,6 @@ export const AggregatorContainer = () => {
       getTokenAvailableBalance={getTokenAvailableBalance}
       getReceiveAmount={getReceiveAmount}
       onSubmit={onSubmit}
-      onStartingChainChange={onStartingChainChange}
       onDestinationChainChange={onDestinationChainChange}
       onStartingTokenChange={onStartingTokenChange}
     />
