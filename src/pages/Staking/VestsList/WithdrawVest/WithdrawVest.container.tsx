@@ -57,7 +57,7 @@ export const WithdrawVestContainer = ({
         onClose={onClose}
         onWithdraw={onWithdraw}
         isLocked={amount === '0'}
-        currentVestAmount={selectedVestData.lockedAmount}
+        currentVestAmount={amount}
         estimateFee={estimateFee}
       />
       {withdrawTxData.status !== 'idle' && (

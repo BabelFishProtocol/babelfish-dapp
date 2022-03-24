@@ -31,7 +31,7 @@ export const WithdrawVestComponent = ({
       onClose={onClose}
       title="UnStake Fish"
       leftButtonText="Confirm"
-      isValid={formState.isValid || !isLocked}
+      isValid={formState.isValid && !isLocked}
       handleSubmit={handleSubmit(onWithdraw)}
     >
       <CurrencyInput
