@@ -13,7 +13,7 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
   MuiCssBaseline: {
     styleOverrides: `
     *::-webkit-scrollbar {
-      width: 10px;
+      width: 8px;
       border-radius: 10px;
     }
     *::-webkit-scrollbar-thumb {
