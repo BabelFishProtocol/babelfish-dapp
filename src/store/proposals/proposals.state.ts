@@ -1,4 +1,5 @@
 import { ProposalState } from '../../constants';
+import { FiniteStates } from '../../utils/types';
 import { LoadableValue } from '../types';
 
 export type Proposal = {
@@ -12,6 +13,9 @@ export type Proposal = {
 };
 
 export class ProposalsState {
+  addProposalErrorReason?: string;
+  addProposalState: FiniteStates = 'idle';
+
   proposalsList: LoadableValue<Proposal[]> = {
     state: 'idle',
     data: [],

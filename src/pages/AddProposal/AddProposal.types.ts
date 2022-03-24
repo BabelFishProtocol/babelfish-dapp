@@ -1,3 +1,4 @@
+import { FiniteStates } from '../../utils/types';
 import { AddProposalInputs } from './AddProposal.fields';
 
 export type AddProposalValues = {
@@ -23,3 +24,9 @@ export type AddProposalContainerProps = Pick<
   AddProposalProps,
   'onClose' | 'isOpenDialog'
 >;
+
+export type AddProposalStatusDialogProps = {
+  onClose: () => void;
+  status: FiniteStates;
+  message?: string;
+};
