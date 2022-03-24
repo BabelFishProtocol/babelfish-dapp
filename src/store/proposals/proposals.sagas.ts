@@ -1,5 +1,4 @@
 import { BigNumberish, BytesLike } from 'ethers';
-import { PayloadAction } from '@reduxjs/toolkit';
 import { Provider as MulticallProvider } from 'ethers-multicall';
 import { all, put, call, select, takeLatest } from 'typed-redux-saga';
 
@@ -23,10 +22,9 @@ import {
 
 import { Proposal } from './proposals.state';
 import { parseProposals } from './proposals.utils';
-import { proposalsActions } from './proposals.slice';
+import { ProposalsActions, proposalsActions } from './proposals.slice';
 import { AddProposalInputs } from '../../pages/AddProposal/AddProposal.fields';
 import { GOVERNANCE_OPTIONS } from '../../constants';
-import { AddProposalFields } from '../../pages/AddProposal/AddProposal.types';
 
 type ProposalStateResult = Awaited<ReturnType<GovernorAlpha['state']>>;
 
@@ -115,7 +113,7 @@ const watchProposalsList = createWatcherSaga({
   stopAction: proposalsActions.stopWatchingProposalsList.type,
 });
 
-export function* addProposal({ payload }: PayloadAction<AddProposalFields>) {
+export function* addProposal({ payload }: ProposalsActions['startProposal']) {
   try {
     const account = yield* select(accountSelector);
     const staking = yield* select(stakingContractSelector);
@@ -137,9 +135,9 @@ export function* addProposal({ payload }: PayloadAction<AddProposalFields>) {
     const votes = yield* call(staking.getCurrentVotes, account);
 
     if (threshold.gt(votes)) {
-      const errorMsg = `Your voting power must be at least ${threshold.toString()} to make a proposal`;
-      yield* put(proposalsActions.porposalFailure(errorMsg));
-      return;
+      throw new Error(
+        `Your voting power must be at least ${threshold} to make a proposal`
+      );
     }
 
     const rows = payload[AddProposalInputs.Values];
@@ -154,7 +152,7 @@ export function* addProposal({ payload }: PayloadAction<AddProposalFields>) {
     );
     const description = payload[AddProposalInputs.Description];
 
-    yield* call(
+    const tx = yield* call(
       governor.propose,
       targets,
       values,
@@ -162,7 +160,8 @@ export function* addProposal({ payload }: PayloadAction<AddProposalFields>) {
       calldatas,
       description
     );
-    yield* put(proposalsActions.proposalSuccess);
+    yield* call(tx.wait);
+    yield* put(proposalsActions.proposalSuccess());
   } catch (e) {
     const msg =
       e instanceof Error
