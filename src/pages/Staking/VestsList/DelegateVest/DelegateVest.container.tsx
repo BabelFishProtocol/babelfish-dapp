@@ -7,16 +7,17 @@ import {
   providerSelector,
 } from '../../../../store/app/app.selectors';
 
-import {
-  combinedVotingPowerSelector,
-  selectedVestSelector,
-  selectedVestContractSelector,
-} from '../../../../store/staking/staking.selectors';
+import { combinedVotingPowerSelector } from '../../../../store/staking/staking.selectors';
 
 import { DelegateVestComponent } from './DelegateVest.component';
 import { FeeEstimator } from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
 import { DelegateVestContainerProps } from './DelegateVest.types';
 import { DelegateVestValues } from './DelegateVest.fields';
+import { selectorsErrors } from '../../../../constants';
+import {
+  selectedVestContractSelector,
+  selectedVestSelector,
+} from '../../../../store/vesting/vesting.selectors';
 
 export const DelegateVestContainer = ({
   open,
@@ -30,7 +31,7 @@ export const DelegateVestContainer = ({
 
   const handleDelegate = ({ delegateTo }: DelegateVestValues) => {
     if (!vesting || !provider || !selectedVestData || !account) {
-      throw new Error('missing data');
+      throw new Error(selectorsErrors.missingData);
     }
 
     return vesting.delegate(delegateTo.toLowerCase(), { from: account });
@@ -42,7 +43,7 @@ export const DelegateVestContainer = ({
   const estimateFee: FeeEstimator = useCallback(
     (delegateTo) => {
       if (!vesting || !selectedVestData) {
-        throw new Error('missing data');
+        throw new Error(selectorsErrors.missingData);
       }
 
       return vesting.estimateGas.delegate(delegateTo);

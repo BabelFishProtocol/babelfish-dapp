@@ -32,9 +32,11 @@ export enum Reducers {
   App = 'app',
   Staking = 'staking',
   Proposals = 'proposals',
+  Vesting = 'vesting',
 }
 
 export const MAX_STAKING_PERIODS = 78;
+export const FOUR_WEEKS = 2419200;
 export const TWO_WEEKS = 1209600;
 export const ONE_DAY = 86400;
 
@@ -53,6 +55,17 @@ export const monthNames = [
   'Dec',
 ];
 
+export const GOVERNANCE_OPTIONS = {
+  GOVERNER_OWNER: {
+    name: 'Governor Owner',
+    id: 'governorOwner',
+  },
+  GOVERNER_ADMIN: {
+    name: 'Governor Admin',
+    id: 'governorAdmin',
+  },
+};
+
 export const fieldsErrors = {
   required: 'Field Required',
   addressFormat: 'Value must be a proper RSK address',
@@ -61,9 +74,11 @@ export const fieldsErrors = {
   amountGreaterThanBalance: 'Value cannot be greater than your token balance',
 };
 
+export const selectorsErrors = {
+  missingData: 'Missing data',
+};
+
 export const decimalRegex = /^\d*\.?\d*$/;
 
 export const signatureRegex = /^(0x|)[a-zA-Z0-9]{10}$/g;
 export const calldataRegex = /^(0x)(..)*$/g;
-
-export const FOUR_WEEKS = 2419200;

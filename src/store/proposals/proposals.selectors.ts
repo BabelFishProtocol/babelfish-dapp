@@ -90,3 +90,13 @@ export const votesRatioSelector = createSelector(
     return ratioInPercents;
   }
 );
+
+export const addProposalStateSelector = createSelector(
+  proposalsState,
+  (state) => state.addProposalState
+);
+
+export const addProposalErrorSelector = createSelector(
+  proposalsState,
+  (state) => state.addProposalErrorReason
+);

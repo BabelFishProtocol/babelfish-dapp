@@ -1,4 +1,5 @@
 import { ProposalState } from '../../constants';
+import { FiniteStates } from '../../utils/types';
 import { LoadableValue } from '../types';
 
 type ProposalUrlParams = Partial<Pick<Proposal, 'id' | 'contractAddress'>>;
@@ -38,6 +39,9 @@ export type ProposalDetails = Proposal & {
 };
 
 export class ProposalsState {
+  addProposalErrorReason?: string;
+  addProposalState: FiniteStates = 'idle';
+
   proposalsList: LoadableValue<Proposal[]> = {
     state: 'idle',
     data: [],

@@ -7,7 +7,7 @@ import { Button } from '../../components/Button/Button.component';
 import { ControlledCurrencyInput } from '../../components/CurrencyInput/CurrencyInput.controlled';
 import { ControlledDropdown } from '../../components/Dropdown/Dropdown.controlled';
 import { ControlledInput } from '../../components/TextInput/TextInput.controlled';
-import { fieldsErrors } from '../../constants';
+import { fieldsErrors, GOVERNANCE_OPTIONS } from '../../constants';
 import { isValidCalldata, isValidSignature } from '../../utils/helpers';
 import {
   AddProposalDefaultValues,
@@ -17,8 +17,8 @@ import {
 import { AddProposalFields, AddProposalProps } from './AddProposal.types';
 
 const AP_DD_OPTIONS = [
-  { id: '1', name: 'Governer Admin' },
-  { id: '2', name: 'Governer Owner' },
+  GOVERNANCE_OPTIONS.GOVERNER_ADMIN,
+  GOVERNANCE_OPTIONS.GOVERNER_OWNER,
 ];
 
 export const AddProposal = ({

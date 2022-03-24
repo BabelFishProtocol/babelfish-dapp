@@ -1,3 +1,5 @@
+import { GOVERNANCE_OPTIONS } from '../../constants';
+
 export enum AddProposalInputs {
   Target = 'Target',
   Value = 'Value',
@@ -16,7 +18,8 @@ export const AddProposalNewSetValues = {
 };
 
 export const AddProposalDefaultValues = {
-  [AddProposalInputs.SendProposalContract]: '1',
+  [AddProposalInputs.SendProposalContract]:
+    GOVERNANCE_OPTIONS.GOVERNER_ADMIN.id,
   [AddProposalInputs.Description]: '',
   [AddProposalInputs.Values]: [AddProposalNewSetValues],
 };
