@@ -1,44 +1,65 @@
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { ProposalData, VoteStatus } from './ProposalDetails.types';
-import { ProposalDetailsComponent } from './ProposalDetails.component';
-import { ProposalState } from '../../constants';
+import { useDispatch, useSelector } from 'react-redux';
 
-const mockProposal: ProposalData = {
-  id: '127865126',
-  eta: 1512918335,
-  name: '004SIP-0018: BabelFish',
-  endDate: '05/14/21, 12:56PM',
-  endBlock: '3347624',
-  startDate: '02/14/21, 12:56PM',
-  startBlock: '3347624',
-  proposedBy: '0x94e907f6B903A393E14FE549113137CA6483b5ef',
-  contractAddress: '76q876fdh23984723985349827',
-  functionToInvoke: 'symbol () 0X00',
-  description:
-    'SIP-0018: BabelFish Token Sale via Origins, Details: https://github.com/DistributedCollective/SIPS/blob/f8a726d/SIP-0018.md, sha256: 76q876fdh23984723985349827',
-  state: ProposalState.Active,
-};
+import { proposalsActions } from '../../store/proposals/proposals.slice';
+import { proposalDetailsSelector } from '../../store/proposals/proposals.selectors';
+import { GovernorTypes } from '../../constants';
+
+import { WalletConnectionChecker } from '../../components/WalletConnectionChecker/WalletConnectionChecker.component';
+
+import { VoteStatus } from './ProposalDetails.types';
+import { ProposalDetailsFailure } from './ProposalDetails.failure';
+import { ProposalDetailsLoadable } from './ProposalDetails.loadable';
+import { ProposalDetailsComponent } from './ProposalDetails.component';
 
 const mockVoteStatus: VoteStatus = {
   type: 'for',
   status: 'idle',
 };
 
-export const ProposalDetailsContainer = () => {
-  const { id } = useParams();
+const isProperGovernor = (
+  governorType: string | GovernorTypes | undefined
+): governorType is GovernorTypes =>
+  governorType === GovernorTypes.GovernorOwner ||
+  governorType === GovernorTypes.GovernorAdmin;
 
-  if (!id) {
-    return <>Missing proposal id</>;
+const Container = () => {
+  const dispatch = useDispatch();
+  const { id, governorType } = useParams();
+  const { data, state } = useSelector(proposalDetailsSelector);
+
+  useEffect(() => {
+    if (isProperGovernor(governorType) && id) {
+      dispatch(proposalsActions.watchDetails({ id, governorType }));
+    }
+  }, [dispatch, governorType, id]);
+
+  if (!id) return <>Missing proposal data</>;
+
+  if (!isProperGovernor(governorType)) {
+    return <>Wrong governor contract</>;
+  }
+
+  if (state === 'failure') {
+    return <ProposalDetailsFailure />;
+  }
+
+  if (!data) {
+    return <ProposalDetailsLoadable />;
   }
 
   return (
     <ProposalDetailsComponent
-      proposal={{ ...mockProposal, id }}
-      votesRatio={80.5}
-      forVotes="48.9800K"
-      againstVotes="48.9800K"
+      proposal={data}
       voteStatus={mockVoteStatus}
       isGuardian
     />
   );
 };
+
+export const ProposalDetailsContainer = () => (
+  <WalletConnectionChecker>
+    <Container />
+  </WalletConnectionChecker>
+);

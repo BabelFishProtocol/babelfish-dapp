@@ -3,7 +3,12 @@ import { Reducers } from '../../constants';
 import { AddProposalFields } from '../../pages/AddProposal/AddProposal.types';
 import { FiniteStates } from '../../utils/types';
 import { ActionsType } from '../types';
-import { Proposal, ProposalsState } from './proposals.state';
+import {
+  Proposal,
+  ProposalDetails,
+  ProposalsState,
+  ProposalUrlParams,
+} from './proposals.state';
 
 const initialState = { ...new ProposalsState() };
 
@@ -30,6 +35,36 @@ export const appSlice = createSlice({
       state.proposalsList.data = payload;
       state.proposalsList.state = 'success';
     },
+
+    watchDetails: (state, { payload }: PayloadAction<ProposalUrlParams>) => {
+      state.selectedProposal = payload;
+    },
+    stopWatchingDetails: (state) => {
+      state.proposalDetails.state = 'idle';
+      state.selectedProposal = undefined;
+    },
+    fetchDetails: (state) => {
+      state.proposalDetails = {
+        data: undefined,
+        state: 'loading',
+      };
+    },
+    updateDetails: (state) => {
+      state.proposalDetails.state = 'loading';
+    },
+    fetchDetailsFailure: (state) => {
+      state.proposalDetails = {
+        data: undefined,
+        state: 'failure',
+      };
+    },
+    setDetails: (state, { payload }: PayloadAction<ProposalDetails>) => {
+      state.proposalDetails = {
+        data: payload,
+        state: 'success',
+      };
+    },
+
     startProposal: (state, _: PayloadAction<AddProposalFields>) => {
       state.addProposalState = 'loading';
     },

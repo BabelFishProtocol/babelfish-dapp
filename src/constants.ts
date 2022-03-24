@@ -6,14 +6,14 @@ export enum Urls {
 }
 
 export enum ProposalState {
-  Pending = '0',
-  Active = '1',
-  Canceled = '2',
-  Defeated = '3',
-  Succeeded = '4',
-  Queued = '5',
-  Expired = '6',
-  Executed = '7',
+  Pending = 0,
+  Active = 1,
+  Canceled = 2,
+  Defeated = 3,
+  Succeeded = 4,
+  Queued = 5,
+  Expired = 6,
+  Executed = 7,
 }
 
 export const proposalStateNames = {
@@ -55,14 +55,19 @@ export const monthNames = [
   'Dec',
 ];
 
+export enum GovernorTypes {
+  GovernorOwner = 'governorOwner',
+  GovernorAdmin = 'governorAdmin',
+}
+
 export const GOVERNANCE_OPTIONS = {
   GOVERNER_OWNER: {
     name: 'Governor Owner',
-    id: 'governorOwner',
+    id: GovernorTypes.GovernorOwner,
   },
   GOVERNER_ADMIN: {
     name: 'Governor Admin',
-    id: 'governorAdmin',
+    id: GovernorTypes.GovernorAdmin,
   },
 };
 

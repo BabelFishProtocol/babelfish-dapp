@@ -1,5 +1,7 @@
 import Box from '@mui/material/Box';
 
+import { Vote } from '../../../store/proposals/proposals.state';
+
 import { PrettyTx } from '../../../components/PrettyTx/PrettyTx.component';
 import { DataTable } from '../../../components/DataTable/DataTable.component';
 import { DataTableColumn } from '../../../components/DataTable/DataTable.types';
@@ -7,26 +9,28 @@ import { DataTableColumn } from '../../../components/DataTable/DataTable.types';
 import upvoteIcon from '../../../assets/icons/upvote.svg';
 import downvoteIcon from '../../../assets/icons/downvote.svg';
 
-import {
-  TableIconProps,
-  VotesListComponentProps,
-  VotesListItem,
-} from './VotesList.types';
+import { TableIconProps, VotesListComponentProps } from './VotesList.types';
+import { formatWeiAmount } from '../../../utils/helpers';
 
-const votesColumns: DataTableColumn<VotesListItem>[] = [
-  { label: 'Address', name: 'address', component: PrettyTx },
+type RowData = Omit<Vote, 'isPro'>;
+
+const votesColumns: DataTableColumn<RowData>[] = [
+  { label: 'Address', name: 'voter', component: PrettyTx },
   { label: 'Tx Hash', name: 'txHash', component: PrettyTx },
-  { label: 'Votes', name: 'votes' },
+  { label: 'Votes', name: 'votes', format: formatWeiAmount },
 ];
 
 export const VotesListComponent = ({
   votes,
   type,
+  state,
 }: VotesListComponentProps) => (
   <DataTable
     tableTitle="Voted For"
-    data={votes}
+    data={votes as RowData[]}
     columns={votesColumns}
+    tableEmptyMessage="No Votes yet"
+    isLoading={state === 'loading'}
     tableAction={
       <TableIcon>
         <img
@@ -35,7 +39,7 @@ export const VotesListComponent = ({
         />
       </TableIcon>
     }
-    containerSx={{ p: 1, mt: 2, height: 250 }}
+    containerSx={{ p: 1, mt: 2, height: 300 }}
   />
 );
 
