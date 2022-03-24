@@ -7,6 +7,7 @@ import {
   stakingContractSelector,
 } from '../../../../store/app/app.selectors';
 import { selectedVestSelector } from '../../../../store/vesting/vesting.selectors';
+import { getCurrentTimestamp } from '../../../../utils/helpers';
 
 export const useGetUnlockedVesting = () => {
   const staking = useSelector(stakingContractSelector);
@@ -28,7 +29,7 @@ export const useGetUnlockedVesting = () => {
       } = selectedVestData;
       const allUnlocked = await staking.allUnlocked();
 
-      const end = allUnlocked ? unlockDate : new Date().getTime() / 1e3;
+      const end = allUnlocked ? unlockDate : getCurrentTimestamp();
       /* eslint-disable no-await-in-loop */
       for (let i = startDate + cliff; i < end; i += FOUR_WEEKS) {
         const stake = await staking.getPriorUserStakeByDate(
