@@ -5,6 +5,11 @@ export type BaseChainType = ChainType & {
   bassets: TokenTypeBase[];
 };
 
+export enum PoolEnum {
+  mainnet = 'mainnet',
+  testnet = 'testnet',
+}
+
 const mainnetBaseChains: BaseChainType[] = [
   {
     ...chains[ChainEnum.ETH],
@@ -35,4 +40,31 @@ export const testnetPool = {
   baseChains: testnetBaseChains,
   masset: tokens.XUSD,
   masterChain: chains[ChainEnum.RSK_TESTNET],
+};
+
+type PoolType = {
+  baseChains: BaseChainType[];
+  masset: TokenTypeBase;
+  masterChain: ChainType;
+};
+
+type PoolsType = {
+  [pool in PoolEnum]: PoolType;
+};
+
+export const poolHasChain = ({
+  pool,
+  chain,
+}: {
+  pool: PoolType;
+  chain: ChainEnum;
+}): boolean =>
+  !!(
+    pool.baseChains.find((baseChain) => baseChain.id === chain) ||
+    pool.masterChain.id === chain
+  );
+
+export const pools: PoolsType = {
+  [PoolEnum.mainnet]: mainnetPool,
+  [PoolEnum.testnet]: testnetPool,
 };

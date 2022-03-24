@@ -2,6 +2,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { BridgeDictionary } from '../../config/bridges';
 import { ChainEnum } from '../../config/chains';
+import { pools } from '../../config/pools';
 import { tokens } from '../../config/tokens';
 import { Reducers } from '../../constants';
 import {
@@ -21,6 +22,11 @@ export const flowStateSelector = createSelector(
 export const feesInfoSelector = createSelector(
   aggregatorState,
   (state) => state.feesAndLimits.data
+);
+
+export const poolSelector = createSelector(
+  aggregatorState,
+  (state) => pools[state.pool]
 );
 
 export const startingTokenSelector = createSelector(

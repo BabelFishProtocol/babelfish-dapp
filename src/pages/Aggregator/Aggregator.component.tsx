@@ -24,10 +24,6 @@ import {
   useAvailableBalance,
   useConnectedChain,
 } from './Aggregator.hooks';
-import { /* mainnetPool, */ testnetPool } from '../../config/pools';
-
-// TODO: add current  pool to the store
-const pool = testnetPool;
 
 export const AggregatorComponent = ({
   getTokenAvailableBalance,
@@ -54,6 +50,12 @@ export const AggregatorComponent = ({
   const destinationToken = watch(AggregatorInputs.DestinationToken);
   const amount = watch(AggregatorInputs.SendAmount);
 
+  const { hideDestinationTokenDropdown } = useConnectedChain(
+    startingChain,
+    destinationChain,
+    setValue
+  );
+
   const {
     startingChainOptions,
     startingTokenOptions,
@@ -66,8 +68,6 @@ export const AggregatorComponent = ({
     resetField,
     setValue
   );
-
-  useConnectedChain(startingChain, setValue);
 
   const { availableBalance } = useAvailableBalance(
     startingToken,
@@ -92,8 +92,6 @@ export const AggregatorComponent = ({
       setValue(AggregatorInputs.ReceiveAmount, getReceiveAmount(amount));
     }
   }, [amount, getReceiveAmount, setValue]);
-
-  const hideDestinationTokenDropdown = destinationChain === pool.masterChain.id;
 
   return (
     <form

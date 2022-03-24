@@ -3,9 +3,11 @@ import { useEffect, useState } from 'react';
 import { UseFormResetField, UseFormSetValue } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { ChainEnum, ChainType } from '../../config/chains';
-import { /* mainnetPool, */ testnetPool } from '../../config/pools';
 import { TokenEnum, TokenTypeBase } from '../../config/tokens';
-import { flowStateSelector } from '../../store/aggregator/aggregator.selectors';
+import {
+  flowStateSelector,
+  poolSelector,
+} from '../../store/aggregator/aggregator.selectors';
 import { aggregatorActions } from '../../store/aggregator/aggregator.slice';
 import {
   chainIdSelector,
@@ -14,9 +16,6 @@ import {
 import { AggregatorInputs, AggregatorFormValues } from './Aggregator.fields';
 import { AggregatorComponentProps } from './Aggregator.types';
 
-// TODO: add current  pool to the store
-const pool = testnetPool;
-
 export const useAggregatorDropdowns = (
   startingChain: ChainEnum | '',
   destinationChain: ChainEnum | '',
@@ -24,6 +23,7 @@ export const useAggregatorDropdowns = (
   setValue: UseFormSetValue<AggregatorFormValues>
 ) => {
   const flowState = useSelector(flowStateSelector);
+  const pool = useSelector(poolSelector);
 
   const [startingChainOptions, setStartingChainOptions] = useState<ChainType[]>(
     []
@@ -83,7 +83,7 @@ export const useAggregatorDropdowns = (
           []
       );
     }
-  }, [flowState, startingChain, destinationChain, resetField]);
+  }, [flowState, startingChain, destinationChain, resetField, pool]);
 
   const dispatch = useDispatch();
 
@@ -102,11 +102,15 @@ export const useAggregatorDropdowns = (
 
 export const useConnectedChain = (
   startingChain: ChainEnum | '',
+  destinationChain: ChainEnum | '',
   setValue: UseFormSetValue<AggregatorFormValues>
 ) => {
+  const dispatch = useDispatch();
   const connectedChain = useSelector(chainIdSelector);
+  const pool = useSelector(poolSelector);
   const provider = useSelector(providerSelector);
 
+  const showDestinationTokenDropdown = startingChain === pool.masterChain.id;
   const wrongChainConnectedError = startingChain !== connectedChain;
 
   useEffect(() => {
@@ -120,13 +124,26 @@ export const useConnectedChain = (
 
   useEffect(() => {
     if (connectedChain && setValue) {
-      // TODO : check if right pool is selected
-      setValue(AggregatorInputs.StartingChain, connectedChain);
+      if (destinationChain === connectedChain) {
+        dispatch(aggregatorActions.toggleFlowState());
+      } else if (
+        pool.masterChain.id === startingChain &&
+        connectedChain !== pool.masterChain.id
+      ) {
+        setValue(AggregatorInputs.DestinationChain, connectedChain);
+        dispatch(aggregatorActions.toggleFlowState());
+      } else {
+        setValue(AggregatorInputs.StartingChain, connectedChain);
+      }
     }
-  }, [connectedChain, setValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connectedChain, dispatch, setValue, pool]);
 
   // TODO: add walletConnection guard to Aggregator
-  return wrongChainConnectedError;
+  return {
+    wrongChainConnectedError,
+    hideDestinationTokenDropdown: !showDestinationTokenDropdown,
+  };
 };
 
 export const useAvailableBalance = (
