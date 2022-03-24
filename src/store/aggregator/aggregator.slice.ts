@@ -15,12 +15,6 @@ const aggregatorSlice = createSlice({
     ) => {
       state.startingToken = payload;
     },
-    setStartingChain: (
-      state,
-      { payload }: PayloadAction<AggregatorState['startingChain']>
-    ) => {
-      state.startingChain = payload;
-    },
     setDestinationChain: (
       state,
       { payload }: PayloadAction<AggregatorState['destinationChain']>
@@ -35,12 +29,6 @@ const aggregatorSlice = createSlice({
     },
     toggleFlowState: (state) => {
       state.flowState = state.flowState === 'deposit' ? 'withdraw' : 'deposit';
-    },
-    setWrongChainConnectedError: (
-      state,
-      { payload }: PayloadAction<AggregatorState['wrongChainConnectedError']>
-    ) => {
-      state.wrongChainConnectedError = payload;
     },
     fetchAllowTokensAddressFailure: (state) => {
       state.allowTokensAddress.state = 'failure';

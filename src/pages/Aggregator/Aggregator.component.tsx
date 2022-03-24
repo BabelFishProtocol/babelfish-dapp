@@ -22,16 +22,13 @@ import { AggregatorInfo } from './AggregatorInfo/AggregatorInfo.component';
 import {
   useAggregatorDropdowns,
   useAvailableBalance,
+  useConnectedChain,
 } from './Aggregator.hooks';
-import { /* mainnetPool, */ testnetPool } from '../../config/pools';
-
-const pool = testnetPool;
 
 export const AggregatorComponent = ({
   getTokenAvailableBalance,
   getReceiveAmount,
   onSubmit,
-  onStartingChainChange,
   onDestinationChainChange,
   onStartingTokenChange,
 }: AggregatorComponentProps) => {
@@ -53,6 +50,12 @@ export const AggregatorComponent = ({
   const destinationToken = watch(AggregatorInputs.DestinationToken);
   const amount = watch(AggregatorInputs.SendAmount);
 
+  const { hideDestinationTokenDropdown } = useConnectedChain(
+    startingChain,
+    destinationChain,
+    setValue
+  );
+
   const {
     startingChainOptions,
     startingTokenOptions,
@@ -73,12 +76,6 @@ export const AggregatorComponent = ({
   );
 
   useEffect(() => {
-    if (startingChain) {
-      onStartingChainChange(startingChain);
-    }
-  }, [startingChain, onStartingChainChange]);
-
-  useEffect(() => {
     if (startingToken) {
       onStartingTokenChange(startingToken);
     }
@@ -95,8 +92,6 @@ export const AggregatorComponent = ({
       setValue(AggregatorInputs.ReceiveAmount, getReceiveAmount(amount));
     }
   }, [amount, getReceiveAmount, setValue]);
-
-  const hideDestinationTokenDropdown = destinationChain === pool.masterChain.id;
 
   return (
     <form
