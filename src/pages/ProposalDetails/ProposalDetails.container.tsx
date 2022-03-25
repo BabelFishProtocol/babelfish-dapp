@@ -53,6 +53,26 @@ const Container = () => {
     }
   );
 
+  const { handleSubmit: handleQueue, ...queueTxData } = useContractCall(
+    async () => {
+      if (!data) {
+        throw new Error(selectorsErrors.missingData);
+      }
+
+      return governorContract?.queue(data.id);
+    }
+  );
+
+  const { handleSubmit: handleExecute, ...executeTxData } = useContractCall(
+    async () => {
+      if (!data) {
+        throw new Error(selectorsErrors.missingData);
+      }
+
+      return governorContract?.execute(data.id);
+    }
+  );
+
   if (!id) return <>Missing proposal data</>;
 
   if (!isProperGovernor(governorType)) {
@@ -74,12 +94,28 @@ const Container = () => {
         voteStatus={mockVoteStatus}
         isGuardian={!!isGuardian}
         handleCancel={handleCancel}
+        handleQueue={handleQueue}
+        handleExecute={handleExecute}
       />
       {cancelTxData.status !== 'idle' && (
         <SubmitStatusDialog
           operationName="Canceling Proposal"
           successCallback={cancelTxData.onClose}
           {...cancelTxData}
+        />
+      )}
+      {queueTxData.status !== 'idle' && (
+        <SubmitStatusDialog
+          operationName="Queue Proposal"
+          successCallback={queueTxData.onClose}
+          {...queueTxData}
+        />
+      )}
+      {executeTxData.status !== 'idle' && (
+        <SubmitStatusDialog
+          operationName="Executing Proposal"
+          successCallback={executeTxData.onClose}
+          {...executeTxData}
         />
       )}
     </>
