@@ -207,10 +207,11 @@ export const ProposalDetailsComponent = ({
               {proposal.state === ProposalState.Queued && (
                 <Tooltip
                   title={
-                    !executingEnabled &&
-                    `Executing this proposal will be enabled from ${formatTimestamp(
-                      proposal.eta
-                    )}`
+                    !executingEnabled
+                      ? `Executing this proposal will be enabled from ${formatTimestamp(
+                          proposal.eta
+                        )}`
+                      : ''
                   }
                 >
                   <div>
