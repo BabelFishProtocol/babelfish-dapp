@@ -2,13 +2,16 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import exchangeIcon from '../../../assets/icons/exchange.svg';
 import { FeesAndLimitsType } from '../../../store/aggregator/aggregator.state';
+import { FiniteStates } from '../../../utils/types';
 import { InfoRow } from './InfoRow.component';
 
 export const AggregatorInfoComponent = ({
   onClick,
+  state,
   feesAndLimits,
 }: {
   onClick: () => void;
+  state: FiniteStates;
   feesAndLimits: FeesAndLimitsType;
 }) => (
   <Box
@@ -33,10 +36,26 @@ export const AggregatorInfoComponent = ({
         color: ({ palette }) => palette.grey[600],
       }}
     >
-      <InfoRow label="Min Transfer" value={feesAndLimits.minTransfer} />
-      <InfoRow label="Max Transfer" value={feesAndLimits.maxTransfer} />
-      <InfoRow label="Bridge Fee" value={feesAndLimits.bridgeFee} />
-      <InfoRow label="Day Limit" value={feesAndLimits.dailyLimit} />
+      <InfoRow
+        label="Min Transfer"
+        value={feesAndLimits.minTransfer}
+        state={state}
+      />
+      <InfoRow
+        label="Max Transfer"
+        value={feesAndLimits.maxTransfer}
+        state={state}
+      />
+      <InfoRow
+        label="Bridge Fee"
+        value={feesAndLimits.bridgeFee}
+        state={state}
+      />
+      <InfoRow
+        label="Day Limit"
+        value={feesAndLimits.dailyLimit}
+        state={state}
+      />
     </Box>
   </Box>
 );
