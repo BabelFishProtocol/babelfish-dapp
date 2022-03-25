@@ -10,8 +10,8 @@ type Bridge = {
   from: ChainEnum;
   to: ChainEnum;
   bridgeAddress: string;
-  // allowTokensAddress: string;
-  tokensAllowed?: TokenAllowed[];
+  rskBridgeAddress?: string; // TODO: should be required
+  tokensAllowed?: TokenAllowed[]; // TODO: should be required
 };
 
 export class BridgeDictionary {
@@ -76,18 +76,22 @@ export class BridgeDictionary {
       from: ChainEnum.ETH,
       to: ChainEnum.RSK,
       bridgeAddress: '0x33C0D33a0d4312562ad622F91d12B0AC47366EE1',
+      rskBridgeAddress: '0x1ccad820b6d031b41c54f1f3da11c0d48b399581',
       tokensAllowed: [
         {
           ...tokens.DAI,
           originalAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+          rskSovrynAddress: '0x1A37c482465e78E6DAbE1Ec77B9a24D4236D2A11',
         },
         {
           ...tokens.USDT,
           originalAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          rskSovrynAddress: '0xD9665EA8F5fF70Cf97E1b1Cd1B4Cd0317b0976e8',
         },
         {
           ...tokens.USDC,
           originalAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+          rskSovrynAddress: '0x8D1f7CbC6391D95E2774380e80A666FEbf655D6b',
         },
       ],
     },

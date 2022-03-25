@@ -10,4 +10,5 @@ export type AggregatorComponentProps = {
   onSubmit: (data: AggregatorFormValues) => void;
   onStartingTokenChange: (token: TokenEnum) => void;
   onDestinationChainChange: (chain: ChainEnum) => void;
+  onDestinationTokenChange: (token: TokenEnum) => void;
 };

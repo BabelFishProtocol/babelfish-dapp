@@ -18,12 +18,12 @@ import {
   AggregatorFormValues,
 } from './Aggregator.fields';
 import { AggregatorComponentProps } from './Aggregator.types';
-import { AggregatorInfo } from './AggregatorInfo/AggregatorInfo.component';
 import {
   useAggregatorDropdowns,
   useAvailableBalance,
   useConnectedChain,
 } from './Aggregator.hooks';
+import { AggregatorInfoContainer } from './AggregatorInfo/AggregatorInfo.container';
 
 export const AggregatorComponent = ({
   getTokenAvailableBalance,
@@ -31,6 +31,7 @@ export const AggregatorComponent = ({
   onSubmit,
   onDestinationChainChange,
   onStartingTokenChange,
+  onDestinationTokenChange,
 }: AggregatorComponentProps) => {
   const {
     handleSubmit,
@@ -61,7 +62,6 @@ export const AggregatorComponent = ({
     startingTokenOptions,
     destinationChainOptions,
     destinationTokenOptions,
-    changeDirection,
   } = useAggregatorDropdowns(
     startingChain,
     destinationChain,
@@ -86,6 +86,12 @@ export const AggregatorComponent = ({
       onDestinationChainChange(destinationChain);
     }
   }, [destinationChain, onDestinationChainChange]);
+
+  useEffect(() => {
+    if (destinationToken) {
+      onDestinationTokenChange(destinationToken);
+    }
+  }, [destinationToken, onDestinationTokenChange]);
 
   useEffect(() => {
     if (amount) {
@@ -166,7 +172,7 @@ export const AggregatorComponent = ({
           />
         </Box>
       </PageView>
-      <AggregatorInfo onClick={changeDirection} />
+      <AggregatorInfoContainer />
       <PageView
         title={
           <Box

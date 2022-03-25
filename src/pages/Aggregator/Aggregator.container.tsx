@@ -19,6 +19,9 @@ export const AggregatorContainer = () => {
   const onDestinationChainChange = (chain: ChainEnum) => {
     dispatch(aggregatorActions.setDestinationChain(chain));
   };
+  const onDestinationTokenChange = (token: TokenEnum) => {
+    dispatch(aggregatorActions.setDestinationToken(token));
+  };
 
   const getTokenAvailableBalance = useCallback(
     () =>
@@ -48,6 +51,7 @@ export const AggregatorContainer = () => {
       onSubmit={onSubmit}
       onDestinationChainChange={onDestinationChainChange}
       onStartingTokenChange={onStartingTokenChange}
+      onDestinationTokenChange={onDestinationTokenChange}
     />
   );
 };

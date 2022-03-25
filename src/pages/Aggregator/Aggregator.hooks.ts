@@ -85,18 +85,11 @@ export const useAggregatorDropdowns = (
     }
   }, [flowState, startingChain, destinationChain, resetField, pool]);
 
-  const dispatch = useDispatch();
-
-  const changeDirection = () => {
-    dispatch(aggregatorActions.toggleFlowState());
-  };
-
   return {
     startingChainOptions,
     startingTokenOptions,
     destinationChainOptions,
     destinationTokenOptions,
-    changeDirection,
   };
 };
 

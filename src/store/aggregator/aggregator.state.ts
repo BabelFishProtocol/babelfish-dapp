@@ -23,6 +23,7 @@ export class AggregatorState {
   pool: PoolEnum = PoolEnum.mainnet;
   startingToken?: TokenEnum;
   destinationChain?: ChainEnum;
+  destinationToken?: TokenEnum;
   startingTokenBalance: LoadableAmount = {
     state: 'idle',
     data: undefined,
