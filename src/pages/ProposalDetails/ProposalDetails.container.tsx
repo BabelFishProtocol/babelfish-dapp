@@ -3,7 +3,10 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { proposalsActions } from '../../store/proposals/proposals.slice';
-import { proposalDetailsSelector } from '../../store/proposals/proposals.selectors';
+import {
+  isGuardianSelector,
+  proposalDetailsSelector,
+} from '../../store/proposals/proposals.selectors';
 import { GovernorTypes } from '../../constants';
 
 import { WalletConnectionChecker } from '../../components/WalletConnectionChecker/WalletConnectionChecker.component';
@@ -28,6 +31,7 @@ const Container = () => {
   const dispatch = useDispatch();
   const { id, governorType } = useParams();
   const { data, state } = useSelector(proposalDetailsSelector);
+  const isGuardian = useSelector(isGuardianSelector);
 
   useEffect(() => {
     if (isProperGovernor(governorType) && id) {
@@ -53,7 +57,7 @@ const Container = () => {
     <ProposalDetailsComponent
       proposal={data}
       voteStatus={mockVoteStatus}
-      isGuardian
+      isGuardian={!!isGuardian}
     />
   );
 };

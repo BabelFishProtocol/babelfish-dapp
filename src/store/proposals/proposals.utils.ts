@@ -1,6 +1,6 @@
 import { GovernorTypes, ProposalState } from '../../constants';
 import { ProposalListQueryItem } from '../../queries/proposalListQuery';
-import { getFutureTimestamp } from '../../utils/helpers';
+import { compareAddresses, getFutureTimestamp } from '../../utils/helpers';
 
 import { Proposal } from './proposals.state';
 
@@ -22,10 +22,8 @@ export const parseProposal = (
     30
   );
 
-  const governorName = Object.keys(governorsAddresses).find(
-    (type) =>
-      governorsAddresses[type as GovernorTypes].toLowerCase() ===
-      contractAddress.toLowerCase()
+  const governorName = Object.keys(governorsAddresses).find((type) =>
+    compareAddresses(governorsAddresses[type as GovernorTypes], contractAddress)
   );
 
   return {

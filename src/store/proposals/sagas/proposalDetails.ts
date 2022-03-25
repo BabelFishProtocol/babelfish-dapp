@@ -40,6 +40,7 @@ export function* fetchProposalDetails() {
     const [proposalDetails] = proposals;
 
     const proposalState = yield* call(governorContract.state, proposalId);
+    const guardian = yield* call(governorContract.guardian);
 
     const baseProposal = parseProposal(
       proposalDetails,
@@ -63,6 +64,7 @@ export function* fetchProposalDetails() {
       votes,
       actions,
       proposer,
+      guardian,
       description,
       forVotesAmount,
       againstVotesAmount,

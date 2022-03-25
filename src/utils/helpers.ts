@@ -98,3 +98,6 @@ export const formatBlockNumber = (val: string | number) => `#${val}`;
 
 export const truncateString = (text: string, maxLength = 25) =>
   text.length > maxLength ? `${text.substring(0, maxLength)} ...` : text;
+
+export const compareAddresses = (addr1: string, addr2: string) =>
+  addr1.toLowerCase() === addr2.toLowerCase();

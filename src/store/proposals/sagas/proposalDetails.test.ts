@@ -45,6 +45,7 @@ describe('proposals details sagas', () => {
 
   describe('fetchProposalDetails', () => {
     const mockGovernorAddress = '0x0';
+    const mockProposalGuardian = '0x12';
     const mockProposalType = GovernorTypes.GovernorAdmin;
 
     const mockGovernorContracts = {
@@ -108,6 +109,7 @@ describe('proposals details sagas', () => {
     const parsedProposal: ProposalDetails = {
       endBlock: 1000,
       endTime: 237961437,
+      guardian: mockProposalGuardian,
       id: '2',
       startBlock: 900,
       startTime: 237958437,
@@ -195,8 +197,10 @@ describe('proposals details sagas', () => {
             matchers.call(mockGovernorContract.state, mockSelectedProposal.id),
             mockProposalState,
           ],
+          [matchers.call(mockGovernorContract.guardian), mockProposalGuardian],
         ])
         .call(proposalDetailsQuery, mockSubgraphClient, expectedQueryParams)
+        .call(mockGovernorContract.guardian)
         .call(mockGovernorContract.state, mockSelectedProposal.id)
         .put(proposalsActions.setDetails(parsedProposal))
         .hasFinalState(successState)
@@ -224,6 +228,7 @@ describe('proposals details sagas', () => {
             matchers.call(mockGovernorContract.state, mockSelectedProposal.id),
             mockProposalState,
           ],
+          [matchers.call(mockGovernorContract.guardian), mockProposalGuardian],
         ])
         .put(proposalsActions.fetchDetailsFailure())
         .hasFinalState(failureState)
@@ -251,6 +256,7 @@ describe('proposals details sagas', () => {
             matchers.call(mockGovernorContract.state, mockSelectedProposal.id),
             mockProposalState,
           ],
+          [matchers.call(mockGovernorContract.guardian), mockProposalGuardian],
         ])
         .call(proposalDetailsQuery, mockSubgraphClient, expectedQueryParams)
         .put(proposalsActions.fetchDetailsFailure())
