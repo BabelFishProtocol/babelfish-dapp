@@ -19,6 +19,7 @@ export type ProposalDetailsComponentProps = {
   voteStatus: VoteStatus;
   /** flag to determine whether current account is the guardian of the proposal */
   isGuardian: boolean;
+  handleCancel: () => Promise<void>;
 };
 
 export type ProposalInfoItemProps = {

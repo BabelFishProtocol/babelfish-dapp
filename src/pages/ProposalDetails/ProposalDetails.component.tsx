@@ -12,7 +12,7 @@ import {
 } from '../../components/PageView/PageView.component';
 import { Button } from '../../components/Button/Button.component';
 import { PrettyTx } from '../../components/PrettyTx/PrettyTx.component';
-import { ProposalState, Urls } from '../../constants';
+import { ProposalState, proposalStateNames, Urls } from '../../constants';
 
 import {
   VoteActionBlockProps,
@@ -38,159 +38,178 @@ export const ProposalDetailsComponent = ({
   proposal,
   voteStatus,
   isGuardian,
-}: ProposalDetailsComponentProps) => (
-  <PageView
-    title={
-      <Box
-        sx={{
-          p: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-        <CenteredBox>
-          <IconButton
-            sx={{ mr: 1, p: 0.2 }}
-            component={Link}
-            to={Urls.Proposals}
-          >
-            {'<'}
-          </IconButton>
-          <Typography variant="h2">
-            {truncateString(proposal.title, 70)}
-          </Typography>
-        </CenteredBox>
+  handleCancel,
+}: ProposalDetailsComponentProps) => {
+  const canCancel =
+    isGuardian &&
+    ![ProposalState.Executed, ProposalState.Canceled].includes(proposal.state);
 
-        <Typography variant="body1">
-          Voting Ends: {formatTimestamp(proposal.endTime)}
-        </Typography>
-      </Box>
-    }
-  >
-    <Grid container>
-      <Grid item sm={12} sx={{ p: ({ spacing }) => spacing(0, 2) }}>
-        <VotesRatioBlock />
-      </Grid>
-
-      <Grid item sm={6} p={1}>
-        <VoteActionBlock
-          votesAmount={`${formatWeiAmount(
-            proposal.forVotesAmount || 0
-          )} VOTES FOR`}
-        >
-          <VoteForButton
-            voteStatus={voteStatus}
-            proposalState={proposal.state}
-          />
-        </VoteActionBlock>
-
-        <ForVotesListContainer />
-
-        <Container sx={{ p: 2, mt: 2, minHeight: 300 }}>
-          <Typography variant="body2" sx={{ mb: 2, minHeight: 50 }}>
-            {proposal.description}
-          </Typography>
-
-          {proposal.actions?.map(({ contract, signature, calldata }, index) => (
-            <Box key={index} sx={{ mb: 2 }}>
-              <ProposalInfoItem label="Function to invoke" width={140}>
-                <Typography color="primary" variant="body2" component="span">
-                  {signature}
-                </Typography>
-              </ProposalInfoItem>
-
-              <ProposalInfoItem label="Calldata" width={140}>
-                <PrettyTx value={calldata} />
-              </ProposalInfoItem>
-
-              <ProposalInfoItem label="Contract Address" width={140}>
-                <PrettyTx value={contract} />
-              </ProposalInfoItem>
-            </Box>
-          ))}
-        </Container>
-      </Grid>
-
-      <Grid item sm={6} p={1}>
-        <VoteActionBlock
-          votesAmount={`${formatWeiAmount(
-            proposal.againstVotesAmount
-          )} VOTES AGAINST`}
-        >
-          <VoteAgainstButton
-            voteStatus={voteStatus}
-            proposalState={proposal.state}
-          />
-        </VoteActionBlock>
-
-        <AgainstVotesListContainer />
-
-        <Container
+  return (
+    <PageView
+      title={
+        <Box
           sx={{
-            p: 2,
-            mt: 2,
-            minHeight: 300,
+            p: 1,
             display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-evenly',
+            alignItems: 'center',
+            justifyContent: 'space-between',
           }}
         >
-          <ProposalInfoItem label="Proposed by">
-            <PrettyTx value={proposal.proposer} />
-          </ProposalInfoItem>
-
-          <ProposalInfoItem label="Proposed on">
-            <Box>
-              <Typography variant="body2">
-                {formatTimestamp(proposal.startTime)}
-              </Typography>
-              <Typography color="primary" variant="body2">
-                #{proposal.startBlock}
-              </Typography>
-            </Box>
-          </ProposalInfoItem>
-
-          <ProposalInfoItem label="Deadline">
-            <Box>
-              <Typography variant="body2">
-                {formatTimestamp(proposal.endTime)}
-              </Typography>
-              <Typography color="primary" variant="body2">
-                #{proposal.endBlock}
-              </Typography>
-            </Box>
-          </ProposalInfoItem>
-
-          <ProposalInfoItem label="Proposal ID">
-            <Typography color="primary" variant="body2" component="span">
-              {proposal.id}
+          <CenteredBox>
+            <IconButton
+              sx={{ mr: 1, p: 0.2 }}
+              component={Link}
+              to={Urls.Proposals}
+            >
+              {'<'}
+            </IconButton>
+            <Typography variant="h2">
+              {truncateString(proposal.title, 70)}
             </Typography>
-          </ProposalInfoItem>
+          </CenteredBox>
 
-          <CenteredBox sx={{ mt: 1, gap: 2 }}>
-            {proposal.state !== ProposalState.Executed && isGuardian && (
-              <Button variant="outlined" size="small">
-                Cancel
-              </Button>
+          <Typography variant="body1">
+            Voting Ends: {formatTimestamp(proposal.endTime)}
+          </Typography>
+        </Box>
+      }
+    >
+      <Grid container>
+        <Grid item sm={12} sx={{ p: ({ spacing }) => spacing(0, 2) }}>
+          <VotesRatioBlock />
+        </Grid>
+
+        <Grid item sm={6} p={1}>
+          <VoteActionBlock
+            votesAmount={`${formatWeiAmount(
+              proposal.forVotesAmount || 0
+            )} VOTES FOR`}
+          >
+            <VoteForButton
+              voteStatus={voteStatus}
+              proposalState={proposal.state}
+            />
+          </VoteActionBlock>
+
+          <ForVotesListContainer />
+
+          <Container sx={{ p: 2, mt: 2, minHeight: 300 }}>
+            <Typography variant="body2" sx={{ mb: 2, minHeight: 50 }}>
+              {proposal.description}
+            </Typography>
+
+            {proposal.actions?.map(
+              ({ contract, signature, calldata }, index) => (
+                <Box key={index} sx={{ mb: 2 }}>
+                  <ProposalInfoItem label="Function to invoke" width={140}>
+                    <Typography
+                      color="primary"
+                      variant="body2"
+                      component="span"
+                    >
+                      {signature}
+                    </Typography>
+                  </ProposalInfoItem>
+
+                  <ProposalInfoItem label="Calldata" width={140}>
+                    <PrettyTx value={calldata} />
+                  </ProposalInfoItem>
+
+                  <ProposalInfoItem label="Contract Address" width={140}>
+                    <PrettyTx value={contract} />
+                  </ProposalInfoItem>
+                </Box>
+              )
             )}
-            {proposal.state === ProposalState.Succeeded && (
-              <Button variant="outlined" size="small">
-                Queue
-              </Button>
-            )}
-            {proposal.state === ProposalState.Queued &&
-              Number(proposal.eta) <= new Date().getTime() / 1000 && (
-                <Button variant="outlined" size="small">
-                  Execute
+          </Container>
+        </Grid>
+
+        <Grid item sm={6} p={1}>
+          <VoteActionBlock
+            votesAmount={`${formatWeiAmount(
+              proposal.againstVotesAmount
+            )} VOTES AGAINST`}
+          >
+            <VoteAgainstButton
+              voteStatus={voteStatus}
+              proposalState={proposal.state}
+            />
+          </VoteActionBlock>
+
+          <AgainstVotesListContainer />
+
+          <Container
+            sx={{
+              p: 2,
+              mt: 2,
+              minHeight: 300,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-evenly',
+            }}
+          >
+            <ProposalInfoItem label="Status">
+              <Typography color="primary" variant="body2" component="span">
+                {proposalStateNames[proposal.state]}
+              </Typography>
+            </ProposalInfoItem>
+
+            <ProposalInfoItem label="Proposed by">
+              <PrettyTx value={proposal.proposer} />
+            </ProposalInfoItem>
+
+            <ProposalInfoItem label="Proposed on">
+              <Box>
+                <Typography variant="body2">
+                  {formatTimestamp(proposal.startTime)}
+                </Typography>
+                <Typography color="primary" variant="body2">
+                  #{proposal.startBlock}
+                </Typography>
+              </Box>
+            </ProposalInfoItem>
+
+            <ProposalInfoItem label="Deadline">
+              <Box>
+                <Typography variant="body2">
+                  {formatTimestamp(proposal.endTime)}
+                </Typography>
+                <Typography color="primary" variant="body2">
+                  #{proposal.endBlock}
+                </Typography>
+              </Box>
+            </ProposalInfoItem>
+
+            <ProposalInfoItem label="Proposal ID">
+              <Typography color="primary" variant="body2" component="span">
+                {proposal.id}
+              </Typography>
+            </ProposalInfoItem>
+
+            <CenteredBox sx={{ mt: 1, gap: 2 }}>
+              {canCancel && (
+                <Button variant="outlined" size="small" onClick={handleCancel}>
+                  Cancel
                 </Button>
               )}
-          </CenteredBox>
-        </Container>
+              {proposal.state === ProposalState.Succeeded && (
+                <Button variant="outlined" size="small">
+                  Queue
+                </Button>
+              )}
+              {proposal.state === ProposalState.Queued &&
+                Number(proposal.eta) <= new Date().getTime() / 1000 && (
+                  <Button variant="outlined" size="small">
+                    Execute
+                  </Button>
+                )}
+            </CenteredBox>
+          </Container>
+        </Grid>
       </Grid>
-    </Grid>
-  </PageView>
-);
+    </PageView>
+  );
+};
 
 const ProposalInfoItem = ({
   label,

@@ -6,9 +6,12 @@ import { proposalsActions } from '../../store/proposals/proposals.slice';
 import {
   isGuardianSelector,
   proposalDetailsSelector,
+  selectedProposalGovernor,
 } from '../../store/proposals/proposals.selectors';
-import { GovernorTypes } from '../../constants';
+import { useContractCall } from '../../hooks/useContractCall';
+import { GovernorTypes, selectorsErrors } from '../../constants';
 
+import { SubmitStatusDialog } from '../../components/TxDialog/TxDialog.component';
 import { WalletConnectionChecker } from '../../components/WalletConnectionChecker/WalletConnectionChecker.component';
 
 import { VoteStatus } from './ProposalDetails.types';
@@ -32,12 +35,23 @@ const Container = () => {
   const { id, governorType } = useParams();
   const { data, state } = useSelector(proposalDetailsSelector);
   const isGuardian = useSelector(isGuardianSelector);
+  const governorContract = useSelector(selectedProposalGovernor);
 
   useEffect(() => {
     if (isProperGovernor(governorType) && id) {
       dispatch(proposalsActions.watchDetails({ id, governorType }));
     }
   }, [dispatch, governorType, id]);
+
+  const { handleSubmit: handleCancel, ...cancelTxData } = useContractCall(
+    async () => {
+      if (!data) {
+        throw new Error(selectorsErrors.missingData);
+      }
+
+      return governorContract?.cancel(data.id);
+    }
+  );
 
   if (!id) return <>Missing proposal data</>;
 
@@ -54,11 +68,21 @@ const Container = () => {
   }
 
   return (
-    <ProposalDetailsComponent
-      proposal={data}
-      voteStatus={mockVoteStatus}
-      isGuardian={!!isGuardian}
-    />
+    <>
+      <ProposalDetailsComponent
+        proposal={data}
+        voteStatus={mockVoteStatus}
+        isGuardian={!!isGuardian}
+        handleCancel={handleCancel}
+      />
+      {cancelTxData.status !== 'idle' && (
+        <SubmitStatusDialog
+          operationName="Canceling Proposal"
+          successCallback={cancelTxData.onClose}
+          {...cancelTxData}
+        />
+      )}
+    </>
   );
 };
 
