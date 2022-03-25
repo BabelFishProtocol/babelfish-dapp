@@ -47,7 +47,7 @@ export function* addProposal({ payload }: ProposalsActions['startProposal']) {
     );
     const signatures = rows.map((row) => row[AddProposalInputs.Signature]);
     const calldatas: BytesLike[] = rows.map(
-      (row) => row[AddProposalInputs.Signature]
+      (row) => row[AddProposalInputs.Calldata]
     );
     const description = payload[AddProposalInputs.Description];
 
