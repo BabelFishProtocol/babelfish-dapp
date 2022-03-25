@@ -3,7 +3,12 @@ import { BigNumber } from 'ethers';
 import { RootState } from '..';
 import { GovernorTypes, Reducers } from '../../constants';
 import { GovernorAlpha__factory } from '../../contracts/types';
-import { addressesSelector, providerSelector } from '../app/app.selectors';
+import { compareAddresses } from '../../utils/helpers';
+import {
+  accountSelector,
+  addressesSelector,
+  providerSelector,
+} from '../app/app.selectors';
 
 const proposalsState = (state: RootState) => state[Reducers.Proposals];
 
@@ -110,6 +115,17 @@ export const votesRatioSelector = createSelector(
     const ratioInPercents = ratio / (ratioPrecision / 100);
 
     return ratioInPercents;
+  }
+);
+
+export const isGuardianSelector = createSelector(
+  [proposalDetailsSelector, accountSelector],
+  (proposal, account) => {
+    if (!proposal.data || !account) {
+      return undefined;
+    }
+
+    return compareAddresses(proposal.data.guardian, account);
   }
 );
 

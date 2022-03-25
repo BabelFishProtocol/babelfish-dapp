@@ -37,6 +37,7 @@ export type ProposalDetails = Proposal & {
   proposer: string;
   description: string;
   actions: ProposalAction[];
+  guardian: string;
 };
 
 export class ProposalsState {
