@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import Tooltip from '@mui/material/Tooltip';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -13,6 +14,13 @@ import {
 import { Button } from '../../components/Button/Button.component';
 import { PrettyTx } from '../../components/PrettyTx/PrettyTx.component';
 import { ProposalState, proposalStateNames, Urls } from '../../constants';
+
+import {
+  formatTimestamp,
+  formatWeiAmount,
+  getCurrentTimestamp,
+  truncateString,
+} from '../../utils/helpers';
 
 import {
   VoteActionBlockProps,
@@ -28,21 +36,20 @@ import {
   VoteForButton,
 } from './ProposalDetails.voteButtons';
 import { VotesRatioBlock } from './ProposalDetails.votesRatio';
-import {
-  formatTimestamp,
-  formatWeiAmount,
-  truncateString,
-} from '../../utils/helpers';
 
 export const ProposalDetailsComponent = ({
   proposal,
   voteStatus,
   isGuardian,
   handleCancel,
+  handleQueue,
+  handleExecute,
 }: ProposalDetailsComponentProps) => {
   const canCancel =
     isGuardian &&
     ![ProposalState.Executed, ProposalState.Canceled].includes(proposal.state);
+
+  const executingEnabled = getCurrentTimestamp() >= Number(proposal.eta);
 
   return (
     <PageView
@@ -193,16 +200,31 @@ export const ProposalDetailsComponent = ({
                 </Button>
               )}
               {proposal.state === ProposalState.Succeeded && (
-                <Button variant="outlined" size="small">
+                <Button variant="outlined" size="small" onClick={handleQueue}>
                   Queue
                 </Button>
               )}
-              {proposal.state === ProposalState.Queued &&
-                Number(proposal.eta) <= new Date().getTime() / 1000 && (
-                  <Button variant="outlined" size="small">
-                    Execute
-                  </Button>
-                )}
+              {proposal.state === ProposalState.Queued && (
+                <Tooltip
+                  title={
+                    !executingEnabled &&
+                    `Executing this proposal will be enabled from ${formatTimestamp(
+                      proposal.eta
+                    )}`
+                  }
+                >
+                  <div>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      disabled={!executingEnabled}
+                      onClick={handleExecute}
+                    >
+                      Execute
+                    </Button>
+                  </div>
+                </Tooltip>
+              )}
             </CenteredBox>
           </Container>
         </Grid>
