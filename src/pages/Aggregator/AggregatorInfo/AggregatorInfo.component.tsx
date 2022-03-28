@@ -1,9 +1,8 @@
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import exchangeIcon from '../../../assets/icons/exchange.svg';
-import { FeesAndLimitsType } from '../../../store/aggregator/aggregator.state';
 import { formatUnitAmount } from '../../../utils/helpers';
-import { FiniteStates } from '../../../utils/types';
+import { AggregatorInfoComponentProps } from './AggregatorInfo.types';
 import { InfoRow } from './InfoRow.component';
 
 export const AggregatorInfoComponent = ({
@@ -12,13 +11,7 @@ export const AggregatorInfoComponent = ({
   feesAndLimits,
   tokenName,
   tokenDecimals,
-}: {
-  onClick: () => void;
-  state: FiniteStates;
-  feesAndLimits: FeesAndLimitsType;
-  tokenName?: string;
-  tokenDecimals?: number;
-}) => (
+}: AggregatorInfoComponentProps) => (
   <Box
     sx={{
       alignSelf: 'stretch',
