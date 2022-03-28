@@ -2,6 +2,7 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import exchangeIcon from '../../../assets/icons/exchange.svg';
 import { FeesAndLimitsType } from '../../../store/aggregator/aggregator.state';
+import { formatUnitAmount } from '../../../utils/helpers';
 import { FiniteStates } from '../../../utils/types';
 import { InfoRow } from './InfoRow.component';
 
@@ -9,10 +10,14 @@ export const AggregatorInfoComponent = ({
   onClick,
   state,
   feesAndLimits,
+  tokenName,
+  tokenDecimals,
 }: {
   onClick: () => void;
   state: FiniteStates;
   feesAndLimits: FeesAndLimitsType;
+  tokenName?: string;
+  tokenDecimals?: number;
 }) => (
   <Box
     sx={{
@@ -38,22 +43,38 @@ export const AggregatorInfoComponent = ({
     >
       <InfoRow
         label="Min Transfer"
-        value={feesAndLimits.minTransfer}
+        value={`${formatUnitAmount(
+          feesAndLimits.minTransfer || 0,
+          tokenDecimals || 18,
+          2
+        )} ${tokenName}`}
         state={state}
       />
       <InfoRow
         label="Max Transfer"
-        value={feesAndLimits.maxTransfer}
+        value={`${formatUnitAmount(
+          feesAndLimits.maxTransfer || 0,
+          18,
+          2
+        )} ${tokenName}`}
         state={state}
       />
       <InfoRow
         label="Bridge Fee"
-        value={feesAndLimits.bridgeFee}
+        value={`${formatUnitAmount(
+          feesAndLimits.bridgeFee || 0,
+          tokenDecimals || 18,
+          2
+        )} ${tokenName}`}
         state={state}
       />
       <InfoRow
         label="Day Limit"
-        value={feesAndLimits.dailyLimit}
+        value={`${formatUnitAmount(
+          feesAndLimits.dailyLimit || 0,
+          18,
+          2
+        )} ${tokenName}`}
         state={state}
       />
     </Box>

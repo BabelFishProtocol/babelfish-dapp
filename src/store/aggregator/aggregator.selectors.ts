@@ -62,6 +62,27 @@ export const bridgeSelector = createSelector(
   }
 );
 
+export const startingTokenNameSelector = createSelector(
+  [startingTokenSelector],
+  (startingToken) => {
+    if (!startingToken) {
+      return undefined;
+    }
+    return tokens[startingToken].name;
+  }
+);
+
+export const startingTokenDecimalsSelector = createSelector(
+  [startingTokenSelector, bridgeSelector, flowStateSelector],
+  (startingToken, bridge, flowState) => {
+    if (!startingToken || !bridge) {
+      return undefined;
+    }
+
+    return bridge.getTokenDecimals(startingToken, flowState);
+  }
+);
+
 export const tokenAddressSelector = createSelector(
   [
     startingTokenSelector,
