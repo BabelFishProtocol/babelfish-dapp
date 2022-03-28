@@ -1,6 +1,4 @@
 import { select, call, put, all, takeLatest } from 'typed-redux-saga';
-import { tokens } from '../../config/tokens';
-import { formatUnitAmount, formatWeiAmount } from '../../utils/helpers';
 import { accountSelector } from '../app/app.selectors';
 import { appActions } from '../app/app.slice';
 import {
@@ -49,14 +47,12 @@ export function* fetchBridgeFeesAndLimits() {
     const maxTransfer = yield* call(allowTokens.getMaxTokensAllowed);
     const dailyLimit = yield* call(allowTokens.dailyLimit);
 
-    const { decimals, name } = tokens[startingToken];
-
     yield* put(
       aggregatorActions.setFeesAndLimits({
-        bridgeFee: `${formatUnitAmount(bridgeFee, decimals)} ${name}`,
-        minTransfer: `${formatUnitAmount(minTransfer, decimals)} ${name}`,
-        maxTransfer: `${formatWeiAmount(maxTransfer)} ${name}`,
-        dailyLimit: `${formatWeiAmount(dailyLimit)} ${name}`,
+        bridgeFee: bridgeFee.toString(),
+        minTransfer: minTransfer.toString(),
+        maxTransfer: maxTransfer.toString(),
+        dailyLimit: dailyLimit.toString(),
       })
     );
   } catch (e) {
