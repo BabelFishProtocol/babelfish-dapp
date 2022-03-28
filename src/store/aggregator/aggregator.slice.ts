@@ -21,6 +21,12 @@ const aggregatorSlice = createSlice({
     ) => {
       state.destinationChain = payload;
     },
+    setDestinationToken: (
+      state,
+      { payload }: PayloadAction<AggregatorState['destinationToken']>
+    ) => {
+      state.destinationToken = payload;
+    },
     setFlowStateDeposit: (state) => {
       state.flowState = 'deposit';
     },
@@ -37,6 +43,9 @@ const aggregatorSlice = createSlice({
     setAllowTokensAddress: (state, { payload }: PayloadAction<string>) => {
       state.allowTokensAddress.state = 'success';
       state.allowTokensAddress.data = payload;
+    },
+    fetchFeesAndLimitsLoading: (state) => {
+      state.feesAndLimits.state = 'loading';
     },
     fetchFeesAndLimitsFailure: (state) => {
       state.feesAndLimits.state = 'failure';

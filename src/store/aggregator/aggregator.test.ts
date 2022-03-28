@@ -25,12 +25,11 @@ import { AggregatorState } from './aggregator.state';
 import {
   allowTokensContractSelector,
   bridgeContractSelector,
-  destinationChainSelector,
   startingTokenContractSelector,
   startingTokenSelector,
+  tokenAddressSelector,
 } from './aggregator.selectors';
-import { ChainEnum } from '../../config/chains';
-import { accountSelector, chainIdSelector } from '../app/app.selectors';
+import { accountSelector } from '../app/app.selectors';
 
 const mockBridge = createMockedContract(
   Bridge__factory.connect(constants.AddressZero, mockSigner),
@@ -129,8 +128,6 @@ describe('aggregator store', () => {
   });
 
   describe('fetchBridgeFeesAndLimits', () => {
-    const testStartingChain = ChainEnum.ETH;
-    const testDestinationChain = ChainEnum.RSK;
     const testStartingToken = 'USDT';
     const testStartingTokenAddress =
       '0xdAC17F958D2ee523a2206206994597C13D831ec7';
@@ -172,24 +169,29 @@ describe('aggregator store', () => {
         .withReducer(reducer)
         .withState(initialState)
         .select(allowTokensContractSelector)
-        .select(chainIdSelector)
-        .select(destinationChainSelector)
-        .select(startingTokenSelector);
+        .select(startingTokenSelector)
+        .select(tokenAddressSelector);
 
     it('happy path', async () => {
       const runResult = await getBasePath()
         .provide([
           [matchers.select(allowTokensContractSelector), mockAllowTokens],
-          [matchers.select(chainIdSelector), testStartingChain],
-          [matchers.select(destinationChainSelector), testDestinationChain],
           [matchers.select(startingTokenSelector), testStartingToken],
+          [matchers.select(tokenAddressSelector), testStartingTokenAddress],
           [matchers.call.fn(mockAllowTokens.getFeePerToken), bridgeFee],
           [matchers.call.fn(mockAllowTokens.getMinPerToken), minTransfer],
           [matchers.call.fn(mockAllowTokens.getMaxTokensAllowed), maxTransfer],
           [matchers.call.fn(mockAllowTokens.dailyLimit), dailyLimit],
         ])
-        .call(mockAllowTokens.getFeePerToken, testStartingTokenAddress)
-        .call(mockAllowTokens.getMinPerToken, testStartingTokenAddress)
+        .put(aggregatorActions.fetchFeesAndLimitsLoading())
+        .call(
+          mockAllowTokens.getFeePerToken,
+          testStartingTokenAddress.toLowerCase()
+        )
+        .call(
+          mockAllowTokens.getMinPerToken,
+          testStartingTokenAddress.toLowerCase()
+        )
         .call(mockAllowTokens.getMaxTokensAllowed)
         .call(mockAllowTokens.dailyLimit)
         .put(
@@ -210,9 +212,8 @@ describe('aggregator store', () => {
       await getBasePath()
         .provide([
           [matchers.select(allowTokensContractSelector), undefined],
-          [matchers.select(chainIdSelector), testStartingChain],
-          [matchers.select(destinationChainSelector), testDestinationChain],
           [matchers.select(startingTokenSelector), testStartingToken],
+          [matchers.select(tokenAddressSelector), testStartingTokenAddress],
         ])
         .put(aggregatorActions.fetchFeesAndLimitsFailure())
         .hasFinalState(failureState)
@@ -225,12 +226,15 @@ describe('aggregator store', () => {
       const runResult = await getBasePath()
         .provide([
           [matchers.select(allowTokensContractSelector), mockAllowTokens],
-          [matchers.select(chainIdSelector), testStartingChain],
-          [matchers.select(destinationChainSelector), testDestinationChain],
           [matchers.select(startingTokenSelector), testStartingToken],
+          [matchers.select(tokenAddressSelector), testStartingTokenAddress],
           [matchers.call.fn(mockAllowTokens.getFeePerToken), throwError()],
         ])
-        .call(mockAllowTokens.getFeePerToken, testStartingTokenAddress)
+        .put(aggregatorActions.fetchFeesAndLimitsLoading())
+        .call(
+          mockAllowTokens.getFeePerToken,
+          testStartingTokenAddress.toLowerCase()
+        )
         .put(aggregatorActions.fetchFeesAndLimitsFailure())
         .hasFinalState(failureState)
         .run();

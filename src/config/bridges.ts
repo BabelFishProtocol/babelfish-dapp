@@ -1,26 +1,53 @@
+/* eslint-disable max-classes-per-file */
+import { FlowState } from '../store/aggregator/aggregator.state';
 import { ChainEnum } from './chains';
-import { tokens, TokenTypeBase } from './tokens';
+import { TokenEnum, tokens, TokenTypeBase } from './tokens';
 
 export type TokenAllowed = TokenTypeBase & {
+  originalDecimals?: number;
   originalAddress: string;
+  rskSovrynDecimals?: number;
   rskSovrynAddress?: string;
 };
 
-type Bridge = {
-  from: ChainEnum;
-  to: ChainEnum;
-  bridgeAddress: string;
-  // allowTokensAddress: string;
-  tokensAllowed?: TokenAllowed[];
-};
+class Bridge {
+  constructor(
+    public from: ChainEnum,
+    public to: ChainEnum,
+    public bridgeAddress: string,
+    public rskBridgeAddress?: string, // TODO: should be required
+    public tokensAllowed?: TokenAllowed[] // TODO: should be required
+  ) {}
+
+  public getTokenDecimals(token: TokenEnum, flowState: FlowState) {
+    const tokenOnBridge = this.tokensAllowed?.find(
+      (tokenAllowed) => tokenAllowed.id === token
+    );
+    if (flowState === 'deposit') {
+      return tokenOnBridge?.originalDecimals || 18;
+    }
+    return tokenOnBridge?.rskSovrynDecimals || 18;
+  }
+
+  public getTokenAddress(token: TokenEnum, flowState: FlowState) {
+    const tokenOnBridge = this.tokensAllowed?.find(
+      (tokenAllowed) => tokenAllowed.id === token
+    );
+    if (flowState === 'deposit') {
+      return tokenOnBridge?.originalAddress;
+    }
+    return tokenOnBridge?.rskSovrynAddress;
+  }
+}
 
 export class BridgeDictionary {
   public static bridges: Bridge[] = [
-    {
-      from: ChainEnum.BSC,
-      to: ChainEnum.RSK,
-      bridgeAddress: '0xdfc7127593c8af1a17146893f10e08528f4c2aa7',
-      tokensAllowed: [
+    new Bridge(
+      ChainEnum.BSC,
+      ChainEnum.RSK,
+      '0xdfc7127593c8af1a17146893f10e08528f4c2aa7',
+      '',
+      [
         {
           ...tokens.DAI,
           originalAddress: '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3',
@@ -41,14 +68,14 @@ export class BridgeDictionary {
           originalAddress: '0x55d398326f99059ff775485246999027b3197955',
           rskSovrynAddress: '',
         },
-      ],
-    },
-    {
-      from: ChainEnum.BSC_TESTNET,
-      to: ChainEnum.RSK_TESTNET,
-      bridgeAddress: '0x862e8aff917319594cc7faaae5350d21196c086f',
-      // allowTokensAddress: '0xeb23e848ceca88b7d0c019c7186bb86cefadd0bd',
-      tokensAllowed: [
+      ]
+    ),
+    new Bridge(
+      ChainEnum.BSC_TESTNET,
+      ChainEnum.RSK_TESTNET,
+      '0x862e8aff917319594cc7faaae5350d21196c086f',
+      '',
+      [
         {
           ...tokens.DAI,
           originalAddress: '0x83241490517384cB28382Bdd4D1534eE54d9350F',
@@ -69,34 +96,40 @@ export class BridgeDictionary {
           originalAddress: '0x268e3bF855CbcDf8FE31bA3557a554aB2283351F',
           rskSovrynAddress: '0x43bC3F0FFFF6c9BBf3C2EAFE464c314d43f561De',
         },
-      ],
-    },
+      ]
+    ),
 
-    {
-      from: ChainEnum.ETH,
-      to: ChainEnum.RSK,
-      bridgeAddress: '0x33C0D33a0d4312562ad622F91d12B0AC47366EE1',
-      tokensAllowed: [
+    new Bridge(
+      ChainEnum.ETH,
+      ChainEnum.RSK,
+      '0x33C0D33a0d4312562ad622F91d12B0AC47366EE1',
+      '0x1ccad820b6d031b41c54f1f3da11c0d48b399581',
+      [
         {
           ...tokens.DAI,
           originalAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+          rskSovrynAddress: '0x1A37c482465e78E6DAbE1Ec77B9a24D4236D2A11',
         },
         {
           ...tokens.USDT,
+          originalDecimals: 6,
           originalAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          rskSovrynAddress: '0xD9665EA8F5fF70Cf97E1b1Cd1B4Cd0317b0976e8',
         },
         {
           ...tokens.USDC,
+          originalDecimals: 6,
           originalAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+          rskSovrynAddress: '0x8D1f7CbC6391D95E2774380e80A666FEbf655D6b',
         },
-      ],
-    },
+      ]
+    ),
 
-    {
-      from: ChainEnum.ETH_TESTNET,
-      to: ChainEnum.RSK_TESTNET,
-      bridgeAddress: '0x2b456e230225C4670FBF10b9dA506C019a24cAC7',
-    },
+    new Bridge(
+      ChainEnum.ETH_TESTNET,
+      ChainEnum.RSK_TESTNET,
+      '0x2b456e230225C4670FBF10b9dA506C019a24cAC7'
+    ),
     // {
     //   from: ChainEnum.RSK_TESTNET,
     //   to: ChainEnum.BSC_TESTNET,

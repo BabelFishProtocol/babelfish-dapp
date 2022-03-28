@@ -1,16 +1,17 @@
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import exchangeIcon from '../../../assets/icons/exchange.svg';
+import { formatUnitAmount } from '../../../utils/helpers';
+import { AggregatorInfoComponentProps } from './AggregatorInfo.types';
 import { InfoRow } from './InfoRow.component';
 
-const mockInfo = [
-  { label: 'Min Transfer', value: '0.0100 ETH' },
-  { label: 'Max Transfer', value: '10,000,000.0000 ETH' },
-  { label: 'Bridge Fee', value: '0.0010 ETH' },
-  { label: 'Day Limit', value: '100,000,000.0000 ETH' },
-];
-
-export const AggregatorInfo = ({ onClick }: { onClick: () => void }) => (
+export const AggregatorInfoComponent = ({
+  onClick,
+  state,
+  feesAndLimits,
+  tokenName,
+  tokenDecimals,
+}: AggregatorInfoComponentProps) => (
   <Box
     sx={{
       alignSelf: 'stretch',
@@ -33,9 +34,42 @@ export const AggregatorInfo = ({ onClick }: { onClick: () => void }) => (
         color: ({ palette }) => palette.grey[600],
       }}
     >
-      {mockInfo.map(({ label, value }) => (
-        <InfoRow key={label} label={label} value={value} />
-      ))}
+      <InfoRow
+        label="Min Transfer"
+        value={`${formatUnitAmount(
+          feesAndLimits.minTransfer || 0,
+          tokenDecimals || 18,
+          2
+        )} ${tokenName}`}
+        state={state}
+      />
+      <InfoRow
+        label="Max Transfer"
+        value={`${formatUnitAmount(
+          feesAndLimits.maxTransfer || 0,
+          18,
+          2
+        )} ${tokenName}`}
+        state={state}
+      />
+      <InfoRow
+        label="Bridge Fee"
+        value={`${formatUnitAmount(
+          feesAndLimits.bridgeFee || 0,
+          tokenDecimals || 18,
+          2
+        )} ${tokenName}`}
+        state={state}
+      />
+      <InfoRow
+        label="Day Limit"
+        value={`${formatUnitAmount(
+          feesAndLimits.dailyLimit || 0,
+          18,
+          2
+        )} ${tokenName}`}
+        state={state}
+      />
     </Box>
   </Box>
 );

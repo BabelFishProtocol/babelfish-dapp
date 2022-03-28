@@ -1,14 +1,12 @@
 import { select, call, put, all, takeLatest } from 'typed-redux-saga';
-import { BridgeDictionary } from '../../config/bridges';
-// import { mainnetPool, testnetPool } from '../../config/pools';
-import { accountSelector, chainIdSelector } from '../app/app.selectors';
+import { accountSelector } from '../app/app.selectors';
 import { appActions } from '../app/app.slice';
 import {
   allowTokensContractSelector,
   bridgeContractSelector,
-  destinationChainSelector,
   startingTokenContractSelector,
   startingTokenSelector,
+  tokenAddressSelector,
 } from './aggregator.selectors';
 import { aggregatorActions } from './aggregator.slice';
 
@@ -29,26 +27,23 @@ export function* fetchAllowTokenAddress() {
 
 export function* fetchBridgeFeesAndLimits() {
   try {
+    yield* put(aggregatorActions.fetchFeesAndLimitsLoading());
     const allowTokens = yield* select(allowTokensContractSelector);
-    const startingChain = yield* select(chainIdSelector);
-    const destinationChain = yield* select(destinationChainSelector);
     const startingToken = yield* select(startingTokenSelector);
+    const tokenAddress = yield* select(tokenAddressSelector);
 
-    if (!allowTokens || !startingChain || !destinationChain) {
+    if (!allowTokens || !startingToken || !tokenAddress) {
       throw new Error('Not enough data to fetch bridge fees');
     }
 
-    const bridge = BridgeDictionary.get(startingChain, destinationChain);
-    const tokenAddress = bridge?.tokensAllowed?.find(
-      (item) => item.id === startingToken
-    )?.originalAddress;
-
-    if (!tokenAddress) {
-      throw new Error('Token address not found');
-    }
-
-    const bridgeFee = yield* call(allowTokens.getFeePerToken, tokenAddress);
-    const minTransfer = yield* call(allowTokens.getMinPerToken, tokenAddress);
+    const bridgeFee = yield* call(
+      allowTokens.getFeePerToken,
+      tokenAddress.toLowerCase()
+    );
+    const minTransfer = yield* call(
+      allowTokens.getMinPerToken,
+      tokenAddress.toLowerCase()
+    );
     const maxTransfer = yield* call(allowTokens.getMaxTokensAllowed);
     const dailyLimit = yield* call(allowTokens.dailyLimit);
 
@@ -96,7 +91,9 @@ export function* aggregatorSaga() {
       aggregatorActions.setAllowTokensAddress,
       fetchBridgeFeesAndLimits
     ),
+    takeLatest(aggregatorActions.setDestinationToken, fetchBridgeFeesAndLimits),
     takeLatest(aggregatorActions.setDestinationChain, fetchAllowTokenAddress),
+    takeLatest(aggregatorActions.setDestinationToken, fetchAllowTokenAddress),
     takeLatest(appActions.walletConnected, fetchAllowTokenAddress),
   ]);
 }

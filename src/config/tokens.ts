@@ -20,7 +20,6 @@ export interface TokenTypeBase {
   id: TokenEnum;
   name: string;
   icon: string;
-  decimals: number;
   addresses: Partial<Record<Partial<ChainEnum>, string>>;
 }
 export type TokenOnNetworkType = {
@@ -34,7 +33,6 @@ export const tokens: TokensType = {
     id: TokenEnum.USDT,
     name: 'USDT',
     icon: usdtIcon,
-    decimals: 6,
     addresses: {
       [ChainEnum.ETH]: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
       [ChainEnum.BSC]: '0x55d398326f99059ff775485246999027b3197955',
@@ -46,7 +44,6 @@ export const tokens: TokensType = {
     id: TokenEnum.USDC,
     name: 'USDC',
     icon: usdcIcon,
-    decimals: 6,
     addresses: {
       [ChainEnum.BSC]: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
       [ChainEnum.ETH]: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -58,7 +55,6 @@ export const tokens: TokensType = {
     id: TokenEnum.DAI,
     name: 'DAI',
     icon: daiIcon,
-    decimals: 18,
     addresses: {
       [ChainEnum.BSC]: '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3',
       [ChainEnum.ETH]: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
@@ -70,7 +66,6 @@ export const tokens: TokensType = {
     id: TokenEnum.BUSD,
     name: 'BUSD',
     icon: busdIcon,
-    decimals: 6,
     addresses: {
       [ChainEnum.BSC]: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
       [ChainEnum.BSC_TESTNET]: '0x137BEc8c83740920ebc4f29f51C7B65b75Beec83',
@@ -80,7 +75,6 @@ export const tokens: TokensType = {
     id: TokenEnum.XUSD,
     name: TokenEnum.XUSD,
     icon: xusdIcon,
-    decimals: 18,
     addresses: {
       [ChainEnum.RSK]: '0xb5999795BE0EbB5bAb23144AA5FD6A02D080299F',
       [ChainEnum.RSK_TESTNET]: '0x152123ec3D9fe2Cf57aBc09917C1ba51324EA8dE',

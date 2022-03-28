@@ -9,8 +9,10 @@ export type FeesAndLimitsType = {
   maxTransfer?: string;
   dailyLimit?: string;
 };
+
+export type FlowState = 'deposit' | 'withdraw';
 export class AggregatorState {
-  flowState: 'deposit' | 'withdraw' = 'deposit';
+  flowState: FlowState = 'deposit';
   feesAndLimits: LoadableValue<FeesAndLimitsType> = {
     state: 'idle',
     data: {
@@ -23,6 +25,7 @@ export class AggregatorState {
   pool: PoolEnum = PoolEnum.mainnet;
   startingToken?: TokenEnum;
   destinationChain?: ChainEnum;
+  destinationToken?: TokenEnum;
   startingTokenBalance: LoadableAmount = {
     state: 'idle',
     data: undefined,

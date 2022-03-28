@@ -94,6 +94,16 @@ export const isValidCalldata = (val: string) => val.match(calldataRegex);
 export const formatWeiAmount = (weiAmount: BigNumberish, decimalDigits = 4) =>
   truncate(utils.commify(utils.formatEther(weiAmount)), decimalDigits);
 
+export const formatUnitAmount = (
+  weiAmount: BigNumberish,
+  tokenDecimals: number,
+  decimalDigits = 4
+) =>
+  truncate(
+    utils.commify(utils.formatUnits(weiAmount, tokenDecimals)),
+    decimalDigits
+  );
+
 export const formatBlockNumber = (val: string | number) => `#${val}`;
 
 export const truncateString = (text: string, maxLength = 25) =>

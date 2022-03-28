@@ -19,7 +19,12 @@ export const flowStateSelector = createSelector(
   (state) => state.flowState
 );
 
-export const feesInfoSelector = createSelector(
+export const feesAndLimitsStateSelector = createSelector(
+  aggregatorState,
+  (state) => state.feesAndLimits.state
+);
+
+export const feesAndLimitsSelector = createSelector(
   aggregatorState,
   (state) => state.feesAndLimits.data
 );
@@ -39,24 +44,83 @@ export const destinationChainSelector = createSelector(
   (state) => state.destinationChain
 );
 
+export const destinationTokenSelector = createSelector(
+  aggregatorState,
+  (state) => state.destinationToken
+);
+
+export const bridgeSelector = createSelector(
+  [chainIdSelector, destinationChainSelector, flowStateSelector],
+  (startingChain, destinationChain, flowState) => {
+    if (!startingChain || !destinationChain) {
+      return undefined;
+    }
+    if (flowState === 'deposit') {
+      return BridgeDictionary.get(startingChain, destinationChain);
+    }
+    return BridgeDictionary.get(destinationChain, startingChain);
+  }
+);
+
+export const startingTokenNameSelector = createSelector(
+  [startingTokenSelector],
+  (startingToken) => {
+    if (!startingToken) {
+      return undefined;
+    }
+    return tokens[startingToken].name;
+  }
+);
+
+export const startingTokenDecimalsSelector = createSelector(
+  [startingTokenSelector, bridgeSelector, flowStateSelector],
+  (startingToken, bridge, flowState) => {
+    if (!startingToken || !bridge) {
+      return undefined;
+    }
+
+    return bridge.getTokenDecimals(startingToken, flowState);
+  }
+);
+
+export const tokenAddressSelector = createSelector(
+  [startingTokenSelector, bridgeSelector, flowStateSelector],
+  (startingToken, bridge, flowState) => {
+    if (!bridge || !startingToken) {
+      return undefined;
+    }
+
+    return bridge.getTokenAddress(startingToken, flowState);
+  }
+);
+
 export const allowTokensAddressSelector = createSelector(
   aggregatorState,
   (state) => state.allowTokensAddress.data
 );
 
 export const bridgeContractSelector = createSelector(
-  [providerSelector, chainIdSelector, destinationChainSelector],
-  (provider, startingChain, destinationChain) => {
-    if (!provider || !startingChain || !destinationChain) {
+  [
+    providerSelector,
+    chainIdSelector,
+    destinationChainSelector,
+    bridgeSelector,
+    flowStateSelector,
+  ],
+  (provider, startingChain, destinationChain, bridge, flowState) => {
+    if (!provider || !startingChain || !destinationChain || !bridge) {
       return undefined;
     }
-    const bridgeAddress = BridgeDictionary.get(startingChain, destinationChain);
 
+    const bridgeAddress =
+      flowState === 'deposit' ? bridge.bridgeAddress : bridge.rskBridgeAddress;
+    // TODO: remove (bridge address will be required)
     if (!bridgeAddress) {
       return undefined;
     }
+
     const contract = Bridge__factory.connect(
-      bridgeAddress.bridgeAddress,
+      bridgeAddress,
       provider.getSigner()
     );
     return contract;
