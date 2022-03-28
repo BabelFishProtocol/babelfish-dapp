@@ -84,24 +84,13 @@ export const startingTokenDecimalsSelector = createSelector(
 );
 
 export const tokenAddressSelector = createSelector(
-  [
-    startingTokenSelector,
-    destinationTokenSelector,
-    bridgeSelector,
-    flowStateSelector,
-  ],
-  (startingToken, destinationToken, bridge, flowState) => {
-    if (!bridge) {
+  [startingTokenSelector, bridgeSelector, flowStateSelector],
+  (startingToken, bridge, flowState) => {
+    if (!bridge || !startingToken) {
       return undefined;
     }
 
-    if (flowState === 'deposit') {
-      return bridge.tokensAllowed?.find((item) => item.id === startingToken)
-        ?.originalAddress;
-    }
-
-    return bridge.tokensAllowed?.find((item) => item.id === destinationToken)
-      ?.rskSovrynAddress;
+    return bridge.getTokenAddress(startingToken, flowState);
   }
 );
 
@@ -125,7 +114,7 @@ export const bridgeContractSelector = createSelector(
 
     const bridgeAddress =
       flowState === 'deposit' ? bridge.bridgeAddress : bridge.rskBridgeAddress;
-    // TODO: remove
+    // TODO: remove (bridge address will be required)
     if (!bridgeAddress) {
       return undefined;
     }
