@@ -9,6 +9,7 @@ import {
   addressesSelector,
   providerSelector,
 } from '../app/app.selectors';
+import { VoteType } from './proposals.types';
 
 const proposalsState = (state: RootState) => state[Reducers.Proposals];
 
@@ -126,6 +127,34 @@ export const isGuardianSelector = createSelector(
     }
 
     return compareAddresses(proposal.data.guardian, account);
+  }
+);
+
+export const selectedProposalIdSelector = createSelector(
+  proposalDetailsSelector,
+  (proposal) => (proposal.data ? proposal.data.id : undefined)
+);
+
+/**
+ * Status of user vote for selected proposal
+ * - for: User has a vote supporting the proposal
+ * - against: User has a vote against the proposal
+ * - undefined: User didn't cast any vote
+ */
+export const userVoteTypeSelector = createSelector(
+  [proVotesSelector, againstVotesSelector, accountSelector],
+  (proVotes, againstVotes, account): VoteType => {
+    if (!account) return undefined;
+
+    if (proVotes.some((vote) => compareAddresses(vote.voter, account))) {
+      return 'for';
+    }
+
+    if (againstVotes.some((vote) => compareAddresses(vote.voter, account))) {
+      return 'against';
+    }
+
+    return undefined;
   }
 );
 
