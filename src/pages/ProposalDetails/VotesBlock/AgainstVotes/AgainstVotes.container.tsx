@@ -27,7 +27,7 @@ export const AgainstVotesContainer = () => {
         voteStatus={txData.status}
         proposalState={data.state}
         handleCastVote={handleCastVote}
-        votesAmount={data.forVotesAmount}
+        votesAmount={data.againstVotesAmount}
       />
 
       {txData.status !== 'idle' && (
