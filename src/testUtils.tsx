@@ -1,7 +1,12 @@
-import { Web3Provider } from '@ethersproject/providers';
+import { ReactNode } from 'react';
 import { Contract, Signer } from 'ethers';
+import { Provider } from 'react-redux';
 import { Provider as MulticallProvider } from 'ethers-multicall';
+import { Web3Provider } from '@ethersproject/providers';
 import { GraphQLClient } from 'graphql-request';
+import createMockStore from 'redux-mock-store';
+import { DeepPartial } from '@reduxjs/toolkit';
+import { RootState } from './store';
 
 type MockedContract<C extends Contract> = {
   [k in keyof C]: C[k] extends Function ? jest.Mock : C[k];
@@ -52,3 +57,23 @@ export const mockMulticallProvider: MulticallProvider = {
 export const mockSubgraphClient: GraphQLClient = {
   request: jest.fn(),
 } as unknown as GraphQLClient;
+
+type TestStoreProviderProps = {
+  children: ReactNode;
+  initialStore?: DeepPartial<RootState>;
+};
+
+export const TestStoreProvider = ({
+  children,
+  initialStore = {},
+}: TestStoreProviderProps) => {
+  const mockStore = createMockStore();
+
+  return <Provider store={mockStore(initialStore)}>{children}</Provider>;
+};
+
+export const getMockStore = (initialStore: DeepPartial<RootState> = {}) => {
+  const mockStore = createMockStore<RootState>();
+
+  return mockStore(initialStore as RootState);
+};
