@@ -14,15 +14,9 @@ import { GovernorTypes, selectorsErrors } from '../../constants';
 import { SubmitStatusDialog } from '../../components/TxDialog/TxDialog.component';
 import { WalletConnectionChecker } from '../../components/WalletConnectionChecker/WalletConnectionChecker.component';
 
-import { VoteStatus } from './ProposalDetails.types';
 import { ProposalDetailsFailure } from './ProposalDetails.failure';
 import { ProposalDetailsLoadable } from './ProposalDetails.loadable';
 import { ProposalDetailsComponent } from './ProposalDetails.component';
-
-const mockVoteStatus: VoteStatus = {
-  type: 'for',
-  status: 'idle',
-};
 
 const isProperGovernor = (
   governorType: string | GovernorTypes | undefined
@@ -91,7 +85,6 @@ const Container = () => {
     <>
       <ProposalDetailsComponent
         proposal={data}
-        voteStatus={mockVoteStatus}
         isGuardian={!!isGuardian}
         handleCancel={handleCancel}
         handleQueue={handleQueue}

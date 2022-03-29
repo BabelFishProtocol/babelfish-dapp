@@ -9,7 +9,7 @@ import { DataTableColumn } from '../../../components/DataTable/DataTable.types';
 import upvoteIcon from '../../../assets/icons/upvote.svg';
 import downvoteIcon from '../../../assets/icons/downvote.svg';
 
-import { TableIconProps, VotesListComponentProps } from './VotesList.types';
+import { TableIconProps, VotesListComponentProps } from './VotesBlock.types';
 import { formatWeiAmount } from '../../../utils/helpers';
 
 type RowData = Omit<Vote, 'isPro'>;

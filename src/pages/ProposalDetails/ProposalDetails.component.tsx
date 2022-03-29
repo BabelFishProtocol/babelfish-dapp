@@ -17,29 +17,20 @@ import { ProposalState, proposalStateNames, Urls } from '../../constants';
 
 import {
   formatTimestamp,
-  formatWeiAmount,
   getCurrentTimestamp,
   truncateString,
 } from '../../utils/helpers';
 
 import {
-  VoteActionBlockProps,
   ProposalInfoItemProps,
   ProposalDetailsComponentProps,
 } from './ProposalDetails.types';
-import {
-  AgainstVotesListContainer,
-  ForVotesListContainer,
-} from './VotesList/VotesList.container';
-import {
-  VoteAgainstButton,
-  VoteForButton,
-} from './ProposalDetails.voteButtons';
 import { VotesRatioBlock } from './ProposalDetails.votesRatio';
+import { ForVotesContainer } from './VotesBlock/ForVotes/ForVotes.container';
+import { AgainstVotesContainer } from './VotesBlock/AgainstVotes/AgainstVotes.container';
 
 export const ProposalDetailsComponent = ({
   proposal,
-  voteStatus,
   isGuardian,
   handleCancel,
   handleQueue,
@@ -87,18 +78,7 @@ export const ProposalDetailsComponent = ({
         </Grid>
 
         <Grid item sm={6} p={1}>
-          <VoteActionBlock
-            votesAmount={`${formatWeiAmount(
-              proposal.forVotesAmount || 0
-            )} VOTES FOR`}
-          >
-            <VoteForButton
-              voteStatus={voteStatus}
-              proposalState={proposal.state}
-            />
-          </VoteActionBlock>
-
-          <ForVotesListContainer />
+          <ForVotesContainer />
 
           <Container sx={{ p: 2, mt: 2, minHeight: 300 }}>
             <Typography variant="body2" sx={{ mb: 2, minHeight: 50 }}>
@@ -132,18 +112,7 @@ export const ProposalDetailsComponent = ({
         </Grid>
 
         <Grid item sm={6} p={1}>
-          <VoteActionBlock
-            votesAmount={`${formatWeiAmount(
-              proposal.againstVotesAmount
-            )} VOTES AGAINST`}
-          >
-            <VoteAgainstButton
-              voteStatus={voteStatus}
-              proposalState={proposal.state}
-            />
-          </VoteActionBlock>
-
-          <AgainstVotesListContainer />
+          <AgainstVotesContainer />
 
           <Container
             sx={{
@@ -243,30 +212,6 @@ const ProposalInfoItem = ({
     <Typography variant="body2" sx={{ width }}>
       {label}:
     </Typography>
-    {children}
-  </Box>
-);
-
-const VoteActionBlock = ({ votesAmount, children }: VoteActionBlockProps) => (
-  <Box
-    sx={{
-      gap: 2,
-      height: 50,
-      width: '100%',
-      display: 'flex',
-      justifyContent: 'space-between',
-    }}
-  >
-    <CenteredBox
-      sx={{
-        p: 1,
-        flexGrow: 1,
-        borderRadius: '8px',
-        backgroundColor: ({ palette }) => palette.borderGrey.dark,
-      }}
-    >
-      <Typography variant="body1">{votesAmount}</Typography>
-    </CenteredBox>
     {children}
   </Box>
 );
