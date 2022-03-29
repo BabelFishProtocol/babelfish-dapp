@@ -2,7 +2,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
-import { utils } from 'ethers';
 import { useForm } from 'react-hook-form';
 
 import { useEffect } from 'react';
@@ -10,7 +9,6 @@ import { PageView } from '../../components/PageView/PageView.component';
 import { ControlledCurrencyInput } from '../../components/CurrencyInput/CurrencyInput.controlled';
 import { ControlledInput } from '../../components/TextInput/TextInput.controlled';
 import { ControlledDropdown } from '../../components/Dropdown/Dropdown.controlled';
-import { ControlledInputWithButtonPillGroup } from '../../components/InputPillGroup/InputWithButtonPillGroup.controlled';
 
 import {
   aggregatorDefaultValues,
@@ -18,15 +16,11 @@ import {
   AggregatorFormValues,
 } from './Aggregator.fields';
 import { AggregatorComponentProps } from './Aggregator.types';
-import {
-  useAggregatorDropdowns,
-  useAvailableBalance,
-  useConnectedChain,
-} from './Aggregator.hooks';
+import { useAggregatorDropdowns, useConnectedChain } from './Aggregator.hooks';
 import { AggregatorInfoContainer } from './AggregatorInfo/AggregatorInfo.container';
+import { SendAmount } from './SendAmount/SendAmount.container';
 
 export const AggregatorComponent = ({
-  getTokenAvailableBalance,
   getReceiveAmount,
   onSubmit,
   onDestinationChainChange,
@@ -67,12 +61,6 @@ export const AggregatorComponent = ({
     destinationChain,
     resetField,
     setValue
-  );
-
-  const { availableBalance } = useAvailableBalance(
-    startingToken,
-    getTokenAvailableBalance,
-    resetField
   );
 
   useEffect(() => {
@@ -149,24 +137,9 @@ export const AggregatorComponent = ({
             options={startingTokenOptions}
             setValue={setValue}
           />
-          <Box sx={{ mb: 8, position: 'relative' }}>
-            {availableBalance && (
-              <Typography
-                variant="subtitle2"
-                sx={{ position: 'absolute', top: 14 }}
-              >
-                Available Balance:{' '}
-                {`${utils.formatUnits(availableBalance)} ${startingToken}`}
-              </Typography>
-            )}
-          </Box>
-          <ControlledInputWithButtonPillGroup
+          <SendAmount
             name={AggregatorInputs.SendAmount}
-            title="Amount"
-            placeholder="0.00"
-            disabled={!startingToken}
-            symbol={startingToken}
-            totalAmount={availableBalance}
+            startingTokenName={startingToken}
             control={control}
             setValue={setValue}
           />

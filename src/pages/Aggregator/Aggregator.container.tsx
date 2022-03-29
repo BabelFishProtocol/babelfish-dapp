@@ -1,13 +1,10 @@
 import { BigNumber, utils } from 'ethers';
-import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { ChainEnum } from '../../config/chains';
 import { TokenEnum } from '../../config/tokens';
 import { aggregatorActions } from '../../store/aggregator/aggregator.slice';
 import { AggregatorComponent } from './Aggregator.component';
 import { AggregatorFormValues } from './Aggregator.fields';
-
-const mockAvailableBalance = '81.123';
 
 export const AggregatorContainer = () => {
   const dispatch = useDispatch();
@@ -22,13 +19,6 @@ export const AggregatorContainer = () => {
   const onDestinationTokenChange = (token: TokenEnum) => {
     dispatch(aggregatorActions.setDestinationToken(token));
   };
-
-  const getTokenAvailableBalance = useCallback(
-    () =>
-      // todo: implement
-      utils.parseEther(mockAvailableBalance),
-    [mockAvailableBalance]
-  );
 
   const getReceiveAmount = (sendAmount: string) =>
     // todo: implement
@@ -46,7 +36,6 @@ export const AggregatorContainer = () => {
   };
   return (
     <AggregatorComponent
-      getTokenAvailableBalance={getTokenAvailableBalance}
       getReceiveAmount={getReceiveAmount}
       onSubmit={onSubmit}
       onDestinationChainChange={onDestinationChainChange}

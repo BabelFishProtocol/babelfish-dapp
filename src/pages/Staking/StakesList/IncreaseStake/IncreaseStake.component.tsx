@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 import { useForm, useWatch } from 'react-hook-form';
 
 import Typography from '@mui/material/Typography';
@@ -67,7 +66,7 @@ export const IncreaseStakeComponent = ({
         autoFocus
         symbol="FISH"
         title="Amount To Add"
-        totalAmount={BigNumber.from(fishBalance)}
+        totalAmount={fishBalance}
         name={IncreaseStakeFields.IncreaseStakeAmount}
         control={control}
         setValue={setValue}

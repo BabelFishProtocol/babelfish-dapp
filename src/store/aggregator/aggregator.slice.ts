@@ -58,6 +58,9 @@ const aggregatorSlice = createSlice({
       state.feesAndLimits.state = 'success';
       state.feesAndLimits.data = payload;
     },
+    fetchStartingTokenBalanceLoading: (state) => {
+      state.startingTokenBalance.state = 'loading';
+    },
     fetchStartingTokenBalanceFailure: (state) => {
       state.startingTokenBalance.state = 'failure';
       state.startingTokenBalance.data = undefined;

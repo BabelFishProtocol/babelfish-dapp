@@ -1,5 +1,4 @@
 import React from 'react';
-import { BigNumber } from 'ethers';
 import { FieldError, UseFormSetValue } from 'react-hook-form';
 
 import { OutlinedInputProps } from '@mui/material/OutlinedInput';
@@ -11,7 +10,7 @@ export type InputWithButtonPillGroupProps = Partial<
   title?: string;
   symbol: string;
   error?: FieldError;
-  totalAmount?: BigNumber;
+  totalAmount?: string;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onButtonChange: (newValue: string) => void;
 };
@@ -21,6 +20,6 @@ export type ControlledInputWithButtonPillGroupProps<FormValues> = Omit<
   'value' | 'onInputChange' | 'onButtonChange' | 'error'
 > &
   ControlledInputType<FormValues> & {
+    totalAmountDecimals?: number;
     setValue: UseFormSetValue<FormValues>;
-    totalAmount?: BigNumber;
   };

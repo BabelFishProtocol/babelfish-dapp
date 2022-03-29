@@ -1,9 +1,8 @@
-import { BigNumber } from 'ethers';
 import { useEffect, useState } from 'react';
 import { UseFormResetField, UseFormSetValue } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { ChainEnum, ChainType } from '../../config/chains';
-import { TokenEnum, TokenTypeBase } from '../../config/tokens';
+import { TokenTypeBase } from '../../config/tokens';
 import {
   flowStateSelector,
   poolSelector,
@@ -14,7 +13,6 @@ import {
   providerSelector,
 } from '../../store/app/app.selectors';
 import { AggregatorInputs, AggregatorFormValues } from './Aggregator.fields';
-import { AggregatorComponentProps } from './Aggregator.types';
 
 export const useAggregatorDropdowns = (
   startingChain: ChainEnum | '',
@@ -116,7 +114,7 @@ export const useConnectedChain = (
   }, [startingChain]);
 
   useEffect(() => {
-    if (connectedChain && setValue) {
+    if (connectedChain && wrongChainConnectedError && setValue) {
       if (destinationChain === connectedChain) {
         dispatch(aggregatorActions.toggleFlowState());
       } else if (
@@ -137,23 +135,4 @@ export const useConnectedChain = (
     wrongChainConnectedError,
     hideDestinationTokenDropdown: !showDestinationTokenDropdown,
   };
-};
-
-export const useAvailableBalance = (
-  token: TokenEnum | '',
-  getTokenAvailableBalance: AggregatorComponentProps['getTokenAvailableBalance'],
-  resetField: UseFormResetField<AggregatorFormValues>
-) => {
-  const [availableBalance, setAvailableBalance] = useState<BigNumber>();
-
-  useEffect(() => {
-    if (token) {
-      setAvailableBalance(getTokenAvailableBalance(token));
-    } else {
-      resetField(AggregatorInputs.SendAmount);
-      setAvailableBalance(undefined);
-    }
-  }, [token, getTokenAvailableBalance, resetField]);
-
-  return { availableBalance };
 };

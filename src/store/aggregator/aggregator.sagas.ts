@@ -71,6 +71,7 @@ export function* fetchStartingTokenBalance() {
     if (!account) {
       throw new Error('Please connect wallet first');
     }
+    yield* put(aggregatorActions.fetchStartingTokenBalanceLoading());
 
     const startingTokenBalance = yield* call(tokenContract.balanceOf, account);
     yield* put(
@@ -95,5 +96,7 @@ export function* aggregatorSaga() {
     takeLatest(aggregatorActions.setDestinationChain, fetchAllowTokenAddress),
     takeLatest(aggregatorActions.setDestinationToken, fetchAllowTokenAddress),
     takeLatest(appActions.walletConnected, fetchAllowTokenAddress),
+    takeLatest(appActions.walletConnected, fetchStartingTokenBalance),
+    takeLatest(aggregatorActions.setStartingToken, fetchStartingTokenBalance),
   ]);
 }
