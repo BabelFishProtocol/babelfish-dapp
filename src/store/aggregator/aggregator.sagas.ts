@@ -62,6 +62,7 @@ export function* fetchBridgeFeesAndLimits() {
 
 export function* fetchStartingTokenBalance() {
   try {
+    yield* put(aggregatorActions.fetchStartingTokenBalanceLoading());
     const account = yield* select(accountSelector);
     const tokenContract = yield* select(startingTokenContractSelector);
 
@@ -95,5 +96,7 @@ export function* aggregatorSaga() {
     takeLatest(aggregatorActions.setDestinationChain, fetchAllowTokenAddress),
     takeLatest(aggregatorActions.setDestinationToken, fetchAllowTokenAddress),
     takeLatest(appActions.walletConnected, fetchAllowTokenAddress),
+    takeLatest(appActions.walletConnected, fetchStartingTokenBalance),
+    takeLatest(aggregatorActions.setStartingToken, fetchStartingTokenBalance),
   ]);
 }

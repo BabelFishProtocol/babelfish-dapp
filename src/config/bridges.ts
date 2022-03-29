@@ -29,16 +29,24 @@ class Bridge {
     return tokenOnBridge?.rskSovrynDecimals || 18;
   }
 
-  public getTokenAddress(token: TokenEnum, flowState: FlowState) {
+  public getOriginalTokenAddress(token: TokenEnum) {
     const tokenOnBridge = this.tokensAllowed?.find(
       (tokenAllowed) => tokenAllowed.id === token
     );
-    if (flowState === 'deposit') {
-      return tokenOnBridge?.originalAddress;
-    }
+
+    return tokenOnBridge?.originalAddress;
+  }
+
+  public getRskSovrynTokenAddress(token: TokenEnum) {
+    const tokenOnBridge = this.tokensAllowed?.find(
+      (tokenAllowed) => tokenAllowed.id === token
+    );
+
     return tokenOnBridge?.rskSovrynAddress;
   }
 }
+
+// TODO: get tokens Addresses from tokenOnChain in BridgeDictionary to avoid repetitions
 
 export class BridgeDictionary {
   public static bridges: Bridge[] = [

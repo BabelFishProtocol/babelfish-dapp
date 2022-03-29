@@ -3,7 +3,7 @@ import { RootState } from '..';
 import { BridgeDictionary } from '../../config/bridges';
 import { ChainEnum } from '../../config/chains';
 import { pools } from '../../config/pools';
-import { tokens } from '../../config/tokens';
+import { tokenOnChain, tokens } from '../../config/tokens';
 import { Reducers } from '../../constants';
 import {
   AllowTokens__factory,
@@ -49,6 +49,15 @@ export const destinationTokenSelector = createSelector(
   (state) => state.destinationToken
 );
 
+export const startingTokenBalanceSelector = createSelector(
+  aggregatorState,
+  (state) => state.startingTokenBalance.data
+);
+export const startingTokenBalanceStateSelector = createSelector(
+  aggregatorState,
+  (state) => state.startingTokenBalance.state
+);
+
 export const bridgeSelector = createSelector(
   [chainIdSelector, destinationChainSelector, flowStateSelector],
   (startingChain, destinationChain, flowState) => {
@@ -84,13 +93,21 @@ export const startingTokenDecimalsSelector = createSelector(
 );
 
 export const tokenAddressSelector = createSelector(
-  [startingTokenSelector, bridgeSelector, flowStateSelector],
-  (startingToken, bridge, flowState) => {
-    if (!bridge || !startingToken) {
+  [
+    startingTokenSelector,
+    destinationTokenSelector,
+    bridgeSelector,
+    flowStateSelector,
+  ],
+  (startingToken, destinationToken, bridge, flowState) => {
+    if (!bridge || !startingToken || !destinationToken) {
       return undefined;
     }
 
-    return bridge.getTokenAddress(startingToken, flowState);
+    if (flowState === 'deposit') {
+      return bridge.getOriginalTokenAddress(startingToken);
+    }
+    return bridge.getRskSovrynTokenAddress(destinationToken);
   }
 );
 
@@ -149,15 +166,17 @@ export const startingTokenContractSelector = createSelector(
       return undefined;
     }
 
-    // TODO: assert startingChain typeof ChainEnum
-
-    const address = tokens[startingToken].addresses[startingChain as ChainEnum];
+    // TODO: <not sure> assert startingChain typeof ChainEnum
+    const address = tokenOnChain[startingToken][startingChain as ChainEnum];
 
     if (!address) {
       return undefined;
     }
 
-    const contract = ERC20__factory.connect(address, provider.getSigner());
+    const contract = ERC20__factory.connect(
+      address.toLowerCase(),
+      provider.getSigner()
+    );
     return contract;
   }
 );
