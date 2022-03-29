@@ -12,6 +12,7 @@ export const ControlledInputWithButtonPillGroup = <
   control,
   setValue,
   totalAmount,
+  totalAmountDecimals,
   ...props
 }: ControlledInputWithButtonPillGroupProps<FormValues>) => {
   const onButtonChange = (newValue: string) => {
@@ -36,7 +37,8 @@ export const ControlledInputWithButtonPillGroup = <
       control={control}
       rules={{
         validate: (v) =>
-          !totalAmount || utils.parseUnits(v).lte(totalAmount)
+          !totalAmount ||
+          utils.parseUnits(v, totalAmountDecimals).lte(totalAmount)
             ? true
             : fieldsErrors.amountGreaterThanBalance,
         required: true,

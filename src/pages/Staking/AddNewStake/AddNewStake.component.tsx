@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 import { useForm, useWatch } from 'react-hook-form';
 
 import Typography from '@mui/material/Typography';
@@ -58,7 +57,7 @@ export const AddNewStakeComponent = ({
         symbol="FISH"
         title="Amount To Stake"
         name={AddNewStakeFields.stakeAmount}
-        totalAmount={BigNumber.from(fishBalance)}
+        totalAmount={fishBalance}
         control={control}
         setValue={setValue}
       />

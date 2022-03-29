@@ -32,7 +32,7 @@ export const InputWithButtonPillGroup = ({
       return;
     }
     const newValue = utils.formatUnits(
-      totalAmount
+      BigNumber.from(totalAmount)
         ?.mul(BigNumber.from(newPercentValue))
         .div(BigNumber.from('100'))
     );

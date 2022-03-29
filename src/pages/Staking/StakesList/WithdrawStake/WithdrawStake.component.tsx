@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { BigNumber } from 'ethers';
 import { useSelector } from 'react-redux';
 import { useForm, useWatch } from 'react-hook-form';
 
@@ -83,7 +82,7 @@ export const WithdrawStakeComponent = ({
         autoFocus
         symbol="FISH"
         title="Amount To Unstake"
-        totalAmount={BigNumber.from(currentStakeAmount)}
+        totalAmount={currentStakeAmount}
         name={WithdrawStakeFields.WithdrawAmount}
         control={control}
         setValue={setValue}
