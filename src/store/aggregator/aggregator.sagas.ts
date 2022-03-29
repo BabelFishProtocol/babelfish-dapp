@@ -62,7 +62,6 @@ export function* fetchBridgeFeesAndLimits() {
 
 export function* fetchStartingTokenBalance() {
   try {
-    yield* put(aggregatorActions.fetchStartingTokenBalanceLoading());
     const account = yield* select(accountSelector);
     const tokenContract = yield* select(startingTokenContractSelector);
 
@@ -72,6 +71,7 @@ export function* fetchStartingTokenBalance() {
     if (!account) {
       throw new Error('Please connect wallet first');
     }
+    yield* put(aggregatorActions.fetchStartingTokenBalanceLoading());
 
     const startingTokenBalance = yield* call(tokenContract.balanceOf, account);
     yield* put(
