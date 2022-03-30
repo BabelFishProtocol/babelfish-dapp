@@ -33,6 +33,12 @@ export const stakesListSelector = createSelector(
   stakingState,
   (state) => state.stakesList.data
 );
+
+export const stakesHistoryListSelector = createSelector(
+  stakingState,
+  (state) => state.stakesListHistory.data
+);
+
 export const stakesListStatusSelector = createSelector(
   stakingState,
   (state) => state.stakesList.state

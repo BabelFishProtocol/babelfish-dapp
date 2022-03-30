@@ -18,8 +18,10 @@ import {
 import { StakeListItem } from '../../store/staking/staking.state';
 import { accountSelector } from '../../store/app/app.selectors';
 import { VestListItem } from '../../store/vesting/vesting.state';
+import { StakingHistoryListItem } from './StakingHistory/StakingHistory.types';
 
 type ColumnComponent = CustomColumn<StakeListItem | VestListItem>;
+type HashColumnComponent = CustomColumn<StakingHistoryListItem>;
 
 export const VotingDelegationColumn: ColumnComponent = ({ value }) => {
   const account = useSelector(accountSelector);
@@ -53,3 +55,8 @@ export const formatStakingPeriod: CellParser = (val) => {
 
 export const formatFishAmountColumn: CellParser = (val) =>
   `${formatWeiAmount(val)} FISH`;
+
+export const TxHashColumn: HashColumnComponent = ({ value }) => {
+  const account = useSelector(accountSelector);
+  return value !== account ? <PrettyTx value={value} /> : <>-</>;
+};

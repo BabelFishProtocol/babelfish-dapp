@@ -1,10 +1,17 @@
 import { all, put, call, select, takeLatest } from 'typed-redux-saga';
 import {
+  historyStakesQuery,
+  StakeHistoryQueryItem,
+} from '../../queries/historyStakeListQuery';
+import {
   accountSelector,
   fishTokenSelector,
   stakingContractSelector,
+  subgraphClientSelector,
 } from '../app/app.selectors';
 import { createWatcherSaga } from '../utils';
+import { vestsListSelector } from '../vesting/vesting.selectors';
+import { stakesListSelector } from './staking.selectors';
 import { stakingActions } from './staking.slice';
 import { StakeListItem } from './staking.state';
 
@@ -105,6 +112,60 @@ export function* fetchStakesList() {
   }
 }
 
+export function* fetchHistoryStakeEvents() {
+  const subgraphClient = yield* select(subgraphClientSelector);
+
+  if (!subgraphClient) throw new Error('Wallet not connected');
+
+  const { stakeEvents } = yield* call(historyStakesQuery, subgraphClient);
+
+  return stakeEvents;
+}
+
+export function* filterContractStakedEvents(
+  stakeEvents: StakeHistoryQueryItem[]
+) {
+  const account = yield* select(accountSelector);
+  const vestsList = yield* select(vestsListSelector);
+
+  if (!account || !vestsList) {
+    throw new Error('Wallet not connected');
+  }
+
+  return stakeEvents.filter(
+    ({ staker }) =>
+      staker === account.toLowerCase() ||
+      !!vestsList.find((vest) => vest.address === staker)
+  );
+}
+
+export function* fetchHistoryStakingForContract() {
+  try {
+    const stakesList = yield* select(stakesListSelector);
+
+    if (!stakesList) {
+      throw new Error('Wallet not connected');
+    }
+    const stakeEvents = yield* call(fetchHistoryStakeEvents);
+    const filteredStakeEvents = yield* call(
+      filterContractStakedEvents,
+      stakeEvents
+    );
+
+    const stakesHistory = filteredStakeEvents.map((stake) => ({
+      asset: 'FISH',
+      stakedAmount: stake.amount,
+      unlockDate: stake.lockedUntil,
+      totalStaked: stake.totalStaked,
+      txHash: stake.transactionHash,
+    }));
+
+    yield* put(stakingActions.setHistoryStakesList(stakesHistory));
+  } catch (e) {
+    yield* put(stakingActions.fetchHistoryStakesListFailure());
+  }
+}
+
 /** Fetch data needed for the stake page */
 function* fetchBalances() {
   yield* all([
@@ -112,6 +173,7 @@ function* fetchBalances() {
     call(fetchStakeConstants),
     call(fetchVotingPower),
     call(fetchStakesList),
+    call(fetchHistoryStakingForContract),
   ]);
 }
 
@@ -121,6 +183,7 @@ function* updateBalances() {
     call(fetchFishTokenData),
     call(fetchVotingPower),
     call(fetchStakesList),
+    call(fetchHistoryStakingForContract),
   ]);
 }
 
