@@ -10,6 +10,9 @@ export enum PoolEnum {
   testnet = 'testnet',
 }
 
+// TODO: Should be changeable by user
+export const DEFAULT_POOL = PoolEnum.testnet;
+
 const mainnetBaseChains: BaseChainType[] = [
   {
     ...chains[ChainEnum.ETH],

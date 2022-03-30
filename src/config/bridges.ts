@@ -54,27 +54,27 @@ export class BridgeDictionary {
       ChainEnum.BSC,
       ChainEnum.RSK,
       '0xdfc7127593c8af1a17146893f10e08528f4c2aa7',
-      '',
+      '0x971b97c8cc82e7d27bc467c2dc3f219c6ee2e350',
       [
         {
           ...tokens.DAI,
           originalAddress: '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3',
-          rskSovrynAddress: '',
+          rskSovrynAddress: '0x6A42Ff12215a90f50866A5cE43A9c9C870116e76',
         },
         {
           ...tokens.USDC,
           originalAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-          rskSovrynAddress: '',
+          rskSovrynAddress: '0x91EDceE9567cd5612c9DEDeaAE24D5e574820af1',
         },
         {
           ...tokens.BUSD,
           originalAddress: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
-          rskSovrynAddress: '',
+          rskSovrynAddress: '0x61e9604e31a736129d7f5C58964c75935b2d80D6',
         },
         {
           ...tokens.USDT,
           originalAddress: '0x55d398326f99059ff775485246999027b3197955',
-          rskSovrynAddress: '',
+          rskSovrynAddress: '0xFf4299bCA0313C20A61dc5eD597739743BEf3f6d',
         },
       ]
     ),
@@ -82,7 +82,7 @@ export class BridgeDictionary {
       ChainEnum.BSC_TESTNET,
       ChainEnum.RSK_TESTNET,
       '0x862e8aff917319594cc7faaae5350d21196c086f',
-      '',
+      '0x2b2bcad081fa773dc655361d1bb30577caa556f8',
       [
         {
           ...tokens.DAI,
@@ -136,29 +136,28 @@ export class BridgeDictionary {
     new Bridge(
       ChainEnum.ETH_TESTNET,
       ChainEnum.RSK_TESTNET,
-      '0x2b456e230225C4670FBF10b9dA506C019a24cAC7'
+      '0x2b456e230225C4670FBF10b9dA506C019a24cAC7',
+      '0xc0e7a7fff4aba5e7286d5d67dd016b719dcc9156',
+      [
+        {
+          ...tokens.DAI,
+          originalAddress: '0x974cf21396D4D29F8e63Ac07eCfcbaB51a739bc9',
+          rskSovrynAddress: '0xcb92c8d49ec01b92f2a766c7c3c9c501c45271e0',
+        },
+        {
+          ...tokens.USDT,
+          originalDecimals: 6,
+          originalAddress: '0xff364ffa4962cb172203a5be01d17cf3fef02419',
+          rskSovrynAddress: '0x10c5a7930fc417e728574e334b1488b7895c4b81',
+        },
+        {
+          ...tokens.USDC,
+          originalDecimals: 6,
+          originalAddress: '0x4C68058992b8aD1243eE23A5923023C0e15Cf43F',
+          rskSovrynAddress: '0xcc8eec21ae75f1a2de4ac7b32a7de888a45cf859',
+        },
+      ]
     ),
-    // {
-    //   from: ChainEnum.RSK_TESTNET,
-    //   to: ChainEnum.BSC_TESTNET,
-    //   bridgeAddress: '0x2b2bcad081fa773dc655361d1bb30577caa556f8',
-    // },
-
-    // {
-    //   from: ChainEnum.RSK,
-    //   to: ChainEnum.BSC,
-    //   address: '0x971b97c8cc82e7d27bc467c2dc3f219c6ee2e350',
-    // },
-    // {
-    //   from: ChainEnum.RSK,
-    //   to: ChainEnum.ETH,
-    //   address: '0x1CcAd820B6d031B41C54f1F3dA11c0d48b399581',
-    // },
-    // {
-    //   from: ChainEnum.RSK_TESTNET,
-    //   to: ChainEnum.ETH_TESTNET,
-    //   address: '0xC0E7A7FfF4aBa5e7286D5d67dD016B719DCc9156',
-    // },
   ];
 
   public static get(from: ChainEnum, to: ChainEnum) {

@@ -1,5 +1,5 @@
 import { ChainEnum } from '../../config/chains';
-import { PoolEnum } from '../../config/pools';
+import { DEFAULT_POOL, PoolEnum } from '../../config/pools';
 import { TokenEnum } from '../../config/tokens';
 import { LoadableAmount, LoadableValue } from '../types';
 
@@ -22,7 +22,7 @@ export class AggregatorState {
       dailyLimit: undefined,
     },
   };
-  pool: PoolEnum = PoolEnum.mainnet;
+  pool: PoolEnum = DEFAULT_POOL;
   startingToken?: TokenEnum;
   destinationChain?: ChainEnum;
   destinationToken?: TokenEnum;
