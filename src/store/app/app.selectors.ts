@@ -1,7 +1,10 @@
 import { utils } from 'ethers';
 import { createSelector } from '@reduxjs/toolkit';
 
-import { Provider, setMulticallAddress } from 'ethers-multicall';
+import {
+  Provider as MulticallProvider,
+  setMulticallAddress,
+} from 'ethers-multicall';
 import { RootState } from '..';
 import {
   contractsAddresses,
@@ -17,7 +20,7 @@ import {
   VestingRegistry__factory,
   GovernorAlpha__factory,
 } from '../../contracts/types';
-import { BaseContractFactory, MulticallProvider } from '../types';
+import { BaseContractFactory, MulticallProviderType } from '../types';
 
 const appState = (state: RootState) => state[Reducers.App];
 
@@ -114,8 +117,8 @@ export const multicallProviderSelector = createSelector(
     if (!provider || !chainId || !multicallContract) return undefined;
 
     setMulticallAddress(chainId, multicallContract.address);
-    const multicallProvider = new Provider(provider, chainId);
+    const multicallProvider = new MulticallProvider(provider, chainId);
 
-    return multicallProvider as MulticallProvider;
+    return multicallProvider as MulticallProviderType;
   }
 );

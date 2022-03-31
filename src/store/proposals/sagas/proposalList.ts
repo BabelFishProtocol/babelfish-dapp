@@ -20,12 +20,12 @@ import { Proposal } from '../proposals.state';
 import { parseProposals } from '../proposals.utils';
 import { proposalsActions } from '../proposals.slice';
 import { governorContractsSelector } from '../proposals.selectors';
-import { MulticallProvider } from '../../types';
+import { MulticallProviderType } from '../../types';
 
 function* fetchProposalStates(
   proposals: ProposalListQueryItem[],
   governor: GovernorAlpha,
-  multicallProvider: MulticallProvider
+  multicallProvider: MulticallProviderType
 ) {
   const proposalStateCalls = proposals.map(({ proposalId }) =>
     convertForMulticall(governor, 'state', 'state(uint256)', proposalId)

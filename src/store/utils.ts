@@ -7,7 +7,7 @@ import { appActions } from './app/app.slice';
 import {
   CreateWatcherSagaOptions,
   MulticallContractCall,
-  MulticallProvider,
+  MulticallProviderType,
   MulticallResult,
 } from './types';
 
@@ -40,7 +40,7 @@ export function* multiCall<
     BaseContract,
     keyof BaseContract['functions']
   >[]
->(provider: MulticallProvider, ...calls: Calls) {
+>(provider: MulticallProviderType, ...calls: Calls) {
   const result = yield* call([provider, provider.all], calls);
 
   return result as Awaited<MulticallResult<Calls>>;

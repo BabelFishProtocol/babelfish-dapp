@@ -44,6 +44,6 @@ export type MulticallResult<Calls extends BaseCall[]> = Promise<{
     : never;
 }>;
 
-export type MulticallProvider = Omit<Provider, 'all'> & {
+export type MulticallProviderType = Omit<Provider, 'all'> & {
   all: <Calls extends BaseCall[]>(calls: Calls) => MulticallResult<Calls>;
 };
