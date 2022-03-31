@@ -29,7 +29,9 @@ export type CreateWatcherSagaOptions = {
 export type MulticallContractCall<
   Contract extends BaseContract,
   Method extends keyof Contract['functions']
-> = ContractCall & Contract & Method;
+> = ContractCall & {
+  _ts: Contract & Method;
+};
 
 type BaseCall = MulticallContractCall<
   BaseContract,
