@@ -10,11 +10,16 @@ import { ERC20__factory, Staking } from '../../contracts/types';
 import { Staking__factory } from '../../contracts/types/factories/Staking__factory';
 import { rootReducer, RootState } from '..';
 
-import { createMockedContract, mockSigner } from '../../testUtils';
+import {
+  createMockedContract,
+  mockMulticallProvider,
+  mockSigner,
+} from '../../testUtils';
 
 import {
   accountSelector,
   fishTokenSelector,
+  multicallProviderSelector,
   stakingContractSelector,
 } from '../app/app.selectors';
 
@@ -26,6 +31,12 @@ import {
 } from './staking.sagas';
 import { stakingActions } from './staking.slice';
 import { StakeListItem, StakingState } from './staking.state';
+import { convertForMulticall } from '../utils';
+
+jest.mock('../utils', () => ({
+  ...jest.requireActual('../utils'),
+  convertForMulticall: jest.fn(),
+}));
 
 const mockStaking = createMockedContract(
   Staking__factory.connect(constants.AddressZero, mockSigner),
@@ -54,6 +65,16 @@ describe('staking store', () => {
     const fishBalance = '232347482374623';
     const allowanceForStaking = '1000000';
 
+    const mockTotalStakedCall = {
+      name: 'mocked args for totalStakedCall',
+    };
+    const mockTotalBalanceCall = {
+      name: 'mocked args for totalBalanceCall',
+    };
+    const mockAllowanceForStakingCall = {
+      name: 'mocked args for allowanceForStakingCall',
+    };
+
     const successState: DeepPartial<RootState> = {
       ...initialState,
       [Reducers.Staking]: {
@@ -79,30 +100,50 @@ describe('staking store', () => {
         .withState(initialState)
         .select(accountSelector)
         .select(stakingContractSelector)
-        .select(fishTokenSelector);
+        .select(fishTokenSelector)
+        .select(multicallProviderSelector);
 
     it('happy path', async () => {
+      (convertForMulticall as jest.Mock).mockImplementationOnce(
+        () => mockTotalStakedCall
+      );
+      (convertForMulticall as jest.Mock).mockImplementationOnce(
+        () => mockTotalBalanceCall
+      );
+      (convertForMulticall as jest.Mock).mockImplementationOnce(
+        () => mockAllowanceForStakingCall
+      );
+
       const runResult = await getBasePath()
         .provide([
           [matchers.select(accountSelector), testAccount],
           [matchers.select(stakingContractSelector), mockStaking],
           [matchers.select(fishTokenSelector), mockFishToken],
+          [matchers.select(multicallProviderSelector), mockMulticallProvider],
           [
-            matchers.call.fn(mockStaking.balanceOf),
-            BigNumber.from(totalStaked),
-          ],
-          [
-            matchers.call.fn(mockFishToken.allowance),
-            BigNumber.from(allowanceForStaking),
-          ],
-          [
-            matchers.call.fn(mockFishToken.balanceOf),
-            BigNumber.from(fishBalance),
+            matchers.call(
+              [mockMulticallProvider, mockMulticallProvider.all],
+              [
+                mockTotalStakedCall,
+                mockTotalBalanceCall,
+                mockAllowanceForStakingCall,
+              ]
+            ),
+            [
+              BigNumber.from(totalStaked),
+              BigNumber.from(fishBalance),
+              BigNumber.from(allowanceForStaking),
+            ],
           ],
         ])
-        .call(mockStaking.balanceOf, testAccount)
-        .call(mockFishToken.balanceOf, testAccount)
-        .call(mockFishToken.allowance, testAccount, mockStaking.address)
+        .call(
+          [mockMulticallProvider, mockMulticallProvider.all],
+          [
+            mockTotalStakedCall,
+            mockTotalBalanceCall,
+            mockAllowanceForStakingCall,
+          ]
+        )
         .put(
           stakingActions.setFishTokenData({
             allowanceForStaking,
@@ -120,24 +161,54 @@ describe('staking store', () => {
       await getBasePath()
         .provide([
           [matchers.select(accountSelector), testAccount],
+          [matchers.select(fishTokenSelector), mockFishToken],
           [matchers.select(stakingContractSelector), undefined],
+          [matchers.select(multicallProviderSelector), mockMulticallProvider],
         ])
         .put(stakingActions.fetchFishTokenDataFailure())
         .hasFinalState(failureState)
         .run();
 
-      expect(mockStaking.balanceOf).not.toHaveBeenCalled();
+      expect(mockMulticallProvider.all).not.toHaveBeenCalled();
     });
 
     it('fetching error', async () => {
+      (convertForMulticall as jest.Mock).mockImplementationOnce(
+        () => mockTotalStakedCall
+      );
+      (convertForMulticall as jest.Mock).mockImplementationOnce(
+        () => mockTotalBalanceCall
+      );
+      (convertForMulticall as jest.Mock).mockImplementationOnce(
+        () => mockAllowanceForStakingCall
+      );
+
       const runResult = await getBasePath()
         .provide([
           [matchers.select(accountSelector), testAccount],
           [matchers.select(stakingContractSelector), mockStaking],
           [matchers.select(fishTokenSelector), mockFishToken],
-          [matchers.call.fn(mockStaking.balanceOf), throwError()],
+          [matchers.select(multicallProviderSelector), mockMulticallProvider],
+          [
+            matchers.call(
+              [mockMulticallProvider, mockMulticallProvider.all],
+              [
+                mockTotalStakedCall,
+                mockTotalBalanceCall,
+                mockAllowanceForStakingCall,
+              ]
+            ),
+            throwError(),
+          ],
         ])
-        .call(mockStaking.balanceOf, testAccount)
+        .call(
+          [mockMulticallProvider, mockMulticallProvider.all],
+          [
+            mockTotalStakedCall,
+            mockTotalBalanceCall,
+            mockAllowanceForStakingCall,
+          ]
+        )
         .put(stakingActions.fetchFishTokenDataFailure())
         .hasFinalState(failureState)
         .run();

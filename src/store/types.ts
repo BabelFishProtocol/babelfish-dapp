@@ -1,8 +1,9 @@
 import { ActionCreatorsMapObject } from '@reduxjs/toolkit';
-import { Contract, Signer } from 'ethers';
+import { BaseContract, Contract, Signer } from 'ethers';
+import { ContractCall, Provider } from 'ethers-multicall';
 import { SagaIterator } from 'redux-saga';
 import { ActionPattern } from 'redux-saga/effects';
-import { FiniteStates } from '../utils/types';
+import { ContractCallResult, FiniteStates } from '../utils/types';
 
 export type LoadableValue<Data> = {
   data: Data;
@@ -23,4 +24,24 @@ export type CreateWatcherSagaOptions = {
   fetchSaga: () => SagaIterator;
   updateSaga: () => SagaIterator;
   stopAction: ActionPattern;
+};
+
+export type MulticallContractCall<
+  Contract extends BaseContract,
+  Method extends keyof Contract['functions']
+> = ContractCall & Contract & Method;
+
+type BaseCall = MulticallContractCall<
+  BaseContract,
+  keyof BaseContract['functions']
+>;
+
+export type MulticallResult<Calls extends BaseCall[]> = Promise<{
+  [k in keyof Calls]: Calls[k] extends MulticallContractCall<infer V, infer G>
+    ? ContractCallResult<V, G>[number]
+    : never;
+}>;
+
+export type MulticallProvider = Omit<Provider, 'all'> & {
+  all: <Calls extends BaseCall[]>(calls: Calls) => MulticallResult<Calls>;
 };

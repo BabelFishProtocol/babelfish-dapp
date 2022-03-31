@@ -2,9 +2,10 @@ import { all, put, call, select, takeLatest } from 'typed-redux-saga';
 import {
   accountSelector,
   fishTokenSelector,
+  multicallProviderSelector,
   stakingContractSelector,
 } from '../app/app.selectors';
-import { createWatcherSaga } from '../utils';
+import { convertForMulticall, createWatcherSaga, multiCall } from '../utils';
 import { stakingActions } from './staking.slice';
 import { StakeListItem } from './staking.state';
 
@@ -13,17 +14,39 @@ export function* fetchFishTokenData() {
     const account = yield* select(accountSelector);
     const staking = yield* select(stakingContractSelector);
     const fishToken = yield* select(fishTokenSelector);
+    const multicallProvider = yield* select(multicallProviderSelector);
 
-    if (!staking || !account || !fishToken) {
+    if (!staking || !account || !fishToken || !multicallProvider) {
       throw new Error('Wallet not connected');
     }
 
-    const totalStaked = yield* call(staking.balanceOf, account);
-    const totalBalance = yield* call(fishToken.balanceOf, account);
-    const allowanceForStaking = yield* call(
-      fishToken.allowance,
+    const totalStakedCall = convertForMulticall(
+      staking,
+      'balanceOf',
+      'balanceOf(address)',
+      account
+    );
+
+    const totalBalanceCall = convertForMulticall(
+      fishToken,
+      'balanceOf',
+      'balanceOf(address)',
+      account
+    );
+
+    const allowanceForStakingCall = convertForMulticall(
+      fishToken,
+      'allowance',
+      'allowance(address,address)',
       account,
       staking.address
+    );
+
+    const [totalStaked, totalBalance, allowanceForStaking] = yield* multiCall(
+      multicallProvider,
+      totalStakedCall,
+      totalBalanceCall,
+      allowanceForStakingCall
     );
 
     yield* put(
