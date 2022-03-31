@@ -23,9 +23,14 @@ import {
   fetchFishTokenData,
   fetchVotingPower,
   fetchStakesList,
+  fetchHistoryStakingForContract,
+  fetchHistoryStakeEvents,
+  filterContractStakedEvents,
 } from './staking.sagas';
 import { stakingActions } from './staking.slice';
 import { StakeListItem, StakingState } from './staking.state';
+import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/StakingHistory.types';
+import { stakesListSelector } from './staking.selectors';
 
 const mockStaking = createMockedContract(
   Staking__factory.connect(constants.AddressZero, mockSigner),
@@ -295,31 +300,30 @@ describe('staking store', () => {
     });
   });
 
-  describe('fetchStakesList', () => {
-    const stakes = ['100000', '150000'];
-    const dates = [1645564671, 1645564672];
-    const delegates = ['0x0000', '0x3443'];
+  const stakes = ['100000', '150000'];
+  const dates = [1645564671, 1645564672];
+  const delegates = ['0x0000', '0x3443'];
 
+  const combinedStakesList: StakeListItem[] = [
+    {
+      asset: 'FISH',
+      unlockDate: dates[0],
+      lockedAmount: stakes[0],
+      votingDelegation: delegates[0],
+    },
+    {
+      asset: 'FISH',
+      unlockDate: dates[1],
+      lockedAmount: stakes[1],
+      votingDelegation: delegates[1],
+    },
+  ];
+  describe('fetchStakesList', () => {
     const getStakesResult: Partial<Awaited<ReturnType<Staking['getStakes']>>> =
       {
         dates: dates.map((date) => BigNumber.from(date)),
         stakes: stakes.map((stake) => BigNumber.from(stake)),
       };
-
-    const combinedStakesList: StakeListItem[] = [
-      {
-        asset: 'FISH',
-        unlockDate: dates[0],
-        lockedAmount: stakes[0],
-        votingDelegation: delegates[0],
-      },
-      {
-        asset: 'FISH',
-        unlockDate: dates[1],
-        lockedAmount: stakes[1],
-        votingDelegation: delegates[1],
-      },
-    ];
 
     const successState: DeepPartial<RootState> = {
       ...initialState,
@@ -395,6 +399,127 @@ describe('staking store', () => {
         .run();
 
       expect(runResult.effects).toEqual({});
+    });
+  });
+
+  describe('fetchHistoryStakingForContract', () => {
+    const txHashes = ['0x05644455', '0x3443'];
+
+    const combinedHistoryStakesList: StakingHistoryListItem[] = [
+      {
+        asset: 'FISH',
+        unlockDate: dates[0].toString(),
+        stakedAmount: stakes[0],
+        totalStaked: stakes[0],
+        txHash: txHashes[0],
+      },
+      {
+        asset: 'FISH',
+        unlockDate: dates[1].toString(),
+        stakedAmount: stakes[0],
+        totalStaked: stakes[1],
+        txHash: txHashes[1],
+      },
+    ];
+
+    const successState: DeepPartial<RootState> = {
+      ...initialState,
+      [Reducers.Staking]: {
+        ...initialState[Reducers.Staking],
+        stakesListHistory: {
+          state: 'success',
+          data: combinedHistoryStakesList,
+        },
+      },
+    };
+
+    const failureState: DeepPartial<RootState> = {
+      ...initialState,
+      [Reducers.Staking]: {
+        ...initialState[Reducers.Staking],
+        stakesListHistory: { state: 'failure', data: [] },
+      },
+    };
+
+    const vestAddress = '0x94e907A6483b5ef';
+
+    const stakeEvents = [
+      {
+        id: 'stakeEvent-1',
+        staker: testAccount,
+        amount: stakes[0],
+        lockedUntil: dates[0].toString(),
+        totalStaked: stakes[0],
+        transactionHash: txHashes[0],
+      },
+      {
+        id: 'stakeEvent-2',
+        staker: '0x05645644455',
+        amount: stakes[0],
+        lockedUntil: dates[0].toString(),
+        totalStaked: stakes[0],
+        transactionHash: txHashes[0],
+      },
+      {
+        id: 'stakeEvent-3',
+        staker: vestAddress,
+        amount: stakes[0],
+        lockedUntil: dates[1].toString(),
+        totalStaked: stakes[1],
+        transactionHash: txHashes[1],
+      },
+    ];
+
+    const filteredStakeEvents = [stakeEvents[0], stakeEvents[2]];
+
+    const getBasePath = () =>
+      expectSaga(fetchHistoryStakingForContract)
+        .withReducer(reducer)
+        .withState(initialState)
+        .select(stakesListSelector);
+
+    it('happy path', async () => {
+      const runResult = await getBasePath()
+        .provide([
+          [matchers.select(stakesListSelector), combinedStakesList],
+          [matchers.call(fetchHistoryStakeEvents), stakeEvents],
+          [
+            matchers.call(filterContractStakedEvents, stakeEvents),
+            filteredStakeEvents,
+          ],
+        ])
+        .call(fetchHistoryStakeEvents)
+        .call(filterContractStakedEvents, stakeEvents)
+        .put(stakingActions.setHistoryStakesList(combinedHistoryStakesList))
+        .hasFinalState(successState)
+        .run();
+
+      expect(runResult.effects).toEqual({});
+    });
+
+    it('when wallet is not connected', async () => {
+      await getBasePath()
+        .provide([[matchers.select(stakesListSelector), combinedStakesList]])
+        .call(fetchHistoryStakeEvents)
+        .put(stakingActions.fetchHistoryStakesListFailure())
+        .hasFinalState(failureState)
+        .run();
+    });
+
+    it('fetching error', async () => {
+      await getBasePath()
+        .provide([
+          [matchers.select(stakesListSelector), combinedStakesList],
+          [matchers.call(fetchHistoryStakeEvents), throwError()],
+          [
+            matchers.call(filterContractStakedEvents, stakeEvents),
+            filteredStakeEvents,
+          ],
+        ])
+        .call(fetchHistoryStakeEvents)
+        .put(stakingActions.fetchHistoryStakesListFailure())
+        .hasFinalState(failureState)
+        .run();
     });
   });
 });
