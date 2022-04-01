@@ -51,11 +51,12 @@ export const BalanceBlock = ({
   );
 };
 
-const BalanceBlockContent = ({
+export const BalanceBlockContent = ({
   data,
   state,
   asset,
   aprox,
+  variant = 'h5',
 }: BalanceBlockContentProps) => {
   if (state === 'loading' && !data) {
     return <Skeleton sx={{ height: '100%', width: '100%' }} />;
@@ -70,7 +71,7 @@ const BalanceBlockContent = ({
   }
 
   return (
-    <Typography variant="h5" sx={{ mt: 1 }}>
+    <Typography variant={variant} sx={{ mt: 1 }}>
       {aprox && '≈ '}
       {formatWeiAmount(data ?? 0)} {asset}
     </Typography>

@@ -6,7 +6,10 @@ import Typography from '@mui/material/Typography';
 
 import { Urls } from '../../constants';
 import { PageAligner } from '../../components/PageView/PageView.component';
-import { BalanceBlock } from '../../components/BalanceBlock/BalanceBlock.component';
+import {
+  BalanceBlock,
+  BalanceBlockContent,
+} from '../../components/BalanceBlock/BalanceBlock.component';
 
 import { TransactionsTableContainer } from './TransactionsTable/TransactionsTable.container';
 import { DashboardComponentProps } from './Dashboard.types';
@@ -83,7 +86,8 @@ export const DashboardComponent = ({
           <Typography sx={{ fontWeight: 'bold' }}>
             Total #USD Balance:
           </Typography>
-          <Typography variant="h6">{totalUSD}</Typography>
+
+          <BalanceBlockContent variant="h6" {...totalUSD} />
         </Container>
 
         <TransactionsTableContainer />

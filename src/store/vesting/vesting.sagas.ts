@@ -5,13 +5,12 @@ import { Staking } from '../../contracts/types';
 import {
   accountSelector,
   stakingContractSelector,
-  vestingRegistrySelector,
   providerSelector,
 } from '../app/app.selectors';
 import { createWatcherSaga } from '../utils';
 import { vestingActions } from './vesting.slice';
 import { VestListAddress, VestListItem } from './vesting.state';
-import { getVesting } from './vesting.utils';
+import { getUserVestings, getVesting } from './vesting.utils';
 
 function* setSingleVest(
   staking: Staking,
@@ -48,26 +47,23 @@ function* setSingleVest(
 export function* fetchVestsList() {
   try {
     const account = yield* select(accountSelector);
-    const vestingRegistry = yield* select(vestingRegistrySelector);
     const staking = yield* select(stakingContractSelector);
     const provider = yield* select(providerSelector);
 
-    if (!vestingRegistry || !account || !staking || !provider) {
+    if (!account || !staking || !provider) {
       throw new Error('Wallet not connected');
     }
 
     const vestsList: VestListItem[] = [];
     const addresses: VestListAddress[] = [];
-    const vestAddress = yield* call(vestingRegistry.getVesting, account);
+
+    const { vestAddress, teamVestAddress } = yield* call(getUserVestings);
+
     if (vestAddress && constants.AddressZero !== vestAddress) {
       addresses.push({ address: vestAddress, type: 'genesis' });
     }
-    const teamVestsAddresses = yield* call(
-      vestingRegistry.getTeamVesting,
-      account
-    );
-    if (teamVestsAddresses && constants.AddressZero !== teamVestsAddresses) {
-      addresses.push({ address: teamVestsAddresses, type: 'team' });
+    if (teamVestAddress && constants.AddressZero !== teamVestAddress) {
+      addresses.push({ address: teamVestAddress, type: 'team' });
     }
 
     yield* all(
