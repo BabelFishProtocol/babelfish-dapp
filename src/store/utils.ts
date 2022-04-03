@@ -1,10 +1,15 @@
+import { ContractCall } from 'ethers-multicall';
 import { BaseContract } from 'ethers';
 import { ParamType } from 'ethers/lib/utils';
-import { ContractCall } from 'ethers-multicall';
 import { call, cancel, fork, take, takeLatest } from 'typed-redux-saga';
 
 import { appActions } from './app/app.slice';
-import { CreateWatcherSagaOptions } from './types';
+import {
+  CreateWatcherSagaOptions,
+  MulticallContractCall,
+  MulticallProviderType,
+  MulticallResult,
+} from './types';
 
 export const convertForMulticall = <
   Contract extends BaseContract,
@@ -27,8 +32,19 @@ export const convertForMulticall = <
     params: args as ParamType[],
   };
 
-  return contractCall;
+  return contractCall as MulticallContractCall<Contract, Method>;
 };
+
+export function* multiCall<
+  Calls extends MulticallContractCall<
+    BaseContract,
+    keyof BaseContract['functions']
+  >[]
+>(provider: MulticallProviderType, ...calls: Calls) {
+  const result = yield* call([provider, provider.all], calls);
+
+  return result as Awaited<MulticallResult<Calls>>;
+}
 
 /**
  * @description function that creates sagas that triggers fetch and update with wallet updates

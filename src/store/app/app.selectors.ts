@@ -20,7 +20,7 @@ import {
   VestingRegistry__factory,
   GovernorAlpha__factory,
 } from '../../contracts/types';
-import { BaseContractFactory } from '../types';
+import { BaseContractFactory, MulticallProviderType } from '../types';
 
 const appState = (state: RootState) => state[Reducers.App];
 
@@ -119,6 +119,6 @@ export const multicallProviderSelector = createSelector(
     setMulticallAddress(chainId, multicallContract.address);
     const multicallProvider = new MulticallProvider(provider, chainId);
 
-    return multicallProvider;
+    return multicallProvider as MulticallProviderType;
   }
 );
