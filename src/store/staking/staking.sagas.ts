@@ -1,8 +1,5 @@
 import { all, put, call, select, takeLatest } from 'typed-redux-saga';
-import {
-  historyStakesQuery,
-  StakeHistoryQueryItem,
-} from '../../queries/historyStakeListQuery';
+import { historyStakesQuery } from '../../queries/historyStakeListQuery';
 import {
   accountSelector,
   fishTokenSelector,
@@ -11,7 +8,6 @@ import {
 } from '../app/app.selectors';
 import { createWatcherSaga } from '../utils';
 import { vestsListSelector } from '../vesting/vesting.selectors';
-import { stakesListSelector } from './staking.selectors';
 import { stakingActions } from './staking.slice';
 import { StakeListItem } from './staking.state';
 
@@ -112,19 +108,18 @@ export function* fetchStakesList() {
   }
 }
 
-export function* fetchHistoryStakeEvents() {
+export function* fetchFilteredHistoryStakeEvents(contractAddresses: string[]) {
   const subgraphClient = yield* select(subgraphClientSelector);
 
   if (!subgraphClient) throw new Error('Wallet not connected');
 
-  const { stakeEvents } = yield* call(historyStakesQuery, subgraphClient);
-
+  const { stakeEvents } = yield* call(historyStakesQuery, subgraphClient, {
+    contractAddresses,
+  });
   return stakeEvents;
 }
 
-export function* filterContractStakedEvents(
-  stakeEvents: StakeHistoryQueryItem[]
-) {
+export function* getStakesAndVestsAddresses() {
   const account = yield* select(accountSelector);
   const vestsList = yield* select(vestsListSelector);
 
@@ -132,27 +127,21 @@ export function* filterContractStakedEvents(
     throw new Error('Wallet not connected');
   }
 
-  return stakeEvents.filter(
-    ({ staker }) =>
-      staker === account.toLowerCase() ||
-      !!vestsList.find((vest) => vest.address === staker)
-  );
+  const addresses = vestsList.map((vest) => vest.address);
+  addresses.push(account.toLowerCase());
+  return addresses;
 }
 
 export function* fetchHistoryStakingForContract() {
   try {
-    const stakesList = yield* select(stakesListSelector);
+    const contractAddresses = yield* call(getStakesAndVestsAddresses);
 
-    if (!stakesList) {
-      throw new Error('Wallet not connected');
-    }
-    const stakeEvents = yield* call(fetchHistoryStakeEvents);
-    const filteredStakeEvents = yield* call(
-      filterContractStakedEvents,
-      stakeEvents
+    const stakeEvents = yield* call(
+      fetchFilteredHistoryStakeEvents,
+      contractAddresses
     );
 
-    const stakesHistory = filteredStakeEvents.map((stake) => ({
+    const stakesHistory = stakeEvents.map((stake) => ({
       asset: 'FISH',
       stakedAmount: stake.amount,
       unlockDate: stake.lockedUntil,

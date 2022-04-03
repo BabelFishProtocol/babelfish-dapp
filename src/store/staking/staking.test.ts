@@ -24,13 +24,12 @@ import {
   fetchVotingPower,
   fetchStakesList,
   fetchHistoryStakingForContract,
-  fetchHistoryStakeEvents,
-  filterContractStakedEvents,
+  fetchFilteredHistoryStakeEvents,
+  getStakesAndVestsAddresses,
 } from './staking.sagas';
 import { stakingActions } from './staking.slice';
 import { StakeListItem, StakingState } from './staking.state';
 import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/StakingHistory.types';
-import { stakesListSelector } from './staking.selectors';
 
 const mockStaking = createMockedContract(
   Staking__factory.connect(constants.AddressZero, mockSigner),
@@ -304,21 +303,22 @@ describe('staking store', () => {
   const dates = [1645564671, 1645564672];
   const delegates = ['0x0000', '0x3443'];
 
-  const combinedStakesList: StakeListItem[] = [
-    {
-      asset: 'FISH',
-      unlockDate: dates[0],
-      lockedAmount: stakes[0],
-      votingDelegation: delegates[0],
-    },
-    {
-      asset: 'FISH',
-      unlockDate: dates[1],
-      lockedAmount: stakes[1],
-      votingDelegation: delegates[1],
-    },
-  ];
   describe('fetchStakesList', () => {
+    const combinedStakesList: StakeListItem[] = [
+      {
+        asset: 'FISH',
+        unlockDate: dates[0],
+        lockedAmount: stakes[0],
+        votingDelegation: delegates[0],
+      },
+      {
+        asset: 'FISH',
+        unlockDate: dates[1],
+        lockedAmount: stakes[1],
+        votingDelegation: delegates[1],
+      },
+    ];
+
     const getStakesResult: Partial<Awaited<ReturnType<Staking['getStakes']>>> =
       {
         dates: dates.map((date) => BigNumber.from(date)),
@@ -443,6 +443,8 @@ describe('staking store', () => {
 
     const vestAddress = '0x94e907A6483b5ef';
 
+    const addresses = [vestAddress, testAccount];
+
     const stakeEvents = [
       {
         id: 'stakeEvent-1',
@@ -475,21 +477,19 @@ describe('staking store', () => {
     const getBasePath = () =>
       expectSaga(fetchHistoryStakingForContract)
         .withReducer(reducer)
-        .withState(initialState)
-        .select(stakesListSelector);
+        .withState(initialState);
 
     it('happy path', async () => {
       const runResult = await getBasePath()
         .provide([
-          [matchers.select(stakesListSelector), combinedStakesList],
-          [matchers.call(fetchHistoryStakeEvents), stakeEvents],
+          [matchers.call(getStakesAndVestsAddresses), addresses],
           [
-            matchers.call(filterContractStakedEvents, stakeEvents),
+            matchers.call(fetchFilteredHistoryStakeEvents, addresses),
             filteredStakeEvents,
           ],
         ])
-        .call(fetchHistoryStakeEvents)
-        .call(filterContractStakedEvents, stakeEvents)
+        .call(getStakesAndVestsAddresses)
+        .call(fetchFilteredHistoryStakeEvents, addresses)
         .put(stakingActions.setHistoryStakesList(combinedHistoryStakesList))
         .hasFinalState(successState)
         .run();
@@ -499,8 +499,7 @@ describe('staking store', () => {
 
     it('when wallet is not connected', async () => {
       await getBasePath()
-        .provide([[matchers.select(stakesListSelector), combinedStakesList]])
-        .call(fetchHistoryStakeEvents)
+        .call(getStakesAndVestsAddresses)
         .put(stakingActions.fetchHistoryStakesListFailure())
         .hasFinalState(failureState)
         .run();
@@ -509,14 +508,14 @@ describe('staking store', () => {
     it('fetching error', async () => {
       await getBasePath()
         .provide([
-          [matchers.select(stakesListSelector), combinedStakesList],
-          [matchers.call(fetchHistoryStakeEvents), throwError()],
+          [matchers.call(getStakesAndVestsAddresses), addresses],
           [
-            matchers.call(filterContractStakedEvents, stakeEvents),
-            filteredStakeEvents,
+            matchers.call(fetchFilteredHistoryStakeEvents, addresses),
+            throwError(),
           ],
         ])
-        .call(fetchHistoryStakeEvents)
+        .call(getStakesAndVestsAddresses)
+        .call(fetchFilteredHistoryStakeEvents, addresses)
         .put(stakingActions.fetchHistoryStakesListFailure())
         .hasFinalState(failureState)
         .run();

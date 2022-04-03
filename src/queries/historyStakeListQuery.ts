@@ -9,13 +9,17 @@ export type StakeHistoryQueryItem = {
   transactionHash: string;
 };
 
+export type HistoryStakesQueryParams = {
+  contractAddresses: string[];
+};
+
 export type HistoryStakesListQueryResult = {
   stakeEvents: StakeHistoryQueryItem[];
 };
 
 const findHistoryStakesQuery = gql`
-  query getHistoryStakes {
-    stakeEvents {
+  query getHistoryStakes($contractAddresses: [Bytes!]!) {
+    stakeEvents(where: { staker_in: $contractAddresses }) {
       id
       staker
       amount
@@ -26,5 +30,11 @@ const findHistoryStakesQuery = gql`
   }
 `;
 
-export const historyStakesQuery = (client: GraphQLClient) =>
-  client.request<HistoryStakesListQueryResult>(findHistoryStakesQuery);
+export const historyStakesQuery = (
+  client: GraphQLClient,
+  params: HistoryStakesQueryParams
+) =>
+  client.request<HistoryStakesListQueryResult, HistoryStakesQueryParams>(
+    findHistoryStakesQuery,
+    params
+  );

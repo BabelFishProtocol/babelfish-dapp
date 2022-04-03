@@ -56,7 +56,6 @@ export const formatStakingPeriod: CellParser = (val) => {
 export const formatFishAmountColumn: CellParser = (val) =>
   `${formatWeiAmount(val)} FISH`;
 
-export const TxHashColumn: HashColumnComponent = ({ value }) => {
-  const account = useSelector(accountSelector);
-  return value !== account ? <PrettyTx value={value} /> : <>-</>;
-};
+export const TxHashColumn: HashColumnComponent = ({ value }) => (
+  <PrettyTx value={value} />
+);
