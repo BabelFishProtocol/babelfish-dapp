@@ -19,7 +19,7 @@ const isActive = (web3Data: Web3Data): web3Data is ActiveWeb3Data =>
   !!web3Data.library &&
   !!web3Data.connector;
 
-export function useEagerConnect() {
+export const useEagerConnect = () => {
   const { activate, active } = useWeb3React(); // specifically using useWeb3React because of what this hook does
   const [tried, setTried] = useState(false);
 
@@ -51,7 +51,7 @@ export function useEagerConnect() {
   }, [active]);
 
   return tried;
-}
+};
 
 /**
  * wrapper for useWeb3React with strict types. All properties of web3Data will become required when checked that active is true
