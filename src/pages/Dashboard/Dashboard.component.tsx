@@ -64,7 +64,7 @@ export const DashboardComponent = ({
         <Box sx={{ display: 'flex', gap: 2 }}>
           <BalanceBlock
             sx={{ alignItems: 'center' }}
-            label="Fish Balance"
+            label="Fish Vested"
             {...fishBalance}
           />
           <BalanceBlock
@@ -84,7 +84,7 @@ export const DashboardComponent = ({
           }}
         >
           <Typography sx={{ fontWeight: 'bold' }}>
-            Total #USD Balance:
+            Total XUSD Balance:
           </Typography>
 
           <BalanceBlockContent variant="h6" {...totalUSD} />
