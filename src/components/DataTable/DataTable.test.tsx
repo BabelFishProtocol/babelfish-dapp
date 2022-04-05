@@ -37,14 +37,14 @@ describe('DataTable', () => {
     checkDisplayedTable();
   });
   it('display update state', async () => {
-    render(<DataTable {...{ ...mockDataTable, isLoading: true }} />);
+    render(<DataTable {...{ ...mockDataTable, state: 'loading' }} />);
 
     checkDisplayedTable();
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
 
   it('display loading state', async () => {
-    render(<DataTable {...{ ...mockDataTable, data: [], isLoading: true }} />);
+    render(<DataTable {...{ ...mockDataTable, data: [], state: 'loading' }} />);
 
     checkDisplayedHeaders();
     expect(screen.getByTestId('loading-state-row')).toBeInTheDocument();
@@ -55,6 +55,14 @@ describe('DataTable', () => {
       expect(screen.queryByText(item.votingDelegation)).toBeNull();
     });
   });
+
+  it('displays error state', async () => {
+    render(<DataTable {...{ ...mockDataTable, state: 'failure' }} />);
+
+    checkDisplayedHeaders();
+    expect(screen.getByTestId('error-state-row')).toBeInTheDocument();
+  });
+
   it('display empty state', async () => {
     render(<DataTable {...{ ...mockDataTable, data: [] }} />);
 

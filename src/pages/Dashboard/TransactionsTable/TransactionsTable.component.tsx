@@ -14,9 +14,11 @@ const transactionsTableColumns: DataTableColumn<TransactionsTableItem>[] = [
 ];
 
 export const TransactionsTableComponent = ({
+  state,
   transactions,
 }: TransactionsTableComponentProps) => (
   <DataTable
+    state={state}
     tableTitle="Transactions"
     columns={transactionsTableColumns}
     data={transactions}

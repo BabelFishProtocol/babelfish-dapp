@@ -33,5 +33,8 @@ const mockTransactionsData: TransactionsTableItem[] = [
 ];
 
 export const TransactionsTableContainer = () => (
-  <TransactionsTableComponent transactions={mockTransactionsData} />
+  <TransactionsTableComponent
+    state="idle"
+    transactions={mockTransactionsData}
+  />
 );

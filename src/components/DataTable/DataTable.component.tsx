@@ -17,19 +17,19 @@ import {
   DataTableRowProps,
   LoadingStateRowProps,
   TableEmptyProps,
+  DataTableBodyProps,
 } from './DataTable.types';
 
 export const DataTable = <Data extends BaseRowData = BaseRowData>({
   data,
+  state,
   columns,
   containerSx,
-  isLoading,
   tableTitle,
   tableAction,
   tableEmptyMessage = 'No items yet',
 }: DataTableProps<Data>) => {
-  const isUpdate = isLoading && data.length > 0;
-  const isInitialLoad = isLoading && !data.length;
+  const isUpdate = state === 'loading' && data.length > 0;
 
   return (
     <TableContainer
@@ -64,29 +64,48 @@ export const DataTable = <Data extends BaseRowData = BaseRowData>({
         </TableHead>
 
         <TableBody>
-          {isInitialLoad && <LoadingStateRow columns={columns} />}
-          {!isInitialLoad &&
-            data.length > 0 &&
-            data.map((rowData, rowIndex) => (
-              <DataTableRow
-                key={rowIndex}
-                columns={columns}
-                rowIndex={rowIndex}
-                rowData={rowData}
-              />
-            ))}
-          {!isInitialLoad && data.length === 0 && (
-            <TableEmpty message={tableEmptyMessage} />
-          )}
+          <DataTableBody
+            data={data}
+            state={state}
+            columns={columns}
+            tableEmptyMessage={tableEmptyMessage}
+          />
         </TableBody>
       </Table>
     </TableContainer>
   );
 };
 
-DataTable.defaultProps = {
-  isLoading: false,
-  containerSx: {},
+const DataTableBody = <Data extends BaseRowData = BaseRowData>({
+  data,
+  state,
+  columns,
+  tableEmptyMessage = 'No items yet',
+}: DataTableBodyProps<Data>) => {
+  if (state === 'failure') {
+    return <FailureStateRow />;
+  }
+
+  if (state === 'loading' && !data.length) {
+    return <LoadingStateRow columns={columns} />;
+  }
+
+  if (!data.length) {
+    return <TableEmpty message={tableEmptyMessage} />;
+  }
+
+  return (
+    <>
+      {data.map((rowData, rowIndex) => (
+        <DataTableRow
+          key={rowIndex}
+          columns={columns}
+          rowIndex={rowIndex}
+          rowData={rowData}
+        />
+      ))}
+    </>
+  );
 };
 
 const DataTableRow = <Data extends BaseRowData = BaseRowData>({
@@ -133,5 +152,18 @@ const TableEmpty = ({ message }: TableEmptyProps) => (
     <Box component="td" py={3} px={1.25} color="rgba(255,255,255,0.5)">
       {message}
     </Box>
+  </TableRow>
+);
+
+const FailureStateRow = () => (
+  <TableRow>
+    <Typography
+      color="error"
+      component="td"
+      data-testid="error-state-row"
+      sx={{ py: 3, px: 1 }}
+    >
+      Unable to load data!
+    </Typography>
   </TableRow>
 );
