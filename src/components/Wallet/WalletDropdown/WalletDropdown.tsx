@@ -27,14 +27,14 @@ export const WalletDropdown = ({
   }, []);
 
   const tryActivation = async (walletId: number) => {
-    const { connector, checkConnection } = wallets[walletId];
+    const { name, connector, checkConnection } = wallets[walletId];
 
     checkConnection();
 
     if (connector) {
       try {
         await activate(connector, undefined, true);
-        setConnectedWallet(walletId);
+        setConnectedWallet(name);
       } catch (e) {
         // if (e instanceof UnsupportedChainIdError) {
         //   await activate(connector);
