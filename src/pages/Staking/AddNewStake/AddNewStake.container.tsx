@@ -109,7 +109,7 @@ export const AddNewStakeContainer = ({
       />
 
       {approveData.status !== 'idle' && (
-        <SubmitStatusDialog operationName="Approving" {...approveData} />
+        <SubmitStatusDialog operationName="Staking" {...approveData} />
       )}
 
       {stakeData.status !== 'idle' && (

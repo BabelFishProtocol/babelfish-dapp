@@ -246,7 +246,7 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
     styleOverrides: {
       paper: {
         backgroundImage: palette.boxGradient,
-        minHeight: '500px',
+        minHeight: '400px',
         width: '500px',
         maxWidth: '800px',
         borderRadius: '8px',

@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 
+import { Step, StepConnector, StepLabel, Stepper } from '@mui/material';
 import { Button } from '../Button/Button.component';
 import { PrettyTx } from '../PrettyTx/PrettyTx.component';
 import { AppDialog } from '../AppDialog/AppDialog.component';
@@ -25,7 +26,7 @@ export const TxErrorDialog = ({
   <AppDialog
     isOpenDialog={isOpenDialog}
     icon={errorIcon}
-    title="Minting Error"
+    title="Staking Error"
     description={`We encountered an error in the ${operationName} process. Please try again`}
     onClose={onClose}
   >
@@ -120,6 +121,44 @@ export const SubmitStatusDialog = ({
   txReceipt,
   ...dialogProps
 }: SubmitStatusDialogProps) => {
+  if (status === 'failure') {
+    return (
+      <TxErrorDialog isOpenDialog={status === 'failure'} {...dialogProps} />
+    );
+  }
+
+  if (status === 'success') {
+    return (
+      <TxSuccessDialog
+        txReceipt={txReceipt}
+        isOpenDialog={status === 'success'}
+        {...dialogProps}
+      />
+    );
+  }
+
+  return (
+    <TxPendingDialog
+      tx={tx}
+      isOpenDialog={status === 'loading'}
+      {...dialogProps}
+    />
+  );
+};
+
+type Dupa = SubmitStatusDialogProps & {
+  currentStep: 'stake' | 'approve';
+  steps: ['stake', 'approve'];
+};
+
+export const SubmitStatusDialogSaga = ({
+  tx,
+  status,
+  steps,
+  currentStep,
+  txReceipt,
+  ...dialogProps
+}: Dupa) => {
   if (status === 'failure') {
     return (
       <TxErrorDialog isOpenDialog={status === 'failure'} {...dialogProps} />

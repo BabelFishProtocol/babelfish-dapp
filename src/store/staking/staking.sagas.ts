@@ -1,4 +1,14 @@
-import { all, put, call, select, takeLatest } from 'typed-redux-saga';
+import {
+  all,
+  put,
+  call,
+  select,
+  takeLatest,
+  takeLeading,
+  SagaGenerator,
+} from 'typed-redux-saga';
+import { CallEffect } from 'redux-saga/effects';
+import { ContractTransaction } from 'ethers';
 import {
   accountSelector,
   fishTokenSelector,
@@ -8,6 +18,7 @@ import {
 import { convertForMulticall, createWatcherSaga, multiCall } from '../utils';
 import { stakingActions } from './staking.slice';
 import { StakeListItem } from './staking.state';
+import { vestingActions } from '../vesting/vesting.slice';
 
 export function* fetchFishTokenData() {
   try {
@@ -168,3 +179,28 @@ export function* stakingSaga() {
     takeLatest(stakingActions.watchStakingData.type, watchStaking),
   ]);
 }
+
+function* callStake() {
+  const staking = yield* select(stakingContractSelector);
+  const fishToken = yield* select(fishTokenSelector);
+
+  if (!staking || !fishToken) return;
+
+  yield* contractCallSaga([
+    {
+      name: 'Approve',
+      effect: call(fishToken.approve, '0x00', '1000'),
+    },
+    {
+      name: 'Stake',
+      effect: call(staking.stake, '100', 123123123, '0x00', '0x00'),
+    },
+  ]);
+}
+
+type SagaContractCallStep = {
+  name: string;
+  effect: SagaGenerator<ContractTransaction, CallEffect<ContractTransaction>>;
+};
+
+export function* contractCallSaga(steps: SagaContractCallStep[]) {}

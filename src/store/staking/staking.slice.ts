@@ -1,5 +1,9 @@
+import { TransactionReceipt } from '@ethersproject/providers';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { ContractTransaction } from 'ethers';
 import { Reducers } from '../../constants';
+import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/StakingHistory.types';
+import { FiniteStates } from '../../utils/types';
 import { ActionsType } from '../types';
 import {
   FishTokenInfo,
@@ -10,10 +14,24 @@ import {
 
 const initialState = { ...new StakingState() };
 
+type CallState<Operations extends string> = {
+  status: FiniteStates;
+  currentOperation?: Operations;
+  tx?: ContractTransaction;
+  txReceipt?: TransactionReceipt;
+};
+
 export const stakingSlice = createSlice({
   name: Reducers.Staking,
   initialState,
   reducers: {
+    updateAddStakeState: (
+      state,
+      payload: PayloadAction<CallState<'approve' | 'stake'>>
+    ) => {
+      console.log({ payload });
+      state.fishToken.state = 'idle';
+    },
     watchStakingData: (_) => {},
     stopWatchingStakingData: (state) => {
       state.fishToken.state = 'idle';
