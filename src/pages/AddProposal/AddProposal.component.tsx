@@ -1,6 +1,8 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { useEffect } from 'react';
+import { useFieldArray, useForm, useWatch } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 import { ControlledAddressInput } from '../../components/AddressInput/AddressInput.controlled';
 import { AppDialog } from '../../components/AppDialog/AppDialog.component';
 import { Button } from '../../components/Button/Button.component';
@@ -8,6 +10,7 @@ import { ControlledCurrencyInput } from '../../components/CurrencyInput/Currency
 import { ControlledDropdown } from '../../components/Dropdown/Dropdown.controlled';
 import { ControlledInput } from '../../components/TextInput/TextInput.controlled';
 import { fieldsErrors, GOVERNANCE_OPTIONS } from '../../constants';
+import { proposalsActions } from '../../store/proposals/proposals.slice';
 import { isValidCalldata, isValidSignature } from '../../utils/helpers';
 import {
   AddProposalDefaultValues,
@@ -25,6 +28,7 @@ export const AddProposal = ({
   isOpenDialog,
   onClose,
   onSubmit,
+  eligibleToAdd,
 }: AddProposalProps) => {
   const {
     control,
@@ -40,6 +44,17 @@ export const AddProposal = ({
     control,
     name: AddProposalInputs.Values,
   });
+
+  const dispatch = useDispatch();
+
+  const govOption = useWatch({
+    name: AddProposalInputs.SendProposalContract,
+    control,
+  });
+
+  useEffect(() => {
+    dispatch(proposalsActions.setGovernor(govOption));
+  }, [govOption, dispatch]);
 
   return (
     <AppDialog
@@ -172,7 +187,7 @@ export const AddProposal = ({
               gap: 2,
             }}
           >
-            <Button type="submit" disabled={!isValid}>
+            <Button type="submit" disabled={!isValid || !eligibleToAdd}>
               Confirm
             </Button>
             <Button variant="outlined" onClick={onClose}>

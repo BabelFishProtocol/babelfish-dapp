@@ -3,7 +3,11 @@ import {
   fetchProposalDetails,
   watchProposalDetails,
 } from './sagas/proposalDetails';
-import { addProposal } from './sagas/addProposal';
+import {
+  addProposal,
+  checkAddEligibility,
+  watchAddProposals,
+} from './sagas/addProposal';
 import { fetchProposalsList, watchProposalsList } from './sagas/proposalList';
 import { proposalsActions } from './proposals.slice';
 
@@ -18,5 +22,7 @@ export function* proposalsSaga() {
     takeLatest(proposalsActions.watchProposalsList.type, watchProposalsList),
 
     takeLatest(proposalsActions.startProposal, addProposal),
+    takeLatest(proposalsActions.watchAddProposal, watchAddProposals),
+    takeLatest(proposalsActions.checkAddPropsal, checkAddEligibility),
   ]);
 }

@@ -16,6 +16,7 @@ export type AddProposalFields = {
 
 export type AddProposalProps = {
   isOpenDialog: boolean;
+  eligibleToAdd: boolean;
   onClose: () => void;
   onSubmit: (data: AddProposalFields) => void;
 };
@@ -26,7 +27,9 @@ export type AddProposalContainerProps = Pick<
 >;
 
 export type AddProposalStatusDialogProps = {
-  onClose: () => void;
+  clearState: () => void;
+  closeDialog?: () => void;
   status: FiniteStates;
+  isNotEligible: boolean;
   message?: string;
 };

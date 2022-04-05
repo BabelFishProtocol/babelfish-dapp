@@ -1,4 +1,8 @@
-import { GovernorTypes, ProposalState } from '../../constants';
+import {
+  GOVERNANCE_OPTIONS,
+  GovernorTypes,
+  ProposalState,
+} from '../../constants';
 import { FiniteStates } from '../../utils/types';
 import { LoadableValue } from '../types';
 
@@ -42,6 +46,8 @@ export type ProposalDetails = Proposal & {
 
 export class ProposalsState {
   addProposalErrorReason?: string;
+  addProposalEligible: FiniteStates = 'idle';
+  selectedGovernor: string = GOVERNANCE_OPTIONS.GOVERNER_ADMIN.id;
   addProposalState: FiniteStates = 'idle';
 
   proposalsList: LoadableValue<Proposal[]> = {

@@ -167,3 +167,13 @@ export const addProposalErrorSelector = createSelector(
   proposalsState,
   (state) => state.addProposalErrorReason
 );
+
+export const addProposalEligibleSelector = createSelector(
+  proposalsState,
+  (state) => state.addProposalEligible
+);
+
+export const selectedGovernorSelector = createSelector(
+  proposalsState,
+  (state) => state.selectedGovernor
+);

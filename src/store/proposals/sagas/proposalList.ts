@@ -22,7 +22,7 @@ import { proposalsActions } from '../proposals.slice';
 import { governorContractsSelector } from '../proposals.selectors';
 import { MulticallProviderType } from '../../types';
 
-function* fetchProposalStates(
+export function* fetchProposalStates(
   proposals: ProposalListQueryItem[],
   governor: GovernorAlpha,
   multicallProvider: MulticallProviderType
