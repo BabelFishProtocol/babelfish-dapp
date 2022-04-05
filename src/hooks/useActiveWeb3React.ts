@@ -24,23 +24,19 @@ export const useEagerConnect = () => {
   const [tried, setTried] = useState(false);
 
   useEffect(() => {
-    injectedConnector.isAuthorized().then((isAuthorized) => {
+    (async () => {
+      const isAuthorized = await injectedConnector.isAuthorized();
+
       if (isAuthorized) {
-        activate(injectedConnector, undefined, true).catch(() => {
+        try {
+          await activate(injectedConnector, undefined, true);
+        } catch (e) {
           setTried(true);
-        });
+        }
       } else {
         setTried(true);
-        // We do not support mobile rn
-        // if (isMobile && window.ethereum) {
-        //   activate(injectedPRovider, undefined, true).catch(() => {
-        //     setTried(true)
-        //   })
-        // } else {
-        //   setTried(true)
-        // }
       }
-    });
+    })();
   }, [activate]); // intentionally only running on mount (make sure it's only mounted once :))
 
   // if the connection worked, wait until we get confirmation of that to flip the flag
