@@ -77,13 +77,14 @@ export const DashboardComponent = ({
         <Container
           sx={{
             p: 2,
+            gap: 4,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             border: ({ palette }) => `1px solid ${palette.primary.main}`,
           }}
         >
-          <Typography sx={{ fontWeight: 'bold' }}>
+          <Typography sx={{ fontWeight: 'bold', flexShrink: 0 }}>
             Total XUSD Balance:
           </Typography>
 
