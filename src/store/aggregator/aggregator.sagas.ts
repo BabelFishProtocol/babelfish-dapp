@@ -1,6 +1,5 @@
 import { select, call, put, all, takeLatest } from 'typed-redux-saga';
 import { accountSelector } from '../app/app.selectors';
-import { appActions } from '../app/app.slice';
 import {
   allowTokensContractSelector,
   bridgeContractSelector,
@@ -95,8 +94,6 @@ export function* aggregatorSaga() {
     takeLatest(aggregatorActions.setDestinationToken, fetchBridgeFeesAndLimits),
     takeLatest(aggregatorActions.setDestinationChain, fetchAllowTokenAddress),
     takeLatest(aggregatorActions.setDestinationToken, fetchAllowTokenAddress),
-    takeLatest(appActions.walletConnected, fetchAllowTokenAddress),
-    takeLatest(appActions.walletConnected, fetchStartingTokenBalance),
     takeLatest(aggregatorActions.setStartingToken, fetchStartingTokenBalance),
   ]);
 }
