@@ -23,10 +23,12 @@ const stakingHistoryColumns: DataTableColumn<StakingHistoryListItem>[] = [
 ];
 
 export const StakingHistoryComponent = ({
+  state,
   stakes,
 }: StakingHistoryComponentProps) => (
   <DataTable
     data={stakes}
+    state={state}
     tableTitle="Staking History"
     tableEmptyMessage="No stakes yet."
     columns={stakingHistoryColumns}

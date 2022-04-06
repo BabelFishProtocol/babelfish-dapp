@@ -17,5 +17,5 @@ const mockStakingHistory: StakingHistoryListItem[] = [
 ];
 
 export const StakingHistoryContainer = () => (
-  <StakingHistoryComponent stakes={mockStakingHistory} />
+  <StakingHistoryComponent state="idle" stakes={mockStakingHistory} />
 );
