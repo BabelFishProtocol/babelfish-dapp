@@ -1,3 +1,5 @@
+import { FiniteStates } from '../../../utils/types';
+
 export type StakingHistoryListItem = {
   asset: string;
   stakedAmount: string;
@@ -7,5 +9,6 @@ export type StakingHistoryListItem = {
 };
 
 export type StakingHistoryComponentProps = {
+  state: FiniteStates;
   stakes: StakingHistoryListItem[];
 };

@@ -5,5 +5,5 @@ import { StakingHistoryComponent } from './StakingHistory.component';
 export const StakingHistoryContainer = () => {
   const stakingHistory = useSelector(stakesHistoryListSelector);
 
-  return <StakingHistoryComponent stakes={stakingHistory} />;
+  return <StakingHistoryComponent state="idle" stakes={stakingHistory} />;
 };

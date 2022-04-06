@@ -30,7 +30,7 @@ export const VotesListComponent = ({
     data={votes as RowData[]}
     columns={votesColumns}
     tableEmptyMessage="No Votes yet"
-    isLoading={state === 'loading'}
+    state={state}
     tableAction={
       <TableIcon>
         <img
