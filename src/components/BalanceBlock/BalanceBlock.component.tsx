@@ -56,6 +56,7 @@ export const BalanceBlockContent = ({
   state,
   asset,
   aprox,
+  typographySx,
   variant = 'h5',
 }: BalanceBlockContentProps) => {
   if (state === 'loading' && !data) {
@@ -64,14 +65,14 @@ export const BalanceBlockContent = ({
 
   if (state === 'failure') {
     return (
-      <Typography sx={{ mt: 1 }} color="error">
+      <Typography sx={{ mt: 1, ...typographySx }} color="error">
         Unable to load data!
       </Typography>
     );
   }
 
   return (
-    <Typography variant={variant} sx={{ mt: 1 }}>
+    <Typography variant={variant} sx={{ mt: 1, ...typographySx }}>
       {aprox && '≈ '}
       {formatWeiAmount(data ?? 0)} {asset}
     </Typography>

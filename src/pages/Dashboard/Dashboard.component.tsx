@@ -88,7 +88,11 @@ export const DashboardComponent = ({
             Total XUSD Balance:
           </Typography>
 
-          <BalanceBlockContent variant="h6" {...totalUSD} />
+          <BalanceBlockContent
+            variant="h6"
+            typographySx={{ m: 0 }}
+            {...totalUSD}
+          />
         </Container>
 
         <TransactionsTableContainer />
