@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { Reducers } from '../../constants';
 import { isTimeStampLocked } from '../../utils/helpers';
-import { providerSelector } from '../app/app.selectors';
+import { accountSelector, providerSelector } from '../app/app.selectors';
 import { getVesting } from './vesting.utils';
 
 const vestingState = (state: RootState) => state[Reducers.Vesting];
@@ -38,5 +38,19 @@ export const selectedVestContractSelector = createSelector(
     }
     const vesting = getVesting(selectedVest.address, provider);
     return vesting;
+  }
+);
+
+export const stakesAndVestsAddressesSelector = createSelector(
+  [accountSelector, vestsListSelector],
+  (account, vests) => {
+    if (!account) {
+      throw new Error('Wallet not connected');
+    }
+
+    const addresses = vests.map((vest) => vest.address);
+
+    addresses.push(account.toLowerCase());
+    return addresses;
   }
 );

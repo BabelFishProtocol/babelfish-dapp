@@ -7,10 +7,11 @@ import {
   stakingContractSelector,
   subgraphClientSelector,
 } from '../app/app.selectors';
-import { vestsListSelector } from '../vesting/vesting.selectors';
+import { stakesAndVestsAddressesSelector } from '../vesting/vesting.selectors';
 import { convertForMulticall, createWatcherSaga, multiCall } from '../utils';
 import { stakingActions } from './staking.slice';
 import { StakeListItem } from './staking.state';
+import { vestingActions } from '../vesting/vesting.slice';
 
 export function* fetchFishTokenData() {
   try {
@@ -131,38 +132,17 @@ export function* fetchStakesList() {
   }
 }
 
-export function* fetchFilteredHistoryStakeEvents(contractAddresses: string[]) {
-  const subgraphClient = yield* select(subgraphClientSelector);
-
-  if (!subgraphClient) throw new Error('Wallet not connected');
-
-  const { stakeEvents } = yield* call(historyStakesQuery, subgraphClient, {
-    contractAddresses,
-  });
-  return stakeEvents;
-}
-
-export function* getStakesAndVestsAddresses() {
-  const account = yield* select(accountSelector);
-  const vestsList = yield* select(vestsListSelector);
-
-  if (!account || !vestsList) {
-    throw new Error('Wallet not connected');
-  }
-
-  const addresses = vestsList.map((vest) => vest.address);
-  addresses.push(account.toLowerCase());
-  return addresses;
-}
-
-export function* fetchHistoryStakingForContract() {
+export function* fetchHistoryStaking() {
   try {
-    const contractAddresses = yield* call(getStakesAndVestsAddresses);
+    const subgraphClient = yield* select(subgraphClientSelector);
+    const contractAddresses = yield* select(stakesAndVestsAddressesSelector);
 
-    const stakeEvents = yield* call(
-      fetchFilteredHistoryStakeEvents,
-      contractAddresses
-    );
+    if (!subgraphClient || !contractAddresses.length)
+      throw new Error('Wallet not connected');
+
+    const { stakeEvents } = yield* call(historyStakesQuery, subgraphClient, {
+      contractAddresses,
+    });
 
     const stakesHistory = stakeEvents.map((stake) => ({
       asset: 'FISH',
@@ -185,7 +165,6 @@ function* fetchBalances() {
     call(fetchStakeConstants),
     call(fetchVotingPower),
     call(fetchStakesList),
-    call(fetchHistoryStakingForContract),
   ]);
 }
 
@@ -195,7 +174,6 @@ function* updateBalances() {
     call(fetchFishTokenData),
     call(fetchVotingPower),
     call(fetchStakesList),
-    call(fetchHistoryStakingForContract),
   ]);
 }
 
@@ -218,5 +196,10 @@ export function* stakingSaga() {
     takeLatest(stakingActions.fetchStakingData.type, fetchBalances),
     takeLatest(stakingActions.updateStakingData.type, updateBalances),
     takeLatest(stakingActions.watchStakingData.type, watchStaking),
+    takeLatest(stakingActions.watchStakingData.type, watchStaking),
+    takeLatest(
+      [stakingActions.setStakesList, vestingActions.setVestsList],
+      fetchHistoryStaking
+    ),
   ]);
 }

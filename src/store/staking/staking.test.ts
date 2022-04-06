@@ -14,6 +14,7 @@ import {
   createMockedContract,
   mockMulticallProvider,
   mockSigner,
+  mockSubgraphClient,
 } from '../../testUtils';
 
 import {
@@ -21,6 +22,7 @@ import {
   fishTokenSelector,
   multicallProviderSelector,
   stakingContractSelector,
+  subgraphClientSelector,
 } from '../app/app.selectors';
 
 import {
@@ -28,14 +30,14 @@ import {
   fetchFishTokenData,
   fetchVotingPower,
   fetchStakesList,
-  fetchHistoryStakingForContract,
-  fetchFilteredHistoryStakeEvents,
-  getStakesAndVestsAddresses,
+  fetchHistoryStaking,
 } from './staking.sagas';
 import { stakingActions } from './staking.slice';
 import { StakeListItem, StakingState } from './staking.state';
 import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/StakingHistory.types';
 import { convertForMulticall } from '../utils';
+import { stakesAndVestsAddressesSelector } from '../vesting/vesting.selectors';
+import { historyStakesQuery } from '../../queries/historyStakeListQuery';
 
 jest.mock('../utils', () => ({
   ...jest.requireActual('../utils'),
@@ -473,7 +475,7 @@ describe('staking store', () => {
     });
   });
 
-  describe('fetchHistoryStakingForContract', () => {
+  describe('fetchHistoryStaking', () => {
     const txHashes = ['0x05644455', '0x3443'];
 
     const combinedHistoryStakesList: StakingHistoryListItem[] = [
@@ -543,24 +545,28 @@ describe('staking store', () => {
       },
     ];
 
-    const filteredStakeEvents = [stakeEvents[0], stakeEvents[2]];
-
     const getBasePath = () =>
-      expectSaga(fetchHistoryStakingForContract)
+      expectSaga(fetchHistoryStaking)
         .withReducer(reducer)
-        .withState(initialState);
+        .withState(initialState)
+        .select(subgraphClientSelector)
+        .select(stakesAndVestsAddressesSelector);
 
     it('happy path', async () => {
       const runResult = await getBasePath()
         .provide([
-          [matchers.call(getStakesAndVestsAddresses), addresses],
+          [matchers.select(subgraphClientSelector), mockSubgraphClient],
+          [matchers.select(stakesAndVestsAddressesSelector), addresses],
           [
-            matchers.call(fetchFilteredHistoryStakeEvents, addresses),
-            filteredStakeEvents,
+            matchers.call(historyStakesQuery, mockSubgraphClient, {
+              contractAddresses: addresses,
+            }),
+            { stakeEvents: [stakeEvents[0], stakeEvents[2]] },
           ],
         ])
-        .call(getStakesAndVestsAddresses)
-        .call(fetchFilteredHistoryStakeEvents, addresses)
+        .call(historyStakesQuery, mockSubgraphClient, {
+          contractAddresses: addresses,
+        })
         .put(stakingActions.setHistoryStakesList(combinedHistoryStakesList))
         .hasFinalState(successState)
         .run();
@@ -569,24 +575,33 @@ describe('staking store', () => {
     });
 
     it('when wallet is not connected', async () => {
-      await getBasePath()
-        .call(getStakesAndVestsAddresses)
+      const runResult = await getBasePath()
+        .provide([
+          [matchers.select(subgraphClientSelector), undefined],
+          [matchers.select(stakesAndVestsAddressesSelector), undefined],
+        ])
         .put(stakingActions.fetchHistoryStakesListFailure())
         .hasFinalState(failureState)
         .run();
+
+      expect(runResult.effects).toEqual({});
     });
 
     it('fetching error', async () => {
       await getBasePath()
         .provide([
-          [matchers.call(getStakesAndVestsAddresses), addresses],
+          [matchers.select(subgraphClientSelector), mockSubgraphClient],
+          [matchers.select(stakesAndVestsAddressesSelector), addresses],
           [
-            matchers.call(fetchFilteredHistoryStakeEvents, addresses),
+            matchers.call(historyStakesQuery, mockSubgraphClient, {
+              contractAddresses: addresses,
+            }),
             throwError(),
           ],
         ])
-        .call(getStakesAndVestsAddresses)
-        .call(fetchFilteredHistoryStakeEvents, addresses)
+        .call(historyStakesQuery, mockSubgraphClient, {
+          contractAddresses: addresses,
+        })
         .put(stakingActions.fetchHistoryStakesListFailure())
         .hasFinalState(failureState)
         .run();
