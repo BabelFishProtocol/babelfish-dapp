@@ -21,7 +21,6 @@ import {
   GovernorAlpha__factory,
 } from '../../contracts/types';
 import { BaseContractFactory, MulticallProviderType } from '../types';
-import { vestsListSelector } from '../vesting/vesting.selectors';
 
 const appState = (state: RootState) => state[Reducers.App];
 
