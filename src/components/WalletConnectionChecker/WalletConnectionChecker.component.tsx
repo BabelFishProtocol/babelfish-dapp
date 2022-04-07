@@ -1,7 +1,7 @@
-import Typography from '@mui/material/Typography';
 import { ChainEnum } from '../../config/chains';
 
 import { useActiveWeb3React } from '../../hooks/useActiveWeb3React';
+import { AppDialog } from '../AppDialog/AppDialog.component';
 import { WalletConnectionCheckerProps } from './WalletConnectionChecker.types';
 
 export const WalletConnectionChecker = ({
@@ -11,21 +11,26 @@ export const WalletConnectionChecker = ({
 }: WalletConnectionCheckerProps) => {
   const web3Data = useActiveWeb3React();
 
-  if (!web3Data.active) {
-    return (
-      <Typography color="primary" sx={{ wdith: '100%', textAlign: 'center' }}>
+  return (
+    <>
+      <AppDialog
+        isOpenDialog={!web3Data.active}
+        title="Connect wallet"
+        dialogPaperProps={{ sx: { minHeight: 0 } }}
+      >
         Please connect your wallet to the {expectedChainName} Network
-      </Typography>
-    );
-  }
+      </AppDialog>
 
-  if (!expectedChains.includes(web3Data.chainId)) {
-    return (
-      <Typography color="primary" sx={{ wdith: '100%', textAlign: 'center' }}>
+      <AppDialog
+        isOpenDialog={
+          web3Data.active && !expectedChains.includes(web3Data.chainId)
+        }
+        title="Wrong network"
+      >
         Wrong network. Please your wallet to the {expectedChainName} Network
-      </Typography>
-    );
-  }
+      </AppDialog>
 
-  return children;
+      {children}
+    </>
+  );
 };

@@ -2,6 +2,7 @@ import { InjectedConnector } from '@web3-react/injected-connector';
 // import { PortisConnector } from '@web3-react/portis-connector';
 import { ChainEnum } from './chains';
 
+// TODO: set supported networks dynamically
 const SUPPORTED_CHAINS = Object.values(ChainEnum).filter(
   (item) => typeof item === 'number'
 );

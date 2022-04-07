@@ -53,14 +53,14 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
     styleOverrides: {
       root: {
         fontSize: 18,
-        padding: '16px 54px',
+        padding: '16px 24px',
         border: 0,
         ':hover': {
           border: 0,
         },
       },
+      contained: { borderRadius: '12px' },
       containedPrimary: {
-        borderRadius: '12px',
         backgroundImage: `linear-gradient(to left, ${palette.primary.light}, ${palette.primary.main})`,
         transition: `opacity ${transition}`,
         ':hover': {

@@ -45,6 +45,17 @@ export const currentBlockSelector = createSelector(
   appState,
   (state) => state.currentBlockNumber
 );
+
+// export const supportedNetworksSelector = createSelector(
+//   appState,
+//   (state) => state.supportedNetworks
+// );
+
+export const wrongNetworkModalSelector = createSelector(
+  appState,
+  (state) => state.wrongNetworkModal
+);
+
 export const currentChainSelector = createSelector(
   chainIdSelector,
   (chainId) => {
