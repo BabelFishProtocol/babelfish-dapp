@@ -34,12 +34,12 @@ export const appSlice = createSlice({
     setBlockNumber: (state, { payload }: PayloadAction<number>) => {
       state.currentBlockNumber = payload;
     },
-    // setSupportedNetworks: (
-    //   state,
-    //   { payload }: PayloadAction<AppState['supportedNetworks']>
-    // ) => {
-    //   state.supportedNetworks = payload;
-    // },
+    setSupportedNetworks: (
+      state,
+      { payload }: PayloadAction<AppState['supportedNetworks']>
+    ) => {
+      state.supportedNetworks = payload;
+    },
     setWrongNetworkModal: (state, { payload }: PayloadAction<boolean>) => {
       state.wrongNetworkModal = payload;
     },
