@@ -6,7 +6,10 @@ import Typography from '@mui/material/Typography';
 
 import { Urls } from '../../constants';
 import { PageAligner } from '../../components/PageView/PageView.component';
-import { BalanceBlock } from '../../components/BalanceBlock/BalanceBlock.component';
+import {
+  BalanceBlock,
+  BalanceBlockContent,
+} from '../../components/BalanceBlock/BalanceBlock.component';
 
 import { TransactionsTableContainer } from './TransactionsTable/TransactionsTable.container';
 import { DashboardComponentProps } from './Dashboard.types';
@@ -58,32 +61,30 @@ export const DashboardComponent = ({
           flexDirection: 'column',
         }}
       >
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <BalanceBlock
-            sx={{ alignItems: 'center' }}
-            label="Fish Balance"
-            {...fishBalance}
-          />
-          <BalanceBlock
-            sx={{ alignItems: 'center' }}
-            label="Fish Vesting"
-            {...fishVesting}
-          />
+        <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
+          <BalanceBlock centered label="Fish Vested" {...fishBalance} />
+          <BalanceBlock centered label="Fish Vesting" {...fishVesting} />
         </Box>
 
         <Container
           sx={{
             p: 2,
+            gap: 4,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             border: ({ palette }) => `1px solid ${palette.primary.main}`,
           }}
         >
-          <Typography sx={{ fontWeight: 'bold' }}>
-            Total #USD Balance:
+          <Typography sx={{ fontWeight: 'bold', flexShrink: 0 }}>
+            Total XUSD Balance:
           </Typography>
-          <Typography variant="h6">{totalUSD}</Typography>
+
+          <BalanceBlockContent
+            variant="h6"
+            typographySx={{ m: 0, textAlign: 'right' }}
+            {...totalUSD}
+          />
         </Container>
 
         <TransactionsTableContainer />
