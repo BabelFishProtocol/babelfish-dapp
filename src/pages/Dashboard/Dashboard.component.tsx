@@ -61,17 +61,9 @@ export const DashboardComponent = ({
           flexDirection: 'column',
         }}
       >
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <BalanceBlock
-            sx={{ alignItems: 'center' }}
-            label="Fish Vested"
-            {...fishBalance}
-          />
-          <BalanceBlock
-            sx={{ alignItems: 'center' }}
-            label="Fish Vesting"
-            {...fishVesting}
-          />
+        <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
+          <BalanceBlock centered label="Fish Vested" {...fishBalance} />
+          <BalanceBlock centered label="Fish Vesting" {...fishVesting} />
         </Box>
 
         <Container
@@ -90,7 +82,7 @@ export const DashboardComponent = ({
 
           <BalanceBlockContent
             variant="h6"
-            typographySx={{ m: 0 }}
+            typographySx={{ m: 0, textAlign: 'right' }}
             {...totalUSD}
           />
         </Container>

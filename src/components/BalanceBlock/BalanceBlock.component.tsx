@@ -8,6 +8,7 @@ import { formatWeiAmount } from '../../utils/helpers';
 
 import {
   BalanceBlockProps,
+  BalanceBlockValueProps,
   BalanceBlockContentProps,
 } from './BalanceBlock.types';
 
@@ -17,8 +18,10 @@ export const BalanceBlock = ({
   data,
   state,
   children,
+  typographySx,
   aprox = false,
   asset = 'FISH',
+  centered = false,
 }: BalanceBlockProps) => {
   const isUpdate = state === 'loading' && !!data;
 
@@ -28,6 +31,7 @@ export const BalanceBlock = ({
         padding: 2,
         display: 'flex',
         flexDirection: 'column',
+        alignItems: centered ? 'center' : 'initial',
         ...sx,
       }}
     >
@@ -43,6 +47,10 @@ export const BalanceBlock = ({
         state={state}
         asset={asset}
         aprox={aprox}
+        typographySx={{
+          textAlign: centered ? 'center' : 'inherit',
+          ...typographySx,
+        }}
       />
       {(state === 'success' || isUpdate) && children && (
         <Box sx={{ mt: 2 }}>{children}</Box>
@@ -58,23 +66,34 @@ export const BalanceBlockContent = ({
   aprox,
   typographySx,
   variant = 'h5',
-}: BalanceBlockContentProps) => {
+}: BalanceBlockContentProps) => (
+  <Typography
+    variant={variant}
+    sx={{ mt: 1, width: 'inherit', ...typographySx }}
+    color={state === 'failure' ? 'error' : 'inherit'}
+  >
+    <BalanceBlockValue data={data} state={state} aprox={aprox} asset={asset} />
+  </Typography>
+);
+
+const BalanceBlockValue = ({
+  data,
+  state,
+  asset,
+  aprox,
+}: BalanceBlockValueProps) => {
   if (state === 'loading' && !data) {
-    return <Skeleton sx={{ height: '100%', width: '100%' }} />;
+    return <Skeleton data-testid="balanceBlock-skeleton" />;
   }
 
   if (state === 'failure') {
-    return (
-      <Typography sx={{ mt: 1, ...typographySx }} color="error">
-        Unable to load data!
-      </Typography>
-    );
+    return <>Unable to load data!</>;
   }
 
   return (
-    <Typography variant={variant} sx={{ mt: 1, ...typographySx }}>
+    <>
       {aprox && '≈ '}
       {formatWeiAmount(data ?? 0)} {asset}
-    </Typography>
+    </>
   );
 };
