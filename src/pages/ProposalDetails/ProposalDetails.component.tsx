@@ -22,6 +22,7 @@ import {
   ProposalDetailsComponentProps,
 } from './ProposalDetails.types';
 import { VotesRatioBlock } from './ProposalDetails.votesRatio';
+import { ProposalDescription } from './ProposalDetails.description';
 import { ForVotesContainer } from './VotesBlock/ForVotes/ForVotes.container';
 import { AgainstVotesContainer } from './VotesBlock/AgainstVotes/AgainstVotes.container';
 
@@ -52,9 +53,11 @@ export const ProposalDetailsComponent = ({
           <CenteredBox
             sx={{
               flex: 1,
+              display: 'flex',
               overflow: 'hidden',
               whiteSpace: 'nowrap',
               textOverflow: 'ellipsis',
+              justifyContent: 'flex-start',
             }}
           >
             <IconButton
@@ -79,51 +82,58 @@ export const ProposalDetailsComponent = ({
         <VotesRatioBlock />
       </Box>
 
-      <Grid
-        container
-        display="grid"
-        gridTemplateColumns="repeat(2, 1fr)"
-        gap={2}
-      >
-        <ForVotesContainer />
-        <AgainstVotesContainer />
+      <Grid container>
+        <Grid item sm={6} p={1}>
+          <ForVotesContainer />
 
-        <Container sx={{ p: 2, minHeight: 300 }}>
-          <Typography variant="body2" sx={{ mb: 2, minHeight: 50 }}>
-            {proposal.description}
-          </Typography>
-
-          {proposal.actions?.map(({ contract, signature, calldata }, index) => (
-            <Box key={index} sx={{ mb: 2 }}>
-              <ProposalInfoItem label="Function to invoke" width={140}>
-                <Typography color="primary" variant="body2" component="span">
-                  {signature}
-                </Typography>
-              </ProposalInfoItem>
-
-              <ProposalInfoItem label="Calldata" width={140}>
-                <PrettyTx value={calldata} />
-              </ProposalInfoItem>
-
-              <ProposalInfoItem label="Contract Address" width={140}>
-                <PrettyTx value={contract} />
-              </ProposalInfoItem>
-            </Box>
-          ))}
-        </Container>
-
-        <Container
-          sx={{
-            p: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'flex-end',
-          }}
-        >
-          <Box
+          <Container
             sx={{
-              mb: 2,
-              gap: 2,
+              p: 2,
+              mt: 2,
+              height: 300,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Box sx={{ overflow: 'auto', mb: 2 }}>
+              <Typography variant="body2">{proposal.description}</Typography>
+            </Box>
+
+            {proposal.actions?.map(
+              ({ contract, signature, calldata }, index) => (
+                <Box key={index} sx={{ mb: 2 }}>
+                  <ProposalInfoItem label="Function to invoke" width={140}>
+                    <Typography
+                      color="primary"
+                      variant="body2"
+                      component="span"
+                    >
+                      {signature}
+                    </Typography>
+                  </ProposalInfoItem>
+
+                  <ProposalInfoItem label="Calldata" width={140}>
+                    <PrettyTx value={calldata} />
+                  </ProposalInfoItem>
+
+                  <ProposalInfoItem label="Contract Address" width={140}>
+                    <PrettyTx value={contract} />
+                  </ProposalInfoItem>
+                </Box>
+              )
+            )}
+          </Container>
+        </Grid>
+
+        <Grid item sm={6} p={1}>
+          <AgainstVotesContainer />
+
+          <Container
+            sx={{
+              p: 2,
+              mt: 2,
+              height: 300,
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-evenly',
@@ -167,7 +177,7 @@ export const ProposalDetailsComponent = ({
               </Typography>
             </ProposalInfoItem>
 
-            <CenteredBox sx={{ gap: 2 }}>
+            <CenteredBox sx={{ mt: 1, gap: 2 }}>
               {canCancel && (
                 <Button variant="outlined" size="small" onClick={handleCancel}>
                   Cancel
@@ -201,8 +211,8 @@ export const ProposalDetailsComponent = ({
                 </Tooltip>
               )}
             </CenteredBox>
-          </Box>
-        </Container>
+          </Container>
+        </Grid>
       </Grid>
     </PageView>
   );
