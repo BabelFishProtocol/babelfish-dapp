@@ -23,6 +23,6 @@ export function* proposalsSaga() {
 
     takeLatest(proposalsActions.startProposal, addProposal),
     takeLatest(proposalsActions.watchAddProposal, watchAddProposals),
-    takeLatest(proposalsActions.checkAddPropsal, checkAddEligibility),
+    takeLatest(proposalsActions.checkAddProposal, checkAddEligibility),
   ]);
 }

@@ -168,9 +168,9 @@ export const addProposalErrorSelector = createSelector(
   (state) => state.addProposalErrorReason
 );
 
-export const addProposalEligibleSelector = createSelector(
+export const reasonToBlockSelector = createSelector(
   proposalsState,
-  (state) => state.addProposalEligible
+  (state) => state.reasonToBlockProposal
 );
 
 export const selectedGovernorSelector = createSelector(

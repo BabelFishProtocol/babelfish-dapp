@@ -2,7 +2,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useEffect } from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 import { ControlledAddressInput } from '../../components/AddressInput/AddressInput.controlled';
 import { AppDialog } from '../../components/AppDialog/AppDialog.component';
 import { Button } from '../../components/Button/Button.component';
@@ -10,7 +9,6 @@ import { ControlledCurrencyInput } from '../../components/CurrencyInput/Currency
 import { ControlledDropdown } from '../../components/Dropdown/Dropdown.controlled';
 import { ControlledInput } from '../../components/TextInput/TextInput.controlled';
 import { fieldsErrors, GOVERNANCE_OPTIONS } from '../../constants';
-import { proposalsActions } from '../../store/proposals/proposals.slice';
 import { isValidCalldata, isValidSignature } from '../../utils/helpers';
 import {
   AddProposalDefaultValues,
@@ -20,15 +18,16 @@ import {
 import { AddProposalFields, AddProposalProps } from './AddProposal.types';
 
 const AP_DD_OPTIONS = [
-  GOVERNANCE_OPTIONS.GOVERNER_ADMIN,
-  GOVERNANCE_OPTIONS.GOVERNER_OWNER,
+  GOVERNANCE_OPTIONS.GOVERNOR_ADMIN,
+  GOVERNANCE_OPTIONS.GOVERNOR_OWNER,
 ];
 
 export const AddProposal = ({
   isOpenDialog,
   onClose,
   onSubmit,
-  eligibleToAdd,
+  reasonToBlock,
+  onGovernorChange,
 }: AddProposalProps) => {
   const {
     control,
@@ -45,16 +44,16 @@ export const AddProposal = ({
     name: AddProposalInputs.Values,
   });
 
-  const dispatch = useDispatch();
-
   const govOption = useWatch({
     name: AddProposalInputs.SendProposalContract,
     control,
   });
 
   useEffect(() => {
-    dispatch(proposalsActions.setGovernor(govOption));
-  }, [govOption, dispatch]);
+    if (onGovernorChange) {
+      onGovernorChange(govOption);
+    }
+  }, [govOption, onGovernorChange]);
 
   return (
     <AppDialog
@@ -155,7 +154,7 @@ export const AddProposal = ({
                   }}
                 />
                 <ControlledInput
-                  placeholder="Callata"
+                  placeholder="Calldata"
                   name={`${AddProposalInputs.Values}.${index}.${AddProposalInputs.Calldata}`}
                   control={control}
                   rules={{
@@ -180,6 +179,20 @@ export const AddProposal = ({
             </Button>
           </Box>
 
+          {reasonToBlock && (
+            <Box>
+              <Typography
+                variant="body1"
+                sx={({ palette }) => ({
+                  color: palette.error.main,
+                  py: 2,
+                })}
+              >
+                {reasonToBlock}
+              </Typography>
+            </Box>
+          )}
+
           <Box
             sx={{
               display: 'grid',
@@ -187,7 +200,10 @@ export const AddProposal = ({
               gap: 2,
             }}
           >
-            <Button type="submit" disabled={!isValid || !eligibleToAdd}>
+            <Button
+              type="submit"
+              disabled={!isValid || reasonToBlock !== undefined}
+            >
               Confirm
             </Button>
             <Button variant="outlined" onClick={onClose}>

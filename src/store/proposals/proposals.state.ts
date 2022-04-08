@@ -46,8 +46,8 @@ export type ProposalDetails = Proposal & {
 
 export class ProposalsState {
   addProposalErrorReason?: string;
-  addProposalEligible: FiniteStates = 'idle';
-  selectedGovernor: string = GOVERNANCE_OPTIONS.GOVERNER_ADMIN.id;
+  reasonToBlockProposal?: string;
+  selectedGovernor: string = GOVERNANCE_OPTIONS.GOVERNOR_ADMIN.id;
   addProposalState: FiniteStates = 'idle';
 
   proposalsList: LoadableValue<Proposal[]> = {

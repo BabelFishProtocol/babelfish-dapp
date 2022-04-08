@@ -16,14 +16,14 @@ import {
 import { createWatcherSaga } from '../../utils';
 import { selectedGovernorSelector } from '../proposals.selectors';
 import { ProposalsActions, proposalsActions } from '../proposals.slice';
-import { fetchProposalStates } from './proposalList';
+import { fetchProposalStates } from './utils';
 
 export function* addProposal({ payload }: ProposalsActions['startProposal']) {
   try {
     const account = yield* select(accountSelector);
     const isGovAdmin =
       payload[AddProposalInputs.SendProposalContract] ===
-      GOVERNANCE_OPTIONS.GOVERNER_ADMIN.id;
+      GOVERNANCE_OPTIONS.GOVERNOR_ADMIN.id;
 
     const govSelector = isGovAdmin
       ? governorAdminSelector
@@ -63,7 +63,7 @@ export function* addProposal({ payload }: ProposalsActions['startProposal']) {
         ? e.message
         : 'There was some error in Adding the proposal. Please try again';
 
-    yield* put(proposalsActions.porposalFailure(msg));
+    yield* put(proposalsActions.proposalFailure(msg));
   }
 }
 
@@ -71,10 +71,10 @@ export function* checkAddEligibility() {
   const account = yield* select(accountSelector);
   const staking = yield* select(stakingContractSelector);
   const subgraphClient = yield* select(subgraphClientSelector);
-  const multicallProvider = yield* select(multicallProviderSelector);
+  const multiCallProvider = yield* select(multicallProviderSelector);
   const selectedGovernor = yield* select(selectedGovernorSelector);
 
-  const isGovAdmin = selectedGovernor === GOVERNANCE_OPTIONS.GOVERNER_ADMIN.id;
+  const isGovAdmin = selectedGovernor === GOVERNANCE_OPTIONS.GOVERNOR_ADMIN.id;
 
   const govSelector = isGovAdmin
     ? governorAdminSelector
@@ -88,7 +88,7 @@ export function* checkAddEligibility() {
       !governor ||
       !staking ||
       !subgraphClient ||
-      !multicallProvider
+      !multiCallProvider
     ) {
       throw new Error('Wallet not connected');
     }
@@ -109,17 +109,16 @@ export function* checkAddEligibility() {
     const proposalsStates = yield* fetchProposalStates(
       proposals,
       governor,
-      multicallProvider
+      multiCallProvider
     );
 
-    const isCurrentProposal =
-      proposalsStates.findIndex(
-        (s) => s === ProposalState.Pending || s === ProposalState.Active
-      ) >= 0;
+    const isCurrentProposal = proposalsStates.some(
+      (s) => s === ProposalState.Pending || s === ProposalState.Active
+    );
 
     if (isCurrentProposal) {
       throw new Error(
-        'Propsals Already Exist. You cannot Add another proposal at this time'
+        'You already have a live proposal. You cannot add another one at this time'
       );
     }
 
@@ -135,11 +134,11 @@ export function* checkAddEligibility() {
 }
 
 function* triggerFetch() {
-  yield* put(proposalsActions.checkAddPropsal());
+  yield* put(proposalsActions.checkAddProposal());
 }
 
 function* triggerUpdate() {
-  yield* put(proposalsActions.checkAddPropsal());
+  yield* put(proposalsActions.checkAddProposal());
 }
 
 export const watchAddProposals = createWatcherSaga({

@@ -67,26 +67,23 @@ export const appSlice = createSlice({
     setGovernor: (state, { payload }: PayloadAction<string>) => {
       state.selectedGovernor = payload;
     },
-    watchAddProposal: (state) => {
-      state.addProposalEligible = 'loading';
-    },
+    watchAddProposal: () => {},
     stopWatchingAddProposal: (state) => {
       state.addProposalState = 'idle';
     },
-    checkAddPropsal: (state) => {
-      state.addProposalEligible = 'loading';
+    checkAddProposal: (state) => {
+      state.reasonToBlockProposal = undefined;
     },
     eligibleForAddProposal: (state) => {
-      state.addProposalEligible = 'success';
+      state.reasonToBlockProposal = undefined;
     },
     notEligibleForAddProposal: (state, { payload }: PayloadAction<string>) => {
-      state.addProposalEligible = 'failure';
-      state.addProposalErrorReason = payload;
+      state.reasonToBlockProposal = payload;
     },
     startProposal: (state, _: PayloadAction<AddProposalFields>) => {
       state.addProposalState = 'loading';
     },
-    porposalFailure: (state, { payload }: PayloadAction<string>) => {
+    proposalFailure: (state, { payload }: PayloadAction<string>) => {
       state.addProposalState = 'failure';
       state.addProposalErrorReason = payload;
     },
@@ -95,7 +92,7 @@ export const appSlice = createSlice({
     },
     setAddProposalState: (state, { payload }: PayloadAction<FiniteStates>) => {
       state.addProposalState = payload;
-      state.addProposalEligible = payload;
+      state.reasonToBlockProposal = undefined;
     },
   },
 });

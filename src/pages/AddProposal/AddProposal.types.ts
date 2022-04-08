@@ -16,7 +16,8 @@ export type AddProposalFields = {
 
 export type AddProposalProps = {
   isOpenDialog: boolean;
-  eligibleToAdd: boolean;
+  reasonToBlock?: string;
+  onGovernorChange?: (gov: string) => void;
   onClose: () => void;
   onSubmit: (data: AddProposalFields) => void;
 };
@@ -30,6 +31,5 @@ export type AddProposalStatusDialogProps = {
   clearState: () => void;
   closeDialog?: () => void;
   status: FiniteStates;
-  isNotEligible: boolean;
   message?: string;
 };

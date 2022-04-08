@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDialog } from '../../components/AppDialog/AppDialog.component';
 import {
-  addProposalEligibleSelector,
+  reasonToBlockSelector,
   addProposalErrorSelector,
   addProposalStateSelector,
   selectedGovernorSelector,
@@ -24,7 +24,6 @@ const AddProposalStatusDialog = ({
   closeDialog,
   status,
   message,
-  isNotEligible,
 }: AddProposalStatusDialogProps) => (
   <>
     <AppDialog
@@ -45,17 +44,8 @@ const AddProposalStatusDialog = ({
     />
     <AppDialog
       isOpenDialog={status === 'failure'}
-      title="Error Occured"
+      title="Error Occurred"
       description={message ?? 'There was a problem while adding the proposal'}
-      onClose={clearState}
-      icon={errorIcon}
-    />
-    <AppDialog
-      isOpenDialog={isNotEligible}
-      title="Error"
-      description={
-        message ?? 'You cannot Add Proposals Right Now. Please try again later.'
-      }
       onClose={clearState}
       icon={errorIcon}
     />
@@ -68,7 +58,7 @@ export const AddProposalContainer = ({
   const dispatch = useDispatch();
 
   const currentStatus = useSelector(addProposalStateSelector);
-  const isEligibleToAdd = useSelector(addProposalEligibleSelector);
+  const reasonToBlock = useSelector(reasonToBlockSelector);
   const errorReason = useSelector(addProposalErrorSelector);
   const govSelector = useSelector(selectedGovernorSelector);
 
@@ -88,6 +78,10 @@ export const AddProposalContainer = ({
     };
   }, [dispatch, govSelector]);
 
+  const onGovernorChange = (gov: string) => {
+    dispatch(proposalsActions.setGovernor(gov));
+  };
+
   return (
     <>
       <AddProposalStatusDialog
@@ -95,13 +89,13 @@ export const AddProposalContainer = ({
         message={errorReason}
         clearState={setStateIdle}
         closeDialog={onClose}
-        isNotEligible={isEligibleToAdd === 'failure'}
       />
       <AddProposal
         isOpenDialog={isOpenDialog}
         onClose={onClose}
         onSubmit={onSubmit}
-        eligibleToAdd={isEligibleToAdd === 'success'}
+        reasonToBlock={reasonToBlock}
+        onGovernorChange={onGovernorChange}
       />
     </>
   );

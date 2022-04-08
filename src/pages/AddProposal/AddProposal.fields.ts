@@ -19,7 +19,7 @@ export const AddProposalNewSetValues = {
 
 export const AddProposalDefaultValues = {
   [AddProposalInputs.SendProposalContract]:
-    GOVERNANCE_OPTIONS.GOVERNER_ADMIN.id,
+    GOVERNANCE_OPTIONS.GOVERNOR_ADMIN.id,
   [AddProposalInputs.Description]: '',
   [AddProposalInputs.Values]: [AddProposalNewSetValues],
 };
