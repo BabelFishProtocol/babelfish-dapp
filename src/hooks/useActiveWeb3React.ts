@@ -12,10 +12,7 @@ type InActiveWeb3Data = Web3Data & {
 };
 
 const isActive = (web3Data: Web3Data): web3Data is ActiveWeb3Data =>
-  web3Data.active &&
-  !!web3Data.account &&
-  !!web3Data.library &&
-  !!web3Data.connector;
+  web3Data.active;
 
 /**
  * wrapper for useWeb3React with strict types. All properties of web3Data will become required when checked that active is true

@@ -1,7 +1,13 @@
+import { TransactionReceipt } from '@ethersproject/providers';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { ContractTransaction } from 'ethers';
 import { Reducers } from '../../constants';
+import { AddNewStakeFormValues } from '../../pages/Staking/AddNewStake/AddNewStake.types';
+import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/StakingHistory.types';
+import { FiniteStates } from '../../utils/types';
 import { ActionsType } from '../types';
 import {
+  CallState,
   FishTokenInfo,
   StakeConstants,
   StakeListItem,
@@ -14,6 +20,25 @@ export const stakingSlice = createSlice({
   name: Reducers.Staking,
   initialState,
   reducers: {
+    addNewStake: (state, _: PayloadAction<AddNewStakeFormValues>) => {
+      state.addNewStakeCall = {
+        ...initialState.addNewStakeCall,
+        status: 'loading',
+      };
+    },
+    setAddStakeStateCallData: (
+      state,
+      { payload }: PayloadAction<Partial<StakingState['addNewStakeCall']>>
+    ) => {
+      state.addNewStakeCall = {
+        ...state.addNewStakeCall,
+        ...payload,
+      };
+    },
+    setAddStakeError: (state, { payload }: PayloadAction<Partial<string>>) => {
+      state.addNewStakeCall.status = 'failure';
+      state.addNewStakeCall.error = payload;
+    },
     watchStakingData: (_) => {},
     stopWatchingStakingData: (state) => {
       state.fishToken.state = 'idle';

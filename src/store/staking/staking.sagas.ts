@@ -1,4 +1,16 @@
-import { all, put, call, select, takeLatest } from 'typed-redux-saga';
+import {
+  all,
+  put,
+  call,
+  select,
+  takeLatest,
+  takeLeading,
+  SagaGenerator,
+} from 'typed-redux-saga';
+import { CallEffect } from 'redux-saga/effects';
+import { BigNumber, constants, ContractTransaction, utils } from 'ethers';
+import { SagaIterator } from 'redux-saga';
+import { ActionCreatorWithPayload, PayloadAction } from '@reduxjs/toolkit';
 import {
   accountSelector,
   fishTokenSelector,
@@ -6,8 +18,11 @@ import {
   stakingContractSelector,
 } from '../app/app.selectors';
 import { convertForMulticall, createWatcherSaga, multiCall } from '../utils';
-import { stakingActions } from './staking.slice';
-import { StakeListItem } from './staking.state';
+import { StakingActions, stakingActions } from './staking.slice';
+import { AddNewStakeCalls, CallState, StakeListItem } from './staking.state';
+import { vestingActions } from '../vesting/vesting.slice';
+import { fishTokenDataSelector } from './staking.selectors';
+import { ONE_DAY } from '../../constants';
 
 export function* fetchFishTokenData() {
   try {
@@ -167,4 +182,91 @@ export function* stakingSaga() {
     takeLatest(stakingActions.updateStakingData.type, updateBalances),
     takeLatest(stakingActions.watchStakingData.type, watchStaking),
   ]);
+}
+
+function* callStake({ payload }: StakingActions['addNewStake']) {
+  const { unlockDate, stakeAmount } = payload;
+  const parsedStakeAmount = utils.parseEther(stakeAmount);
+
+  const staking = yield* select(stakingContractSelector);
+  const fishToken = yield* select(fishTokenSelector);
+  const { allowanceForStaking } = yield* select(fishTokenDataSelector);
+
+  if (!staking || !fishToken) {
+    yield* put(stakingActions.setAddStakeError('Wallet not connected'));
+    return;
+  }
+
+  const steps: SagaContractCallStep<AddNewStakeCalls>[] = [];
+
+  if (BigNumber.from(allowanceForStaking).lt(parsedStakeAmount)) {
+    steps.push({
+      name: 'approve',
+      effect: call(fishToken.approve, staking.address, parsedStakeAmount),
+    });
+  }
+
+  steps.push({
+    name: 'stake',
+    effect: call(
+      staking.stake,
+      parsedStakeAmount,
+      unlockDate + ONE_DAY, // adding 24 hours to date to make sure contract will not choose previous period,
+      constants.AddressZero,
+      constants.AddressZero
+    ),
+  });
+
+  yield* contractCallSaga<AddNewStakeCalls>(
+    steps,
+    stakingActions.setAddStakeError,
+    stakingActions.setAddStakeStateCallData
+  );
+}
+
+type SagaContractCallStep<Operations extends string> = {
+  name: Operations;
+  effect: SagaGenerator<ContractTransaction, CallEffect<ContractTransaction>>;
+};
+
+function* stepCall<Operations extends string>(
+  { effect, name }: SagaContractCallStep<Operations>,
+  setStatusAction: ActionCreatorWithPayload<Partial<CallState<Operations>>>
+) {
+  yield* put(
+    setStatusAction({
+      currentOperation: name,
+      status: 'loading',
+    })
+  );
+
+  const tx = yield* effect;
+
+  yield* put(setStatusAction({ tx }));
+
+  const txReceipt = yield* call(tx.wait);
+
+  yield* put(setStatusAction({ txReceipt }));
+}
+
+export function* contractCallSaga<Operations extends string>(
+  steps: SagaContractCallStep<Operations>[],
+  setErrorAction: ActionCreatorWithPayload<string>,
+  setStatusAction: ActionCreatorWithPayload<Partial<CallState<Operations>>>
+) {
+  try {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const step of steps) {
+      yield* stepCall(step, setStatusAction);
+    }
+
+    yield* put(setStatusAction({ status: 'success' }));
+  } catch (e) {
+    const msg =
+      e instanceof Error
+        ? e.message
+        : 'An unexpected error has occurred. Please try again';
+
+    yield* put(setErrorAction(msg));
+  }
 }

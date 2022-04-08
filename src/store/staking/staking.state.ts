@@ -1,4 +1,17 @@
+import { TransactionReceipt } from '@ethersproject/providers';
+import { ContractTransaction } from 'ethers';
+import { FiniteStates } from '../../utils/types';
 import { LoadableAmount, LoadableValue } from '../types';
+
+export type CallState<Operations extends string> = {
+  status: FiniteStates;
+  currentOperation?: Operations;
+  tx?: ContractTransaction;
+  txReceipt?: TransactionReceipt;
+  error?: string;
+};
+
+export type AddNewStakeCalls = 'stake' | 'approve';
 
 export type StakeListItem = {
   asset: string;
@@ -21,6 +34,10 @@ export type StakeConstants = {
 
 export class StakingState {
   selectedStake?: number;
+
+  addNewStakeCall: CallState<AddNewStakeCalls> = {
+    status: 'idle',
+  };
 
   constants: LoadableValue<StakeConstants> = {
     state: 'idle',

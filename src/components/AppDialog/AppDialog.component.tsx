@@ -1,3 +1,4 @@
+import { Box, Stepper, Step, StepLabel } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -50,12 +51,33 @@ export const AppDialog = ({
     {...dialogProps}
   >
     {title && <AppDialogTitle title={title} onClose={onClose} />}
-
+    <Box
+      sx={{
+        // m: 4,
+        mt: 4,
+        mb: 4,
+        mx: 2,
+        // width: '100%',
+        // display: 'flex',
+        // justifyContent: 'space-between',
+      }}
+    >
+      <Stepper activeStep={2}>
+        <Step completed>
+          <StepLabel>Approve</StepLabel>
+        </Step>
+        <Step>
+          <StepLabel error>Stake</StepLabel>
+        </Step>
+        <Step>
+          <StepLabel>Finish</StepLabel>
+        </Step>
+      </Stepper>
+    </Box>
     <DialogContent {...dialogContentProps}>
       {icon && (
         <img src={icon} style={{ width: '100px', height: '100px' }} alt="" />
       )}
-
       {description && (
         <Typography component="div" sx={{ my: 5 }} variant="body2">
           {description}
