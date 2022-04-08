@@ -72,53 +72,55 @@ export const ProposalDetailsComponent = ({
         </Box>
       }
     >
-      <Grid container>
-        <Grid item sm={12} sx={{ p: ({ spacing }) => spacing(0, 2) }}>
-          <VotesRatioBlock />
-        </Grid>
+      <Box sx={{ p: ({ spacing }) => spacing(0, 2), mb: 1 }}>
+        <VotesRatioBlock />
+      </Box>
 
-        <Grid item sm={6} p={1}>
-          <ForVotesContainer />
+      <Grid
+        container
+        display="grid"
+        gridTemplateColumns="repeat(2, 1fr)"
+        gap={2}
+      >
+        <ForVotesContainer />
+        <AgainstVotesContainer />
 
-          <Container sx={{ p: 2, mt: 2, minHeight: 300 }}>
-            <Typography variant="body2" sx={{ mb: 2, minHeight: 50 }}>
-              {proposal.description}
-            </Typography>
+        <Container sx={{ p: 2, minHeight: 300 }}>
+          <Typography variant="body2" sx={{ mb: 2, minHeight: 50 }}>
+            {proposal.description}
+          </Typography>
 
-            {proposal.actions?.map(
-              ({ contract, signature, calldata }, index) => (
-                <Box key={index} sx={{ mb: 2 }}>
-                  <ProposalInfoItem label="Function to invoke" width={140}>
-                    <Typography
-                      color="primary"
-                      variant="body2"
-                      component="span"
-                    >
-                      {signature}
-                    </Typography>
-                  </ProposalInfoItem>
+          {proposal.actions?.map(({ contract, signature, calldata }, index) => (
+            <Box key={index} sx={{ mb: 2 }}>
+              <ProposalInfoItem label="Function to invoke" width={140}>
+                <Typography color="primary" variant="body2" component="span">
+                  {signature}
+                </Typography>
+              </ProposalInfoItem>
 
-                  <ProposalInfoItem label="Calldata" width={140}>
-                    <PrettyTx value={calldata} />
-                  </ProposalInfoItem>
+              <ProposalInfoItem label="Calldata" width={140}>
+                <PrettyTx value={calldata} />
+              </ProposalInfoItem>
 
-                  <ProposalInfoItem label="Contract Address" width={140}>
-                    <PrettyTx value={contract} />
-                  </ProposalInfoItem>
-                </Box>
-              )
-            )}
-          </Container>
-        </Grid>
+              <ProposalInfoItem label="Contract Address" width={140}>
+                <PrettyTx value={contract} />
+              </ProposalInfoItem>
+            </Box>
+          ))}
+        </Container>
 
-        <Grid item sm={6} p={1}>
-          <AgainstVotesContainer />
-
-          <Container
+        <Container
+          sx={{
+            p: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <Box
             sx={{
-              p: 2,
-              mt: 2,
-              minHeight: 300,
+              mb: 2,
+              gap: 2,
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-evenly',
@@ -162,7 +164,7 @@ export const ProposalDetailsComponent = ({
               </Typography>
             </ProposalInfoItem>
 
-            <CenteredBox sx={{ mt: 1, gap: 2 }}>
+            <CenteredBox sx={{ gap: 2 }}>
               {canCancel && (
                 <Button variant="outlined" size="small" onClick={handleCancel}>
                   Cancel
@@ -196,8 +198,8 @@ export const ProposalDetailsComponent = ({
                 </Tooltip>
               )}
             </CenteredBox>
-          </Container>
-        </Grid>
+          </Box>
+        </Container>
       </Grid>
     </PageView>
   );

@@ -26,7 +26,7 @@ export const VotesListComponent = ({
   state,
 }: VotesListComponentProps) => (
   <DataTable
-    tableTitle="Voted For"
+    tableTitle={type === 'for' ? 'Voted For' : 'Voted Against'}
     data={votes as RowData[]}
     columns={votesColumns}
     tableEmptyMessage="No Votes yet"

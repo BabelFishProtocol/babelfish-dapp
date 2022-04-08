@@ -14,7 +14,7 @@ export const AgainstVotesComponent = ({
   proposalState,
   handleCastVote,
 }: VotesBlockComponentProps) => (
-  <>
+  <div>
     <VoteActionBlock
       votesAmount={`${formatWeiAmount(votesAmount || 0)} VOTES AGAINST`}
     >
@@ -26,5 +26,5 @@ export const AgainstVotesComponent = ({
     </VoteActionBlock>
 
     <VotesListComponent votes={votes} state={state} type="against" />
-  </>
+  </div>
 );

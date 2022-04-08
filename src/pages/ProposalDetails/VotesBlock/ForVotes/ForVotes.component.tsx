@@ -14,7 +14,7 @@ export const ForVotesComponent = ({
   proposalState,
   handleCastVote,
 }: VotesBlockComponentProps) => (
-  <>
+  <div>
     <VoteActionBlock
       votesAmount={`${formatWeiAmount(votesAmount || 0)} VOTES FOR`}
     >
@@ -26,5 +26,5 @@ export const ForVotesComponent = ({
     </VoteActionBlock>
 
     <VotesListComponent votes={votes} state={state} type="for" />
-  </>
+  </div>
 );
