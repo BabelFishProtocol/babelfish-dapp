@@ -10,6 +10,7 @@ import App from './App';
 import { store } from './store';
 import { ThemeProvider } from './theme';
 import { AppUpdater } from './store/app/app.updaters';
+import { WalletConnectionChecker } from './components/WalletConnectionChecker/WalletConnectionChecker.component';
 
 if ('ethereum' in window) {
   // @ts-ignore
@@ -29,8 +30,10 @@ ReactDOM.render(
       <ThemeProvider>
         <BrowserRouter>
           <Web3ReactProvider getLibrary={getLibrary}>
-            <AppUpdater />
-            <App />
+            <WalletConnectionChecker>
+              <AppUpdater />
+              <App />
+            </WalletConnectionChecker>
           </Web3ReactProvider>
         </BrowserRouter>
       </ThemeProvider>

@@ -43,6 +43,12 @@ export const appSlice = createSlice({
     setWrongNetworkModal: (state, { payload }: PayloadAction<boolean>) => {
       state.wrongNetworkModal = payload;
     },
+    setWalletNotConnectedNetworkModal: (
+      state,
+      { payload }: PayloadAction<boolean>
+    ) => {
+      state.walletNotConectedModal = payload;
+    },
   },
 });
 

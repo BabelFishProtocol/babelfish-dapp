@@ -11,4 +11,5 @@ export class AppState {
   provider?: Web3Provider;
   supportedNetworks: ChainEnum[] = [ChainEnum.RSK, ChainEnum.RSK_TESTNET];
   wrongNetworkModal: boolean = false;
+  walletNotConectedModal: boolean = false;
 }
