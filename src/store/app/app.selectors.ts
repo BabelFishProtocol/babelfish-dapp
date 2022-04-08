@@ -24,6 +24,11 @@ import { BaseContractFactory, MulticallProviderType } from '../types';
 
 const appState = (state: RootState) => state[Reducers.App];
 
+export const connectedWalletSelector = createSelector(
+  appState,
+  (state) => state.connectedWallet
+);
+
 export const chainIdSelector = createSelector(
   appState,
   (state) => state.chainId

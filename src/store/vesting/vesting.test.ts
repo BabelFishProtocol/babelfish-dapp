@@ -8,7 +8,6 @@ import { pick } from '../../utils/helpers';
 import { Reducers } from '../../constants';
 import { Staking, Vesting__factory } from '../../contracts/types';
 import { Staking__factory } from '../../contracts/types/factories/Staking__factory';
-import { VestingRegistry__factory } from '../../contracts/types/factories/VestingRegistry__factory';
 import { rootReducer, RootState } from '..';
 
 import {
@@ -21,11 +20,12 @@ import {
   accountSelector,
   providerSelector,
   stakingContractSelector,
-  vestingRegistrySelector,
 } from '../app/app.selectors';
 
 import { fetchVestsList } from './vesting.sagas';
 import { vestingActions } from './vesting.slice';
+import { UserVestings } from './vesting.types';
+import { getUserVestings } from './vesting.utils';
 import { VestingState, VestListItem } from './vesting.state';
 import { stakesAndVestsAddressesSelector } from './vesting.selectors';
 
@@ -43,11 +43,6 @@ jest.mock('./vesting.utils', () => ({
 
 const mockStaking = createMockedContract(
   Staking__factory.connect(constants.AddressZero, mockSigner),
-  true
-);
-
-const mockVestingRegistry = createMockedContract(
-  VestingRegistry__factory.connect(constants.AddressZero, mockSigner),
   true
 );
 
@@ -73,6 +68,11 @@ describe('vesting store', () => {
     stakes: stakes.map((stake) => BigNumber.from(stake)),
   };
 
+  const userVests: UserVestings = {
+    vestAddress: getVestingResult,
+    teamVestAddress: constants.AddressZero,
+  };
+
   const combinedVestsList: VestListItem[] = [
     {
       asset: 'FISH',
@@ -85,6 +85,7 @@ describe('vesting store', () => {
       cliff: cliff.toNumber(),
     },
   ];
+
   describe('fetchVestsList', () => {
     const successState: DeepPartial<RootState> = {
       ...initialState,
@@ -107,7 +108,6 @@ describe('vesting store', () => {
         .withReducer(reducer)
         .withState(initialState)
         .select(accountSelector)
-        .select(vestingRegistrySelector)
         .select(stakingContractSelector)
         .select(providerSelector);
 
@@ -116,13 +116,8 @@ describe('vesting store', () => {
         .provide([
           [matchers.select(accountSelector), testAccount],
           [matchers.select(stakingContractSelector), mockStaking],
-          [matchers.select(vestingRegistrySelector), mockVestingRegistry],
           [matchers.select(providerSelector), mockProvider],
-          [matchers.call.fn(mockVestingRegistry.getVesting), getVestingResult],
-          [
-            matchers.call.fn(mockVestingRegistry.getTeamVesting),
-            constants.AddressZero,
-          ],
+          [matchers.call(getUserVestings), userVests],
           [
             matchers.call(mockStaking.getStakes, getVestingResult),
             getStakesResult,
@@ -146,19 +141,17 @@ describe('vesting store', () => {
     });
 
     it('when wallet is not connected', async () => {
-      await getBasePath()
+      const runResult = await getBasePath()
         .provide([
           [matchers.select(accountSelector), testAccount],
           [matchers.select(stakingContractSelector), mockStaking],
-          [matchers.select(providerSelector), mockProvider],
-          [matchers.select(vestingRegistrySelector), undefined],
+          [matchers.select(providerSelector), undefined],
         ])
         .put(vestingActions.fetchVestsListFailure())
         .hasFinalState(failureState)
         .run();
 
-      expect(mockVestingRegistry.getVesting).not.toHaveBeenCalled();
-      expect(mockVestingRegistry.getTeamVesting).not.toHaveBeenCalled();
+      expect(runResult.effects).toEqual({});
     });
 
     it('fetching error', async () => {
@@ -166,11 +159,10 @@ describe('vesting store', () => {
         .provide([
           [matchers.select(accountSelector), testAccount],
           [matchers.select(stakingContractSelector), mockStaking],
-          [matchers.select(vestingRegistrySelector), mockVestingRegistry],
           [matchers.select(providerSelector), mockProvider],
-          [matchers.call.fn(mockVestingRegistry.getVesting), throwError()],
+          [matchers.call.fn(getUserVestings), throwError()],
         ])
-        .call(mockVestingRegistry.getVesting, testAccount)
+        .call(getUserVestings)
         .put(vestingActions.fetchVestsListFailure())
         .hasFinalState(failureState)
         .run();

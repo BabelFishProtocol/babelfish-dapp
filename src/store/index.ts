@@ -7,10 +7,12 @@ import { stakingReducer } from './staking/staking.slice';
 import { proposalsReducer } from './proposals/proposals.slice';
 import { aggregatorReducer } from './aggregator/aggregator.slice';
 import { vestingReducer } from './vesting/vesting.slice';
+import { dashboardReducer } from './dashboard/dashboard.slice';
 
 export const rootReducer = {
   [Reducers.Aggregator]: aggregatorReducer,
   [Reducers.App]: appReducer,
+  [Reducers.Dashboard]: dashboardReducer,
   [Reducers.Staking]: stakingReducer,
   [Reducers.Proposals]: proposalsReducer,
   [Reducers.Vesting]: vestingReducer,

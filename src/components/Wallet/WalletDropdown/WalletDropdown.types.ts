@@ -1,5 +1,5 @@
 import { Web3ReactContextInterface } from '@web3-react/core/dist/types';
-import { WalletConfig } from '../../../config/wallets';
+import { WalletEnum, WalletConfig } from '../../../config/wallets';
 
 export type WalletOptionProps = Pick<WalletConfig, 'name' | 'icon'> & {
   walletIndex: number;
@@ -9,5 +9,5 @@ export type WalletOptionProps = Pick<WalletConfig, 'name' | 'icon'> & {
 export type WalletDropdownProps = {
   activate: Web3ReactContextInterface['activate'];
   wallets: WalletConfig[];
-  setConnectedWallet: (wallet: number | undefined) => void;
+  setConnectedWallet: (wallet: WalletEnum) => void;
 };

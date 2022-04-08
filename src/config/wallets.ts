@@ -1,18 +1,23 @@
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { injectedProvider } from './providers';
+import { injectedConnector } from './providers';
 
 import metamaskIcon from '../assets/icons/metamask-icon.webp';
-import portisIcon from '../assets/icons/portis.svg';
+// import portisIcon from '../assets/icons/portis.svg';
 import niftyIcon from '../assets/icons/nifty.png';
 import liqualityIcon from '../assets/icons/liquality.png';
 import { WindowWithEthereum } from '../utils/types';
 
 const ethereum = (window as WindowWithEthereum)?.ethereum;
 
-export type SupportedWallets = 'Metamask' | 'Nifty' | 'Liquality' | 'Portis';
+export enum WalletEnum {
+  Metamask = 'Metamask',
+  Nifty = 'Nifty',
+  Liquality = 'Liquality',
+  // Portis = 'Portis',
+}
 
 export type WalletConfig = {
-  name: SupportedWallets;
+  name: WalletEnum;
   icon: string;
   connector: AbstractConnector;
   checkConnection: () => void;
@@ -20,9 +25,9 @@ export type WalletConfig = {
 
 export const wallets: WalletConfig[] = [
   {
-    name: 'Metamask',
+    name: WalletEnum.Metamask,
     icon: metamaskIcon,
-    connector: injectedProvider,
+    connector: injectedConnector,
     checkConnection: () => {
       if (!ethereum || !ethereum.isMetaMask) {
         throw new Error(
@@ -32,9 +37,9 @@ export const wallets: WalletConfig[] = [
     },
   },
   {
-    name: 'Nifty',
+    name: WalletEnum.Nifty,
     icon: niftyIcon,
-    connector: injectedProvider,
+    connector: injectedConnector,
     checkConnection: () => {
       if (!ethereum || !ethereum.isNiftyWallet) {
         throw new Error(
@@ -44,9 +49,9 @@ export const wallets: WalletConfig[] = [
     },
   },
   {
-    name: 'Liquality',
+    name: WalletEnum.Liquality,
     icon: liqualityIcon,
-    connector: injectedProvider,
+    connector: injectedConnector,
     checkConnection: () => {
       if (!ethereum || !ethereum.isLiquality) {
         throw new Error(
@@ -55,11 +60,11 @@ export const wallets: WalletConfig[] = [
       }
     },
   },
-  {
-    name: 'Portis',
-    icon: portisIcon,
-    // connector: providerProvider, // TODO: fix portis errors
-    connector: injectedProvider,
-    checkConnection: () => {},
-  },
+  // {
+  //   name: WalletEnum.Portis,
+  //   icon: portisIcon,
+  //   connector: providerProvider, // TODO: fix portis errors
+  //   // connector: injectedConnector,
+  //   checkConnection: () => {},
+  // },
 ];
