@@ -27,6 +27,7 @@ import { vestingActions } from './vesting.slice';
 import { UserVestings } from './vesting.types';
 import { getUserVestings } from './vesting.utils';
 import { VestingState, VestListItem } from './vesting.state';
+import { stakesAndVestsAddressesSelector } from './vesting.selectors';
 
 const getVestingResult = '0x94e907f6B903A393E14FE549113137CA6483b5ef';
 
@@ -50,43 +51,42 @@ afterEach(() => {
 });
 
 describe('vesting store', () => {
-  const testAccount = '0x0123';
+  const testAccount = '0x012A3';
   const reducer = combineReducers(pick(rootReducer, [Reducers.Vesting]));
 
   const initialState: DeepPartial<RootState> = {
     [Reducers.Vesting]: { ...new VestingState() },
   };
 
+  const stakes = ['100000', '150000'];
+  const dates = [BigNumber.from(1645564671), BigNumber.from(1645564672)];
+  const delegates = ['0x3443'];
+  const cliff = BigNumber.from(2419200);
+
+  const getStakesResult: Partial<Awaited<ReturnType<Staking['getStakes']>>> = {
+    dates: dates.map((date) => BigNumber.from(date)),
+    stakes: stakes.map((stake) => BigNumber.from(stake)),
+  };
+
+  const userVests: UserVestings = {
+    vestAddress: getVestingResult,
+    teamVestAddress: constants.AddressZero,
+  };
+
+  const combinedVestsList: VestListItem[] = [
+    {
+      asset: 'FISH',
+      unlockDate: dates[0].toNumber(),
+      lockedAmount: stakes[0],
+      votingDelegation: delegates[0],
+      stakingPeriodStart: dates[0].toNumber(),
+      address: getVestingResult,
+      addressType: 'genesis',
+      cliff: cliff.toNumber(),
+    },
+  ];
+
   describe('fetchVestsList', () => {
-    const stakes = ['100000', '150000'];
-    const dates = [BigNumber.from(1645564671), BigNumber.from(1645564672)];
-    const delegates = ['0x3443'];
-    const cliff = BigNumber.from(2419200);
-
-    const userVests: UserVestings = {
-      vestAddress: getVestingResult,
-      teamVestAddress: constants.AddressZero,
-    };
-
-    const getStakesResult: Partial<Awaited<ReturnType<Staking['getStakes']>>> =
-      {
-        dates: dates.map((date) => BigNumber.from(date)),
-        stakes: stakes.map((stake) => BigNumber.from(stake)),
-      };
-
-    const combinedVestsList: VestListItem[] = [
-      {
-        asset: 'FISH',
-        unlockDate: dates[0].toNumber(),
-        lockedAmount: stakes[0],
-        votingDelegation: delegates[0],
-        stakingPeriodStart: dates[0].toNumber(),
-        address: getVestingResult,
-        addressType: 'genesis',
-        cliff: cliff.toNumber(),
-      },
-    ];
-
     const successState: DeepPartial<RootState> = {
       ...initialState,
       [Reducers.Vesting]: {
@@ -166,6 +166,37 @@ describe('vesting store', () => {
         .put(vestingActions.fetchVestsListFailure())
         .hasFinalState(failureState)
         .run();
+    });
+  });
+  describe('selectors', () => {
+    describe('stakesAndVestsAddressesSelector', () => {
+      it('returns undefined when wallet is not connected', () => {
+        const emptyAccountResult = stakesAndVestsAddressesSelector.resultFunc(
+          undefined,
+          combinedVestsList
+        );
+
+        expect(emptyAccountResult).toBeUndefined();
+      });
+      it('returns account and vesting addresses', () => {
+        const addressesResult = stakesAndVestsAddressesSelector.resultFunc(
+          testAccount,
+          combinedVestsList
+        );
+
+        expect(addressesResult).toEqual([
+          combinedVestsList[0].address,
+          testAccount.toLowerCase(),
+        ]);
+      });
+      it('returns account and no vesting addresses', () => {
+        const addressesResult = stakesAndVestsAddressesSelector.resultFunc(
+          testAccount,
+          []
+        );
+
+        expect(addressesResult).toEqual([testAccount.toLowerCase()]);
+      });
     });
   });
 });

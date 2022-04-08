@@ -1,21 +1,18 @@
+import { useSelector } from 'react-redux';
+import {
+  stakesHistoryListSelector,
+  stakesHistoryListStatusSelector,
+} from '../../../store/staking/staking.selectors';
 import { StakingHistoryComponent } from './StakingHistory.component';
-import { StakingHistoryListItem } from './StakingHistory.types';
 
-const mockStakingHistory: StakingHistoryListItem[] = [
-  {
-    asset: 'FISH',
-    stakedAmount: '1000000000000000',
-    stakingDate: 1659570200,
-    totalStaked: '1000000000000000000000000000',
-  },
-  {
-    asset: 'FISH',
-    stakedAmount: '12342342300000000000',
-    stakingDate: 1659570200,
-    totalStaked: '12342342300000000000',
-  },
-];
+export const StakingHistoryContainer = () => {
+  const stakingHistory = useSelector(stakesHistoryListSelector);
+  const stakingHistoryState = useSelector(stakesHistoryListStatusSelector);
 
-export const StakingHistoryContainer = () => (
-  <StakingHistoryComponent state="idle" stakes={mockStakingHistory} />
-);
+  return (
+    <StakingHistoryComponent
+      state={stakingHistoryState}
+      stakes={stakingHistory}
+    />
+  );
+};

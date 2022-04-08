@@ -1,3 +1,4 @@
+import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/StakingHistory.types';
 import { LoadableAmount, LoadableValue } from '../types';
 
 export type StakeListItem = {
@@ -40,6 +41,10 @@ export class StakingState {
   };
 
   stakesList: LoadableValue<StakeListItem[]> = {
+    data: [],
+    state: 'idle',
+  };
+  stakesListHistory: LoadableValue<StakingHistoryListItem[]> = {
     data: [],
     state: 'idle',
   };
