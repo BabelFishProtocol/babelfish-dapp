@@ -1,31 +1,67 @@
 import Typography from '@mui/material/Typography';
-import { ChainEnum } from '../../config/chains';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { useActiveWeb3React } from '../../hooks/useActiveWeb3React';
+import {
+  supportedNetworksNamesSelector,
+  walletNotConectedModalSelector,
+  wrongNetworkModalSelector,
+} from '../../store/app/app.selectors';
+import { appActions } from '../../store/app/app.slice';
+import { AppDialog } from '../AppDialog/AppDialog.component';
 import { WalletConnectionCheckerProps } from './WalletConnectionChecker.types';
 
-export const WalletConnectionChecker = ({
-  expectedChainName = 'RSK',
-  expectedChains = [ChainEnum.RSK, ChainEnum.RSK_TESTNET],
-  children,
-}: WalletConnectionCheckerProps) => {
-  const web3Data = useActiveWeb3React();
+export const WalletNotConnectedModal = () => {
+  const dispatch = useDispatch();
+  const walletNotConectedModal = useSelector(walletNotConectedModalSelector);
 
-  if (!web3Data.active) {
-    return (
-      <Typography color="primary" sx={{ wdith: '100%', textAlign: 'center' }}>
-        Please connect your wallet to the {expectedChainName} Network
-      </Typography>
-    );
-  }
+  const onClose = () => {
+    dispatch(appActions.setWalletNotConnectedNetworkModal(false));
+  };
 
-  if (!expectedChains.includes(web3Data.chainId)) {
-    return (
-      <Typography color="primary" sx={{ wdith: '100%', textAlign: 'center' }}>
-        Wrong network. Please your wallet to the {expectedChainName} Network
-      </Typography>
-    );
-  }
-
-  return children;
+  return (
+    <AppDialog
+      isOpenDialog={walletNotConectedModal}
+      onClose={onClose}
+      title="Wallet not connected"
+      dialogPaperProps={{ sx: { minHeight: 0 } }}
+    >
+      Please connect your browser wallet.
+    </AppDialog>
+  );
 };
+
+export const WrongNetworkModal = () => {
+  const dispatch = useDispatch();
+  const wrongNetworkModal = useSelector(wrongNetworkModalSelector);
+  const supportedNetworksNames = useSelector(supportedNetworksNamesSelector);
+
+  const onClose = () => {
+    dispatch(appActions.setWrongNetworkModal(false));
+  };
+
+  return (
+    <AppDialog
+      isOpenDialog={wrongNetworkModal}
+      onClose={onClose}
+      title="Wrong network"
+      dialogPaperProps={{ sx: { minHeight: 0 } }}
+    >
+      Please connect your browser wallet to a supported network.
+      <br />
+      <Typography variant="subtitle2">
+        Supported networks: {supportedNetworksNames.join(', ')}
+      </Typography>
+    </AppDialog>
+  );
+};
+export const WalletConnectionChecker = ({
+  children,
+}: WalletConnectionCheckerProps) => (
+  <>
+    <WalletNotConnectedModal />
+    <WrongNetworkModal />
+
+    {children}
+  </>
+);

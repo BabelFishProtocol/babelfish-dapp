@@ -9,11 +9,9 @@ import { getWalletName } from './app.updaters.utils';
 
 export const AppUpdater = () => {
   const dispatch = useDispatch();
-  const { chainId, account, library } = useActiveWeb3React();
+  const { chainId, account, library, connector } = useActiveWeb3React();
 
   useEagerConnect();
-
-  const { connector } = useActiveWeb3React();
 
   useEffect(() => {
     const name = getWalletName(connector);

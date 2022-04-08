@@ -4,6 +4,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
+import { UnsupportedChainIdError } from '@web3-react/core';
 
 import { Button } from '../../Button/Button.component';
 import { WalletIcon } from '../WalletIcon/WalletIcon.component';
@@ -36,12 +37,10 @@ export const WalletDropdown = ({
         await activate(connector, undefined, true);
         setConnectedWallet(name);
       } catch (e) {
-        // if (e instanceof UnsupportedChainIdError) {
-        //   await activate(connector);
-        //   setConnectedWallet(walletId);
-        // } else {
-        //   console.log('error', e);
-        // }
+        if (e instanceof UnsupportedChainIdError) {
+          await activate(connector);
+          setConnectedWallet(name);
+        }
       }
     }
   };
