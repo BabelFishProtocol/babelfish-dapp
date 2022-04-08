@@ -45,7 +45,7 @@ export const stakesAndVestsAddressesSelector = createSelector(
   [accountSelector, vestsListSelector],
   (account, vests) => {
     if (!account) {
-      throw new Error('Wallet not connected');
+      return undefined;
     }
 
     const addresses = vests.map((vest) => vest.address);

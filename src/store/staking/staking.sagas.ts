@@ -137,7 +137,7 @@ export function* fetchHistoryStaking() {
     const subgraphClient = yield* select(subgraphClientSelector);
     const contractAddresses = yield* select(stakesAndVestsAddressesSelector);
 
-    if (!subgraphClient || !contractAddresses.length)
+    if (!subgraphClient || !contractAddresses?.length)
       throw new Error('Wallet not connected');
 
     const { stakeEvents } = yield* call(historyStakesQuery, subgraphClient, {
@@ -195,7 +195,6 @@ export function* stakingSaga() {
   yield* all([
     takeLatest(stakingActions.fetchStakingData.type, fetchBalances),
     takeLatest(stakingActions.updateStakingData.type, updateBalances),
-    takeLatest(stakingActions.watchStakingData.type, watchStaking),
     takeLatest(stakingActions.watchStakingData.type, watchStaking),
     takeLatest(
       [stakingActions.setStakesList, vestingActions.setVestsList],

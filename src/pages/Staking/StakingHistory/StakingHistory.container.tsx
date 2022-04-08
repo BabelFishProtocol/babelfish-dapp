@@ -1,9 +1,18 @@
 import { useSelector } from 'react-redux';
-import { stakesHistoryListSelector } from '../../../store/staking/staking.selectors';
+import {
+  stakesHistoryListSelector,
+  stakesHistoryListStatusSelector,
+} from '../../../store/staking/staking.selectors';
 import { StakingHistoryComponent } from './StakingHistory.component';
 
 export const StakingHistoryContainer = () => {
   const stakingHistory = useSelector(stakesHistoryListSelector);
+  const stakingHistoryState = useSelector(stakesHistoryListStatusSelector);
 
-  return <StakingHistoryComponent state="idle" stakes={stakingHistory} />;
+  return (
+    <StakingHistoryComponent
+      state={stakingHistoryState}
+      stakes={stakingHistory}
+    />
+  );
 };
