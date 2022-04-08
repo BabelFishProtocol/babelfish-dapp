@@ -15,11 +15,7 @@ import { Button } from '../../components/Button/Button.component';
 import { PrettyTx } from '../../components/PrettyTx/PrettyTx.component';
 import { ProposalState, proposalStateNames, Urls } from '../../constants';
 
-import {
-  formatTimestamp,
-  getCurrentTimestamp,
-  truncateString,
-} from '../../utils/helpers';
+import { formatTimestamp, getCurrentTimestamp } from '../../utils/helpers';
 
 import {
   ProposalInfoItemProps,
@@ -53,7 +49,14 @@ export const ProposalDetailsComponent = ({
             justifyContent: 'space-between',
           }}
         >
-          <CenteredBox>
+          <CenteredBox
+            sx={{
+              flex: 1,
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            }}
+          >
             <IconButton
               sx={{ mr: 1, p: 0.2 }}
               component={Link}
@@ -61,12 +64,12 @@ export const ProposalDetailsComponent = ({
             >
               {'<'}
             </IconButton>
-            <Typography variant="h2">
-              {truncateString(proposal.title, 70)}
+            <Typography variant="h2" noWrap>
+              {proposal.title}
             </Typography>
           </CenteredBox>
 
-          <Typography variant="body1">
+          <Typography variant="body1" sx={{ ml: 2 }}>
             Voting Ends: {formatTimestamp(proposal.endTime)}
           </Typography>
         </Box>
