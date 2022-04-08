@@ -6,21 +6,37 @@ import {
   takeLatest,
   takeLeading,
   SagaGenerator,
+  all,
+  put,
+  call,
+  select,
+  takeLatest,
 } from 'typed-redux-saga';
 import { CallEffect } from 'redux-saga/effects';
 import { BigNumber, constants, ContractTransaction, utils } from 'ethers';
-import { SagaIterator } from 'redux-saga';
-import { ActionCreatorWithPayload, PayloadAction } from '@reduxjs/toolkit';
+import { ActionCreatorWithPayload } from '@reduxjs/toolkit';
+import { historyStakesQuery } from '../../queries/historyStakeListQuery';
 import {
   accountSelector,
   fishTokenSelector,
   multicallProviderSelector,
   stakingContractSelector,
+  subgraphClientSelector,
 } from '../app/app.selectors';
+import { stakesAndVestsAddressesSelector } from '../vesting/vesting.selectors';
 import { convertForMulticall, createWatcherSaga, multiCall } from '../utils';
-import { StakingActions, stakingActions } from './staking.slice';
-import { AddNewStakeCalls, CallState, StakeListItem } from './staking.state';
-import { vestingActions } from '../vesting/vesting.slice';
+import {
+  StakingActions,
+  stakingActions,
+  stakingActions,
+} from './staking.slice';
+import {
+  AddNewStakeCalls,
+  CallState,
+  StakeListItem,
+  StakeListItem,
+} from './staking.state';
+import { vestingActions, vestingActions } from '../vesting/vesting.slice';
 import { fishTokenDataSelector } from './staking.selectors';
 import { ONE_DAY } from '../../constants';
 
@@ -143,6 +159,32 @@ export function* fetchStakesList() {
   }
 }
 
+export function* fetchHistoryStaking() {
+  try {
+    const subgraphClient = yield* select(subgraphClientSelector);
+    const contractAddresses = yield* select(stakesAndVestsAddressesSelector);
+
+    if (!subgraphClient || !contractAddresses?.length)
+      throw new Error('Wallet not connected');
+
+    const { stakeEvents } = yield* call(historyStakesQuery, subgraphClient, {
+      contractAddresses,
+    });
+
+    const stakesHistory = stakeEvents.map((stake) => ({
+      asset: 'FISH',
+      stakedAmount: stake.amount,
+      unlockDate: stake.lockedUntil,
+      totalStaked: stake.totalStaked,
+      txHash: stake.transactionHash,
+    }));
+
+    yield* put(stakingActions.setHistoryStakesList(stakesHistory));
+  } catch (e) {
+    yield* put(stakingActions.fetchHistoryStakesListFailure());
+  }
+}
+
 /** Fetch data needed for the stake page */
 function* fetchBalances() {
   yield* all([
@@ -181,6 +223,10 @@ export function* stakingSaga() {
     takeLatest(stakingActions.fetchStakingData.type, fetchBalances),
     takeLatest(stakingActions.updateStakingData.type, updateBalances),
     takeLatest(stakingActions.watchStakingData.type, watchStaking),
+    takeLatest(
+      [stakingActions.setStakesList, vestingActions.setVestsList],
+      fetchHistoryStaking
+    ),
   ]);
 }
 

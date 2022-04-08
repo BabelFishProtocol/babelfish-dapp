@@ -1,6 +1,7 @@
 import { TransactionReceipt } from '@ethersproject/providers';
 import { ContractTransaction } from 'ethers';
 import { FiniteStates } from '../../utils/types';
+import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/StakingHistory.types';
 import { LoadableAmount, LoadableValue } from '../types';
 
 export type CallState<Operations extends string> = {
@@ -57,6 +58,10 @@ export class StakingState {
   };
 
   stakesList: LoadableValue<StakeListItem[]> = {
+    data: [],
+    state: 'idle',
+  };
+  stakesListHistory: LoadableValue<StakingHistoryListItem[]> = {
     data: [],
     state: 'idle',
   };

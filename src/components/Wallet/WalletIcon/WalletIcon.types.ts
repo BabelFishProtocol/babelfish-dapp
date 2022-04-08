@@ -1,7 +1,8 @@
 import { BoxProps } from '@mui/material/Box';
+import { WalletEnum } from '../../../config/wallets';
 
 export type WalletIconProps = {
-  name: string;
+  name: WalletEnum;
   icon: string;
   sx?: BoxProps['sx'];
 };

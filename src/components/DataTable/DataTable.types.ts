@@ -1,4 +1,5 @@
 import { TableContainerProps } from '@mui/material/TableContainer';
+import { FiniteStates } from '../../utils/types';
 
 export type CustomColumnProps<Data extends BaseRowData = BaseRowData> = {
   rowIndex: number;
@@ -29,14 +30,20 @@ export type DataTableColumn<Data extends BaseRowData = BaseRowData> = {
   component?: CustomColumn<Data>;
 };
 
-export type DataTableProps<Data extends BaseRowData = BaseRowData> = {
+export type DataTableProps<Data extends BaseRowData = BaseRowData> = Pick<
+  DataTableBodyProps<Data>,
+  'data' | 'columns' | 'state' | 'tableEmptyMessage'
+> & {
   tableTitle: React.ReactNode;
   tableAction?: React.ReactNode;
-  tableEmptyMessage?: string;
-  columns: DataTableColumn<Data>[];
-  data: Data[];
-  isLoading?: boolean;
   containerSx?: TableContainerProps['sx'];
+};
+
+export type DataTableBodyProps<Data extends BaseRowData = BaseRowData> = {
+  data: Data[];
+  state: FiniteStates;
+  columns: DataTableColumn<Data>[];
+  tableEmptyMessage?: TableEmptyProps['message'];
 };
 
 export type LoadingStateRowProps<Data extends BaseRowData = BaseRowData> = Pick<

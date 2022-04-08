@@ -44,20 +44,24 @@ export const stakingSlice = createSlice({
       state.fishToken.state = 'idle';
       state.combinedVotingPower.state = 'idle';
       state.stakesList.state = 'idle';
+      state.stakesListHistory.state = 'idle';
     },
     fetchStakingData: (state) => {
       state.constants.state = 'loading';
       state.fishToken.state = 'loading';
       state.combinedVotingPower.state = 'loading';
       state.stakesList.state = 'loading';
+      state.stakesListHistory.state = 'loading';
       state.fishToken.data = {};
       state.combinedVotingPower.data = undefined;
       state.stakesList.data = [];
+      state.stakesListHistory.data = [];
     },
     updateStakingData: (state) => {
       state.fishToken.state = 'loading';
       state.combinedVotingPower.state = 'loading';
       state.stakesList.state = 'loading';
+      state.stakesListHistory.state = 'loading';
     },
 
     fetchFishTokenDataFailure: (state) => {
@@ -101,6 +105,18 @@ export const stakingSlice = createSlice({
     },
     clearSelectedStake: (state) => {
       state.selectedStake = undefined;
+    },
+
+    fetchHistoryStakesListFailure: (state) => {
+      state.stakesListHistory.data = [];
+      state.stakesListHistory.state = 'failure';
+    },
+    setHistoryStakesList: (
+      state,
+      { payload }: PayloadAction<StakingHistoryListItem[]>
+    ) => {
+      state.stakesListHistory.data = payload;
+      state.stakesListHistory.state = 'success';
     },
   },
 });

@@ -49,6 +49,7 @@
     "@web3-react/core": "^6.0.9",
     "@web3-react/injected-connector": "^6.0.7",
     "@web3-react/network-connector": "^6.1.9",
+    "@web3-react/portis-connector": "^6.2.11",
     "eslint": "^8.8.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^16.1.0",
