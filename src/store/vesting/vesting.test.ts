@@ -51,7 +51,7 @@ afterEach(() => {
 });
 
 describe('vesting store', () => {
-  const testAccount = '0x0123';
+  const testAccount = '0x012A3';
   const reducer = combineReducers(pick(rootReducer, [Reducers.Vesting]));
 
   const initialState: DeepPartial<RootState> = {
@@ -169,7 +169,6 @@ describe('vesting store', () => {
     });
   });
   describe('selectors', () => {
-    const userAccount = '0x01A';
     describe('stakesAndVestsAddressesSelector', () => {
       it('returns undefined when wallet is not connected', () => {
         const emptyAccountResult = stakesAndVestsAddressesSelector.resultFunc(
@@ -181,22 +180,22 @@ describe('vesting store', () => {
       });
       it('returns account and vesting addresses', () => {
         const addressesResult = stakesAndVestsAddressesSelector.resultFunc(
-          userAccount,
+          testAccount,
           combinedVestsList
         );
 
         expect(addressesResult).toEqual([
           combinedVestsList[0].address,
-          userAccount.toLowerCase(),
+          testAccount.toLowerCase(),
         ]);
       });
       it('returns account and no vesting addresses', () => {
         const addressesResult = stakesAndVestsAddressesSelector.resultFunc(
-          userAccount,
+          testAccount,
           []
         );
 
-        expect(addressesResult).toEqual([userAccount.toLowerCase()]);
+        expect(addressesResult).toEqual([testAccount.toLowerCase()]);
       });
     });
   });
