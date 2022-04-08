@@ -26,7 +26,7 @@ export type ChainType = {
 
 export const chains: Record<ChainEnum, ChainType> = {
   [ChainEnum.ETH]: {
-    name: 'ETH Network',
+    name: 'ETH Mainnet',
     icon: ethIcon,
     id: ChainEnum.ETH,
     chainId: utils.hexlify(ChainEnum.ETH),
@@ -48,7 +48,7 @@ export const chains: Record<ChainEnum, ChainType> = {
     },
   },
   [ChainEnum.BSC]: {
-    name: 'BSC Network',
+    name: 'BNB Chain',
     icon: bscIcon,
     id: ChainEnum.BSC,
     chainId: utils.hexlify(ChainEnum.BSC),
@@ -59,7 +59,7 @@ export const chains: Record<ChainEnum, ChainType> = {
     },
   },
   [ChainEnum.BSC_TESTNET]: {
-    name: 'BSC Testnet Network',
+    name: 'BNB Chain Testnet',
     icon: bscIcon,
     id: ChainEnum.BSC_TESTNET,
     chainId: utils.hexlify(ChainEnum.BSC_TESTNET),
@@ -70,7 +70,7 @@ export const chains: Record<ChainEnum, ChainType> = {
     },
   },
   [ChainEnum.RSK]: {
-    name: 'RSK Network',
+    name: 'RSK',
     icon: rskIcon,
     id: ChainEnum.RSK,
     chainId: utils.hexlify(ChainEnum.RSK),
@@ -81,7 +81,7 @@ export const chains: Record<ChainEnum, ChainType> = {
     },
   },
   [ChainEnum.RSK_TESTNET]: {
-    name: 'RSK Testnet Network',
+    name: 'RSK Testnet',
     icon: rskIcon,
     id: ChainEnum.RSK_TESTNET,
     chainId: utils.hexlify(ChainEnum.RSK_TESTNET),
@@ -92,3 +92,9 @@ export const chains: Record<ChainEnum, ChainType> = {
     },
   },
 };
+
+export const SUPPORTED_CHAINS_RSK = [ChainEnum.RSK, ChainEnum.RSK_TESTNET];
+
+export const SUPPORTED_CHAINS = Object.values(ChainEnum).filter(
+  (item) => typeof item === 'number'
+) as ChainEnum[];

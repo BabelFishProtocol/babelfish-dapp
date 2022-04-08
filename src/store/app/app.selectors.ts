@@ -24,6 +24,11 @@ import { BaseContractFactory, MulticallProviderType } from '../types';
 
 const appState = (state: RootState) => state[Reducers.App];
 
+export const connectedWalletSelector = createSelector(
+  appState,
+  (state) => state.connectedWallet
+);
+
 export const chainIdSelector = createSelector(
   appState,
   (state) => state.chainId
@@ -40,6 +45,37 @@ export const currentBlockSelector = createSelector(
   appState,
   (state) => state.currentBlockNumber
 );
+
+export const supportedNetworksSelector = createSelector(
+  appState,
+  (state) => state.supportedNetworks
+);
+
+export const supportedNetworksNamesSelector = createSelector(
+  supportedNetworksSelector,
+  (supportedNetworks) => supportedNetworks.map((item) => chains[item].name)
+);
+
+export const wrongNetworkModalSelector = createSelector(
+  appState,
+  (state) => state.wrongNetworkModal
+);
+
+export const walletNotConectedModalSelector = createSelector(
+  appState,
+  (state) => state.walletNotConectedModal
+);
+
+export const unsupportedNetworkSelector = createSelector(
+  [supportedNetworksSelector, chainIdSelector],
+  (supportedNetworks, chainId) => {
+    if (!supportedNetworks || !chainId) {
+      return false;
+    }
+    return !supportedNetworks.includes(chainId);
+  }
+);
+
 export const currentChainSelector = createSelector(
   chainIdSelector,
   (chainId) => {

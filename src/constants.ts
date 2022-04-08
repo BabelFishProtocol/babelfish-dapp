@@ -30,6 +30,7 @@ export const proposalStateNames = {
 export enum Reducers {
   Aggregator = 'aggregator',
   App = 'app',
+  Dashboard = 'dashboard',
   Staking = 'staking',
   Proposals = 'proposals',
   Vesting = 'vesting',

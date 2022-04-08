@@ -14,6 +14,7 @@ import {
   createMockedContract,
   mockMulticallProvider,
   mockSigner,
+  mockSubgraphClient,
 } from '../../testUtils';
 
 import {
@@ -21,6 +22,7 @@ import {
   fishTokenSelector,
   multicallProviderSelector,
   stakingContractSelector,
+  subgraphClientSelector,
 } from '../app/app.selectors';
 
 import {
@@ -28,10 +30,14 @@ import {
   fetchFishTokenData,
   fetchVotingPower,
   fetchStakesList,
+  fetchHistoryStaking,
 } from './staking.sagas';
 import { stakingActions } from './staking.slice';
 import { StakeListItem, StakingState } from './staking.state';
+import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/StakingHistory.types';
 import { convertForMulticall } from '../utils';
+import { stakesAndVestsAddressesSelector } from '../vesting/vesting.selectors';
+import { historyStakesQuery } from '../../queries/historyStakeListQuery';
 
 jest.mock('../utils', () => ({
   ...jest.requireActual('../utils'),
@@ -366,17 +372,11 @@ describe('staking store', () => {
     });
   });
 
+  const stakes = ['100000', '150000'];
+  const dates = [1645564671, 1645564672];
+  const delegates = ['0x0000', '0x3443'];
+
   describe('fetchStakesList', () => {
-    const stakes = ['100000', '150000'];
-    const dates = [1645564671, 1645564672];
-    const delegates = ['0x0000', '0x3443'];
-
-    const getStakesResult: Partial<Awaited<ReturnType<Staking['getStakes']>>> =
-      {
-        dates: dates.map((date) => BigNumber.from(date)),
-        stakes: stakes.map((stake) => BigNumber.from(stake)),
-      };
-
     const combinedStakesList: StakeListItem[] = [
       {
         asset: 'FISH',
@@ -391,6 +391,12 @@ describe('staking store', () => {
         votingDelegation: delegates[1],
       },
     ];
+
+    const getStakesResult: Partial<Awaited<ReturnType<Staking['getStakes']>>> =
+      {
+        dates: dates.map((date) => BigNumber.from(date)),
+        stakes: stakes.map((stake) => BigNumber.from(stake)),
+      };
 
     const successState: DeepPartial<RootState> = {
       ...initialState,
@@ -466,6 +472,139 @@ describe('staking store', () => {
         .run();
 
       expect(runResult.effects).toEqual({});
+    });
+  });
+
+  describe('fetchHistoryStaking', () => {
+    const txHashes = ['0x05644455', '0x3443'];
+
+    const combinedHistoryStakesList: StakingHistoryListItem[] = [
+      {
+        asset: 'FISH',
+        unlockDate: dates[0].toString(),
+        stakedAmount: stakes[0],
+        totalStaked: stakes[0],
+        txHash: txHashes[0],
+      },
+      {
+        asset: 'FISH',
+        unlockDate: dates[1].toString(),
+        stakedAmount: stakes[0],
+        totalStaked: stakes[1],
+        txHash: txHashes[1],
+      },
+    ];
+
+    const successState: DeepPartial<RootState> = {
+      ...initialState,
+      [Reducers.Staking]: {
+        ...initialState[Reducers.Staking],
+        stakesListHistory: {
+          state: 'success',
+          data: combinedHistoryStakesList,
+        },
+      },
+    };
+
+    const failureState: DeepPartial<RootState> = {
+      ...initialState,
+      [Reducers.Staking]: {
+        ...initialState[Reducers.Staking],
+        stakesListHistory: { state: 'failure', data: [] },
+      },
+    };
+
+    const vestAddress = '0x94e907A6483b5ef';
+
+    const addresses = [vestAddress, testAccount];
+
+    const stakeEvents = [
+      {
+        id: 'stakeEvent-1',
+        staker: testAccount,
+        amount: stakes[0],
+        lockedUntil: dates[0].toString(),
+        totalStaked: stakes[0],
+        transactionHash: txHashes[0],
+      },
+      {
+        id: 'stakeEvent-2',
+        staker: '0x05645644455',
+        amount: stakes[0],
+        lockedUntil: dates[0].toString(),
+        totalStaked: stakes[0],
+        transactionHash: txHashes[0],
+      },
+      {
+        id: 'stakeEvent-3',
+        staker: vestAddress,
+        amount: stakes[0],
+        lockedUntil: dates[1].toString(),
+        totalStaked: stakes[1],
+        transactionHash: txHashes[1],
+      },
+    ];
+
+    const getBasePath = () =>
+      expectSaga(fetchHistoryStaking)
+        .withReducer(reducer)
+        .withState(initialState)
+        .select(subgraphClientSelector)
+        .select(stakesAndVestsAddressesSelector);
+
+    it('happy path', async () => {
+      const runResult = await getBasePath()
+        .provide([
+          [matchers.select(subgraphClientSelector), mockSubgraphClient],
+          [matchers.select(stakesAndVestsAddressesSelector), addresses],
+          [
+            matchers.call(historyStakesQuery, mockSubgraphClient, {
+              contractAddresses: addresses,
+            }),
+            { stakeEvents: [stakeEvents[0], stakeEvents[2]] },
+          ],
+        ])
+        .call(historyStakesQuery, mockSubgraphClient, {
+          contractAddresses: addresses,
+        })
+        .put(stakingActions.setHistoryStakesList(combinedHistoryStakesList))
+        .hasFinalState(successState)
+        .run();
+
+      expect(runResult.effects).toEqual({});
+    });
+
+    it('when wallet is not connected', async () => {
+      const runResult = await getBasePath()
+        .provide([
+          [matchers.select(subgraphClientSelector), undefined],
+          [matchers.select(stakesAndVestsAddressesSelector), undefined],
+        ])
+        .put(stakingActions.fetchHistoryStakesListFailure())
+        .hasFinalState(failureState)
+        .run();
+
+      expect(runResult.effects).toEqual({});
+    });
+
+    it('fetching error', async () => {
+      await getBasePath()
+        .provide([
+          [matchers.select(subgraphClientSelector), mockSubgraphClient],
+          [matchers.select(stakesAndVestsAddressesSelector), addresses],
+          [
+            matchers.call(historyStakesQuery, mockSubgraphClient, {
+              contractAddresses: addresses,
+            }),
+            throwError(),
+          ],
+        ])
+        .call(historyStakesQuery, mockSubgraphClient, {
+          contractAddresses: addresses,
+        })
+        .put(stakingActions.fetchHistoryStakesListFailure())
+        .hasFinalState(failureState)
+        .run();
     });
   });
 });

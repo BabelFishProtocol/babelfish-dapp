@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { WalletConnectionChecker } from '../../components/WalletConnectionChecker/WalletConnectionChecker.component';
 import {
   fishTokenDataSelector,
   combinedVotingPowerSelector,
@@ -22,7 +21,7 @@ const mockRewards: RewardBlockProps[] = [
   { amount: '0', asset: 'FISH', usdAmount: '0.00' },
 ];
 
-const Container = () => {
+export const StakingContainer = () => {
   const dispatch = useDispatch();
   const { totalStaked } = useSelector(fishTokenDataSelector);
   const fishLoadingState = useSelector(fishLoadingStateSelector);
@@ -45,9 +44,3 @@ const Container = () => {
     />
   );
 };
-
-export const StakingContainer = () => (
-  <WalletConnectionChecker>
-    <Container />
-  </WalletConnectionChecker>
-);

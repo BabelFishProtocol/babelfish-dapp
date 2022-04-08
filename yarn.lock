@@ -1976,7 +1976,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@portis/web3@npm:^4.0.7":
+"@portis/web3@npm:^4.0.5, @portis/web3@npm:^4.0.7":
   version: 4.1.0
   resolution: "@portis/web3@npm:4.1.0"
   dependencies:
@@ -2677,6 +2677,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@web3-react/portis-connector@npm:^6.2.11":
+  version: 6.2.11
+  resolution: "@web3-react/portis-connector@npm:6.2.11"
+  dependencies:
+    "@portis/web3": ^4.0.5
+    "@web3-react/abstract-connector": ^6.0.7
+    "@web3-react/types": ^6.0.7
+    tiny-invariant: ^1.0.6
+  checksum: 47c67651763acaa579f8d654a12f59f824699b6b7fc45a7dac0186ae36b2ab41df8ed845c50c3a41bb85261e4afde5b986fd6ed125f59bab2eebc43182d0bc71
+  languageName: node
+  linkType: hard
+
 "@web3-react/types@npm:^6.0.7":
   version: 6.0.7
   resolution: "@web3-react/types@npm:6.0.7"
@@ -3259,6 +3271,7 @@ __metadata:
     "@web3-react/core": ^6.0.9
     "@web3-react/injected-connector": ^6.0.7
     "@web3-react/network-connector": ^6.1.9
+    "@web3-react/portis-connector": ^6.2.11
     dayjs: ^1.10.7
     eslint: ^8.8.0
     eslint-config-airbnb: ^19.0.4

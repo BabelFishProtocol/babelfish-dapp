@@ -4,6 +4,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
+import { UnsupportedChainIdError } from '@web3-react/core';
 
 import { Button } from '../../Button/Button.component';
 import { WalletIcon } from '../WalletIcon/WalletIcon.component';
@@ -27,21 +28,19 @@ export const WalletDropdown = ({
   }, []);
 
   const tryActivation = async (walletId: number) => {
-    const { connector, checkConnection } = wallets[walletId];
+    const { name, connector, checkConnection } = wallets[walletId];
 
     checkConnection();
 
     if (connector) {
       try {
         await activate(connector, undefined, true);
-        setConnectedWallet(walletId);
+        setConnectedWallet(name);
       } catch (e) {
-        // if (e instanceof UnsupportedChainIdError) {
-        //   await activate(connector);
-        //   setConnectedWallet(walletId);
-        // } else {
-        //   console.log('error', e);
-        // }
+        if (e instanceof UnsupportedChainIdError) {
+          await activate(connector);
+          setConnectedWallet(name);
+        }
       }
     }
   };

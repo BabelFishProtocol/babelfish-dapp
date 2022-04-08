@@ -1,5 +1,5 @@
+import { ReactNode } from 'react';
+
 export type WalletConnectionCheckerProps = {
-  expectedChainName?: string;
-  expectedChains?: number[];
-  children: JSX.Element;
+  children: ReactNode;
 };

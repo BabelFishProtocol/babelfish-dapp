@@ -1,3 +1,5 @@
+import { FiniteStates } from '../../../utils/types';
+
 export type TransactionsTableItem = {
   eventName: 'Deposit' | 'Withdraw' | 'Reward';
   asset: 'XUSD' | 'FISH';
@@ -8,4 +10,5 @@ export type TransactionsTableItem = {
 
 export type TransactionsTableComponentProps = {
   transactions: TransactionsTableItem[];
+  state: FiniteStates;
 };

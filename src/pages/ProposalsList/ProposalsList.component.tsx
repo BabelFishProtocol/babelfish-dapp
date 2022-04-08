@@ -65,8 +65,8 @@ export const ProposalsListComponent = ({
       }
     >
       <DataTable
+        state={state}
         data={proposals as RowData[]}
-        isLoading={state === 'loading'}
         columns={proposalsListColumns}
         tableTitle="GOVERNANCE PROPOSALS"
         tableAction={

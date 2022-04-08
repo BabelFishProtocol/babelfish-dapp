@@ -1,8 +1,12 @@
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { Web3ReactContextInterface } from '@web3-react/core/dist/types';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { injectedConnector } from '../config/providers';
+import { appActions } from '../store/app/app.slice';
 
-type Web3Data = Web3ReactContextInterface<Web3Provider>;
+export type Web3Data = Web3ReactContextInterface<Web3Provider>;
 
 type ActiveWeb3Data = Required<Web3Data> & {
   active: true;
@@ -12,25 +16,58 @@ type InActiveWeb3Data = Web3Data & {
 };
 
 const isActive = (web3Data: Web3Data): web3Data is ActiveWeb3Data =>
-  web3Data.active &&
-  !!web3Data.account &&
-  !!web3Data.library &&
-  !!web3Data.connector;
+  web3Data.active;
+
+export const useEagerConnect = () => {
+  const { activate, active } = useWeb3React(); // specifically using useWeb3React because of what this hook does
+  const [tried, setTried] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const isAuthorized = await injectedConnector.isAuthorized();
+      if (isAuthorized) {
+        try {
+          await activate(injectedConnector, undefined, true);
+        } catch (e) {
+          setTried(true);
+        }
+      } else {
+        setTried(true);
+      }
+    })();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // intentionally only running on mount (make sure it's only mounted once :))
+
+  // if the connection worked, wait until we get confirmation of that to flip the flag
+  useEffect(() => {
+    if (active) {
+      setTried(true);
+    }
+  }, [active]);
+
+  return tried;
+};
 
 /**
  * wrapper for useWeb3React with strict types. All properties of web3Data will become required when checked that active is true
  */
 export const useActiveWeb3React = (): ActiveWeb3Data | InActiveWeb3Data => {
   const web3Data = useWeb3React<Web3Provider>();
+  const { active } = web3Data;
+  const dispatch = useDispatch();
+
+  const triedEager = useEagerConnect();
+
+  if (triedEager) {
+    dispatch(appActions.setWalletNotConnectedNetworkModal(!active));
+  }
 
   if (isActive(web3Data)) {
     return web3Data;
   }
 
-  return {
-    ...web3Data,
-    active: false,
-  };
+  return web3Data as InActiveWeb3Data;
 };
 
 /**

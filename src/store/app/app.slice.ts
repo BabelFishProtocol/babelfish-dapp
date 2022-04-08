@@ -10,6 +10,12 @@ export const appSlice = createSlice({
   name: Reducers.App,
   initialState,
   reducers: {
+    setConnectedWallet: (
+      state,
+      { payload }: PayloadAction<AppState['connectedWallet']>
+    ) => {
+      state.connectedWallet = payload;
+    },
     setChainId: (state, { payload }: PayloadAction<AppState['chainId']>) => {
       state.chainId = payload;
     },
@@ -23,9 +29,25 @@ export const appSlice = createSlice({
     walletDisconnected: (state) => {
       state.currentBlockNumber = undefined;
       state.provider = undefined;
+      state.connectedWallet = undefined;
     },
     setBlockNumber: (state, { payload }: PayloadAction<number>) => {
       state.currentBlockNumber = payload;
+    },
+    setSupportedNetworks: (
+      state,
+      { payload }: PayloadAction<AppState['supportedNetworks']>
+    ) => {
+      state.supportedNetworks = payload;
+    },
+    setWrongNetworkModal: (state, { payload }: PayloadAction<boolean>) => {
+      state.wrongNetworkModal = payload;
+    },
+    setWalletNotConnectedNetworkModal: (
+      state,
+      { payload }: PayloadAction<boolean>
+    ) => {
+      state.walletNotConectedModal = payload;
     },
   },
 });
