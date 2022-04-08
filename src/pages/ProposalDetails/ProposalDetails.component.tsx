@@ -22,7 +22,6 @@ import {
   ProposalDetailsComponentProps,
 } from './ProposalDetails.types';
 import { VotesRatioBlock } from './ProposalDetails.votesRatio';
-import { ProposalDescription } from './ProposalDetails.description';
 import { ForVotesContainer } from './VotesBlock/ForVotes/ForVotes.container';
 import { AgainstVotesContainer } from './VotesBlock/AgainstVotes/AgainstVotes.container';
 
