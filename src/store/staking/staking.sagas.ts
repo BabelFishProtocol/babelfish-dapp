@@ -1,20 +1,5 @@
-import {
-  all,
-  put,
-  call,
-  select,
-  takeLatest,
-  takeLeading,
-  SagaGenerator,
-  all,
-  put,
-  call,
-  select,
-  takeLatest,
-} from 'typed-redux-saga';
-import { CallEffect } from 'redux-saga/effects';
-import { BigNumber, constants, ContractTransaction, utils } from 'ethers';
-import { ActionCreatorWithPayload } from '@reduxjs/toolkit';
+import { all, put, call, select, takeLatest } from 'typed-redux-saga';
+import { BigNumber, constants, utils } from 'ethers';
 import { historyStakesQuery } from '../../queries/historyStakeListQuery';
 import {
   accountSelector,
@@ -24,21 +9,18 @@ import {
   subgraphClientSelector,
 } from '../app/app.selectors';
 import { stakesAndVestsAddressesSelector } from '../vesting/vesting.selectors';
-import { convertForMulticall, createWatcherSaga, multiCall } from '../utils';
 import {
-  StakingActions,
-  stakingActions,
-  stakingActions,
-} from './staking.slice';
-import {
-  AddNewStakeCalls,
-  CallState,
-  StakeListItem,
-  StakeListItem,
-} from './staking.state';
-import { vestingActions, vestingActions } from '../vesting/vesting.slice';
+  contractCallSaga,
+  convertForMulticall,
+  createWatcherSaga,
+  multiCall,
+} from '../utils';
+import { StakingActions, stakingActions } from './staking.slice';
+import { AddNewStakeCalls, StakeListItem } from './staking.state';
+import { vestingActions } from '../vesting/vesting.slice';
 import { fishTokenDataSelector } from './staking.selectors';
 import { ONE_DAY } from '../../constants';
+import { SagaContractCallStep } from '../types';
 
 export function* fetchFishTokenData() {
   try {
@@ -230,7 +212,7 @@ export function* stakingSaga() {
   ]);
 }
 
-function* callStake({ payload }: StakingActions['addNewStake']) {
+export function* addNewStake({ payload }: StakingActions['addNewStake']) {
   const { unlockDate, stakeAmount } = payload;
   const parsedStakeAmount = utils.parseEther(stakeAmount);
 
@@ -268,51 +250,4 @@ function* callStake({ payload }: StakingActions['addNewStake']) {
     stakingActions.setAddStakeError,
     stakingActions.setAddStakeStateCallData
   );
-}
-
-type SagaContractCallStep<Operations extends string> = {
-  name: Operations;
-  effect: SagaGenerator<ContractTransaction, CallEffect<ContractTransaction>>;
-};
-
-function* stepCall<Operations extends string>(
-  { effect, name }: SagaContractCallStep<Operations>,
-  setStatusAction: ActionCreatorWithPayload<Partial<CallState<Operations>>>
-) {
-  yield* put(
-    setStatusAction({
-      currentOperation: name,
-      status: 'loading',
-    })
-  );
-
-  const tx = yield* effect;
-
-  yield* put(setStatusAction({ tx }));
-
-  const txReceipt = yield* call(tx.wait);
-
-  yield* put(setStatusAction({ txReceipt }));
-}
-
-export function* contractCallSaga<Operations extends string>(
-  steps: SagaContractCallStep<Operations>[],
-  setErrorAction: ActionCreatorWithPayload<string>,
-  setStatusAction: ActionCreatorWithPayload<Partial<CallState<Operations>>>
-) {
-  try {
-    // eslint-disable-next-line no-restricted-syntax
-    for (const step of steps) {
-      yield* stepCall(step, setStatusAction);
-    }
-
-    yield* put(setStatusAction({ status: 'success' }));
-  } catch (e) {
-    const msg =
-      e instanceof Error
-        ? e.message
-        : 'An unexpected error has occurred. Please try again';
-
-    yield* put(setErrorAction(msg));
-  }
 }

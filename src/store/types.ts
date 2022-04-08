@@ -1,8 +1,9 @@
 import { ActionCreatorsMapObject } from '@reduxjs/toolkit';
-import { BaseContract, Contract, Signer } from 'ethers';
+import { BaseContract, Contract, ContractTransaction, Signer } from 'ethers';
 import { ContractCall, Provider } from 'ethers-multicall';
 import { SagaIterator } from 'redux-saga';
-import { ActionPattern } from 'redux-saga/effects';
+import { ActionPattern, CallEffect } from 'redux-saga/effects';
+import { SagaGenerator } from 'typed-redux-saga/dist';
 import { ContractCallResult, FiniteStates } from '../utils/types';
 
 export type LoadableValue<Data> = {
@@ -46,4 +47,9 @@ export type MulticallResult<Calls extends BaseCall[]> = Promise<{
 
 export type MulticallProviderType = Omit<Provider, 'all'> & {
   all: <Calls extends BaseCall[]>(calls: Calls) => MulticallResult<Calls>;
+};
+
+export type SagaContractCallStep<Operations extends string> = {
+  name: Operations;
+  effect: SagaGenerator<ContractTransaction, CallEffect<ContractTransaction>>;
 };
