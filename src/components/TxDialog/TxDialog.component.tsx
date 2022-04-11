@@ -146,19 +146,19 @@ export const SubmitStatusDialog = ({
   );
 };
 
-type Dupa = SubmitStatusDialogProps & {
+type SubmitStepsDialogProps = SubmitStatusDialogProps & {
   currentStep: 'stake' | 'approve';
   steps: ['stake', 'approve'];
 };
 
-export const SubmitStatusDialogSaga = ({
+export const SubmitStepsDialog = ({
   tx,
   status,
   steps,
   currentStep,
   txReceipt,
   ...dialogProps
-}: Dupa) => {
+}: SubmitStepsDialogProps) => {
   if (status === 'failure') {
     return (
       <TxErrorDialog isOpenDialog={status === 'failure'} {...dialogProps} />

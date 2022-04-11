@@ -4,12 +4,17 @@ import { FiniteStates } from '../../utils/types';
 import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/StakingHistory.types';
 import { LoadableAmount, LoadableValue } from '../types';
 
-export type CallState<Operations extends string> = {
-  status: FiniteStates;
-  currentOperation?: Operations;
+export type StepData<Operations extends string> = {
+  name: Operations;
   tx?: ContractTransaction;
   txReceipt?: TransactionReceipt;
   error?: string;
+};
+
+export type CallState<Operations extends string> = {
+  status: FiniteStates;
+  currentOperation?: Operations;
+  steps: Record<Operations, StepData<Operations>>;
 };
 
 export type AddNewStakeCalls = 'stake' | 'approve';
@@ -38,6 +43,10 @@ export class StakingState {
 
   addNewStakeCall: CallState<AddNewStakeCalls> = {
     status: 'idle',
+    steps: {
+      approve: { name: 'approve' },
+      stake: { name: 'stake' },
+    },
   };
 
   constants: LoadableValue<StakeConstants> = {

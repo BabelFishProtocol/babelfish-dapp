@@ -10,7 +10,7 @@ import {
 } from '../app/app.selectors';
 import { stakesAndVestsAddressesSelector } from '../vesting/vesting.selectors';
 import {
-  contractCallSaga,
+  contractStepCallsSaga,
   convertForMulticall,
   createWatcherSaga,
   multiCall,
@@ -202,6 +202,7 @@ const watchStaking = createWatcherSaga({
 
 export function* stakingSaga() {
   yield* all([
+    takeLatest(stakingActions.addNewStake.type, addNewStake),
     takeLatest(stakingActions.fetchStakingData.type, fetchBalances),
     takeLatest(stakingActions.updateStakingData.type, updateBalances),
     takeLatest(stakingActions.watchStakingData.type, watchStaking),
@@ -245,9 +246,10 @@ export function* addNewStake({ payload }: StakingActions['addNewStake']) {
     ),
   });
 
-  yield* contractCallSaga<AddNewStakeCalls>(
+  yield* contractStepCallsSaga<AddNewStakeCalls>({
     steps,
-    stakingActions.setAddStakeError,
-    stakingActions.setAddStakeStateCallData
-  );
+    setErrorAction: stakingActions.setAddStakeError,
+    setStatusAction: stakingActions.setAddStakeStatus,
+    setStepDataAction: stakingActions.setAddStakeStateCurrentCallData,
+  });
 }

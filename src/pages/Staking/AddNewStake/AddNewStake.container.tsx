@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { constants, utils } from 'ethers';
 
 import {
@@ -14,9 +14,6 @@ import {
   stakesDatesSelector,
 } from '../../../store/staking/staking.selectors';
 import { ONE_DAY } from '../../../constants';
-import { useContractCall } from '../../../hooks/useContractCall';
-
-import { SubmitStatusDialog } from '../../../components/TxDialog/TxDialog.component';
 
 import { StakingFeeEstimator } from '../Staking.types';
 import {
@@ -24,11 +21,14 @@ import {
   AddNewStakeFormValues,
 } from './AddNewStake.types';
 import { AddNewStakeComponent } from './AddNewStake.component';
+import { stakingActions } from '../../../store/staking/staking.slice';
 
 export const AddNewStakeContainer = ({
   open,
   onClose,
 }: AddNewStakeContainerProps) => {
+  const dispatch = useDispatch();
+
   const currentStakes = useSelector(stakesDatesSelector);
   const account = useSelector(accountSelector);
   const staking = useSelector(stakingContractSelector);
@@ -38,7 +38,7 @@ export const AddNewStakeContainer = ({
 
   // ----- approving -----
 
-  const esmimateApproveFee: StakingFeeEstimator = useCallback(
+  const estimateApproveFee: StakingFeeEstimator = useCallback(
     async (amount: string, _: number) =>
       fishToken?.estimateGas.approve(
         staking?.address as string,
@@ -47,19 +47,19 @@ export const AddNewStakeContainer = ({
     [fishToken?.estimateGas, staking?.address]
   );
 
-  const onApproveStake = async ({ stakeAmount }: AddNewStakeFormValues) => {
-    const missingAllowance = utils.parseEther(stakeAmount);
+  // const onApproveStake = async ({ stakeAmount }: AddNewStakeFormValues) => {
+  //   const missingAllowance = utils.parseEther(stakeAmount);
 
-    const tx = await fishToken?.approve(
-      staking?.address as string,
-      missingAllowance
-    );
+  //   const tx = await fishToken?.approve(
+  //     staking?.address as string,
+  //     missingAllowance
+  //   );
 
-    return tx;
-  };
+  //   return tx;
+  // };
 
-  const { handleSubmit: handleApprove, ...approveData } =
-    useContractCall(onApproveStake);
+  // const { handleSubmit: handleApprove, ...approveData } =
+  //   useContractCall(onApproveStake);
 
   // ----- staking -----
 
@@ -74,25 +74,29 @@ export const AddNewStakeContainer = ({
     [staking?.estimateGas]
   );
 
-  const onStake = async ({
-    stakeAmount,
-    unlockDate,
-  }: AddNewStakeFormValues) => {
-    const tx = staking?.stake(
-      utils.parseEther(stakeAmount),
-      unlockDate + ONE_DAY, // adding 24 hours to date to make sure contract will not choose previous period,
-      constants.AddressZero,
-      constants.AddressZero
-    );
+  // const onStake = async ({
+  //   stakeAmount,
+  //   unlockDate,
+  // }: AddNewStakeFormValues) => {
+  //   const tx = staking?.stake(
+  //     utils.parseEther(stakeAmount),
+  //     unlockDate + ONE_DAY, // adding 24 hours to date to make sure contract will not choose previous period,
+  //     constants.AddressZero,
+  //     constants.AddressZero
+  //   );
 
-    return tx;
-  };
+  //   return tx;
+  // };
 
-  const { handleSubmit: handleStake, ...stakeData } = useContractCall(onStake);
+  // const { handleSubmit: handleStake, ...stakeData } = useContractCall(onStake);
 
   if (!kickoffTs || !staking || !account) {
     return null;
   }
+
+  const handleStake = (values: AddNewStakeFormValues) => {
+    dispatch(stakingActions.addNewStake(values));
+  };
 
   return (
     <>
@@ -100,15 +104,14 @@ export const AddNewStakeContainer = ({
         open={open}
         onClose={onClose}
         onStake={handleStake}
-        onApprove={handleApprove}
         kickoffTs={kickoffTs}
         stakes={currentStakes}
         fishBalance={fishBalance}
         estimateStakeFee={estimateStakeFee}
-        esmimateApproveFee={esmimateApproveFee}
+        estimateApproveFee={estimateApproveFee}
       />
 
-      {approveData.status !== 'idle' && (
+      {/* {approveData.status !== 'idle' && (
         <SubmitStatusDialog operationName="Staking" {...approveData} />
       )}
 
@@ -118,7 +121,7 @@ export const AddNewStakeContainer = ({
           successCallback={onClose}
           {...stakeData}
         />
-      )}
+      )} */}
     </>
   );
 };

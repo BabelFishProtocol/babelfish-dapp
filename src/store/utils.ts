@@ -1,12 +1,11 @@
 import { ContractCall } from 'ethers-multicall';
 import { BaseContract } from 'ethers';
 import { ParamType } from 'ethers/lib/utils';
-import { ActionCreatorWithPayload } from '@reduxjs/toolkit';
 import { call, cancel, fork, put, take, takeLatest } from 'typed-redux-saga';
 
 import { appActions } from './app/app.slice';
-import { CallState } from './staking/staking.state';
 import {
+  ContractStepCallSagaParams,
   CreateWatcherSagaOptions,
   MulticallContractCall,
   MulticallProviderType,
@@ -86,7 +85,8 @@ export const createWatcherSaga = ({
 
 function* stepCall<Operations extends string>(
   { effect, name }: SagaContractCallStep<Operations>,
-  setStatusAction: ActionCreatorWithPayload<Partial<CallState<Operations>>>
+  setStatusAction: ContractStepCallSagaParams<Operations>['setStatusAction'],
+  setStepDataAction: ContractStepCallSagaParams<Operations>['setStepDataAction']
 ) {
   yield* put(
     setStatusAction({
@@ -97,28 +97,33 @@ function* stepCall<Operations extends string>(
 
   const tx = yield* effect;
 
-  yield* put(setStatusAction({ tx }));
+  yield* put(setStepDataAction({ tx }));
 
   const txReceipt = yield* call(tx.wait);
 
-  yield* put(setStatusAction({ txReceipt }));
+  yield* put(setStepDataAction({ txReceipt }));
 }
 
 /**
  * @description function that calls multiple contract calls with proper state updates
- * @param steps           List of contract calls with corresponding names
- * @param setErrorAction  Action that will be dispatched in case of error
- * @param setStatusAction Action to update the state of calls
+ * @param config Object containing:
+ *    - steps:             List of contract calls with corresponding names
+ *    - setErrorAction:    Action that will be dispatched in case of error
+ *    - setStatusAction:   Action to update the state
+ *    - setStepDataAction: Action to update step call data
  */
-export function* contractCallSaga<Operations extends string>(
-  steps: SagaContractCallStep<Operations>[],
-  setErrorAction: ActionCreatorWithPayload<string>,
-  setStatusAction: ActionCreatorWithPayload<Partial<CallState<Operations>>>
-) {
+export function* contractStepCallsSaga<Operations extends string>({
+  steps,
+  setErrorAction,
+  setStatusAction,
+  setStepDataAction,
+}: ContractStepCallSagaParams<Operations>) {
   try {
+    yield* put(setStatusAction({ status: 'loading' }));
+
     // eslint-disable-next-line no-restricted-syntax
     for (const step of steps) {
-      yield* stepCall(step, setStatusAction);
+      yield* stepCall(step, setStatusAction, setStepDataAction);
     }
 
     yield* put(setStatusAction({ status: 'success' }));

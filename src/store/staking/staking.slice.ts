@@ -1,44 +1,63 @@
-import { TransactionReceipt } from '@ethersproject/providers';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ContractTransaction } from 'ethers';
 import { Reducers } from '../../constants';
 import { AddNewStakeFormValues } from '../../pages/Staking/AddNewStake/AddNewStake.types';
 import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/StakingHistory.types';
-import { FiniteStates } from '../../utils/types';
+
 import { ActionsType } from '../types';
 import {
+  AddNewStakeCalls,
   CallState,
   FishTokenInfo,
   StakeConstants,
   StakeListItem,
   StakingState,
+  StepData,
 } from './staking.state';
 
 const initialState = { ...new StakingState() };
+
+type SetAddStakeStatusPayload = Pick<
+  CallState<AddNewStakeCalls>,
+  'status' | 'currentOperation'
+>;
 
 export const stakingSlice = createSlice({
   name: Reducers.Staking,
   initialState,
   reducers: {
     addNewStake: (state, _: PayloadAction<AddNewStakeFormValues>) => {
-      state.addNewStakeCall = {
-        ...initialState.addNewStakeCall,
-        status: 'loading',
-      };
+      state.addNewStakeCall = initialState.addNewStakeCall;
     },
-    setAddStakeStateCallData: (
+    setAddStakeStatus: (
       state,
-      { payload }: PayloadAction<Partial<StakingState['addNewStakeCall']>>
+      { payload }: PayloadAction<SetAddStakeStatusPayload>
     ) => {
-      state.addNewStakeCall = {
-        ...state.addNewStakeCall,
-        ...payload,
-      };
+      state.addNewStakeCall.status = payload.status;
+      state.addNewStakeCall.currentOperation = payload.currentOperation;
+    },
+    setAddStakeStateCurrentCallData: (
+      state,
+      { payload }: PayloadAction<Partial<StepData<AddNewStakeCalls>>>
+    ) => {
+      if (state.addNewStakeCall.currentOperation) {
+        state.addNewStakeCall.steps[state.addNewStakeCall.currentOperation] = {
+          ...state.addNewStakeCall.steps[
+            state.addNewStakeCall.currentOperation
+          ],
+          ...payload,
+        };
+      }
     },
     setAddStakeError: (state, { payload }: PayloadAction<Partial<string>>) => {
       state.addNewStakeCall.status = 'failure';
-      state.addNewStakeCall.error = payload;
+
+      if (state.addNewStakeCall.currentOperation) {
+        state.addNewStakeCall.steps[
+          state.addNewStakeCall.currentOperation
+        ].error = payload;
+      }
     },
+
     watchStakingData: (_) => {},
     stopWatchingStakingData: (state) => {
       state.fishToken.state = 'idle';

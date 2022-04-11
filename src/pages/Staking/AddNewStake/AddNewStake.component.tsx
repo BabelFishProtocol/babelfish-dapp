@@ -29,10 +29,9 @@ export const AddNewStakeComponent = ({
   onClose,
   stakes,
   onStake,
-  onApprove,
   kickoffTs,
   estimateStakeFee,
-  esmimateApproveFee,
+  estimateApproveFee,
   fishBalance = '0',
 }: AddNewStakeComponentProps) => {
   const { control, setValue, handleSubmit, formState, watch } =
@@ -49,8 +48,8 @@ export const AddNewStakeComponent = ({
       title="Stake Fish"
       onClose={onClose}
       isValid={formState.isValid}
-      leftButtonText={needsApproval ? 'Approve' : 'Stake'}
-      handleSubmit={handleSubmit(needsApproval ? onApprove : onStake)}
+      leftButtonText="Stake"
+      handleSubmit={handleSubmit(onStake)}
     >
       <ControlledInputWithButtonPillGroup
         autoFocus
@@ -75,7 +74,7 @@ export const AddNewStakeComponent = ({
         control={control}
         needsApproval={needsApproval}
         estimateStakeFee={estimateStakeFee}
-        esmimateApproveFee={esmimateApproveFee}
+        estimateApproveFee={estimateApproveFee}
       />
     </DialogForm>
   );
@@ -106,7 +105,7 @@ const FeeEstimator = ({
   control,
   needsApproval,
   estimateStakeFee,
-  esmimateApproveFee,
+  estimateApproveFee,
 }: FeeEstimatorProps) => {
   const watchStakeAmount = useWatch({
     name: AddNewStakeFields.stakeAmount,
@@ -120,7 +119,7 @@ const FeeEstimator = ({
   const estimatedFee = useEstimateFee({
     amount: watchStakeAmount,
     timestamp: watchUnlockDate,
-    estimator: needsApproval ? esmimateApproveFee : estimateStakeFee,
+    estimator: needsApproval ? estimateApproveFee : estimateStakeFee,
   });
 
   return (

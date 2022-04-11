@@ -1,4 +1,14 @@
-import { CaseReducerActions, createSlice, Store } from '@reduxjs/toolkit';
+import { TransactionReceipt } from '@ethersproject/providers';
+import {
+  Store,
+  createSlice,
+  createAction,
+  CaseReducerActions,
+} from '@reduxjs/toolkit';
+import { ContractTransaction } from 'ethers';
+import { throwError } from 'redux-saga-test-plan/providers';
+import { expectSaga, testSaga } from 'redux-saga-test-plan';
+import * as matchers from 'redux-saga-test-plan/matchers';
 import { call, takeLatest } from 'typed-redux-saga';
 
 import { getStore, rootReducer } from '.';
@@ -6,7 +16,9 @@ import { Reducers } from '../constants';
 import { mockProvider } from '../testUtils';
 import { appActions, appReducer } from './app/app.slice';
 import { indexSaga } from './saga';
-import { createWatcherSaga } from './utils';
+import { CallState, StepData } from './staking/staking.state';
+import { SagaContractCallStep } from './types';
+import { contractStepCallsSaga, createWatcherSaga } from './utils';
 
 const mockReducers = {
   watch: () => {},
@@ -129,6 +141,134 @@ describe('saga utils', () => {
         expect(mockFetch).not.toHaveBeenCalled();
         expect(mockUpdate).not.toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('contractStepCallsSaga', () => {
+    type MockSteps = 'step1' | 'step2';
+
+    const mockStep1TxReceipt = { step1: true } as unknown as TransactionReceipt;
+    const mockStep1Tx = {
+      hash: 'step1Tx',
+      wait: jest.fn().mockReturnValue(mockStep1TxReceipt),
+    } as unknown as ContractTransaction;
+
+    const mockStep2TxReceipt = { step2: true } as unknown as TransactionReceipt;
+    const mockStep2Tx = {
+      hash: 'step2Tx',
+      wait: jest.fn().mockReturnValue(mockStep2TxReceipt),
+    } as unknown as ContractTransaction;
+
+    const mockContract = {
+      testStep1Method: jest
+        .fn<ContractTransaction, [number]>()
+        .mockReturnValue(mockStep1Tx),
+
+      testStep2Method: jest
+        .fn<ContractTransaction, [number]>()
+        .mockReturnValue(mockStep2Tx),
+    };
+
+    const mockSetErrorAction = createAction<string>('mockSetErrorAction');
+
+    const mockSetStatusAction = createAction<
+      Pick<CallState<string>, 'status' | 'currentOperation'>
+    >('mockSetStatusAction');
+
+    const mockSetStepDataAction = createAction<Partial<StepData<string>>>(
+      'mockSetStepDataAction'
+    );
+
+    it('proper saga flow', async () => {
+      const mockSteps: SagaContractCallStep<MockSteps>[] = [
+        {
+          name: 'step1',
+          effect: call(mockContract.testStep1Method, 1),
+        },
+        {
+          name: 'step2',
+          effect: call(mockContract.testStep2Method, 2),
+        },
+      ];
+
+      testSaga(contractStepCallsSaga, {
+        steps: mockSteps,
+        setErrorAction: mockSetErrorAction,
+        setStatusAction: mockSetStatusAction,
+        setStepDataAction: mockSetStepDataAction,
+      })
+        .next()
+        .put(mockSetStatusAction({ status: 'loading' }))
+        .next()
+        .put(
+          mockSetStatusAction({ currentOperation: 'step1', status: 'loading' })
+        )
+        .next()
+        .call(mockContract.testStep1Method, 1)
+        .next(mockStep1Tx)
+        .put(mockSetStepDataAction({ tx: mockStep1Tx }))
+        .next()
+        .call(mockStep1Tx.wait)
+        .next(mockStep1TxReceipt)
+        .put(mockSetStepDataAction({ txReceipt: mockStep1TxReceipt }))
+        .next()
+        .put(
+          mockSetStatusAction({ currentOperation: 'step2', status: 'loading' })
+        )
+        .next()
+        .call(mockContract.testStep2Method, 2)
+        .next(mockStep2Tx)
+        .put(mockSetStepDataAction({ tx: mockStep2Tx }))
+        .next()
+        .call(mockStep2Tx.wait)
+        .next(mockStep2TxReceipt)
+        .put(mockSetStepDataAction({ txReceipt: mockStep2TxReceipt }))
+        .next()
+        .put(mockSetStatusAction({ status: 'success' }))
+        .next()
+        .isDone();
+    });
+
+    it('fetching error', async () => {
+      const mockSteps: SagaContractCallStep<MockSteps>[] = [
+        {
+          name: 'step1',
+          effect: call(mockContract.testStep1Method, 1),
+        },
+        {
+          name: 'step2',
+          effect: call(mockContract.testStep2Method, 2),
+        },
+      ];
+
+      const runResult = await expectSaga(contractStepCallsSaga, {
+        steps: mockSteps,
+        setErrorAction: mockSetErrorAction,
+        setStatusAction: mockSetStatusAction,
+        setStepDataAction: mockSetStepDataAction,
+      })
+        .provide([
+          [
+            matchers.call.fn(mockContract.testStep2Method),
+            throwError(new Error('test error')),
+          ],
+        ])
+        .call(mockContract.testStep1Method, 1)
+        .call(mockContract.testStep2Method, 2)
+        .call(mockStep1Tx.wait)
+        .put(mockSetStatusAction({ status: 'loading' }))
+        .put(
+          mockSetStatusAction({ currentOperation: 'step1', status: 'loading' })
+        )
+        .put(mockSetStepDataAction({ tx: mockStep1Tx }))
+        .put(mockSetStepDataAction({ txReceipt: mockStep1TxReceipt }))
+        .put(
+          mockSetStatusAction({ currentOperation: 'step2', status: 'loading' })
+        )
+        .put(mockSetErrorAction('test error'))
+        .run();
+
+      expect(runResult.effects).toEqual({});
     });
   });
 });

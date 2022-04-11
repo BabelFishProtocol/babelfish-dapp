@@ -1,10 +1,14 @@
-import { ActionCreatorsMapObject } from '@reduxjs/toolkit';
+import {
+  ActionCreatorsMapObject,
+  ActionCreatorWithPayload,
+} from '@reduxjs/toolkit';
 import { BaseContract, Contract, ContractTransaction, Signer } from 'ethers';
 import { ContractCall, Provider } from 'ethers-multicall';
 import { SagaIterator } from 'redux-saga';
 import { ActionPattern, CallEffect } from 'redux-saga/effects';
 import { SagaGenerator } from 'typed-redux-saga/dist';
 import { ContractCallResult, FiniteStates } from '../utils/types';
+import { CallState, StepData } from './staking/staking.state';
 
 export type LoadableValue<Data> = {
   data: Data;
@@ -52,4 +56,13 @@ export type MulticallProviderType = Omit<Provider, 'all'> & {
 export type SagaContractCallStep<Operations extends string> = {
   name: Operations;
   effect: SagaGenerator<ContractTransaction, CallEffect<ContractTransaction>>;
+};
+
+export type ContractStepCallSagaParams<Operations extends string> = {
+  steps: SagaContractCallStep<Operations>[];
+  setErrorAction: ActionCreatorWithPayload<string>;
+  setStatusAction: ActionCreatorWithPayload<
+    Pick<CallState<Operations>, 'status' | 'currentOperation'>
+  >;
+  setStepDataAction: ActionCreatorWithPayload<Partial<StepData<Operations>>>;
 };
