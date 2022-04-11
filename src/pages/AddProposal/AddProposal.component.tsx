@@ -50,9 +50,7 @@ export const AddProposal = ({
   });
 
   useEffect(() => {
-    if (onGovernorChange) {
-      onGovernorChange(govOption);
-    }
+    onGovernorChange(govOption);
   }, [govOption, onGovernorChange]);
 
   return (
@@ -200,10 +198,7 @@ export const AddProposal = ({
               gap: 2,
             }}
           >
-            <Button
-              type="submit"
-              disabled={!isValid || reasonToBlock !== undefined}
-            >
+            <Button type="submit" disabled={!isValid || !!reasonToBlock}>
               Confirm
             </Button>
             <Button variant="outlined" onClick={onClose}>

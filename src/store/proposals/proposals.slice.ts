@@ -71,9 +71,7 @@ export const appSlice = createSlice({
     stopWatchingAddProposal: (state) => {
       state.addProposalState = 'idle';
     },
-    checkAddProposal: (state) => {
-      state.reasonToBlockProposal = undefined;
-    },
+    checkAddProposal: () => {},
     eligibleForAddProposal: (state) => {
       state.reasonToBlockProposal = undefined;
     },

@@ -17,7 +17,7 @@ export type AddProposalFields = {
 export type AddProposalProps = {
   isOpenDialog: boolean;
   reasonToBlock?: string;
-  onGovernorChange?: (gov: string) => void;
+  onGovernorChange: (gov: string) => void;
   onClose: () => void;
   onSubmit: (data: AddProposalFields) => void;
 };

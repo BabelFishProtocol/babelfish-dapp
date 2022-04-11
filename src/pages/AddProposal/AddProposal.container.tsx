@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDialog } from '../../components/AppDialog/AppDialog.component';
 import {
@@ -78,9 +78,12 @@ export const AddProposalContainer = ({
     };
   }, [dispatch, govSelector]);
 
-  const onGovernorChange = (gov: string) => {
-    dispatch(proposalsActions.setGovernor(gov));
-  };
+  const onGovernorChange = useCallback(
+    (gov: string) => {
+      dispatch(proposalsActions.setGovernor(gov));
+    },
+    [dispatch]
+  );
 
   return (
     <>
