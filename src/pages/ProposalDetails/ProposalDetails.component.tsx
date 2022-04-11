@@ -15,11 +15,7 @@ import { Button } from '../../components/Button/Button.component';
 import { PrettyTx } from '../../components/PrettyTx/PrettyTx.component';
 import { ProposalState, proposalStateNames, Urls } from '../../constants';
 
-import {
-  formatTimestamp,
-  getCurrentTimestamp,
-  truncateString,
-} from '../../utils/helpers';
+import { formatTimestamp, getCurrentTimestamp } from '../../utils/helpers';
 
 import {
   ProposalInfoItemProps,
@@ -53,7 +49,16 @@ export const ProposalDetailsComponent = ({
             justifyContent: 'space-between',
           }}
         >
-          <CenteredBox>
+          <CenteredBox
+            sx={{
+              flex: 1,
+              display: 'flex',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+              justifyContent: 'flex-start',
+            }}
+          >
             <IconButton
               sx={{ mr: 1, p: 0.2 }}
               component={Link}
@@ -61,29 +66,38 @@ export const ProposalDetailsComponent = ({
             >
               {'<'}
             </IconButton>
-            <Typography variant="h2">
-              {truncateString(proposal.title, 70)}
+            <Typography variant="h2" noWrap>
+              {proposal.title}
             </Typography>
           </CenteredBox>
 
-          <Typography variant="body1">
+          <Typography variant="body1" sx={{ ml: 2 }}>
             Voting Ends: {formatTimestamp(proposal.endTime)}
           </Typography>
         </Box>
       }
     >
-      <Grid container>
-        <Grid item sm={12} sx={{ p: ({ spacing }) => spacing(0, 2) }}>
-          <VotesRatioBlock />
-        </Grid>
+      <Box sx={{ p: ({ spacing }) => spacing(0, 2), mb: 1 }}>
+        <VotesRatioBlock />
+      </Box>
 
+      <Grid container>
         <Grid item sm={6} p={1}>
           <ForVotesContainer />
 
-          <Container sx={{ p: 2, mt: 2, minHeight: 300 }}>
-            <Typography variant="body2" sx={{ mb: 2, minHeight: 50 }}>
-              {proposal.description}
-            </Typography>
+          <Container
+            sx={{
+              p: 2,
+              mt: 2,
+              height: 300,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Box sx={{ overflow: 'auto', mb: 2 }}>
+              <Typography variant="body2">{proposal.description}</Typography>
+            </Box>
 
             {proposal.actions?.map(
               ({ contract, signature, calldata }, index) => (
@@ -118,7 +132,7 @@ export const ProposalDetailsComponent = ({
             sx={{
               p: 2,
               mt: 2,
-              minHeight: 300,
+              height: 300,
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-evenly',
