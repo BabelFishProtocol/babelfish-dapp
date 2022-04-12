@@ -2,7 +2,6 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { Reducers } from '../../constants';
 import { isTimeStampLocked } from '../../utils/helpers';
-import { AddNewStakeCalls } from './staking.state';
 
 const stakingState = (state: RootState) => state[Reducers.Staking];
 

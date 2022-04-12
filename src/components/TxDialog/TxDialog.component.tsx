@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 
-import { Step, StepConnector, StepLabel, Stepper } from '@mui/material';
+// import { Step, StepConnector, StepLabel, Stepper } from '@mui/material';
 import { Button } from '../Button/Button.component';
 import { PrettyTx } from '../PrettyTx/PrettyTx.component';
 import { AppDialog } from '../AppDialog/AppDialog.component';
