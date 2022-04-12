@@ -34,6 +34,21 @@ export const appSlice = createSlice({
     setBlockNumber: (state, { payload }: PayloadAction<number>) => {
       state.currentBlockNumber = payload;
     },
+    setSupportedNetworks: (
+      state,
+      { payload }: PayloadAction<AppState['supportedNetworks']>
+    ) => {
+      state.supportedNetworks = payload;
+    },
+    setWrongNetworkModal: (state, { payload }: PayloadAction<boolean>) => {
+      state.wrongNetworkModal = payload;
+    },
+    setWalletNotConnectedNetworkModal: (
+      state,
+      { payload }: PayloadAction<boolean>
+    ) => {
+      state.walletNotConectedModal = payload;
+    },
   },
 });
 

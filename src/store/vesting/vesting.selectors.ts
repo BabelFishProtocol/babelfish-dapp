@@ -1,11 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { Reducers } from '../../constants';
-import { isTimeStampLocked } from '../../utils/helpers';
 import { accountSelector, providerSelector } from '../app/app.selectors';
 import { getVesting } from './vesting.utils';
 
-const vestingState = (state: RootState) => state[Reducers.Vesting];
+export const vestingState = (state: RootState) => state[Reducers.Vesting];
 
 export const vestsListSelector = createSelector(
   vestingState,
@@ -25,15 +24,10 @@ export const selectedVestSelector = createSelector(
   }
 );
 
-export const isSelectedVestLockedSelector = createSelector(
-  selectedVestSelector,
-  (vest) => (vest ? isTimeStampLocked(vest.unlockDate) : undefined)
-);
-
 export const selectedVestContractSelector = createSelector(
   [providerSelector, selectedVestSelector],
   (provider, selectedVest) => {
-    if (!selectedVest || !provider) {
+    if (!provider || !selectedVest) {
       return undefined;
     }
     const vesting = getVesting(selectedVest.address, provider);

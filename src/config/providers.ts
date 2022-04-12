@@ -1,13 +1,9 @@
 import { InjectedConnector } from '@web3-react/injected-connector';
 // import { PortisConnector } from '@web3-react/portis-connector';
-import { ChainEnum } from './chains';
-
-const SUPPORTED_CHAINS = Object.values(ChainEnum).filter(
-  (item) => typeof item === 'number'
-);
+import { SUPPORTED_CHAINS } from './chains';
 
 export const injectedConnector = new InjectedConnector({
-  supportedChainIds: SUPPORTED_CHAINS as ChainEnum[],
+  supportedChainIds: SUPPORTED_CHAINS,
 });
 
 // export const portisConnector = new PortisConnector({

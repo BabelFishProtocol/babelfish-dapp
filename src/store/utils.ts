@@ -1,7 +1,15 @@
+import {
+  put,
+  take,
+  call,
+  fork,
+  cancel,
+  select,
+  takeLatest,
+} from 'typed-redux-saga';
 import { ContractCall } from 'ethers-multicall';
 import { BaseContract } from 'ethers';
 import { ParamType } from 'ethers/lib/utils';
-import { call, cancel, fork, put, take, takeLatest } from 'typed-redux-saga';
 
 import { appActions } from './app/app.slice';
 import {
@@ -12,6 +20,7 @@ import {
   MulticallResult,
   SagaContractCallStep,
 } from './types';
+import { accountSelector } from './app/app.selectors';
 
 export const convertForMulticall = <
   Contract extends BaseContract,
@@ -62,7 +71,10 @@ export const createWatcherSaga = ({
   stopAction,
 }: CreateWatcherSagaOptions) => {
   function* runUpdater() {
-    yield* call(fetchSaga);
+    const account = yield* select(accountSelector);
+    if (account) {
+      yield* call(fetchSaga);
+    }
 
     yield* takeLatest(
       [appActions.setAccount.type, appActions.setBlockNumber.type],

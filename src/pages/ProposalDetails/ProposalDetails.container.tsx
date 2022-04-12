@@ -12,7 +12,6 @@ import { useContractCall } from '../../hooks/useContractCall';
 import { GovernorTypes, selectorsErrors } from '../../constants';
 
 import { SubmitStatusDialog } from '../../components/TxDialog/TxDialog.component';
-import { WalletConnectionChecker } from '../../components/WalletConnectionChecker/WalletConnectionChecker.component';
 
 import { ProposalDetailsFailure } from './ProposalDetails.failure';
 import { ProposalDetailsLoadable } from './ProposalDetails.loadable';
@@ -24,7 +23,7 @@ const isProperGovernor = (
   governorType === GovernorTypes.GovernorOwner ||
   governorType === GovernorTypes.GovernorAdmin;
 
-const Container = () => {
+export const ProposalDetailsContainer = () => {
   const dispatch = useDispatch();
   const { id, governorType } = useParams();
   const { data, state } = useSelector(proposalDetailsSelector);
@@ -114,9 +113,3 @@ const Container = () => {
     </>
   );
 };
-
-export const ProposalDetailsContainer = () => (
-  <WalletConnectionChecker>
-    <Container />
-  </WalletConnectionChecker>
-);

@@ -102,7 +102,15 @@ describe('saga utils', () => {
       expect(mockUpdate).not.toHaveBeenCalled();
     });
 
-    it('should make an initial fetch call when watching is started', () => {
+    it('should not make an initial fetch call when watching is started and address is not set', () => {
+      store.dispatch(mockActions.watch());
+
+      expect(mockFetch).not.toHaveBeenCalled();
+      expect(mockUpdate).not.toHaveBeenCalled();
+    });
+
+    it('should make an initial fetch call when watching is started and address is set', () => {
+      store.dispatch(appActions.setAccount('account'));
       store.dispatch(mockActions.watch());
 
       expect(mockFetch).toHaveBeenCalled();

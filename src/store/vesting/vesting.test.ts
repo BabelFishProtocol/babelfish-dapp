@@ -1,202 +1,131 @@
-import { BigNumber, constants } from 'ethers';
-import { expectSaga } from 'redux-saga-test-plan';
-import { throwError } from 'redux-saga-test-plan/providers';
-import * as matchers from 'redux-saga-test-plan/matchers';
-import { combineReducers, DeepPartial } from '@reduxjs/toolkit';
-
-import { pick } from '../../utils/helpers';
-import { Reducers } from '../../constants';
-import { Staking, Vesting__factory } from '../../contracts/types';
-import { Staking__factory } from '../../contracts/types/factories/Staking__factory';
-import { rootReducer, RootState } from '..';
-
 import {
-  createMockedContract,
-  mockSigner,
-  mockProvider,
-} from '../../testUtils';
-
+  selectedVestContractSelector,
+  selectedVestSelector,
+  stakesAndVestsAddressesSelector,
+  vestsListSelector,
+  vestsListStatusSelector,
+} from './vesting.selectors';
 import {
-  accountSelector,
-  providerSelector,
-  stakingContractSelector,
-} from '../app/app.selectors';
-
-import { fetchVestsList } from './vesting.sagas';
-import { vestingActions } from './vesting.slice';
-import { UserVestings } from './vesting.types';
-import { getUserVestings } from './vesting.utils';
-import { VestingState, VestListItem } from './vesting.state';
-import { stakesAndVestsAddressesSelector } from './vesting.selectors';
-
-const getVestingResult = '0x94e907f6B903A393E14FE549113137CA6483b5ef';
-
-const mockVestingFactoryConnect = Vesting__factory.connect(
-  getVestingResult,
-  mockSigner
-);
-
-jest.mock('./vesting.utils', () => ({
-  ...jest.requireActual('./vesting.utils'),
-  getVesting: jest.fn(() => mockVestingFactoryConnect),
-}));
-
-const mockStaking = createMockedContract(
-  Staking__factory.connect(constants.AddressZero, mockSigner),
-  true
-);
+  accountAddress,
+  combinedVestsList,
+  createMockVestingContract,
+  failureVestingState,
+  successVestingState,
+  vestingAddress,
+} from './vesting.mock';
+import { mockProvider } from '../../testUtils';
+import { getVesting } from './vesting.utils';
 
 afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe('vesting store', () => {
-  const testAccount = '0x012A3';
-  const reducer = combineReducers(pick(rootReducer, [Reducers.Vesting]));
+jest.mock('./vesting.utils', () => ({
+  ...jest.requireActual('./vesting.utils'),
+  getVesting: jest.fn(),
+}));
 
-  const initialState: DeepPartial<RootState> = {
-    [Reducers.Vesting]: { ...new VestingState() },
-  };
+describe('selectors', () => {
+  describe('stakesAndVestsAddressesSelector', () => {
+    it('returns undefined when wallet is not connected', () => {
+      const emptyAccountResult = stakesAndVestsAddressesSelector.resultFunc(
+        undefined,
+        combinedVestsList
+      );
 
-  const stakes = ['100000', '150000'];
-  const dates = [BigNumber.from(1645564671), BigNumber.from(1645564672)];
-  const delegates = ['0x3443'];
-  const cliff = BigNumber.from(2419200);
-
-  const getStakesResult: Partial<Awaited<ReturnType<Staking['getStakes']>>> = {
-    dates: dates.map((date) => BigNumber.from(date)),
-    stakes: stakes.map((stake) => BigNumber.from(stake)),
-  };
-
-  const userVests: UserVestings = {
-    vestAddress: getVestingResult,
-    teamVestAddress: constants.AddressZero,
-  };
-
-  const combinedVestsList: VestListItem[] = [
-    {
-      asset: 'FISH',
-      unlockDate: dates[0].toNumber(),
-      lockedAmount: stakes[0],
-      votingDelegation: delegates[0],
-      stakingPeriodStart: dates[0].toNumber(),
-      address: getVestingResult,
-      addressType: 'genesis',
-      cliff: cliff.toNumber(),
-    },
-  ];
-
-  describe('fetchVestsList', () => {
-    const successState: DeepPartial<RootState> = {
-      ...initialState,
-      [Reducers.Vesting]: {
-        ...initialState[Reducers.Vesting],
-        vestsList: { state: 'success', data: combinedVestsList },
-      },
-    };
-
-    const failureState: DeepPartial<RootState> = {
-      ...initialState,
-      [Reducers.Vesting]: {
-        ...initialState[Reducers.Vesting],
-        vestsList: { state: 'failure', data: [] },
-      },
-    };
-
-    const getBasePath = () =>
-      expectSaga(fetchVestsList)
-        .withReducer(reducer)
-        .withState(initialState)
-        .select(accountSelector)
-        .select(stakingContractSelector)
-        .select(providerSelector);
-
-    it('happy path', async () => {
-      await getBasePath()
-        .provide([
-          [matchers.select(accountSelector), testAccount],
-          [matchers.select(stakingContractSelector), mockStaking],
-          [matchers.select(providerSelector), mockProvider],
-          [matchers.call(getUserVestings), userVests],
-          [
-            matchers.call(mockStaking.getStakes, getVestingResult),
-            getStakesResult,
-          ],
-          [matchers.call(mockStaking.balanceOf, getVestingResult), stakes[0]],
-          [
-            matchers.call(
-              mockStaking.delegates,
-              getVestingResult,
-              dates[0].toNumber()
-            ),
-            delegates[0],
-          ],
-          [matchers.call(mockVestingFactoryConnect.startDate), dates[0]],
-          [matchers.call(mockVestingFactoryConnect.endDate), dates[0]],
-          [matchers.call(mockVestingFactoryConnect.cliff), cliff],
-        ])
-        .put(vestingActions.setVestsList(combinedVestsList))
-        .hasFinalState(successState)
-        .run();
+      expect(emptyAccountResult).toBeUndefined();
     });
+    it('returns account and vesting addresses', () => {
+      const addressesResult = stakesAndVestsAddressesSelector.resultFunc(
+        accountAddress,
+        combinedVestsList
+      );
 
-    it('when wallet is not connected', async () => {
-      const runResult = await getBasePath()
-        .provide([
-          [matchers.select(accountSelector), testAccount],
-          [matchers.select(stakingContractSelector), mockStaking],
-          [matchers.select(providerSelector), undefined],
-        ])
-        .put(vestingActions.fetchVestsListFailure())
-        .hasFinalState(failureState)
-        .run();
-
-      expect(runResult.effects).toEqual({});
+      expect(addressesResult).toEqual([
+        combinedVestsList[0].address,
+        combinedVestsList[1].address,
+        accountAddress.toLowerCase(),
+      ]);
     });
+    it('returns account and no vesting addresses', () => {
+      const addressesResult = stakesAndVestsAddressesSelector.resultFunc(
+        accountAddress,
+        []
+      );
 
-    it('fetching error', async () => {
-      await getBasePath()
-        .provide([
-          [matchers.select(accountSelector), testAccount],
-          [matchers.select(stakingContractSelector), mockStaking],
-          [matchers.select(providerSelector), mockProvider],
-          [matchers.call.fn(getUserVestings), throwError()],
-        ])
-        .call(getUserVestings)
-        .put(vestingActions.fetchVestsListFailure())
-        .hasFinalState(failureState)
-        .run();
+      expect(addressesResult).toEqual([accountAddress.toLowerCase()]);
     });
   });
-  describe('selectors', () => {
-    describe('stakesAndVestsAddressesSelector', () => {
-      it('returns undefined when wallet is not connected', () => {
-        const emptyAccountResult = stakesAndVestsAddressesSelector.resultFunc(
-          undefined,
-          combinedVestsList
-        );
+  describe('selectedVestContractSelector', () => {
+    it('returns undefined when wallet is not connected', () => {
+      const emptyAccountResult = selectedVestContractSelector.resultFunc(
+        undefined,
+        combinedVestsList[0]
+      );
 
-        expect(emptyAccountResult).toBeUndefined();
-      });
-      it('returns account and vesting addresses', () => {
-        const addressesResult = stakesAndVestsAddressesSelector.resultFunc(
-          testAccount,
-          combinedVestsList
-        );
+      expect(emptyAccountResult).toBeUndefined();
+    });
+    it('returns undefined when vest is not selected', () => {
+      const notSelectedVestResult = selectedVestContractSelector.resultFunc(
+        mockProvider,
+        undefined
+      );
 
-        expect(addressesResult).toEqual([
-          combinedVestsList[0].address,
-          testAccount.toLowerCase(),
-        ]);
-      });
-      it('returns account and no vesting addresses', () => {
-        const addressesResult = stakesAndVestsAddressesSelector.resultFunc(
-          testAccount,
-          []
-        );
+      expect(notSelectedVestResult).toBeUndefined();
+    });
+    it('returns vesting contract', () => {
+      const vestingMock = createMockVestingContract(vestingAddress);
+      (getVesting as jest.Mock).mockImplementation(() => vestingMock);
+      const vestingResult = selectedVestContractSelector.resultFunc(
+        mockProvider,
+        combinedVestsList[0]
+      );
 
-        expect(addressesResult).toEqual([testAccount.toLowerCase()]);
-      });
+      expect(vestingResult).toEqual(vestingMock);
+    });
+  });
+
+  describe('vestsListSelector', () => {
+    it('returns array with vest items', () => {
+      const vestListResult = vestsListSelector.resultFunc(successVestingState);
+
+      expect(vestListResult).toEqual(combinedVestsList);
+    });
+    it('returns empty array ', () => {
+      const emptyVestListResult =
+        vestsListSelector.resultFunc(failureVestingState);
+
+      expect(emptyVestListResult).toEqual([]);
+    });
+  });
+  describe('vestsListStatusSelector', () => {
+    it('returns success status', () => {
+      const successStatusResult =
+        vestsListStatusSelector.resultFunc(successVestingState);
+
+      expect(successStatusResult).toEqual('success');
+    });
+    it('returns failure status', () => {
+      const failureStatusResult =
+        vestsListStatusSelector.resultFunc(failureVestingState);
+
+      expect(failureStatusResult).toEqual('failure');
+    });
+  });
+  describe('selectedVestSelector', () => {
+    it('returns selected vest', () => {
+      const selectedVestResult = selectedVestSelector.resultFunc(
+        successVestingState,
+        combinedVestsList
+      );
+      expect(selectedVestResult).toEqual(combinedVestsList[0]);
+    });
+    it('returns undefined vest', () => {
+      const notSelectedVestResult = selectedVestSelector.resultFunc(
+        failureVestingState,
+        combinedVestsList
+      );
+      expect(notSelectedVestResult).toBeUndefined();
     });
   });
 });
