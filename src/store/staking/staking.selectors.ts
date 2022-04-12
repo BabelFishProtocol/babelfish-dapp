@@ -5,7 +5,7 @@ import { isTimeStampLocked } from '../../utils/helpers';
 
 const stakingState = (state: RootState) => state[Reducers.Staking];
 
-const fishTokenSelector = createSelector(
+export const fishTokenSelector = createSelector(
   stakingState,
   (state) => state.fishToken
 );
@@ -34,6 +34,11 @@ export const stakesListSelector = createSelector(
   (state) => state.stakesList.data
 );
 
+export const stakesListStatusSelector = createSelector(
+  stakingState,
+  (state) => state.stakesList.state
+);
+
 export const stakesHistoryListSelector = createSelector(
   stakingState,
   (state) => state.stakesListHistory.data
@@ -44,10 +49,6 @@ export const stakesHistoryListStatusSelector = createSelector(
   (state) => state.stakesListHistory.state
 );
 
-export const stakesListStatusSelector = createSelector(
-  stakingState,
-  (state) => state.stakesList.state
-);
 export const stakesDatesSelector = createSelector(
   stakesListSelector,
   (stakes) => stakes.map((stake) => stake.unlockDate)
