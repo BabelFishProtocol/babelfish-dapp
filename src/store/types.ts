@@ -1,3 +1,4 @@
+import { TransactionReceipt } from '@ethersproject/providers';
 import {
   ActionCreatorsMapObject,
   ActionCreatorWithPayload,
@@ -8,7 +9,6 @@ import { SagaIterator } from 'redux-saga';
 import { ActionPattern, CallEffect } from 'redux-saga/effects';
 import { SagaGenerator } from 'typed-redux-saga/dist';
 import { ContractCallResult, FiniteStates } from '../utils/types';
-import { CallState, StepData } from './staking/staking.state';
 
 export type LoadableValue<Data> = {
   data: Data;
@@ -51,6 +51,19 @@ export type MulticallResult<Calls extends BaseCall[]> = Promise<{
 
 export type MulticallProviderType = Omit<Provider, 'all'> & {
   all: <Calls extends BaseCall[]>(calls: Calls) => MulticallResult<Calls>;
+};
+
+export type StepData<Operations extends string> = {
+  name: Operations;
+  tx?: ContractTransaction;
+  txReceipt?: TransactionReceipt;
+  error?: string;
+};
+
+export type CallState<Operations extends string> = {
+  status: FiniteStates;
+  currentOperation?: Operations;
+  steps: StepData<Operations>[];
 };
 
 export type SagaContractCallStep<Operations extends string> = {

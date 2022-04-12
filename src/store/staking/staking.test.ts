@@ -35,12 +35,12 @@ import {
 import { stakingActions } from './staking.slice';
 import { StakeListItem, StakingState } from './staking.state';
 import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/StakingHistory.types';
-import { convertForMulticall } from '../utils';
+import { convertForMulticall } from '../utils/utils.sagas';
 import { stakesAndVestsAddressesSelector } from '../vesting/vesting.selectors';
 import { historyStakesQuery } from '../../queries/historyStakeListQuery';
 
-jest.mock('../utils', () => ({
-  ...jest.requireActual('../utils'),
+jest.mock('../utils/utils.sagas', () => ({
+  ...jest.requireActual('../utils/utils.sagas'),
   convertForMulticall: jest.fn(),
 }));
 

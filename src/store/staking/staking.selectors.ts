@@ -72,8 +72,9 @@ export const addStakeSubmitStatusSelector = createSelector(
   stakingState,
   (state) => {
     const callData = state.addNewStakeCall;
-    const currentStep =
-      callData.steps[callData.currentOperation as AddNewStakeCalls] || {};
+    const currentStep = callData.steps.find(
+      (step) => step.name === callData.currentOperation
+    );
 
     return {
       status: callData.status,

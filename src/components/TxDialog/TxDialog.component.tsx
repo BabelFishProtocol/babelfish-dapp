@@ -154,8 +154,8 @@ type SubmitStepsDialogProps = SubmitStatusDialogProps & {
 export const SubmitStepsDialog = ({
   tx,
   status,
-  steps,
-  currentStep,
+  // steps,
+  // currentStep,
   txReceipt,
   ...dialogProps
 }: SubmitStepsDialogProps) => {
@@ -174,6 +174,18 @@ export const SubmitStepsDialog = ({
       />
     );
   }
+
+  //   <Stepper activeStep={2}>
+  //   <Step completed>
+  //     <StepLabel>Approve</StepLabel>
+  //   </Step>
+  //   <Step>
+  //     <StepLabel error>Stake</StepLabel>
+  //   </Step>
+  //   <Step>
+  //     <StepLabel>Finish</StepLabel>
+  //   </Step>
+  // </Stepper>
 
   return (
     <TxPendingDialog

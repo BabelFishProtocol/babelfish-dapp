@@ -11,14 +11,13 @@ import { expectSaga, testSaga } from 'redux-saga-test-plan';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import { call, takeLatest } from 'typed-redux-saga';
 
-import { getStore, rootReducer } from '.';
-import { Reducers } from '../constants';
-import { mockProvider } from '../testUtils';
-import { appActions, appReducer } from './app/app.slice';
-import { indexSaga } from './saga';
-import { CallState, StepData } from './staking/staking.state';
-import { SagaContractCallStep } from './types';
-import { contractStepCallsSaga, createWatcherSaga } from './utils';
+import { getStore, rootReducer } from '..';
+import { Reducers } from '../../constants';
+import { mockProvider } from '../../testUtils';
+import { appActions, appReducer } from '../app/app.slice';
+import { indexSaga } from '../saga';
+import { CallState, SagaContractCallStep, StepData } from '../types';
+import { contractStepCallsSaga, createWatcherSaga } from './utils.sagas';
 
 const mockReducers = {
   watch: () => {},

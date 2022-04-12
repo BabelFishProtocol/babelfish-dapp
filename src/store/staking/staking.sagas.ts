@@ -14,7 +14,7 @@ import {
   convertForMulticall,
   createWatcherSaga,
   multiCall,
-} from '../utils';
+} from '../utils/utils.sagas';
 import { StakingActions, stakingActions } from './staking.slice';
 import { AddNewStakeCalls, StakeListItem } from './staking.state';
 import { vestingActions } from '../vesting/vesting.slice';
@@ -230,13 +230,13 @@ export function* addNewStake({ payload }: StakingActions['addNewStake']) {
 
   if (BigNumber.from(allowanceForStaking).lt(parsedStakeAmount)) {
     steps.push({
-      name: 'approve',
+      name: 'approving',
       effect: call(fishToken.approve, staking.address, parsedStakeAmount),
     });
   }
 
   steps.push({
-    name: 'stake',
+    name: 'staking',
     effect: call(
       staking.stake,
       parsedStakeAmount,
@@ -250,6 +250,6 @@ export function* addNewStake({ payload }: StakingActions['addNewStake']) {
     steps,
     setErrorAction: stakingActions.setAddStakeError,
     setStatusAction: stakingActions.setAddStakeStatus,
-    setStepDataAction: stakingActions.setAddStakeStateCurrentCallData,
+    setStepDataAction: stakingActions.setAddStakeStateStepData,
   });
 }

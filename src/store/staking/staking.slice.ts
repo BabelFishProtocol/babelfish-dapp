@@ -3,15 +3,18 @@ import { Reducers } from '../../constants';
 import { AddNewStakeFormValues } from '../../pages/Staking/AddNewStake/AddNewStake.types';
 import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/StakingHistory.types';
 
-import { ActionsType } from '../types';
+import { ActionsType, CallState, StepData } from '../types';
+import {
+  handleSetCallError,
+  handleUpdateCallStatus,
+  handleUpdateStepData,
+} from '../utils/utils.reducers';
 import {
   AddNewStakeCalls,
-  CallState,
   FishTokenInfo,
   StakeConstants,
   StakeListItem,
   StakingState,
-  StepData,
 } from './staking.state';
 
 const initialState = { ...new StakingState() };
@@ -28,34 +31,32 @@ export const stakingSlice = createSlice({
     addNewStake: (state, _: PayloadAction<AddNewStakeFormValues>) => {
       state.addNewStakeCall = initialState.addNewStakeCall;
     },
+    resetAddNewStake: (state) => {
+      state.addNewStakeCall = initialState.addNewStakeCall;
+    },
     setAddStakeStatus: (
       state,
       { payload }: PayloadAction<SetAddStakeStatusPayload>
     ) => {
-      state.addNewStakeCall.status = payload.status;
-      state.addNewStakeCall.currentOperation = payload.currentOperation;
+      state.addNewStakeCall = handleUpdateCallStatus(
+        state.addNewStakeCall,
+        payload
+      );
     },
-    setAddStakeStateCurrentCallData: (
+    setAddStakeStateStepData: (
       state,
       { payload }: PayloadAction<Partial<StepData<AddNewStakeCalls>>>
     ) => {
-      if (state.addNewStakeCall.currentOperation) {
-        state.addNewStakeCall.steps[state.addNewStakeCall.currentOperation] = {
-          ...state.addNewStakeCall.steps[
-            state.addNewStakeCall.currentOperation
-          ],
-          ...payload,
-        };
-      }
+      state.addNewStakeCall = handleUpdateStepData(
+        state.addNewStakeCall,
+        payload
+      );
     },
     setAddStakeError: (state, { payload }: PayloadAction<Partial<string>>) => {
-      state.addNewStakeCall.status = 'failure';
-
-      if (state.addNewStakeCall.currentOperation) {
-        state.addNewStakeCall.steps[
-          state.addNewStakeCall.currentOperation
-        ].error = payload;
-      }
+      state.addNewStakeCall = handleSetCallError(
+        state.addNewStakeCall,
+        payload
+      );
     },
 
     watchStakingData: (_) => {},

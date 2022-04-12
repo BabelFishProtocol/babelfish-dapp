@@ -11,7 +11,7 @@ import { ContractCall } from 'ethers-multicall';
 import { BaseContract } from 'ethers';
 import { ParamType } from 'ethers/lib/utils';
 
-import { appActions } from './app/app.slice';
+import { appActions } from '../app/app.slice';
 import {
   ContractStepCallSagaParams,
   CreateWatcherSagaOptions,
@@ -19,8 +19,8 @@ import {
   MulticallProviderType,
   MulticallResult,
   SagaContractCallStep,
-} from './types';
-import { accountSelector } from './app/app.selectors';
+} from '../types';
+import { accountSelector } from '../app/app.selectors';
 
 export const convertForMulticall = <
   Contract extends BaseContract,

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { constants, utils } from 'ethers';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   accountSelector,
@@ -12,6 +12,7 @@ import {
   fishTokenDataSelector,
   stakingConstantsSelector,
   stakesDatesSelector,
+  addStakeSubmitStatusSelector,
 } from '../../../store/staking/staking.selectors';
 import { ONE_DAY } from '../../../constants';
 
@@ -22,6 +23,7 @@ import {
 } from './AddNewStake.types';
 import { AddNewStakeComponent } from './AddNewStake.component';
 import { stakingActions } from '../../../store/staking/staking.slice';
+import { SubmitStatusDialog } from '../../../components/TxDialog/TxDialog.component';
 
 export const AddNewStakeContainer = ({
   open,
@@ -35,6 +37,7 @@ export const AddNewStakeContainer = ({
   const fishToken = useSelector(fishTokenSelector);
   const { kickoffTs } = useSelector(stakingConstantsSelector);
   const { fishBalance } = useSelector(fishTokenDataSelector);
+  const submitTx = useSelector(addStakeSubmitStatusSelector);
 
   // ----- approving -----
 
@@ -47,22 +50,6 @@ export const AddNewStakeContainer = ({
     [fishToken?.estimateGas, staking?.address]
   );
 
-  // const onApproveStake = async ({ stakeAmount }: AddNewStakeFormValues) => {
-  //   const missingAllowance = utils.parseEther(stakeAmount);
-
-  //   const tx = await fishToken?.approve(
-  //     staking?.address as string,
-  //     missingAllowance
-  //   );
-
-  //   return tx;
-  // };
-
-  // const { handleSubmit: handleApprove, ...approveData } =
-  //   useContractCall(onApproveStake);
-
-  // ----- staking -----
-
   const estimateStakeFee: StakingFeeEstimator = useCallback(
     async (amount: string, timestamp: number) =>
       staking?.estimateGas.stake(
@@ -74,28 +61,16 @@ export const AddNewStakeContainer = ({
     [staking?.estimateGas]
   );
 
-  // const onStake = async ({
-  //   stakeAmount,
-  //   unlockDate,
-  // }: AddNewStakeFormValues) => {
-  //   const tx = staking?.stake(
-  //     utils.parseEther(stakeAmount),
-  //     unlockDate + ONE_DAY, // adding 24 hours to date to make sure contract will not choose previous period,
-  //     constants.AddressZero,
-  //     constants.AddressZero
-  //   );
-
-  //   return tx;
-  // };
-
-  // const { handleSubmit: handleStake, ...stakeData } = useContractCall(onStake);
-
   if (!kickoffTs || !staking || !account) {
     return null;
   }
 
   const handleStake = (values: AddNewStakeFormValues) => {
     dispatch(stakingActions.addNewStake(values));
+  };
+
+  const handleResetCallData = () => {
+    dispatch(stakingActions.resetAddNewStake());
   };
 
   return (
@@ -111,17 +86,16 @@ export const AddNewStakeContainer = ({
         estimateApproveFee={estimateApproveFee}
       />
 
-      {/* {approveData.status !== 'idle' && (
-        <SubmitStatusDialog operationName="Staking" {...approveData} />
-      )}
-
-      {stakeData.status !== 'idle' && (
+      {submitTx.status !== 'idle' && (
         <SubmitStatusDialog
-          operationName="Staking"
           successCallback={onClose}
-          {...stakeData}
+          onClose={handleResetCallData}
+          tx={submitTx.currentTx}
+          status={submitTx.status}
+          txReceipt={submitTx.currentTxReceipt}
+          operationName={submitTx.currentStep || ''}
         />
-      )} */}
+      )}
     </>
   );
 };
