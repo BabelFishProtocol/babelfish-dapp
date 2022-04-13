@@ -5,9 +5,9 @@ import { BigNumber } from 'ethers';
 import { throwError } from 'redux-saga-test-plan/providers';
 import { RootState } from '../..';
 import {
-  initialState,
+  stakingInitialState,
   mockStaking,
-  reducer,
+  stakingReducer,
   testAccount,
   votingPower,
 } from '../staking.mock';
@@ -25,25 +25,25 @@ afterEach(() => {
 
 describe('fetchVotingPower', () => {
   const successState: DeepPartial<RootState> = {
-    ...initialState,
+    ...stakingInitialState,
     [Reducers.Staking]: {
-      ...initialState[Reducers.Staking],
+      ...stakingInitialState[Reducers.Staking],
       combinedVotingPower: { state: 'success', data: votingPower },
     },
   };
 
   const failureState: DeepPartial<RootState> = {
-    ...initialState,
+    ...stakingInitialState,
     [Reducers.Staking]: {
-      ...initialState[Reducers.Staking],
+      ...stakingInitialState[Reducers.Staking],
       combinedVotingPower: { state: 'failure', data: undefined },
     },
   };
 
   const getBasePath = () =>
     expectSaga(fetchVotingPower)
-      .withReducer(reducer)
-      .withState(initialState)
+      .withReducer(stakingReducer)
+      .withState(stakingInitialState)
       .select(accountSelector)
       .select(stakingContractSelector);
 

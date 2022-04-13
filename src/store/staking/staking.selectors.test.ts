@@ -1,5 +1,9 @@
-import { StakeListItem, StakingState } from './staking.state';
-import { failureStakingState, successStakingState } from './staking.mock';
+import { StakeListItem } from './staking.state';
+import {
+  combinedStakesList,
+  failureStakingState,
+  successStakingState,
+} from './staking.mock';
 import {
   combinedVotingPowerSelector,
   fishLoadingStateSelector,
@@ -14,28 +18,22 @@ import {
   stakesListStatusSelector,
   stakingConstantsSelector,
 } from './staking.selectors';
+import { setMockDate } from '../../testUtils';
+import { FiniteStates } from '../../utils/types';
 
 afterEach(() => {
   jest.clearAllMocks();
 });
 
-const getFishToken = (stakingState: StakingState) =>
-  fishTokenSelector.resultFunc(stakingState);
-
-const getSelectedStake = (
-  stakingState: StakingState,
-  stakeList: StakeListItem[]
-) => selectedStakeSelector.resultFunc(stakingState, stakeList);
-
 describe('staking selectors', () => {
   describe('fishTokenSelector', () => {
     it('returns fishToken', async () => {
-      const fishTokenResult = getFishToken(successStakingState);
+      const fishTokenResult = fishTokenSelector.resultFunc(successStakingState);
 
       expect(fishTokenResult).toEqual(successStakingState.fishToken);
     });
     it('returns empty object', async () => {
-      const fishTokenResult = getFishToken(failureStakingState);
+      const fishTokenResult = fishTokenSelector.resultFunc(failureStakingState);
 
       expect(fishTokenResult).toEqual(failureStakingState.fishToken);
     });
@@ -43,16 +41,16 @@ describe('staking selectors', () => {
 
   describe('fishTokenDataSelector', () => {
     it('returns fishToken data', async () => {
-      const fishTokenResult = getFishToken(successStakingState);
-      const fishTokenDataResult =
-        fishTokenDataSelector.resultFunc(fishTokenResult);
+      const fishTokenDataResult = fishTokenDataSelector.resultFunc(
+        successStakingState.fishToken
+      );
 
       expect(fishTokenDataResult).toEqual(successStakingState.fishToken.data);
     });
     it('returns empty object', async () => {
-      const fishTokenResult = getFishToken(failureStakingState);
-      const fishTokenDataResult =
-        fishTokenDataSelector.resultFunc(fishTokenResult);
+      const fishTokenDataResult = fishTokenDataSelector.resultFunc(
+        failureStakingState.fishToken
+      );
 
       expect(fishTokenDataResult).toEqual(failureStakingState.fishToken.data);
     });
@@ -60,22 +58,15 @@ describe('staking selectors', () => {
 
   describe('fishLoadingStateSelector', () => {
     it('returns success state', async () => {
-      const fishTokenResult = fishTokenSelector.resultFunc(successStakingState);
-      const fishTokenLoadingStateResult =
-        fishLoadingStateSelector.resultFunc(fishTokenResult);
+      const fishToken = {
+        state: 'loading' as FiniteStates,
+        data: successStakingState.fishToken.data,
+      };
 
-      expect(fishTokenLoadingStateResult).toEqual(
-        successStakingState.fishToken.state
-      );
-    });
-    it('returns failure state', async () => {
-      const fishTokenResult = fishTokenSelector.resultFunc(failureStakingState);
       const fishTokenLoadingStateResult =
-        fishLoadingStateSelector.resultFunc(fishTokenResult);
+        fishLoadingStateSelector.resultFunc(fishToken);
 
-      expect(fishTokenLoadingStateResult).toEqual(
-        failureStakingState.fishToken.state
-      );
+      expect(fishTokenLoadingStateResult).toEqual('loading');
     });
   });
 
@@ -161,7 +152,7 @@ describe('staking selectors', () => {
     describe('stakesDatesSelector', () => {
       it('returns stakes list data', async () => {
         const stakesListsResult = stakesDatesSelector.resultFunc(
-          stakesListsResultSuccess
+          successStakingState.stakesList.data
         );
 
         expect(stakesListsResult).toEqual([
@@ -169,9 +160,9 @@ describe('staking selectors', () => {
           successStakingState.stakesList.data[1].unlockDate,
         ]);
       });
-      it('returns stakes list data', async () => {
+      it('returns empty table', async () => {
         const stakesListsResult = stakesDatesSelector.resultFunc(
-          stakesListsResultFailure
+          failureStakingState.stakesList.data
         );
 
         expect(stakesListsResult).toEqual([]);
@@ -180,65 +171,45 @@ describe('staking selectors', () => {
 
     describe('selectedStakeSelector', () => {
       it('returns selected stake', async () => {
-        const selectedStakeSelectorResult = getSelectedStake(
+        const selectedStakeSelectorResult = selectedStakeSelector.resultFunc(
           successStakingState,
-          stakesListsResultSuccess
+          combinedStakesList
         );
-        expect(selectedStakeSelectorResult).toEqual(
-          successStakingState.stakesList.data[0]
-        );
+
+        expect(selectedStakeSelectorResult).toEqual(combinedStakesList[0]);
       });
       it('returns undefined', async () => {
-        const selectedStakeSelectorResult = getSelectedStake(
+        const selectedStakeSelectorResult = selectedStakeSelector.resultFunc(
           failureStakingState,
-          stakesListsResultFailure
+          []
         );
         expect(selectedStakeSelectorResult).toBeUndefined();
       });
     });
 
     describe('isSelectedStakeLockedSelector', () => {
-      // it('returns true', async () => {
-      //   const selectedStakeSelectorResult = getSelectedStake(
-      //     successStakingState,
-      //     stakesListsResultSuccess
-      //   );
-      //   const isSelectedStakeLockedSelectorResult =
-      //     isSelectedStakeLockedSelector.resultFunc(selectedStakeSelectorResult);
+      it('returns true', async () => {
+        setMockDate(1652585200000); // 2022-05-15
 
-      //   expect(isSelectedStakeLockedSelectorResult).toBeTruthy();
-      // });
-      // it('returns false', async () => {
-      //   const test = getCurrentTimestamp() + 1000000;
-
-      //   const selectedStakeSelectorResult = getSelectedStake(
-      //     {
-      //       ...successStakingState,
-      //       stakesList: {
-      //         state: 'success',
-      //         data: [
-      //           {
-      //             ...combinedStakesList[0],
-      //             unlockDate: test,
-      //           },
-      //         ],
-      //       },
-      //       selectedStake: combinedStakesList[0].unlockDate,
-      //     },
-      //     stakesListsResultSuccess
-      //   );
-      //   const isSelectedStakeLockedSelectorResult =
-      //     isSelectedStakeLockedSelector.resultFunc(selectedStakeSelectorResult);
-
-      //   expect(isSelectedStakeLockedSelectorResult).toBeFalsy();
-      // });
-      it('returns undefined', async () => {
-        const selectedStakeSelectorResult = getSelectedStake(
-          failureStakingState,
-          stakesListsResultFailure
-        );
         const isSelectedStakeLockedSelectorResult =
-          isSelectedStakeLockedSelector.resultFunc(selectedStakeSelectorResult);
+          isSelectedStakeLockedSelector.resultFunc(combinedStakesList[0]);
+
+        expect(isSelectedStakeLockedSelectorResult).toBeTruthy();
+      });
+
+      it('returns false', async () => {
+        setMockDate(1642585200000); // 2022-01-19
+
+        const isSelectedStakeLockedSelectorResult =
+          isSelectedStakeLockedSelector.resultFunc(combinedStakesList[0]);
+
+        expect(isSelectedStakeLockedSelectorResult).toBeFalsy();
+      });
+      it('returns undefined', async () => {
+        const isSelectedStakeLockedSelectorResult =
+          isSelectedStakeLockedSelector.resultFunc(
+            failureStakingState.stakesList.data[0]
+          );
 
         expect(isSelectedStakeLockedSelectorResult).toBeUndefined();
       });

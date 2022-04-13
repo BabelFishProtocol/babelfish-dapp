@@ -1,5 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { TWO_WEEKS } from '../../constants';
+import { setMockDate } from '../../testUtils';
 import { timestampToDate } from '../../utils/helpers';
 
 import { useDateSelector } from './DateSelector.hooks';
@@ -12,7 +13,7 @@ jest.mock('../../constants', () => ({
   MAX_STAKING_PERIODS: 48,
 }));
 
-jest.useFakeTimers().setSystemTime(currentTime);
+setMockDate(currentTime);
 
 afterEach(() => {
   jest.clearAllMocks();

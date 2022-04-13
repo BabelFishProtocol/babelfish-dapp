@@ -5,10 +5,10 @@ import { throwError } from 'redux-saga-test-plan/providers';
 import { BigNumber } from 'ethers';
 import { RootState } from '../..';
 import {
-  initialState,
+  stakingInitialState,
   kickoffTS,
   mockStaking,
-  reducer,
+  stakingReducer,
   WEIGHT_FACTOR,
 } from '../staking.mock';
 import { Reducers } from '../../../constants';
@@ -22,9 +22,9 @@ afterEach(() => {
 
 describe('fetchStakeConstants', () => {
   const successState: DeepPartial<RootState> = {
-    ...initialState,
+    ...stakingInitialState,
     [Reducers.Staking]: {
-      ...initialState[Reducers.Staking],
+      ...stakingInitialState[Reducers.Staking],
       constants: {
         data: { kickoffTs: kickoffTS, WEIGHT_FACTOR },
         state: 'success',
@@ -33,17 +33,17 @@ describe('fetchStakeConstants', () => {
   };
 
   const failureState: DeepPartial<RootState> = {
-    ...initialState,
+    ...stakingInitialState,
     [Reducers.Staking]: {
-      ...initialState[Reducers.Staking],
+      ...stakingInitialState[Reducers.Staking],
       constants: { state: 'failure', data: {} },
     },
   };
 
   const getBasePath = () =>
     expectSaga(fetchStakeConstants)
-      .withReducer(reducer)
-      .withState(initialState)
+      .withReducer(stakingReducer)
+      .withState(stakingInitialState)
       .select(stakingContractSelector);
 
   it('happy path', async () => {

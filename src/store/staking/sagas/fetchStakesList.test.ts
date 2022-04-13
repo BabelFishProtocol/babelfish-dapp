@@ -14,9 +14,9 @@ import {
   combinedStakesList,
   dates,
   delegates,
-  initialState,
+  stakingInitialState,
   mockStaking,
-  reducer,
+  stakingReducer,
   stakes,
   testAccount,
 } from '../staking.mock';
@@ -34,25 +34,25 @@ describe('fetchStakesList', () => {
   };
 
   const successState: DeepPartial<RootState> = {
-    ...initialState,
+    ...stakingInitialState,
     [Reducers.Staking]: {
-      ...initialState[Reducers.Staking],
+      ...stakingInitialState[Reducers.Staking],
       stakesList: { state: 'success', data: combinedStakesList },
     },
   };
 
   const failureState: DeepPartial<RootState> = {
-    ...initialState,
+    ...stakingInitialState,
     [Reducers.Staking]: {
-      ...initialState[Reducers.Staking],
+      ...stakingInitialState[Reducers.Staking],
       stakesList: { state: 'failure', data: [] },
     },
   };
 
   const getBasePath = () =>
     expectSaga(fetchStakesList)
-      .withReducer(reducer)
-      .withState(initialState)
+      .withReducer(stakingReducer)
+      .withState(stakingInitialState)
       .select(accountSelector)
       .select(stakingContractSelector);
 

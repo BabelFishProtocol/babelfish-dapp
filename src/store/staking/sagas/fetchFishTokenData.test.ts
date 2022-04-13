@@ -16,10 +16,10 @@ import { convertForMulticall } from '../../utils';
 import {
   allowanceForStaking,
   fishBalance,
-  initialState,
+  stakingInitialState,
   mockFishToken,
   mockStaking,
-  reducer,
+  stakingReducer,
   testAccount,
   totalStaked,
 } from '../staking.mock';
@@ -48,9 +48,9 @@ describe('fetchFishTokenData', () => {
   };
 
   const successState: DeepPartial<RootState> = {
-    ...initialState,
+    ...stakingInitialState,
     [Reducers.Staking]: {
-      ...initialState[Reducers.Staking],
+      ...stakingInitialState[Reducers.Staking],
       fishToken: {
         state: 'success',
         data: { allowanceForStaking, fishBalance, totalStaked },
@@ -59,17 +59,17 @@ describe('fetchFishTokenData', () => {
   };
 
   const failureState: DeepPartial<RootState> = {
-    ...initialState,
+    ...stakingInitialState,
     [Reducers.Staking]: {
-      ...initialState[Reducers.Staking],
+      ...stakingInitialState[Reducers.Staking],
       fishToken: { state: 'failure', data: {} },
     },
   };
 
   const getBasePath = () =>
     expectSaga(fetchFishTokenData)
-      .withReducer(reducer)
-      .withState(initialState)
+      .withReducer(stakingReducer)
+      .withState(stakingInitialState)
       .select(accountSelector)
       .select(stakingContractSelector)
       .select(fishTokenSelector)

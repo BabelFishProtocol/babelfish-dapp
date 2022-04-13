@@ -13,7 +13,7 @@ export const stakes = ['100000', '150000'];
 export const dates = [1645564671, 1645564672];
 export const delegates = ['0x0000', '0x3443'];
 
-export const initialState: DeepPartial<RootState> = {
+export const stakingInitialState: DeepPartial<RootState> = {
   [Reducers.Staking]: { ...new StakingState() },
 };
 
@@ -24,7 +24,10 @@ export const WEIGHT_FACTOR = '1000';
 export const totalStaked = '55566456546';
 export const fishBalance = '232347482374623';
 export const allowanceForStaking = '1000000';
-export const reducer = combineReducers(pick(rootReducer, [Reducers.Staking]));
+
+export const stakingReducer = combineReducers(
+  pick(rootReducer, [Reducers.Staking])
+);
 
 export const combinedStakesList: StakeListItem[] = [
   {

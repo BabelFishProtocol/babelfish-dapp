@@ -5,8 +5,8 @@ import { throwError } from 'redux-saga-test-plan/providers';
 import {
   combinedHistoryStakesList,
   dates,
-  initialState,
-  reducer,
+  stakingInitialState,
+  stakingReducer,
   stakes,
   testAccount,
   txHashes,
@@ -26,9 +26,9 @@ afterEach(() => {
 
 describe('fetchHistoryStaking', () => {
   const successState: DeepPartial<RootState> = {
-    ...initialState,
+    ...stakingInitialState,
     [Reducers.Staking]: {
-      ...initialState[Reducers.Staking],
+      ...stakingInitialState[Reducers.Staking],
       stakesListHistory: {
         state: 'success',
         data: combinedHistoryStakesList,
@@ -37,9 +37,9 @@ describe('fetchHistoryStaking', () => {
   };
 
   const failureState: DeepPartial<RootState> = {
-    ...initialState,
+    ...stakingInitialState,
     [Reducers.Staking]: {
-      ...initialState[Reducers.Staking],
+      ...stakingInitialState[Reducers.Staking],
       stakesListHistory: { state: 'failure', data: [] },
     },
   };
@@ -77,8 +77,8 @@ describe('fetchHistoryStaking', () => {
 
   const getBasePath = () =>
     expectSaga(fetchHistoryStaking)
-      .withReducer(reducer)
-      .withState(initialState)
+      .withReducer(stakingReducer)
+      .withState(stakingInitialState)
       .select(subgraphClientSelector)
       .select(stakesAndVestsAddressesSelector);
 
