@@ -1,36 +1,21 @@
-import { ContractTransaction } from 'ethers';
 import { TransactionReceipt } from '@ethersproject/providers';
-import { CallState } from '../types';
 import {
   handleSetCallError,
   handleUpdateStepData,
   handleUpdateCallStatus,
 } from './utils.reducers';
+import { initialCallState, populatedCallState } from './utils.mock';
 
 describe('reducers utils', () => {
-  const initialState: CallState<'step1' | 'step2'> = {
-    status: 'idle',
-    steps: [{ name: 'step1' }, { name: 'step2' }],
-  };
-
-  const populatedState: CallState<'step1' | 'step2'> = {
-    status: 'success',
-    currentOperation: 'step1',
-    steps: [
-      { name: 'step1', tx: { hash: '0x01' } as ContractTransaction },
-      { name: 'step2', tx: { hash: '0x02' } as ContractTransaction },
-    ],
-  };
-
   describe('handleUpdateCallStatus', () => {
     it('returns properly updated state', () => {
-      const result = handleUpdateCallStatus(initialState, {
+      const result = handleUpdateCallStatus(initialCallState, {
         status: 'loading',
         currentOperation: 'step2',
       });
 
       expect(result).toEqual({
-        ...initialState,
+        ...initialCallState,
         status: 'loading',
         currentOperation: 'step2',
       });
@@ -41,18 +26,18 @@ describe('reducers utils', () => {
     it('properly updates current step', () => {
       const step1TxReceipt = { transactionHash: '0x01' } as TransactionReceipt;
 
-      const updatedStep1 = handleUpdateStepData(populatedState, {
+      const updatedStep1 = handleUpdateStepData(populatedCallState, {
         txReceipt: step1TxReceipt,
       });
 
       expect(updatedStep1).toEqual({
-        ...populatedState,
+        ...populatedCallState,
         steps: [
           {
-            ...populatedState.steps[0],
+            ...populatedCallState.steps[0],
             txReceipt: step1TxReceipt,
           },
-          populatedState.steps[1],
+          populatedCallState.steps[1],
         ],
       });
 
@@ -60,7 +45,7 @@ describe('reducers utils', () => {
 
       const step2TxReceipt = { transactionHash: '0x02' } as TransactionReceipt;
 
-      const newState = handleUpdateCallStatus(initialState, {
+      const newState = handleUpdateCallStatus(initialCallState, {
         currentOperation: 'step2',
       });
 
@@ -81,25 +66,27 @@ describe('reducers utils', () => {
     });
 
     it('does nothing when current step is not settled', () => {
-      const result = handleUpdateStepData(initialState, { error: 'test test' });
+      const result = handleUpdateStepData(initialCallState, {
+        error: 'test test',
+      });
 
-      expect(result).toEqual(initialState);
+      expect(result).toEqual(initialCallState);
     });
   });
 
   describe('handleSetCallError', () => {
     it('updates state properly', () => {
       const errorMsg = 'test error';
-      const result = handleSetCallError(populatedState, errorMsg);
+      const result = handleSetCallError(populatedCallState, errorMsg);
 
       expect(result).toEqual({
-        ...populatedState,
+        ...populatedCallState,
         steps: [
           {
-            ...populatedState.steps[0],
+            ...populatedCallState.steps[0],
             error: errorMsg,
           },
-          populatedState.steps[1],
+          populatedCallState.steps[1],
         ],
         status: 'failure',
       });
@@ -107,10 +94,10 @@ describe('reducers utils', () => {
 
     it('works fine when current step is not settled', () => {
       const errorMsg = 'test error';
-      const result = handleSetCallError(initialState, errorMsg);
+      const result = handleSetCallError(initialCallState, errorMsg);
 
       expect(result).toEqual({
-        ...initialState,
+        ...initialCallState,
         status: 'failure',
       });
     });
