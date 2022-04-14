@@ -77,3 +77,9 @@ export const getMockStore = (initialStore: DeepPartial<RootState> = {}) => {
 
   return mockStore(initialStore as RootState);
 };
+
+export const setMockDate = (timestamp?: number) => {
+  const fakeTime = 1636585200; // 2021-11-11
+
+  jest.useFakeTimers().setSystemTime(timestamp || fakeTime);
+};

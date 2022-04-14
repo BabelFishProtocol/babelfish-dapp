@@ -38,11 +38,6 @@ export const combinedVestsList: VestListItem[] = [
 export const createMockVestingContract = (address: string) =>
   createMockedContract(Vesting__factory.connect(address, mockSigner), true);
 
-export const mockVestingStore = {
-  selectedVest: combinedVestsList[0].unlockDate,
-  vestsList: combinedVestsList,
-};
-
 export const successVestingState = {
   selectedVest: combinedVestsList[0].unlockDate,
   vestsList: {

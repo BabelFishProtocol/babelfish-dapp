@@ -1,3 +1,4 @@
+import { setMockDate } from '../../testUtils';
 import { timestampToDate } from '../../utils/helpers';
 import { CheckpointInfo, GroupedDates } from './DateSelector.types';
 import {
@@ -15,7 +16,7 @@ jest.mock('../../constants', () => ({
   TWO_WEEKS: 100,
 }));
 
-jest.useFakeTimers().setSystemTime(currentTime);
+setMockDate(currentTime);
 
 afterEach(() => {
   jest.clearAllMocks();
