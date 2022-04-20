@@ -5,7 +5,7 @@ import { DashboardBalances, DashboardState } from './dashboard.state';
 
 const initialState = { ...new DashboardState() };
 
-export const vestingSlice = createSlice({
+export const dashboardSlice = createSlice({
   name: Reducers.Dashboard,
   initialState,
   reducers: {
@@ -33,7 +33,7 @@ export const vestingSlice = createSlice({
   },
 });
 
-const { actions: dashboardActions, reducer: dashboardReducer } = vestingSlice;
+const { actions: dashboardActions, reducer: dashboardReducer } = dashboardSlice;
 export { dashboardActions, dashboardReducer };
 
 export type DashboardActions = ActionsType<typeof dashboardActions>;

@@ -12,7 +12,7 @@ import {
 
 const initialState = { ...new ProposalsState() };
 
-export const appSlice = createSlice({
+export const proposalSlice = createSlice({
   name: Reducers.Proposals,
   initialState,
   reducers: {
@@ -81,7 +81,7 @@ export const appSlice = createSlice({
   },
 });
 
-const { actions: proposalsActions, reducer: proposalsReducer } = appSlice;
+const { actions: proposalsActions, reducer: proposalsReducer } = proposalSlice;
 export { proposalsActions, proposalsReducer };
 
 export type ProposalsActions = ActionsType<typeof proposalsActions>;
