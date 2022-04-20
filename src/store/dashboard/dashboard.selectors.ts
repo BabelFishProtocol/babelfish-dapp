@@ -6,7 +6,7 @@ import { ERC20__factory } from '../../contracts/types';
 import { TokenEnum, tokens } from '../../config/tokens';
 import { currentChainSelector, providerSelector } from '../app/app.selectors';
 
-const proposalsState = (state: RootState) => state[Reducers.Dashboard];
+const dashboardState = (state: RootState) => state[Reducers.Dashboard];
 
 export const xusdTokenSelector = createSelector(
   [providerSelector, currentChainSelector],
@@ -24,7 +24,7 @@ export const xusdTokenSelector = createSelector(
 );
 
 export const dashboardBalancesSelector = createSelector(
-  proposalsState,
+  dashboardState,
   (state) => state.balances
 );
 
