@@ -12,6 +12,7 @@ import {
   chainIdSelector,
   providerSelector,
 } from '../../store/app/app.selectors';
+import { switchConnectedChain } from '../../utils/helpers';
 import { AggregatorInputs, AggregatorFormValues } from './Aggregator.fields';
 
 export const useAggregatorDropdowns = (
@@ -105,10 +106,8 @@ export const useConnectedChain = (
   const wrongChainConnectedError = startingChain !== connectedChain;
 
   useEffect(() => {
-    if (startingChain && wrongChainConnectedError) {
-      provider?.send('wallet_switchEthereumChain', [
-        { chainId: `0x${startingChain.toString(16)}` },
-      ]);
+    if (startingChain && wrongChainConnectedError && provider) {
+      switchConnectedChain(provider, startingChain);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startingChain]);
@@ -123,8 +122,12 @@ export const useConnectedChain = (
       ) {
         setValue(AggregatorInputs.DestinationChain, connectedChain);
         dispatch(aggregatorActions.toggleFlowState());
-      } else {
+      } else if (
+        pool.baseChains.find((baseChain) => baseChain.id === connectedChain)
+      ) {
         setValue(AggregatorInputs.StartingChain, connectedChain);
+      } else {
+        // set wrongChainConnectedError so user can see it
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

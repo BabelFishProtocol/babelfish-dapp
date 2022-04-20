@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
 import { PageView } from '../../components/PageView/PageView.component';
 import { ControlledCurrencyInput } from '../../components/CurrencyInput/CurrencyInput.controlled';
-import { ControlledInput } from '../../components/TextInput/TextInput.controlled';
+import { ControlledAddressInput } from '../../components/AddressInput/AddressInput.controlled';
 import { ControlledDropdown } from '../../components/Dropdown/Dropdown.controlled';
 
 import {
@@ -194,7 +194,7 @@ export const AggregatorComponent = ({
             control={control}
             sx={{ mb: 5 }}
           />
-          <ControlledInput
+          <ControlledAddressInput
             title="Receiving address"
             placeholder="Enter or paste address"
             name={AggregatorInputs.ReceiveAddress}

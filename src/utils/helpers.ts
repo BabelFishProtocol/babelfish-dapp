@@ -5,8 +5,11 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import advanced from 'dayjs/plugin/advancedFormat';
 
+import { Web3Provider } from '@ethersproject/providers';
 import { CellParser } from '../components/DataTable/DataTable.types';
 import { calldataRegex, signatureRegex } from '../constants';
+import { ChainEnum, chains } from '../config/chains';
+import { isErrorWithCode } from './types';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -111,3 +114,35 @@ export const truncateString = (text: string, maxLength = 25) =>
 
 export const compareAddresses = (addr1: string, addr2: string) =>
   addr1.toLowerCase() === addr2.toLowerCase();
+
+export const switchConnectedChain = async (
+  provider: Web3Provider,
+  startingChain: ChainEnum
+) => {
+  try {
+    await provider.send('wallet_switchEthereumChain', [
+      { chainId: `0x${startingChain.toString(16)}` },
+    ]);
+  } catch (switchError) {
+    if (isErrorWithCode(switchError) && switchError.code === 4902) {
+      try {
+        const chain = chains[startingChain];
+
+        await provider.send('wallet_addEthereumChain', [
+          {
+            chainId: `0x${startingChain.toString(16)}`,
+            chainName: chain.name,
+            rpcUrls: chain.rpcUrls,
+          },
+        ]);
+        await provider.send('wallet_switchEthereumChain', [
+          { chainId: `0x${startingChain.toString(16)}` },
+        ]);
+        return;
+      } catch (addError) {
+        return addError;
+      }
+    }
+    return switchError;
+  }
+};
