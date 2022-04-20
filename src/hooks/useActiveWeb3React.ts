@@ -59,9 +59,11 @@ export const useActiveWeb3React = (): ActiveWeb3Data | InActiveWeb3Data => {
 
   const triedEager = useEagerConnect();
 
-  if (triedEager) {
-    dispatch(appActions.setWalletNotConnectedNetworkModal(!active));
-  }
+  useEffect(() => {
+    if (triedEager) {
+      dispatch(appActions.setWalletNotConnectedNetworkModal(!active));
+    }
+  }, [triedEager, dispatch, active]);
 
   if (isActive(web3Data)) {
     return web3Data;
