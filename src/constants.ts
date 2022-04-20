@@ -3,6 +3,7 @@ export enum Urls {
   Dashboard = '/dashboard',
   Staking = '/stake',
   Aggregator = '/aggregator',
+  Improbability = '/improbability',
 }
 
 export enum ProposalState {
