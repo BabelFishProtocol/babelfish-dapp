@@ -12,7 +12,7 @@ import {
   multicallProviderSelector,
   stakingContractSelector,
 } from '../../app/app.selectors';
-import { convertForMulticall } from '../../utils';
+import { convertForMulticall } from '../../utils/utils.sagas';
 import {
   allowanceForStaking,
   fishBalance,
@@ -27,8 +27,8 @@ import { fetchFishTokenData } from './fetchFishTokenData';
 import { mockMulticallProvider } from '../../../testUtils';
 import { stakingActions } from '../staking.slice';
 
-jest.mock('../../utils', () => ({
-  ...jest.requireActual('../../utils'),
+jest.mock('../../utils/utils.sagas', () => ({
+  ...jest.requireActual('../../utils/utils.sagas'),
   convertForMulticall: jest.fn(),
 }));
 

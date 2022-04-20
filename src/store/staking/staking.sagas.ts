@@ -1,13 +1,23 @@
-import { all, put, call, takeLatest } from 'typed-redux-saga';
+import { all, put, call, takeLatest, select } from 'typed-redux-saga';
+import { BigNumber, constants, utils } from 'ethers';
 
-import { createWatcherSaga } from '../utils';
-import { stakingActions } from './staking.slice';
+import { ONE_DAY } from '../../constants';
+import { SagaContractCallStep } from '../types';
+import { createWatcherSaga, contractStepCallsSaga } from '../utils/utils.sagas';
+
+import { StakingActions, stakingActions } from './staking.slice';
 import { vestingActions } from '../vesting/vesting.slice';
 import { fetchHistoryStaking } from './sagas/fetchHistoryStaking';
 import { fetchStakesList } from './sagas/fetchStakesList';
 import { fetchVotingPower } from './sagas/fetchVotingPower';
 import { fetchStakeConstants } from './sagas/fetchStakeConstants';
 import { fetchFishTokenData } from './sagas/fetchFishTokenData';
+import {
+  fishTokenSelector,
+  stakingContractSelector,
+} from '../app/app.selectors';
+import { fishTokenDataSelector } from './staking.selectors';
+import { AddNewStakeCalls } from './staking.state';
 
 /** Fetch data needed for the stake page */
 function* fetchBalances() {
