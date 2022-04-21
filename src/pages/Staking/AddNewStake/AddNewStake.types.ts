@@ -9,11 +9,8 @@ export type AddNewStakeContainerProps = Pick<
   'open' | 'onClose'
 >;
 
-export type FeeEstimatorProps = Record<
-  'estimateStakeFee' | 'estimateApproveFee',
-  StakingFeeEstimator
-> & {
-  needsApproval: boolean;
+export type FeeEstimatorProps = {
+  feeEstimator: StakingFeeEstimator;
   control: Control<AddNewStakeFormValues>;
 };
 
@@ -22,7 +19,7 @@ export type VotingPowerBlockProps = {
 };
 
 export type AddNewStakeComponentProps = AddNewStakeContainerProps &
-  Pick<FeeEstimatorProps, 'estimateApproveFee' | 'estimateStakeFee'> &
+  Record<'estimateApproveFee' | 'estimateStakeFee', StakingFeeEstimator> &
   Pick<DateSelectorProps, 'kickoffTs' | 'stakes'> & {
     onStake: (values: AddNewStakeFormValues) => void;
     fishBalance?: string;

@@ -39,6 +39,7 @@ export const AppDialog = ({
   description,
   onClose,
   children,
+  topContent,
   dialogProps,
   dialogContentProps,
 }: AppDialogProps) => (
@@ -46,6 +47,8 @@ export const AppDialog = ({
     {title && <AppDialogTitle title={title} onClose={onClose} />}
 
     <DialogContent {...dialogContentProps}>
+      {topContent}
+
       {icon && (
         <img src={icon} style={{ width: '100px', height: '100px' }} alt="" />
       )}

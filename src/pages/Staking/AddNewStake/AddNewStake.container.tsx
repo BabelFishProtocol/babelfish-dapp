@@ -3,18 +3,19 @@ import { constants, utils } from 'ethers';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-  accountSelector,
   fishTokenSelector,
   stakingContractSelector,
 } from '../../../store/app/app.selectors';
-
 import {
   fishTokenDataSelector,
   stakingConstantsSelector,
   stakesDatesSelector,
   addStakeSubmitStatusSelector,
 } from '../../../store/staking/staking.selectors';
+import { stakingActions } from '../../../store/staking/staking.slice';
+
 import { ONE_DAY } from '../../../constants';
+import { SubmitStepsDialog } from '../../../components/TxDialog/TxDialog.component';
 
 import { StakingFeeEstimator } from '../Staking.types';
 import {
@@ -22,8 +23,6 @@ import {
   AddNewStakeFormValues,
 } from './AddNewStake.types';
 import { AddNewStakeComponent } from './AddNewStake.component';
-import { stakingActions } from '../../../store/staking/staking.slice';
-import { SubmitStatusDialog } from '../../../components/TxDialog/TxDialog.component';
 
 export const AddNewStakeContainer = ({
   open,
@@ -32,7 +31,6 @@ export const AddNewStakeContainer = ({
   const dispatch = useDispatch();
 
   const currentStakes = useSelector(stakesDatesSelector);
-  const account = useSelector(accountSelector);
   const staking = useSelector(stakingContractSelector);
   const fishToken = useSelector(fishTokenSelector);
   const { kickoffTs } = useSelector(stakingConstantsSelector);
@@ -61,7 +59,7 @@ export const AddNewStakeContainer = ({
     [staking?.estimateGas]
   );
 
-  if (!kickoffTs || !staking || !account) {
+  if (!kickoffTs || !staking) {
     return null;
   }
 
@@ -87,13 +85,13 @@ export const AddNewStakeContainer = ({
       />
 
       {submitTx.status !== 'idle' && (
-        <SubmitStatusDialog
+        <SubmitStepsDialog
           successCallback={onClose}
           onClose={handleResetCallData}
-          tx={submitTx.currentTx}
+          steps={submitTx.steps}
           status={submitTx.status}
-          txReceipt={submitTx.currentTxReceipt}
-          operationName={submitTx.currentStep || ''}
+          summary={submitTx.summary}
+          currentStep={submitTx.currentStep}
         />
       )}
     </>

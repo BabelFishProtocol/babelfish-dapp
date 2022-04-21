@@ -1,6 +1,10 @@
-import Box from '@mui/material/Box';
+import { useMemo } from 'react';
 
-// import { Step, StepConnector, StepLabel, Stepper } from '@mui/material';
+import Box from '@mui/material/Box';
+import Step from '@mui/material/Step';
+import Stepper from '@mui/material/Stepper';
+import StepLabel from '@mui/material/StepLabel';
+
 import { Button } from '../Button/Button.component';
 import { PrettyTx } from '../PrettyTx/PrettyTx.component';
 import { AppDialog } from '../AppDialog/AppDialog.component';
@@ -12,16 +16,20 @@ import loadingIcon from '../../assets/icons/loading.svg';
 import successIcon from '../../assets/icons/success.svg';
 
 import {
-  SubmitStatusDialogProps,
+  CallStepperProps,
   TxErrorDialogProps,
   TxPendingDialogProps,
   TxSuccessDialogProps,
+  SubmitStepsDialogProps,
+  SubmitStatusDialogProps,
 } from './TxDialog.types';
+import { StepData } from '../../store/types';
 
 export const TxErrorDialog = ({
-  isOpenDialog,
   onClose,
-  operationName,
+  stepper,
+  isOpenDialog,
+  operationName = '',
 }: TxErrorDialogProps) => (
   <AppDialog
     isOpenDialog={isOpenDialog}
@@ -29,6 +37,7 @@ export const TxErrorDialog = ({
     title="Staking Error"
     description={`We encountered an error in the ${operationName} process. Please try again`}
     onClose={onClose}
+    topContent={stepper}
   >
     <Button variant="outlined" onClick={onClose}>
       OK
@@ -37,8 +46,10 @@ export const TxErrorDialog = ({
 );
 
 export const TxSuccessDialog = ({
+  stepper,
   txReceipt,
   onClose,
+  summary,
   isOpenDialog,
   operationName,
   successCallback,
@@ -52,6 +63,8 @@ export const TxSuccessDialog = ({
       successCallback();
     }
   };
+
+  /** Can be removed once all forms are refactored */
   const txReceiptData: MintingProcessInfo[] = txReceipt
     ? [
         {
@@ -72,9 +85,10 @@ export const TxSuccessDialog = ({
       icon={successIcon}
       title={`${operationName} Complete`}
       onClose={handleClose}
+      topContent={stepper}
     >
       <Box sx={{ mt: 3 }}>
-        <MintingInfo data={txReceiptData} />
+        <MintingInfo data={summary ?? txReceiptData} />
       </Box>
       <Button sx={{ mt: 6 }} onClick={handleClose}>
         OK
@@ -84,9 +98,10 @@ export const TxSuccessDialog = ({
 };
 
 export const TxPendingDialog = ({
-  isOpenDialog,
-  operationName,
   tx,
+  stepper,
+  operationName,
+  isOpenDialog,
 }: TxPendingDialogProps) => {
   const txData: MintingProcessInfo[] = tx
     ? [
@@ -108,6 +123,7 @@ export const TxPendingDialog = ({
       isOpenDialog={isOpenDialog}
       icon={loadingIcon}
       title={`${operationName} In Progress`}
+      topContent={stepper}
       description={`${operationName} can take a couple minutes, please make sure to approve the transaction in your wallet when prompted, and wait for it to be complete`}
     >
       <MintingInfo data={txData} />
@@ -146,52 +162,92 @@ export const SubmitStatusDialog = ({
   );
 };
 
-type SubmitStepsDialogProps = SubmitStatusDialogProps & {
-  currentStep: 'stake' | 'approve';
-  steps: ['stake', 'approve'];
+const finishStep: StepData<'finish'> = {
+  name: 'finish',
+  label: 'finish',
 };
 
-export const SubmitStepsDialog = ({
-  tx,
+const CallStepper = <Operations extends string>({
+  steps,
   status,
-  // steps,
-  // currentStep,
-  txReceipt,
-  ...dialogProps
-}: SubmitStepsDialogProps) => {
+  currentStep,
+}: CallStepperProps<Operations>) => {
+  type AllSteps = Operations | 'finish';
+
+  const currentOperation: AllSteps =
+    status === 'success' ? 'finish' : currentStep.name;
+
+  const availableSteps: Array<StepData<AllSteps>> = [...steps, finishStep];
+  const currentIndex = availableSteps.findIndex(
+    (step) => step.name === currentOperation
+  );
+
+  return (
+    <Stepper activeStep={currentIndex} sx={{ width: '100%', mb: 3 }}>
+      {availableSteps.map((step, index) => {
+        const isCompleted =
+          index < currentIndex ||
+          (currentIndex === index && index === availableSteps.length - 1);
+
+        return (
+          <Step key={index} completed={isCompleted}>
+            <StepLabel error={index === currentIndex && !!currentStep.error}>
+              {step.name}
+            </StepLabel>
+          </Step>
+        );
+      })}
+    </Stepper>
+  );
+};
+
+export const SubmitStepsDialog = <Operations extends string>({
+  steps,
+  status,
+  onClose,
+  summary,
+  successCallback,
+  currentStep = steps[0],
+}: SubmitStepsDialogProps<Operations>) => {
+  const stepper = useMemo(
+    () => (
+      <CallStepper steps={steps} status={status} currentStep={currentStep} />
+    ),
+    [currentStep, status, steps]
+  );
+
   if (status === 'failure') {
     return (
-      <TxErrorDialog isOpenDialog={status === 'failure'} {...dialogProps} />
+      <TxErrorDialog
+        stepper={stepper}
+        onClose={onClose}
+        operationName={currentStep.label}
+        isOpenDialog={status === 'failure'}
+      />
     );
   }
 
   if (status === 'success') {
     return (
       <TxSuccessDialog
-        txReceipt={txReceipt}
+        stepper={stepper}
+        txReceipt={currentStep.txReceipt}
+        operationName={currentStep.label}
         isOpenDialog={status === 'success'}
-        {...dialogProps}
+        onClose={onClose}
+        successCallback={successCallback}
+        summary={summary}
       />
     );
   }
 
-  //   <Stepper activeStep={2}>
-  //   <Step completed>
-  //     <StepLabel>Approve</StepLabel>
-  //   </Step>
-  //   <Step>
-  //     <StepLabel error>Stake</StepLabel>
-  //   </Step>
-  //   <Step>
-  //     <StepLabel>Finish</StepLabel>
-  //   </Step>
-  // </Stepper>
-
   return (
     <TxPendingDialog
-      tx={tx}
+      tx={currentStep.tx}
+      stepper={stepper}
+      onClose={onClose}
+      operationName={currentStep.label}
       isOpenDialog={status === 'loading'}
-      {...dialogProps}
     />
   );
 };

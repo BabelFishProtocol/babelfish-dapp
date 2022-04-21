@@ -55,6 +55,7 @@ export type MulticallProviderType = Omit<Provider, 'all'> & {
 
 export type StepData<Operations extends string> = {
   name: Operations;
+  label: string;
   tx?: ContractTransaction;
   txReceipt?: TransactionReceipt;
   error?: string;

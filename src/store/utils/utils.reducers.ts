@@ -8,6 +8,17 @@ export const handleUpdateCallStatus = <Operations extends string>(
   ...payload,
 });
 
+export const handleUpdateSteps = <Operations extends string>(
+  currentState: CallState<Operations>,
+  payload: { name: Operations }[]
+) => {
+  currentState.steps = currentState.steps.filter((step) =>
+    payload.some(({ name }) => name === step.name)
+  );
+
+  return currentState;
+};
+
 export const handleUpdateStepData = <Operations extends string>(
   currentState: CallState<Operations>,
   payload: Partial<StepData<Operations>>

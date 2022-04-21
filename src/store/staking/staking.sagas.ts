@@ -82,13 +82,13 @@ export function* addNewStake({ payload }: StakingActions['addNewStake']) {
 
   if (BigNumber.from(allowanceForStaking).lt(parsedStakeAmount)) {
     steps.push({
-      name: 'approving',
+      name: 'approve',
       effect: call(fishToken.approve, staking.address, parsedStakeAmount),
     });
   }
 
   steps.push({
-    name: 'staking',
+    name: 'stake',
     effect: call(
       staking.stake,
       parsedStakeAmount,
@@ -97,6 +97,8 @@ export function* addNewStake({ payload }: StakingActions['addNewStake']) {
       constants.AddressZero
     ),
   });
+
+  yield* put(stakingActions.setAddStakeSteps(steps));
 
   yield* contractStepCallsSaga<AddNewStakeCalls>({
     steps,

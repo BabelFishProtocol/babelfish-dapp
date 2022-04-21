@@ -8,6 +8,7 @@ import {
   handleSetCallError,
   handleUpdateCallStatus,
   handleUpdateStepData,
+  handleUpdateSteps,
 } from '../utils/utils.reducers';
 import {
   AddNewStakeCalls,
@@ -42,6 +43,12 @@ export const stakingSlice = createSlice({
         state.addNewStakeCall,
         payload
       );
+    },
+    setAddStakeSteps: (
+      state,
+      { payload }: PayloadAction<{ name: AddNewStakeCalls }[]>
+    ) => {
+      state.addNewStakeCall = handleUpdateSteps(state.addNewStakeCall, payload);
     },
     setAddStakeStateStepData: (
       state,
