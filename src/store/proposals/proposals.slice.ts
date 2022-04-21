@@ -64,11 +64,24 @@ export const proposalSlice = createSlice({
         state: 'success',
       };
     },
-
+    setGovernor: (state, { payload }: PayloadAction<string>) => {
+      state.selectedGovernor = payload;
+    },
+    watchAddProposal: () => {},
+    stopWatchingAddProposal: (state) => {
+      state.addProposalState = 'idle';
+    },
+    checkAddProposal: () => {},
+    eligibleForAddProposal: (state) => {
+      state.reasonToBlockProposal = undefined;
+    },
+    notEligibleForAddProposal: (state, { payload }: PayloadAction<string>) => {
+      state.reasonToBlockProposal = payload;
+    },
     startProposal: (state, _: PayloadAction<AddProposalFields>) => {
       state.addProposalState = 'loading';
     },
-    porposalFailure: (state, { payload }: PayloadAction<string>) => {
+    proposalFailure: (state, { payload }: PayloadAction<string>) => {
       state.addProposalState = 'failure';
       state.addProposalErrorReason = payload;
     },
@@ -77,6 +90,7 @@ export const proposalSlice = createSlice({
     },
     setAddProposalState: (state, { payload }: PayloadAction<FiniteStates>) => {
       state.addProposalState = payload;
+      state.reasonToBlockProposal = undefined;
     },
   },
 });

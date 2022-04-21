@@ -167,3 +167,13 @@ export const addProposalErrorSelector = createSelector(
   proposalsState,
   (state) => state.addProposalErrorReason
 );
+
+export const reasonToBlockSelector = createSelector(
+  proposalsState,
+  (state) => state.reasonToBlockProposal
+);
+
+export const selectedGovernorSelector = createSelector(
+  proposalsState,
+  (state) => state.selectedGovernor
+);

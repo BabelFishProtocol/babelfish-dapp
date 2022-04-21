@@ -1,12 +1,9 @@
 import { put, call, select } from 'typed-redux-saga';
 
 import { GovernorAlpha } from '../../../contracts/types';
-import { convertForMulticall, createWatcherSaga, multiCall } from '../../utils';
+import { createWatcherSaga } from '../../utils';
 
-import {
-  ProposalListQueryItem,
-  proposalsListQuery,
-} from '../../../queries/proposalListQuery';
+import { proposalsListQuery } from '../../../queries/proposalListQuery';
 
 import {
   providerSelector,
@@ -20,24 +17,7 @@ import { Proposal } from '../proposals.state';
 import { parseProposals } from '../proposals.utils';
 import { proposalsActions } from '../proposals.slice';
 import { governorContractsSelector } from '../proposals.selectors';
-import { MulticallProviderType } from '../../types';
-
-function* fetchProposalStates(
-  proposals: ProposalListQueryItem[],
-  governor: GovernorAlpha,
-  multicallProvider: MulticallProviderType
-) {
-  const proposalStateCalls = proposals.map(({ proposalId }) =>
-    convertForMulticall(governor, 'state', 'state(uint256)', proposalId)
-  );
-
-  const proposalsStates = yield* multiCall(
-    multicallProvider,
-    ...proposalStateCalls
-  );
-
-  return proposalsStates;
-}
+import { fetchProposalStates } from './utils';
 
 export function* fetchProposalsForContract(governor: GovernorAlpha) {
   const provider = yield* select(providerSelector);
