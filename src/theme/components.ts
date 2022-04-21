@@ -86,6 +86,7 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
           textDecoration: 'underline',
         },
       },
+      textSizeSmall: { textTransform: 'unset', padding: 0 },
       outlinedSizeSmall: {
         padding: '8px 12px',
       },

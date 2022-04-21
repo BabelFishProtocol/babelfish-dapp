@@ -17,7 +17,7 @@ import {
   chainIdSelector,
   providerSelector,
 } from '../../store/app/app.selectors';
-import { switchConnectedChain } from '../../utils/helpers';
+import { switchConnectedChain } from '../../utils/switchConnectedChain';
 import { AggregatorInputs, AggregatorFormValues } from './Aggregator.fields';
 
 export const useAggregatorDropdowns = (
@@ -113,7 +113,7 @@ export const useConnectedChain = (
 
   useEffect(() => {
     if (startingChain && wrongChainConnectedError && provider) {
-      switchConnectedChain(provider, startingChain);
+      switchConnectedChain(startingChain, provider);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startingChain]);

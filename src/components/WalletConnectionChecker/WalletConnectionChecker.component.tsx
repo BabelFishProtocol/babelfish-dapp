@@ -1,13 +1,16 @@
+import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ChainEnum, chains } from '../../config/chains';
 
 import {
-  supportedNetworksNamesSelector,
+  supportedNetworksSelector,
   walletNotConectedModalSelector,
   wrongNetworkModalSelector,
 } from '../../store/app/app.selectors';
 import { appActions } from '../../store/app/app.slice';
+import { switchConnectedChain } from '../../utils/switchConnectedChain';
 import { AppDialog } from '../AppDialog/AppDialog.component';
 import { WalletConnectionCheckerProps } from './WalletConnectionChecker.types';
 
@@ -34,7 +37,11 @@ export const WalletNotConnectedModal = () => {
 export const WrongNetworkModal = () => {
   const dispatch = useDispatch();
   const wrongNetworkModal = useSelector(wrongNetworkModalSelector);
-  const supportedNetworksNames = useSelector(supportedNetworksNamesSelector);
+  const supportedNetworksNames = useSelector(supportedNetworksSelector);
+
+  const onNetworkClick = (network: ChainEnum) => {
+    switchConnectedChain(network);
+  };
 
   const onClose = () => {
     dispatch(appActions.setWrongNetworkModal(false));
@@ -50,7 +57,18 @@ export const WrongNetworkModal = () => {
       Please connect your browser wallet to a supported network.
       <br />
       <Typography variant="subtitle2">
-        Supported networks: {supportedNetworksNames.join(', ')}
+        Supported networks:{' '}
+        {supportedNetworksNames.map((network) => (
+          <Button
+            size="small"
+            variant="text"
+            onClick={() => {
+              onNetworkClick(network);
+            }}
+          >
+            <Typography variant="body2">{chains[network].name}</Typography>
+          </Button>
+        ))}
       </Typography>
     </AppDialog>
   );
