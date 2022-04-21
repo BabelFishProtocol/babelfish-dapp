@@ -1,10 +1,9 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { ChainEnum, chains } from '../config/chains';
+import { MetamaskErrorCodes } from '../constants';
 import { isErrorWithCode, WindowWithEthereum } from './types';
 
-export const switchConnectedChainUsingWindow = async (
-  startingChain: ChainEnum
-) => {
+export const switchConnectedChainUsingWindow = async (chain: ChainEnum) => {
   const ethereum = (window as WindowWithEthereum)?.ethereum;
   if (!ethereum || !ethereum.request) {
     return new Error('No Ethereum in window.');
@@ -15,28 +14,34 @@ export const switchConnectedChainUsingWindow = async (
       method: 'wallet_switchEthereumChain',
       params: [
         {
-          chainId: `0x${startingChain.toString(16)}`,
+          chainId: `0x${chain.toString(16)}`,
         },
       ],
     });
   } catch (switchError) {
-    if (isErrorWithCode(switchError) && switchError.code === 4902) {
+    if (
+      isErrorWithCode(switchError) &&
+      switchError.code === MetamaskErrorCodes.chainNotAdded
+    ) {
       try {
-        const chain = chains[startingChain];
+        const chainData = chains[chain];
 
         await ethereum.request({
           method: 'wallet_addEthereumChain',
           params: [
             {
-              chainId: `0x${startingChain.toString(16)}`,
-              chainName: chain.name,
-              rpcUrls: chain.rpcUrls,
+              chainId: `0x${chain.toString(16)}`,
+              chainName: chainData.name,
+              rpcUrls: chainData.rpcUrls,
+              nativeCurrency: chainData.nativeCurrency,
+              blockExplorerUrls: chainData.blockExplorerUrls,
+              iconUrls: chainData.iconUrls,
             },
           ],
         });
         await ethereum.request({
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: `0x${startingChain.toString(16)}` }],
+          params: [{ chainId: `0x${chain.toString(16)}` }],
         });
         return;
       } catch (addError) {
@@ -56,7 +61,10 @@ export const switchConnectedChainUsingProvider = async (
       { chainId: `0x${chain.toString(16)}` },
     ]);
   } catch (switchError) {
-    if (isErrorWithCode(switchError) && switchError.code === 4902) {
+    if (
+      isErrorWithCode(switchError) &&
+      switchError.code === MetamaskErrorCodes.chainNotAdded
+    ) {
       try {
         const chainData = chains[chain];
 
@@ -65,6 +73,9 @@ export const switchConnectedChainUsingProvider = async (
             chainId: `0x${chain.toString(16)}`,
             chainName: chainData.name,
             rpcUrls: chainData.rpcUrls,
+            nativeCurrency: chainData.nativeCurrency,
+            blockExplorerUrls: chainData.blockExplorerUrls,
+            iconUrls: chainData.iconUrls,
           },
         ]);
         await provider.send('wallet_switchEthereumChain', [

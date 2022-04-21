@@ -17,8 +17,11 @@ export type ChainType = {
   icon: string;
   id: ChainEnum;
   chainId: string;
+  blockExplorerUrls?: string[];
+  iconUrls?: string[];
   rpcUrls: string[];
   nativeCurrency: {
+    name: string;
     symbol: string;
     decimals: number;
   };
@@ -31,7 +34,9 @@ export const chains: Record<ChainEnum, ChainType> = {
     id: ChainEnum.ETH,
     chainId: utils.hexlify(ChainEnum.ETH),
     rpcUrls: ['https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
+    blockExplorerUrls: ['https://etherscan.io'],
     nativeCurrency: {
+      name: 'Ether',
       symbol: 'ETH',
       decimals: 18,
     },
@@ -42,7 +47,9 @@ export const chains: Record<ChainEnum, ChainType> = {
     id: ChainEnum.ETH_TESTNET,
     chainId: utils.hexlify(ChainEnum.ETH_TESTNET),
     rpcUrls: ['https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
+    blockExplorerUrls: ['https://ropsten.etherscan.io'],
     nativeCurrency: {
+      name: 'Ether',
       symbol: 'ETH',
       decimals: 18,
     },
@@ -53,7 +60,9 @@ export const chains: Record<ChainEnum, ChainType> = {
     id: ChainEnum.BSC,
     chainId: utils.hexlify(ChainEnum.BSC),
     rpcUrls: ['https://bsc-dataseed.binance.org'],
+    blockExplorerUrls: ['https://bscscan.com'],
     nativeCurrency: {
+      name: 'Binance Coin',
       symbol: 'BNB',
       decimals: 18,
     },
@@ -64,7 +73,9 @@ export const chains: Record<ChainEnum, ChainType> = {
     id: ChainEnum.BSC_TESTNET,
     chainId: utils.hexlify(ChainEnum.BSC_TESTNET),
     rpcUrls: ['https://data-seed-prebsc-2-s3.binance.org:8545'],
+    blockExplorerUrls: ['https://testnet.bscscan.com'],
     nativeCurrency: {
+      name: 'Binance Coin',
       symbol: 'BNB',
       decimals: 18,
     },
@@ -75,7 +86,9 @@ export const chains: Record<ChainEnum, ChainType> = {
     id: ChainEnum.RSK,
     chainId: utils.hexlify(ChainEnum.RSK),
     rpcUrls: ['https://public-node.rsk.co'],
+    blockExplorerUrls: ['https://explorer.rsk.co'],
     nativeCurrency: {
+      name: 'RSK Smart Bitcoin',
       symbol: 'RBTC',
       decimals: 18,
     },
@@ -86,7 +99,9 @@ export const chains: Record<ChainEnum, ChainType> = {
     id: ChainEnum.RSK_TESTNET,
     chainId: utils.hexlify(ChainEnum.RSK_TESTNET),
     rpcUrls: ['https://testnet.sovryn.app/rpc'],
+    blockExplorerUrls: ['https://explorer.testnet.rsk.co'],
     nativeCurrency: {
+      name: 'RSK Smart Bitcoin',
       symbol: 'RBTC',
       decimals: 18,
     },
