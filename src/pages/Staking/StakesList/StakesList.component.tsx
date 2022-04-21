@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { formatTimestamp } from '../../../utils/helpers';
 import { StakeListItem } from '../../../store/staking/staking.state';
 

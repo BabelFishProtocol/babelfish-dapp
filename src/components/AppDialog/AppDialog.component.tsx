@@ -3,7 +3,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import React from 'react';
 import crossIcon from '../../assets/icons/cross.svg';
 import { AppDialogProps, AppDialogTitleProps } from './AppDialog.types';
 
