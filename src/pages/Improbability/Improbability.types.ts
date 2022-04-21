@@ -18,3 +18,5 @@ export type ImprobabilityComponentProps = {
 export type ImprobabilityFormValues = {
   network: ChainEnum | '';
 };
+
+export type ImprobabilityRowData = Omit<Coin, 'addresses'>;
