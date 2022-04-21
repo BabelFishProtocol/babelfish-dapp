@@ -27,7 +27,11 @@ export const BottomBanner = () => {
       <Typography variant="body2">
         Alpha 0.1: Deposit/withdraw stablecoins from Ethereum and mint/burn
         meta-stablecoins on Rootstock. Visit our{' '}
-        <Link href="https://discord.gg/5SEetbpq" color="primary">
+        <Link
+          target="_blank"
+          href="https://discord.gg/5SEetbpq"
+          color="primary"
+        >
           Discord
         </Link>{' '}
         for more information.
@@ -37,11 +41,14 @@ export const BottomBanner = () => {
       </Typography>
 
       <Box
+        component="button"
         sx={{
           position: 'absolute',
           right: '30px',
           top: '30px',
           cursor: 'pointer',
+          background: 'transparent',
+          border: 'none',
         }}
         onClick={() => {
           setBannerShow(false);
