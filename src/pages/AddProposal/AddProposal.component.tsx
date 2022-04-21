@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { useEffect } from 'react';
+import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { ControlledAddressInput } from '../../components/AddressInput/AddressInput.controlled';
 import { AppDialog } from '../../components/AppDialog/AppDialog.component';
 import { Button } from '../../components/Button/Button.component';
@@ -17,14 +18,16 @@ import {
 import { AddProposalFields, AddProposalProps } from './AddProposal.types';
 
 const AP_DD_OPTIONS = [
-  GOVERNANCE_OPTIONS.GOVERNER_ADMIN,
-  GOVERNANCE_OPTIONS.GOVERNER_OWNER,
+  GOVERNANCE_OPTIONS.GOVERNOR_ADMIN,
+  GOVERNANCE_OPTIONS.GOVERNOR_OWNER,
 ];
 
 export const AddProposal = ({
   isOpenDialog,
   onClose,
   onSubmit,
+  reasonToBlock,
+  onGovernorChange,
 }: AddProposalProps) => {
   const {
     control,
@@ -40,6 +43,15 @@ export const AddProposal = ({
     control,
     name: AddProposalInputs.Values,
   });
+
+  const govOption = useWatch({
+    name: AddProposalInputs.SendProposalContract,
+    control,
+  });
+
+  useEffect(() => {
+    onGovernorChange(govOption);
+  }, [govOption, onGovernorChange]);
 
   return (
     <AppDialog
@@ -140,7 +152,7 @@ export const AddProposal = ({
                   }}
                 />
                 <ControlledInput
-                  placeholder="Callata"
+                  placeholder="Calldata"
                   name={`${AddProposalInputs.Values}.${index}.${AddProposalInputs.Calldata}`}
                   control={control}
                   rules={{
@@ -165,6 +177,20 @@ export const AddProposal = ({
             </Button>
           </Box>
 
+          {reasonToBlock && (
+            <Box>
+              <Typography
+                variant="body1"
+                sx={({ palette }) => ({
+                  color: palette.error.main,
+                  py: 2,
+                })}
+              >
+                {reasonToBlock}
+              </Typography>
+            </Box>
+          )}
+
           <Box
             sx={{
               display: 'grid',
@@ -172,7 +198,7 @@ export const AddProposal = ({
               gap: 2,
             }}
           >
-            <Button type="submit" disabled={!isValid}>
+            <Button type="submit" disabled={!isValid || !!reasonToBlock}>
               Confirm
             </Button>
             <Button variant="outlined" onClick={onClose}>
