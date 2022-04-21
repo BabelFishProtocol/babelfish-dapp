@@ -1,4 +1,3 @@
-import React from 'react';
 import { ContainerProps } from '@mui/material/Container';
 import { TypographyVariant } from '@mui/material/styles';
 import { TypographyProps } from '@mui/material/Typography';

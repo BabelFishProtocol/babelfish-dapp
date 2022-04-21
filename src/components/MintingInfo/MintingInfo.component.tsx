@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import React from 'react';
 import { MintingInfoPros } from './MintingInfo.types';
 
 export const MintingInfo = ({ data }: MintingInfoPros) => (

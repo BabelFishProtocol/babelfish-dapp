@@ -1,5 +1,4 @@
 import InputAdornment from '@mui/material/InputAdornment';
-import React from 'react';
 import { decimalRegex } from '../../constants';
 import { TextInput } from '../TextInput/TextInput.component';
 import { CurrencyInputProps } from './CurrencyInput.types';

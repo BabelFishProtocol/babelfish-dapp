@@ -1,5 +1,4 @@
 import Typography from '@mui/material/Typography';
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {

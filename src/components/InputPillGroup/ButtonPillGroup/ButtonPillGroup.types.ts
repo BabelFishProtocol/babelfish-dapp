@@ -1,5 +1,3 @@
-import React from 'react';
-
 export type ButtonPillGroupProps = {
   availableValues: number[];
   disabled?: boolean;
