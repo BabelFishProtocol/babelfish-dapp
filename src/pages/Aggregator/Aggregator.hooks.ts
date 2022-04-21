@@ -112,7 +112,7 @@ export const useConnectedChain = (
   const wrongChainConnectedError = startingChain !== connectedChain;
 
   useEffect(() => {
-    if (startingChain && wrongChainConnectedError && provider) {
+    if (startingChain && wrongChainConnectedError) {
       switchConnectedChain(startingChain, provider);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
