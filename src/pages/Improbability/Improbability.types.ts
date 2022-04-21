@@ -6,7 +6,7 @@ export type Coin = TokenTypeBase & {
   pool: number;
   apr: number;
   earnedInKind: string;
-  earnedInWxusd: string;
+  earnedInXusd: string;
 };
 
 export type ImprobabilityComponentProps = {

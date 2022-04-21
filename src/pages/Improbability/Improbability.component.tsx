@@ -5,14 +5,20 @@ import { ImprobabilityComponentProps } from './Improbability.types';
 export const ImprobabilityComponent = ({
   coins,
   state,
-}: ImprobabilityComponentProps) => (
-  <PageView
-    title={
-      <Typography variant="h2" padding={1}>
-        Improbability Drive
-      </Typography>
-    }
-  >
-    Improbability{' '}
-  </PageView>
-);
+}: ImprobabilityComponentProps) => {
+  console.log(coins);
+  return (
+    <PageView
+      title={
+        <Typography variant="h2" padding={1}>
+          Improbability Drive
+          {coins.map((coin) => (
+            <img src={coin.icon} />
+          ))}
+        </Typography>
+      }
+    >
+      Improbability{' '}
+    </PageView>
+  );
+};

@@ -13,7 +13,6 @@ import { Header } from './components/Header/Header.component';
 import { Urls } from './constants';
 import { AggregatorContainer } from './pages/Aggregator/Aggregator.container';
 import { DashboardContainer } from './pages/Dashboard/Dashboard.container';
-import { ImprobabilityComponent } from './pages/Improbability/Improbability.component';
 import { ImprobabilityContainer } from './pages/Improbability/Improbability.container';
 import { ProposalDetailsContainer } from './pages/ProposalDetails/ProposalDetails.container';
 import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.container';
