@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
-import { UseFormResetField, UseFormSetValue } from 'react-hook-form';
+import {
+  UseFormReset,
+  UseFormResetField,
+  UseFormSetValue,
+} from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { ChainEnum, ChainType } from '../../config/chains';
+import { poolHasChain } from '../../config/pools';
 import { TokenTypeBase } from '../../config/tokens';
 import {
   flowStateSelector,
@@ -66,7 +71,7 @@ export const useAggregatorDropdowns = (
       setStartingTokenOptions([pool.masset]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [flowState, setValue, resetField]);
+  }, [flowState, setValue, resetField, pool]);
 
   useEffect(() => {
     if (flowState === 'deposit' && startingChain) {
@@ -95,6 +100,7 @@ export const useAggregatorDropdowns = (
 export const useConnectedChain = (
   startingChain: ChainEnum | '',
   destinationChain: ChainEnum | '',
+  reset: UseFormReset<AggregatorFormValues>,
   setValue: UseFormSetValue<AggregatorFormValues>
 ) => {
   const dispatch = useDispatch();
@@ -114,7 +120,13 @@ export const useConnectedChain = (
 
   useEffect(() => {
     if (connectedChain && wrongChainConnectedError && setValue) {
-      if (destinationChain === connectedChain) {
+      if (!poolHasChain({ pool, chain: connectedChain })) {
+        reset();
+        dispatch(aggregatorActions.setStartingToken(undefined));
+        dispatch(aggregatorActions.setDestinationChain(undefined));
+        dispatch(aggregatorActions.setDestinationToken(undefined));
+        dispatch(aggregatorActions.togglePool());
+      } else if (destinationChain === connectedChain) {
         dispatch(aggregatorActions.toggleFlowState());
       } else if (
         pool.masterChain.id === startingChain &&
@@ -122,18 +134,13 @@ export const useConnectedChain = (
       ) {
         setValue(AggregatorInputs.DestinationChain, connectedChain);
         dispatch(aggregatorActions.toggleFlowState());
-      } else if (
-        pool.baseChains.find((baseChain) => baseChain.id === connectedChain)
-      ) {
+      } else if (pool.masterChain.id !== connectedChain) {
         setValue(AggregatorInputs.StartingChain, connectedChain);
-      } else {
-        // set wrongChainConnectedError so user can see it
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connectedChain, dispatch, setValue, pool]);
 
-  // TODO: add walletConnection guard to Aggregator
   return {
     wrongChainConnectedError,
     hideDestinationTokenDropdown: !showDestinationTokenDropdown,

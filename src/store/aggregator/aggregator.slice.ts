@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
 import { ActionsType } from '../types';
+import { PoolEnum } from '../../config/pools';
 import { AggregatorState, FeesAndLimitsType } from './aggregator.state';
 
 const initialState = { ...new AggregatorState() };
@@ -68,6 +69,10 @@ const aggregatorSlice = createSlice({
     setStartingTokenBalance: (state, { payload }: PayloadAction<string>) => {
       state.startingTokenBalance.state = 'success';
       state.startingTokenBalance.data = payload;
+    },
+    togglePool: (state) => {
+      state.pool =
+        state.pool === PoolEnum.testnet ? PoolEnum.mainnet : PoolEnum.testnet;
     },
   },
 });
