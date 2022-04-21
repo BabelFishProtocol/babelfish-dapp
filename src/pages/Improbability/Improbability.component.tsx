@@ -34,10 +34,10 @@ export const ImprobabilityComponent = ({
     >
       <Box
         sx={{
-          p: '2',
           width: '100%',
           display: 'flex',
           justifyContent: 'center',
+          alignItems: 'center',
           gap: 2,
         }}
       >
@@ -49,12 +49,12 @@ export const ImprobabilityComponent = ({
           setValue={setValue}
         />
         <Button
-          sx={{ height: '4rem', width: '12rem', ml: 'auto' }}
+          sx={{ height: '3rem', width: '12rem', ml: 'auto' }}
           variant="contained"
         >
           deposit
         </Button>
-        <Button sx={{ height: '4rem', width: '12rem' }} variant="outlined">
+        <Button sx={{ height: '3rem', width: '12rem' }} variant="outlined">
           withdraw
         </Button>
       </Box>
