@@ -49,18 +49,10 @@ export const AddNewStakeComponent = ({
     async (amount, timestamp) => {
       const stakeFee = await estimateStakeFee(amount, timestamp);
 
-      console.log(stakeFee, stakeFee ? stakeFee.toString() : 'dupa');
-
       if (!needsApproval) return stakeFee;
 
       const approveFee =
         (await estimateApproveFee(amount, timestamp)) ?? BigNumber.from(0);
-
-      console.log(
-        approveFee,
-        approveFee.toString(),
-        approveFee.add(stakeFee ?? BigNumber.from(0)).toString()
-      );
 
       return approveFee.add(stakeFee ?? BigNumber.from(0));
     },
