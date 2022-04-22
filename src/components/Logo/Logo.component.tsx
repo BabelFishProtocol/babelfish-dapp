@@ -9,7 +9,7 @@ export const Logo = () => (
     component={Link}
     to={Urls.Dashboard}
   >
-    {/* CONTEMPORARY LOGO ICON (YELLOW CIRCLE) */}
+    {/* TODO: CONTEMPORARY LOGO ICON (YELLOW CIRCLE) */}
     <Box
       sx={(theme) => ({
         height: 40,

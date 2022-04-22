@@ -105,11 +105,7 @@ const RewardBlock = ({ amount, asset, usdAmount }: RewardBlockProps) => (
     <Typography variant="caption">
       {asset} {formatWeiAmount(amount, 6)} ≈ USD {usdAmount}
     </Typography>
-    <Button
-      size="small"
-      variant="text"
-      sx={{ textTransform: 'unset', p: 0, ml: 1 }}
-    >
+    <Button size="small" variant="text" sx={{ ml: 1 }}>
       <Typography variant="body2">withdraw</Typography>
     </Button>
   </Box>
