@@ -23,7 +23,7 @@ export const WalletNotConnectedModal = () => {
       isOpenDialog={walletNotConectedModal}
       onClose={onClose}
       title="Wallet not connected"
-      dialogPaperProps={{ sx: { minHeight: 0 } }}
+      dialogPaperProps={{ sx: { minHeight: 'unset' } }}
     >
       Please connect your browser wallet.
     </AppDialog>
@@ -44,7 +44,7 @@ export const WrongNetworkModal = () => {
       isOpenDialog={wrongNetworkModal}
       onClose={onClose}
       title="Wrong network"
-      dialogPaperProps={{ sx: { minHeight: 0 } }}
+      dialogPaperProps={{ sx: { minHeight: 'unset' } }}
     >
       Please connect your browser wallet to a supported network.
       <br />

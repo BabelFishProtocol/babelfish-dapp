@@ -54,11 +54,7 @@ export const BottomBanner = () => {
           setBannerShow(false);
         }}
       >
-        <img
-          style={{ height: '15px', width: '15px' }}
-          src={closeIcon}
-          alt="Close"
-        />
+        <img height={15} width={15} src={closeIcon} alt="Close" />
       </Box>
     </Box>
   );
