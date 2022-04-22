@@ -34,8 +34,14 @@ export const AppDialog = ({
   topContent,
   dialogProps,
   dialogContentProps,
+  dialogPaperProps,
 }: AppDialogProps) => (
-  <Dialog onClose={onClose} open={isOpenDialog} {...dialogProps}>
+  <Dialog
+    onClose={onClose}
+    open={isOpenDialog}
+    PaperProps={dialogPaperProps}
+    {...dialogProps}
+  >
     {title && <AppDialogTitle title={title} onClose={onClose} />}
 
     <DialogContent {...dialogContentProps}>
