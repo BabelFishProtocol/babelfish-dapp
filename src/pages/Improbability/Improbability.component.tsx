@@ -29,45 +29,47 @@ export const ImprobabilityComponent = ({
   });
 
   return (
-    <PageView
-      title={
-        <Typography variant="h2" padding={1}>
-          Improbability Drive
-        </Typography>
-      }
-    >
-      <Box
-        sx={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: 2,
-        }}
+    <form>
+      <PageView
+        title={
+          <Typography variant="h2" padding={1}>
+            Improbability Drive
+          </Typography>
+        }
       >
-        <ControlledDropdown
-          name={ImprobabilityInputs.Network}
-          placeholder="Choose Network"
-          control={control}
-          options={improbabilityDropdownOptions}
-          setValue={setValue}
-        />
-        <Button
-          sx={{ height: '3rem', width: '12rem', ml: 'auto' }}
-          variant="contained"
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 2,
+          }}
         >
-          deposit
-        </Button>
-        <Button sx={{ height: '3rem', width: '12rem' }} variant="outlined">
-          withdraw
-        </Button>
-      </Box>
-      <DataTable
-        state={state}
-        data={coins as ImprobabilityRowData[]}
-        columns={coinsListColumns}
-        containerSx={{ minHeight: 250 }}
-      />
-    </PageView>
+          <ControlledDropdown
+            name={ImprobabilityInputs.Network}
+            placeholder="Choose Network"
+            control={control}
+            options={improbabilityDropdownOptions}
+            setValue={setValue}
+          />
+          <Button
+            sx={{ height: '3rem', width: '12rem', ml: 'auto' }}
+            variant="contained"
+          >
+            deposit
+          </Button>
+          <Button sx={{ height: '3rem', width: '12rem' }} variant="outlined">
+            withdraw
+          </Button>
+        </Box>
+        <DataTable
+          state={state}
+          data={coins as ImprobabilityRowData[]}
+          columns={coinsListColumns}
+          containerSx={{ minHeight: 250 }}
+        />
+      </PageView>
+    </form>
   );
 };
