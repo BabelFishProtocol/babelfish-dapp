@@ -1,7 +1,6 @@
 import Typography from '@mui/material/Typography';
 import { useForm } from 'react-hook-form';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import { DataTable } from '../../components/DataTable/DataTable.component';
 import { PageView } from '../../components/PageView/PageView.component';
 import {
@@ -18,6 +17,7 @@ import {
   ImprobabilityFormValues,
   ImprobabilityInputs,
 } from './Improbability.fields';
+import { Button } from '../../components/Button/Button.component';
 
 export const ImprobabilityComponent = ({
   state,
@@ -54,12 +54,22 @@ export const ImprobabilityComponent = ({
             setValue={setValue}
           />
           <Button
-            sx={{ height: '3rem', width: '12rem', ml: 'auto' }}
+            sx={{
+              height: 50,
+              width: 180,
+              ml: 'auto',
+            }}
             variant="contained"
           >
             deposit
           </Button>
-          <Button sx={{ height: '3rem', width: '12rem' }} variant="outlined">
+          <Button
+            sx={{
+              height: 50,
+              width: 180,
+            }}
+            variant="outlined"
+          >
             withdraw
           </Button>
         </Box>
