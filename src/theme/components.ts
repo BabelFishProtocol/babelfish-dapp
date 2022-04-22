@@ -250,7 +250,7 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
         minHeight: 500,
         width: 500,
         maxWidth: 800,
-        borderRadius: '8px',
+        borderRadius: 8,
         border: 'none',
       },
     },
