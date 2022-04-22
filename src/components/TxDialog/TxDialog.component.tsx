@@ -34,7 +34,7 @@ export const TxErrorDialog = ({
   <AppDialog
     isOpenDialog={isOpenDialog}
     icon={errorIcon}
-    title="Staking Error"
+    title={`${operationName} Error`}
     description={`We encountered an error in the ${operationName} process. Please try again`}
     onClose={onClose}
     topContent={stepper}
