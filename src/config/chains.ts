@@ -134,6 +134,10 @@ export const idsOfTestNetworks = [
   ChainEnum.RSK_TESTNET,
 ];
 
+export const testnetChainsArr = Object.values(testnetChains);
+export const mainnetChainsArr = Object.values(mainnetChains);
+export const allChainsArr = Object.values(chains);
+
 export const SUPPORTED_CHAINS_RSK = [ChainEnum.RSK, ChainEnum.RSK_TESTNET];
 
 export const SUPPORTED_CHAINS = Object.values(ChainEnum).filter(

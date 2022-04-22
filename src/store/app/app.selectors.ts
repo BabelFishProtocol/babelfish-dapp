@@ -12,10 +12,11 @@ import {
 } from '../../config/contracts';
 import { Reducers } from '../../constants';
 import {
+  allChainsArr,
   chains,
   idsOfTestNetworks,
-  mainnetChains,
-  testnetChains,
+  mainnetChainsArr,
+  testnetChainsArr,
 } from '../../config/chains';
 import { subgraphClients } from '../../config/subgraph';
 import {
@@ -87,8 +88,8 @@ export const chainsInCurrentNetworkSelector = createSelector(
     if (chainId === undefined) return undefined;
 
     return idsOfTestNetworks.includes(chainId)
-      ? Object.values(testnetChains)
-      : Object.values(mainnetChains);
+      ? testnetChainsArr
+      : mainnetChainsArr;
   }
 );
 
@@ -97,7 +98,7 @@ export const currentChainSelector = createSelector(
   (chainId) => {
     if (chainId === undefined) return undefined;
 
-    const chainConfig = Object.values(chains).find(
+    const chainConfig = allChainsArr.find(
       (chain) => chain.chainId === utils.hexlify(chainId)
     );
 
