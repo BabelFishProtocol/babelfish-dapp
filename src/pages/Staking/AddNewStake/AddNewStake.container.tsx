@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { constants, utils } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -14,7 +14,6 @@ import {
 } from '../../../store/staking/staking.selectors';
 import { stakingActions } from '../../../store/staking/staking.slice';
 
-import { ONE_DAY } from '../../../constants';
 import { SubmitStepsDialog } from '../../../components/TxDialog/TxDialog.component';
 
 import { StakingFeeEstimator } from '../Staking.types';
@@ -49,14 +48,18 @@ export const AddNewStakeContainer = ({
   );
 
   const estimateStakeFee: StakingFeeEstimator = useCallback(
-    async (amount: string, timestamp: number) =>
-      staking?.estimateGas.stake(
-        utils.parseEther(amount),
-        timestamp + ONE_DAY,
-        constants.AddressZero,
-        constants.AddressZero
-      ),
-    [staking?.estimateGas]
+    // async (amount: string, timestamp: number) =>
+    //   staking?.estimateGas.stake(
+    //     utils.parseEther(amount),
+    //     timestamp + ONE_DAY,
+    //     constants.AddressZero,
+    //     constants.AddressZero
+    //   ),
+    // [staking?.estimateGas]
+
+    /** We're not able to call the estimate stake when user doesn't have allowance, the number below is an average gas used in transactions */
+    async () => BigNumber.from(200000),
+    []
   );
 
   if (!kickoffTs || !staking) {
