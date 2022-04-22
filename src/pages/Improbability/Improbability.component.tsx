@@ -11,7 +11,7 @@ import { ControlledDropdown } from '../../components/Dropdown/Dropdown.controlle
 import {
   coinsListColumns,
   improbabilityDropdownOptions,
-} from './Improbability.utils';
+} from './Improbability.columns';
 import {
   improbabilityDefaultValues,
   ImprobabilityFormValues,
