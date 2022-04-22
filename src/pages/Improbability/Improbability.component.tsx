@@ -3,10 +3,7 @@ import { useForm } from 'react-hook-form';
 import Box from '@mui/material/Box';
 import { DataTable } from '../../components/DataTable/DataTable.component';
 import { PageView } from '../../components/PageView/PageView.component';
-import {
-  ImprobabilityComponentProps,
-  ImprobabilityRowData,
-} from './Improbability.types';
+import { ImprobabilityComponentProps } from './Improbability.types';
 import { ControlledDropdown } from '../../components/Dropdown/Dropdown.controlled';
 import {
   coinsListColumns,
@@ -75,7 +72,7 @@ export const ImprobabilityComponent = ({
         </Box>
         <DataTable
           state={state}
-          data={coins as ImprobabilityRowData[]}
+          data={coins}
           columns={coinsListColumns}
           containerSx={{ minHeight: 250 }}
         />

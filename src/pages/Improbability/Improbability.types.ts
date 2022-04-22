@@ -10,7 +10,7 @@ export type Coin = TokenTypeBase & {
 };
 
 export type ImprobabilityComponentProps = {
-  coins: Coin[];
+  coins: ImprobabilityRowData[];
   state: FiniteStates;
 };
 
