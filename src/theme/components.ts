@@ -74,18 +74,19 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
         },
       },
       outlined: {
-        borderRadius: '8px',
+        borderRadius: 8,
       },
       outlinedPrimary: {
         boxShadow: `inset 0 0 0 2px ${palette.primary.main}`,
       },
       text: {
         fontSize: 14,
-        padding: '5px',
+        padding: 5,
         ':hover': {
           textDecoration: 'underline',
         },
       },
+      textSizeSmall: { textTransform: 'unset', padding: 0 },
       outlinedSizeSmall: {
         padding: '8px 12px',
       },
@@ -246,10 +247,10 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
     styleOverrides: {
       paper: {
         backgroundImage: palette.boxGradient,
-        minHeight: '400px',
-        width: '500px',
-        maxWidth: '800px',
-        borderRadius: '8px',
+        minHeight: 500,
+        width: 500,
+        maxWidth: 800,
+        borderRadius: 8,
         border: 'none',
       },
     },
@@ -274,7 +275,7 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
         alignItems: 'center',
         flexDirection: 'column',
         justifyContent: 'center',
-        padding: '30px',
+        padding: 30,
         paddingTop: '30px !important',
       },
     },

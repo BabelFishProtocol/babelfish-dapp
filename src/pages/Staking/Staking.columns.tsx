@@ -1,4 +1,3 @@
-import React from 'react';
 import dayjs from 'dayjs';
 
 import Typography from '@mui/material/Typography';

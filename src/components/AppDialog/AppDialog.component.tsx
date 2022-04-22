@@ -3,7 +3,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import React from 'react';
 import crossIcon from '../../assets/icons/cross.svg';
 import { AppDialogProps, AppDialogTitleProps } from './AppDialog.types';
 
@@ -19,14 +18,7 @@ export const AppDialogTitle = ({ title, onClose }: AppDialogTitleProps) => (
           borderRadius: '50%',
         }}
       >
-        <img
-          style={{
-            width: '20px',
-            height: '20px',
-          }}
-          src={crossIcon}
-          alt="Close"
-        />
+        <img height={20} width={20} src={crossIcon} alt="Close" />
       </IconButton>
     )}
   </DialogTitle>
@@ -49,9 +41,7 @@ export const AppDialog = ({
     <DialogContent {...dialogContentProps}>
       {topContent}
 
-      {icon && (
-        <img src={icon} style={{ width: '100px', height: '100px' }} alt="" />
-      )}
+      {icon && <img src={icon} height={100} width={100} alt="" />}
 
       {description && (
         <Typography component="div" sx={{ my: 5 }} variant="body2">

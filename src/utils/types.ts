@@ -14,3 +14,9 @@ export type ContractCallResult<
   Contract extends BaseContract,
   Method extends keyof Contract['functions']
 > = Awaited<ReturnType<Contract['functions'][Method]>>;
+
+type ErrorWithCode = {
+  code: number;
+};
+export const isErrorWithCode = (error: unknown): error is ErrorWithCode =>
+  (error as ErrorWithCode).code !== undefined;

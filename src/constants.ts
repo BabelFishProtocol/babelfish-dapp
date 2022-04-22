@@ -3,6 +3,7 @@ export enum Urls {
   Dashboard = '/dashboard',
   Staking = '/stake',
   Aggregator = '/aggregator',
+  Improbability = '/improbability',
 }
 
 export enum ProposalState {
@@ -62,11 +63,11 @@ export enum GovernorTypes {
 }
 
 export const GOVERNANCE_OPTIONS = {
-  GOVERNER_OWNER: {
+  GOVERNOR_OWNER: {
     name: 'Governor Owner',
     id: GovernorTypes.GovernorOwner,
   },
-  GOVERNER_ADMIN: {
+  GOVERNOR_ADMIN: {
     name: 'Governor Admin',
     id: GovernorTypes.GovernorAdmin,
   },
@@ -88,3 +89,7 @@ export const decimalRegex = /^\d*\.?\d*$/;
 
 export const signatureRegex = /^(0x|)[a-zA-Z0-9]{10}$/g;
 export const calldataRegex = /^(0x)(..)*$/g;
+
+export enum MetamaskErrorCodes {
+  chainNotAdded = 4902,
+}

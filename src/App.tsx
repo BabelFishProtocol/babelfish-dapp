@@ -13,11 +13,12 @@ import { Header } from './components/Header/Header.component';
 import { Urls } from './constants';
 import { AggregatorContainer } from './pages/Aggregator/Aggregator.container';
 import { DashboardContainer } from './pages/Dashboard/Dashboard.container';
+import { ImprobabilityContainer } from './pages/Improbability/Improbability.container';
 import { ProposalDetailsContainer } from './pages/ProposalDetails/ProposalDetails.container';
 import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.container';
 import { StakingContainer } from './pages/Staking/Staking.container';
 
-function App() {
+export const App = () => (
   // const [openDialogType, setOpenDialogType] = useState<
   //   'success' | 'error' | 'pending'
   // >();
@@ -35,12 +36,11 @@ function App() {
   //   },
   // ];
 
-  return (
-    <div className="App">
-      <Header />
+  <div className="App">
+    <Header />
 
-      {/* Error Dialog */}
-      {/* <AppDialog
+    {/* Error Dialog */}
+    {/* <AppDialog
         isOpenDialog={openDialogType === 'error'}
         icon={errorIcon}
         title="Minting Error"
@@ -52,8 +52,8 @@ function App() {
         <Button variant="outlined">Try Again</Button>
       </AppDialog> */}
 
-      {/* Success Dialog */}
-      {/* <AppDialog
+    {/* Success Dialog */}
+    {/* <AppDialog
         isOpenDialog={openDialogType === 'success'}
         icon={successIcon}
         title="Minting Complete"
@@ -69,8 +69,8 @@ function App() {
         </Button>
       </AppDialog> */}
 
-      {/* Pending Dialog */}
-      {/* <AppDialog
+    {/* Pending Dialog */}
+    {/* <AppDialog
         isOpenDialog={openDialogType === 'pending'}
         icon={loadingIcon}
         title="Minting In Progress"
@@ -79,8 +79,8 @@ function App() {
         <MintingInfo data={dialogVals} />
       </AppDialog> */}
 
-      <Routes>
-        {/* <Route
+    <Routes>
+      {/* <Route
           path="/"
           element={
             <>
@@ -140,20 +140,18 @@ function App() {
             </>
           }
         /> */}
-        <Route path={Urls.Proposals} element={<ProposalsListContainer />} />
-        <Route path={Urls.Staking} element={<StakingContainer />} />
-        <Route path={Urls.Dashboard} element={<DashboardContainer />} />
-        <Route
-          path={`${Urls.Proposals}/:governorType/:id`}
-          element={<ProposalDetailsContainer />}
-        />
-        <Route path={Urls.Aggregator} element={<AggregatorContainer />} />
-        <Route path="*" element={<Navigate to={Urls.Dashboard} />} />
-      </Routes>
+      <Route path={Urls.Proposals} element={<ProposalsListContainer />} />
+      <Route path={Urls.Staking} element={<StakingContainer />} />
+      <Route path={Urls.Dashboard} element={<DashboardContainer />} />
+      <Route
+        path={`${Urls.Proposals}/:governorType/:id`}
+        element={<ProposalDetailsContainer />}
+      />
+      <Route path={Urls.Aggregator} element={<AggregatorContainer />} />
+      <Route path={Urls.Improbability} element={<ImprobabilityContainer />} />
+      <Route path="*" element={<Navigate to={Urls.Dashboard} />} />
+    </Routes>
 
-      <BottomBanner />
-    </div>
-  );
-}
-
-export default App;
+    <BottomBanner />
+  </div>
+);

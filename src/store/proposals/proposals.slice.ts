@@ -12,7 +12,7 @@ import {
 
 const initialState = { ...new ProposalsState() };
 
-export const appSlice = createSlice({
+export const proposalSlice = createSlice({
   name: Reducers.Proposals,
   initialState,
   reducers: {
@@ -64,11 +64,24 @@ export const appSlice = createSlice({
         state: 'success',
       };
     },
-
+    setGovernor: (state, { payload }: PayloadAction<string>) => {
+      state.selectedGovernor = payload;
+    },
+    watchAddProposal: () => {},
+    stopWatchingAddProposal: (state) => {
+      state.addProposalState = 'idle';
+    },
+    checkAddProposal: () => {},
+    eligibleForAddProposal: (state) => {
+      state.reasonToBlockProposal = undefined;
+    },
+    notEligibleForAddProposal: (state, { payload }: PayloadAction<string>) => {
+      state.reasonToBlockProposal = payload;
+    },
     startProposal: (state, _: PayloadAction<AddProposalFields>) => {
       state.addProposalState = 'loading';
     },
-    porposalFailure: (state, { payload }: PayloadAction<string>) => {
+    proposalFailure: (state, { payload }: PayloadAction<string>) => {
       state.addProposalState = 'failure';
       state.addProposalErrorReason = payload;
     },
@@ -77,11 +90,12 @@ export const appSlice = createSlice({
     },
     setAddProposalState: (state, { payload }: PayloadAction<FiniteStates>) => {
       state.addProposalState = payload;
+      state.reasonToBlockProposal = undefined;
     },
   },
 });
 
-const { actions: proposalsActions, reducer: proposalsReducer } = appSlice;
+const { actions: proposalsActions, reducer: proposalsReducer } = proposalSlice;
 export { proposalsActions, proposalsReducer };
 
 export type ProposalsActions = ActionsType<typeof proposalsActions>;

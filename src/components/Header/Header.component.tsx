@@ -1,4 +1,3 @@
-import React from 'react';
 import Box from '@mui/material/Box';
 import { Logo } from '../Logo/Logo.component';
 import { WalletConnector } from '../Wallet/WalletConnector.component';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
@@ -10,7 +9,7 @@ export const Logo = () => (
     component={Link}
     to={Urls.Dashboard}
   >
-    {/* CONTEMPORARY LOGO ICON (YELLOW CIRCLE) */}
+    {/* TODO: CONTEMPORARY LOGO ICON (YELLOW CIRCLE) */}
     <Box
       sx={(theme) => ({
         height: 40,

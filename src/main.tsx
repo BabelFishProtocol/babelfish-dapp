@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Web3ReactProvider } from '@web3-react/core';
 import { ExternalProvider, Web3Provider } from '@ethersproject/providers';
 
-import App from './App';
+import { App } from './App';
 import { store } from './store';
 import { ThemeProvider } from './theme';
 import { AppUpdater } from './store/app/app.updaters';
