@@ -6,7 +6,6 @@ import { DataTable } from '../../components/DataTable/DataTable.component';
 import { PageView } from '../../components/PageView/PageView.component';
 import {
   ImprobabilityComponentProps,
-  ImprobabilityFormValues,
   ImprobabilityRowData,
 } from './Improbability.types';
 import { ControlledDropdown } from '../../components/Dropdown/Dropdown.controlled';
@@ -14,6 +13,11 @@ import {
   coinsListColumns,
   improbabilityDropdownOptions,
 } from './Improbability.utils';
+import {
+  improbabilityDefaultValues,
+  ImprobabilityFormValues,
+  ImprobabilityInputs,
+} from './Improbability.fields';
 
 export const ImprobabilityComponent = ({
   state,
@@ -21,7 +25,7 @@ export const ImprobabilityComponent = ({
 }: ImprobabilityComponentProps) => {
   const { setValue, control } = useForm<ImprobabilityFormValues>({
     mode: 'onChange',
-    defaultValues: { network: '' },
+    defaultValues: improbabilityDefaultValues,
   });
 
   return (
@@ -42,7 +46,7 @@ export const ImprobabilityComponent = ({
         }}
       >
         <ControlledDropdown
-          name="network"
+          name={ImprobabilityInputs.Network}
           placeholder="Choose Network"
           control={control}
           options={improbabilityDropdownOptions}

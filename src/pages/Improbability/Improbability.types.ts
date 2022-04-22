@@ -1,4 +1,3 @@
-import { ChainEnum } from '../../config/chains';
 import { TokenTypeBase } from '../../config/tokens';
 import { FiniteStates } from '../../utils/types';
 
@@ -13,10 +12,6 @@ export type Coin = TokenTypeBase & {
 export type ImprobabilityComponentProps = {
   coins: Coin[];
   state: FiniteStates;
-};
-
-export type ImprobabilityFormValues = {
-  network: ChainEnum | '';
 };
 
 export type ImprobabilityRowData = Omit<Coin, 'addresses'>;
