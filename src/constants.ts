@@ -90,5 +90,5 @@ export const signatureRegex = /^(0x|)[a-zA-Z0-9]{10}$/g;
 export const calldataRegex = /^(0x)(..)*$/g;
 
 export enum MetamaskErrorCodes {
-  chainNotAdded = 4092,
+  chainNotAdded = 4902,
 }
