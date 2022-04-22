@@ -11,7 +11,12 @@ import {
   ContractsForNetwork,
 } from '../../config/contracts';
 import { Reducers } from '../../constants';
-import { chains } from '../../config/chains';
+import {
+  chains,
+  idsOfTestNetworks,
+  mainnetChains,
+  testnetChains,
+} from '../../config/chains';
 import { subgraphClients } from '../../config/subgraph';
 import {
   ERC20__factory,
@@ -73,6 +78,17 @@ export const unsupportedNetworkSelector = createSelector(
       return false;
     }
     return !supportedNetworks.includes(chainId);
+  }
+);
+
+export const chainsInCurrentNetworkSelector = createSelector(
+  chainIdSelector,
+  (chainId) => {
+    if (chainId === undefined) return undefined;
+
+    return idsOfTestNetworks.includes(chainId)
+      ? Object.values(testnetChains)
+      : Object.values(mainnetChains);
   }
 );
 

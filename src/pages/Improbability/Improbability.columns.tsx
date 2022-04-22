@@ -4,7 +4,6 @@ import {
   CustomColumn,
   DataTableColumn,
 } from '../../components/DataTable/DataTable.types';
-import { chains, ChainType } from '../../config/chains';
 
 const StableCoinName: CustomColumn<ImprobabilityRowData> = ({
   value,
@@ -34,5 +33,3 @@ export const coinsListColumns: DataTableColumn<ImprobabilityRowData>[] = [
   { label: 'earned-In-Kind', name: 'earnedInKind' },
   { label: 'earned-In-Xusd', name: 'earnedInXusd' },
 ];
-
-export const improbabilityDropdownOptions: ChainType[] = Object.values(chains);

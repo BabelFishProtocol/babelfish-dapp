@@ -1,20 +1,19 @@
 import Typography from '@mui/material/Typography';
+import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import Box from '@mui/material/Box';
 import { DataTable } from '../../components/DataTable/DataTable.component';
 import { PageView } from '../../components/PageView/PageView.component';
 import { ImprobabilityComponentProps } from './Improbability.types';
 import { ControlledDropdown } from '../../components/Dropdown/Dropdown.controlled';
-import {
-  coinsListColumns,
-  improbabilityDropdownOptions,
-} from './Improbability.columns';
+import { coinsListColumns } from './Improbability.columns';
 import {
   improbabilityDefaultValues,
   ImprobabilityFormValues,
   ImprobabilityInputs,
 } from './Improbability.fields';
 import { Button } from '../../components/Button/Button.component';
+import { chainsInCurrentNetworkSelector } from '../../store/app/app.selectors';
 
 export const ImprobabilityComponent = ({
   state,
@@ -24,6 +23,8 @@ export const ImprobabilityComponent = ({
     mode: 'onChange',
     defaultValues: improbabilityDefaultValues,
   });
+
+  const chainOptions = useSelector(chainsInCurrentNetworkSelector);
 
   return (
     <form>
@@ -43,13 +44,15 @@ export const ImprobabilityComponent = ({
             gap: 2,
           }}
         >
-          <ControlledDropdown
-            name={ImprobabilityInputs.Network}
-            placeholder="Choose Network"
-            control={control}
-            options={improbabilityDropdownOptions}
-            setValue={setValue}
-          />
+          {chainOptions && (
+            <ControlledDropdown
+              name={ImprobabilityInputs.Network}
+              placeholder="Choose Network"
+              control={control}
+              options={chainOptions}
+              setValue={setValue}
+            />
+          )}
           <Button
             sx={{
               height: 50,
