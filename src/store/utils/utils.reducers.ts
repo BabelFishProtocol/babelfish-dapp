@@ -12,11 +12,14 @@ export const handleUpdateSteps = <Operations extends string>(
   currentState: CallState<Operations>,
   payload: { name: Operations }[]
 ) => {
-  currentState.steps = currentState.steps.filter((step) =>
+  const updatedSteps = currentState.steps.filter((step) =>
     payload.some(({ name }) => name === step.name)
   );
 
-  return currentState;
+  return {
+    ...currentState,
+    steps: updatedSteps,
+  };
 };
 
 export const handleUpdateStepData = <Operations extends string>(
@@ -31,12 +34,21 @@ export const handleUpdateStepData = <Operations extends string>(
     (step) => step.name === currentState.currentOperation
   );
 
-  currentState.steps[stepIndex] = {
-    ...currentState.steps[stepIndex],
-    ...payload,
-  };
+  const updatedSteps = currentState.steps.map((step, index) => {
+    if (stepIndex === index) {
+      return {
+        ...step,
+        ...payload,
+      };
+    }
 
-  return currentState;
+    return step;
+  });
+
+  return {
+    ...currentState,
+    steps: updatedSteps,
+  };
 };
 
 export const handleSetCallError = <Operations extends string>(

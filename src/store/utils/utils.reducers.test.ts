@@ -3,10 +3,22 @@ import {
   handleSetCallError,
   handleUpdateStepData,
   handleUpdateCallStatus,
+  handleUpdateSteps,
 } from './utils.reducers';
 import { initialCallState, populatedCallState } from './utils.mock';
 
 describe('reducers utils', () => {
+  describe('handleUpdateSteps', () => {
+    it('filters steps correctly', () => {
+      const result = handleUpdateSteps(initialCallState, [{ name: 'step1' }]);
+
+      expect(result).toEqual({
+        ...initialCallState,
+        steps: [initialCallState.steps[0]],
+      });
+    });
+  });
+
   describe('handleUpdateCallStatus', () => {
     it('returns properly updated state', () => {
       const result = handleUpdateCallStatus(initialCallState, {
