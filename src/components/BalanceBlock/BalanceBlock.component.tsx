@@ -35,10 +35,14 @@ export const BalanceBlock = ({
         ...sx,
       }}
     >
-      <Typography variant="h4" component="div" sx={{ display: 'flex' }}>
+      <Typography variant="h4" component="div" sx={{ position: 'relative' }}>
         {label}
         {isUpdate && (
-          <CircularProgress size={16} color="primary" sx={{ ml: 1 }} />
+          <CircularProgress
+            size={16}
+            color="primary"
+            sx={{ position: 'absolute', right: '-24px', ml: 1 }}
+          />
         )}
       </Typography>
 
