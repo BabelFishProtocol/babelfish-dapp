@@ -1,4 +1,3 @@
-import { take } from 'redux-saga-test-plan/matchers';
 import { select, call, put, all, takeLatest } from 'typed-redux-saga';
 import { accountSelector } from '../app/app.selectors';
 import { appActions } from '../app/app.slice';
