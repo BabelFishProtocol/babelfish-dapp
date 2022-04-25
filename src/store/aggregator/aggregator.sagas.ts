@@ -1,5 +1,6 @@
 import { select, call, put, all, takeLatest } from 'typed-redux-saga';
 import { accountSelector } from '../app/app.selectors';
+import { appActions } from '../app/app.slice';
 import {
   allowTokensContractSelector,
   bridgeContractSelector,
@@ -55,7 +56,11 @@ export function* fetchBridgeFeesAndLimits() {
       })
     );
   } catch (e) {
-    yield* put(aggregatorActions.fetchFeesAndLimitsFailure());
+    const msg =
+      e instanceof Error
+        ? e.message
+        : 'There was some error in fetching fees and limits. Please try again';
+    yield* put(aggregatorActions.fetchFeesAndLimitsFailure(msg));
   }
 }
 
@@ -81,8 +86,15 @@ export function* fetchStartingTokenBalance() {
   }
 }
 
+export function* resetAggregator() {
+  yield* put(aggregatorActions.resetAggregator());
+}
+
 export function* aggregatorSaga() {
   yield* all([
+    takeLatest(appActions.walletConnected, resetAggregator),
+
+    takeLatest(aggregatorActions.setStartingToken.type, fetchAllowTokenAddress),
     takeLatest(
       aggregatorActions.setStartingToken.type,
       fetchBridgeFeesAndLimits
