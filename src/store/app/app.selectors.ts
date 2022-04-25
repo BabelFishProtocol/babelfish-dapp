@@ -98,11 +98,11 @@ export const currentChainSelector = createSelector(
   (chainId) => {
     if (chainId === undefined) return undefined;
 
-    const chainConfig = allChainsArr.find(
+    const currentChain = allChainsArr.find(
       (chain) => chain.chainId === utils.hexlify(chainId)
     );
 
-    return chainConfig;
+    return currentChain;
   }
 );
 
