@@ -59,6 +59,7 @@ export const WrongNetworkModal = () => {
         Supported networks:{' '}
         {supportedNetworksNames.map((network) => (
           <Button
+            key={network}
             size="small"
             variant="text"
             onClick={() => {
