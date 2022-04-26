@@ -20,7 +20,7 @@ export const TestnetInfo = () => {
         color: 'black',
       }}
     >
-      <Typography variant="body2">you are on testnet</Typography>
+      <Typography variant="body2">Note: You are currently connected to the testnet. All coins have no value here.</Typography>
     </Box>
   ) : null;
 };

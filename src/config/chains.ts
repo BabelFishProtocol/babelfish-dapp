@@ -3,18 +3,6 @@ import ethIcon from '../assets/icons/chains/eth.svg';
 import bscIcon from '../assets/icons/chains/bsc.svg';
 import rskIcon from '../assets/icons/chains/rsk.svg';
 
-enum TestnetChainEnum {
-  ETH_TESTNET = 3,
-  BSC_TESTNET = 97,
-  RSK_TESTNET = 31,
-}
-
-enum MainnetChainEnum {
-  ETH = 1,
-  BSC = 56,
-  RSK = 30,
-}
-
 export enum ChainEnum {
   ETH = 1,
   ETH_TESTNET = 3,

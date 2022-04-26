@@ -96,7 +96,7 @@ export const chainsInCurrentNetworkSelector = createSelector(
 export const isOnTestnetSelector = createSelector(
   chainIdSelector,
   (chainId) => {
-    if (chainId === undefined) return undefined;
+    if (!chainId) return undefined;
 
     return idsOfTestNetworks.includes(chainId);
   }
