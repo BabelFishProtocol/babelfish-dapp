@@ -1,22 +1,20 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
-import { constants, utils } from 'ethers';
+import { BigNumber, utils } from 'ethers';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
-  accountSelector,
   fishTokenSelector,
   stakingContractSelector,
 } from '../../../store/app/app.selectors';
-
 import {
   fishTokenDataSelector,
   stakingConstantsSelector,
   stakesDatesSelector,
+  addStakeSubmitStatusSelector,
 } from '../../../store/staking/staking.selectors';
-import { ONE_DAY } from '../../../constants';
-import { useContractCall } from '../../../hooks/useContractCall';
+import { stakingActions } from '../../../store/staking/staking.slice';
 
-import { SubmitStatusDialog } from '../../../components/TxDialog/TxDialog.component';
+import { SubmitStepsDialog } from '../../../components/TxDialog/TxDialog.component';
 
 import { StakingFeeEstimator } from '../Staking.types';
 import {
@@ -29,16 +27,18 @@ export const AddNewStakeContainer = ({
   open,
   onClose,
 }: AddNewStakeContainerProps) => {
+  const dispatch = useDispatch();
+
   const currentStakes = useSelector(stakesDatesSelector);
-  const account = useSelector(accountSelector);
   const staking = useSelector(stakingContractSelector);
   const fishToken = useSelector(fishTokenSelector);
   const { kickoffTs } = useSelector(stakingConstantsSelector);
   const { fishBalance } = useSelector(fishTokenDataSelector);
+  const submitTx = useSelector(addStakeSubmitStatusSelector);
 
   // ----- approving -----
 
-  const esmimateApproveFee: StakingFeeEstimator = useCallback(
+  const estimateApproveFee: StakingFeeEstimator = useCallback(
     async (amount: string, _: number) =>
       fishToken?.estimateGas.approve(
         staking?.address as string,
@@ -47,52 +47,23 @@ export const AddNewStakeContainer = ({
     [fishToken?.estimateGas, staking?.address]
   );
 
-  const onApproveStake = async ({ stakeAmount }: AddNewStakeFormValues) => {
-    const missingAllowance = utils.parseEther(stakeAmount);
-
-    const tx = await fishToken?.approve(
-      staking?.address as string,
-      missingAllowance
-    );
-
-    return tx;
-  };
-
-  const { handleSubmit: handleApprove, ...approveData } =
-    useContractCall(onApproveStake);
-
-  // ----- staking -----
-
   const estimateStakeFee: StakingFeeEstimator = useCallback(
-    async (amount: string, timestamp: number) =>
-      staking?.estimateGas.stake(
-        utils.parseEther(amount),
-        timestamp + ONE_DAY,
-        constants.AddressZero,
-        constants.AddressZero
-      ),
-    [staking?.estimateGas]
+    /** We're not able to call the estimate stake when user doesn't have allowance, the number below is an average gas used in transactions */
+    async () => BigNumber.from(200000),
+    []
   );
 
-  const onStake = async ({
-    stakeAmount,
-    unlockDate,
-  }: AddNewStakeFormValues) => {
-    const tx = staking?.stake(
-      utils.parseEther(stakeAmount),
-      unlockDate + ONE_DAY, // adding 24 hours to date to make sure contract will not choose previous period,
-      constants.AddressZero,
-      constants.AddressZero
-    );
-
-    return tx;
-  };
-
-  const { handleSubmit: handleStake, ...stakeData } = useContractCall(onStake);
-
-  if (!kickoffTs || !staking || !account) {
+  if (!kickoffTs || !staking) {
     return null;
   }
+
+  const handleStake = (values: AddNewStakeFormValues) => {
+    dispatch(stakingActions.addNewStake(values));
+  };
+
+  const handleResetCallData = () => {
+    dispatch(stakingActions.resetAddNewStake());
+  };
 
   return (
     <>
@@ -100,23 +71,21 @@ export const AddNewStakeContainer = ({
         open={open}
         onClose={onClose}
         onStake={handleStake}
-        onApprove={handleApprove}
         kickoffTs={kickoffTs}
         stakes={currentStakes}
         fishBalance={fishBalance}
         estimateStakeFee={estimateStakeFee}
-        esmimateApproveFee={esmimateApproveFee}
+        estimateApproveFee={estimateApproveFee}
       />
 
-      {approveData.status !== 'idle' && (
-        <SubmitStatusDialog operationName="Approving" {...approveData} />
-      )}
-
-      {stakeData.status !== 'idle' && (
-        <SubmitStatusDialog
-          operationName="Staking"
+      {submitTx.status !== 'idle' && (
+        <SubmitStepsDialog
           successCallback={onClose}
-          {...stakeData}
+          onClose={handleResetCallData}
+          steps={submitTx.steps}
+          status={submitTx.status}
+          summary={submitTx.summary}
+          currentStep={submitTx.currentStep}
         />
       )}
     </>

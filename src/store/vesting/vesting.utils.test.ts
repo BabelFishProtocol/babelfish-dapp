@@ -12,7 +12,7 @@ import {
   vestingRegistrySelector,
   multicallProviderSelector,
 } from '../app/app.selectors';
-import { convertForMulticall } from '../utils';
+import { convertForMulticall } from '../utils/utils.sagas';
 import { UserVestings } from './vesting.types';
 import { getUserVestings, getVesting } from './vesting.utils';
 
@@ -22,8 +22,8 @@ jest.mock('../../contracts/types/factories/Vesting__factory', () => ({
   },
 }));
 
-jest.mock('../utils', () => ({
-  ...jest.requireActual('../utils'),
+jest.mock('../utils/utils.sagas', () => ({
+  ...jest.requireActual('../utils/utils.sagas'),
   convertForMulticall: jest.fn(),
 }));
 

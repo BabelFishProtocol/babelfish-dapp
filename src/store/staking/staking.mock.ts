@@ -89,6 +89,10 @@ export const successStakingState: StakingState = {
     data: { allowanceForStaking, fishBalance, totalStaked },
   },
   selectedStake: combinedStakesList[0].unlockDate,
+  addNewStakeCall: {
+    status: 'idle',
+    steps: [],
+  },
 };
 
 export const failureStakingState: StakingState = {
@@ -98,4 +102,8 @@ export const failureStakingState: StakingState = {
   stakesListHistory: { state: 'failure' as FiniteStates, data: [] },
   fishToken: { state: 'failure' as FiniteStates, data: {} },
   selectedStake: undefined,
+  addNewStakeCall: {
+    status: 'idle',
+    steps: [],
+  },
 };

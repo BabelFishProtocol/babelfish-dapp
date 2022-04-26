@@ -101,6 +101,7 @@ export const calculateFee = async (
   estimated: BigNumber
 ) => {
   const gasPrice = await provider.getGasPrice();
+
   return estimated.mul(gasPrice).toString();
 };
 

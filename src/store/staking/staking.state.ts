@@ -1,5 +1,7 @@
 import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/StakingHistory.types';
-import { LoadableAmount, LoadableValue } from '../types';
+import { CallState, LoadableAmount, LoadableValue } from '../types';
+
+export type AddNewStakeCalls = 'stake' | 'approve';
 
 export type StakeListItem = {
   asset: string;
@@ -22,6 +24,14 @@ export type StakeConstants = {
 
 export class StakingState {
   selectedStake?: number;
+
+  addNewStakeCall: CallState<AddNewStakeCalls> = {
+    status: 'idle',
+    steps: [
+      { name: 'approve', label: 'approving' },
+      { name: 'stake', label: 'staking' },
+    ],
+  };
 
   constants: LoadableValue<StakeConstants> = {
     state: 'idle',

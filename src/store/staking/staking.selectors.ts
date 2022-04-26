@@ -2,6 +2,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { Reducers } from '../../constants';
 import { isTimeStampLocked } from '../../utils/helpers';
+import { selectCurrentCallStepData } from '../utils/utils.selectors';
 
 const stakingState = (state: RootState) => state[Reducers.Staking];
 
@@ -66,4 +67,9 @@ export const selectedStakeSelector = createSelector(
 export const isSelectedStakeLockedSelector = createSelector(
   selectedStakeSelector,
   (stake) => (stake ? isTimeStampLocked(stake.unlockDate) : undefined)
+);
+
+export const addStakeSubmitStatusSelector = createSelector(
+  stakingState,
+  (state) => selectCurrentCallStepData(state.addNewStakeCall)
 );
