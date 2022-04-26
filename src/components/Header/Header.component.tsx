@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import { Logo } from '../Logo/Logo.component';
+import { TestnetInfo } from '../TestnetInfo/TestnetInfo.component';
 import { WalletConnector } from '../Wallet/WalletConnector.component';
 
 export const Header = () => (
@@ -11,6 +12,7 @@ export const Header = () => (
       justifyContent: 'space-between',
     }}
   >
+    <TestnetInfo />
     <Logo />
     <WalletConnector />
   </Box>
