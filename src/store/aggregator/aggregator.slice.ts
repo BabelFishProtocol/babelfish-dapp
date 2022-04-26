@@ -3,6 +3,7 @@ import { Reducers } from '../../constants';
 import { ActionsType } from '../types';
 import { PoolEnum } from '../../config/pools';
 import { AggregatorState, FeesAndLimitsType } from './aggregator.state';
+import { AggregatorFormValues } from '../../pages/Aggregator/Aggregator.fields';
 
 const initialState = { ...new AggregatorState() };
 
@@ -73,6 +74,24 @@ const aggregatorSlice = createSlice({
     togglePool: (state) => {
       state.pool =
         state.pool === PoolEnum.testnet ? PoolEnum.mainnet : PoolEnum.testnet;
+    },
+    watchTransferTokens: () => {},
+    checkTransferTokens: () => {
+      // TODO : Implement checking if can transfer
+    },
+    stopWatchingTransferTokens: (state) => {
+      state.transferTokensState = 'idle';
+      state.transferTokensErrorReason = undefined;
+    },
+    startTokenTransfer: (state, _: PayloadAction<AggregatorFormValues>) => {
+      state.transferTokensState = 'loading';
+    },
+    transferTokensFailure: (state, { payload }: PayloadAction<string>) => {
+      state.transferTokensState = 'failure';
+      state.transferTokensErrorReason = payload;
+    },
+    transferTokensSuccess: (state) => {
+      state.transferTokensState = 'success';
     },
   },
 });

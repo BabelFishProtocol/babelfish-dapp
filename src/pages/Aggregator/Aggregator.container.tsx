@@ -43,9 +43,7 @@ export const AggregatorContainer = () => {
     );
 
   const onSubmit = (data: AggregatorFormValues) => {
-    // TODO: implement
-    // eslint-disable-next-line no-console
-    console.log(data);
+    dispatch(aggregatorActions.startTokenTransfer(data));
   };
   return (
     <AggregatorComponent

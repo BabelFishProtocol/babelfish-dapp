@@ -1,6 +1,7 @@
 import { ChainEnum } from '../../config/chains';
 import { DEFAULT_POOL, PoolEnum } from '../../config/pools';
 import { TokenEnum } from '../../config/tokens';
+import { FiniteStates } from '../../utils/types';
 import { LoadableAmount, LoadableValue } from '../types';
 
 export type FeesAndLimitsType = {
@@ -34,4 +35,6 @@ export class AggregatorState {
     state: 'idle',
     data: undefined,
   };
+  transferTokensState: FiniteStates = 'idle';
+  transferTokensErrorReason?: string;
 }

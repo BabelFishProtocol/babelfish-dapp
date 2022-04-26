@@ -1,7 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { BridgeDictionary } from '../../config/bridges';
-import { ChainEnum } from '../../config/chains';
 import { pools } from '../../config/pools';
 import { tokenOnChain, tokens } from '../../config/tokens';
 import { Reducers } from '../../constants';
@@ -116,6 +115,16 @@ export const allowTokensAddressSelector = createSelector(
   (state) => state.allowTokensAddress.data
 );
 
+export const massetAddressSelector = createSelector(
+  [poolSelector, chainIdSelector],
+  (pool, chainId) => {
+    if (!pool || !chainId) {
+      return undefined;
+    }
+    return pool.masset.addresses[chainId];
+  }
+);
+
 export const bridgeContractSelector = createSelector(
   [
     providerSelector,
@@ -159,22 +168,27 @@ export const allowTokensContractSelector = createSelector(
   }
 );
 
-export const startingTokenContractSelector = createSelector(
-  [providerSelector, chainIdSelector, startingTokenSelector],
-  (provider, startingChain, startingToken) => {
-    if (!provider || !startingChain || !startingToken) {
+export const startingTokenAddressSelector = createSelector(
+  [chainIdSelector, startingTokenSelector],
+  (startingChain, startingToken) => {
+    if (!startingChain || !startingToken) {
       return undefined;
     }
+    const address = tokenOnChain[startingToken][startingChain];
 
-    // TODO: <not sure> assert startingChain typeof ChainEnum
-    const address = tokenOnChain[startingToken][startingChain as ChainEnum];
+    return address;
+  }
+);
 
-    if (!address) {
+export const startingTokenContractSelector = createSelector(
+  [providerSelector, startingTokenAddressSelector],
+  (provider, startingTokenAddress) => {
+    if (!provider || !startingTokenAddress) {
       return undefined;
     }
 
     const contract = ERC20__factory.connect(
-      address.toLowerCase(),
+      startingTokenAddress.toLowerCase(),
       provider.getSigner()
     );
     return contract;
