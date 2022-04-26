@@ -26,12 +26,11 @@ export const handleUpdateStepData = <Operations extends string>(
   currentState: CallState<Operations>,
   payload: Partial<StepData<Operations>>
 ) => {
-  if (!currentState.currentOperation) {
-    return currentState;
-  }
+  const currentOperation =
+    currentState.currentOperation ?? currentState.steps[0].name;
 
   const stepIndex = currentState.steps.findIndex(
-    (step) => step.name === currentState.currentOperation
+    (step) => step.name === currentOperation
   );
 
   const updatedSteps = currentState.steps.map((step, index) => {

@@ -73,3 +73,8 @@ export const addStakeSubmitStatusSelector = createSelector(
   stakingState,
   (state) => selectCurrentCallStepData(state.addNewStakeCall)
 );
+
+export const increaseStakeStatusSelector = createSelector(
+  stakingState,
+  (state) => selectCurrentCallStepData(state.increaseCall)
+);

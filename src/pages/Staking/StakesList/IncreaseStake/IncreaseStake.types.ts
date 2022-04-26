@@ -8,11 +8,9 @@ export type IncreaseStakeContainerProps = Pick<
   'open' | 'onClose'
 >;
 
-type FormSubmittor = (formValues: IncreaseStakeFormValues) => Promise<void>;
-
 export type IncreaseStakeComponentProps = IncreaseStakeContainerProps &
-  Record<'onStake' | 'onApprove', FormSubmittor> &
-  Pick<FeeEstimatorProps, 'estimateApproveFee' | 'estimateStakeFee'> & {
+  Record<'estimateStakeFee' | 'estimateApproveFee', StakingFeeEstimator> & {
+    handleIncrease: (formValues: IncreaseStakeFormValues) => void;
     unlockDate: number;
     fishBalance?: string;
     currentStakeAmount: string;
@@ -23,11 +21,8 @@ export type VotingPowerBlockProps = {
   unlockDate: number;
 };
 
-export type FeeEstimatorProps = Record<
-  'estimateStakeFee' | 'estimateApproveFee',
-  StakingFeeEstimator
-> & {
-  needsApproval: boolean;
+export type FeeEstimatorProps = {
+  feeEstimator: StakingFeeEstimator;
   control: Control<IncreaseStakeFormValues>;
   unlockDate: number;
 };
