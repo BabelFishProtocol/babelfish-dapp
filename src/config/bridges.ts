@@ -15,8 +15,8 @@ class Bridge {
     public from: ChainEnum,
     public to: ChainEnum,
     public bridgeAddress: string,
-    public rskBridgeAddress?: string, // TODO: should be required
-    public tokensAllowed?: TokenAllowed[] // TODO: should be required
+    public rskBridgeAddress: string,
+    public tokensAllowed: TokenAllowed[]
   ) {}
 
   public getTokenDecimals(token: TokenEnum, flowState: FlowState) {

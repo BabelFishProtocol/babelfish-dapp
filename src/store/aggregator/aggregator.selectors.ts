@@ -131,10 +131,6 @@ export const bridgeContractSelector = createSelector(
 
     const bridgeAddress =
       flowState === 'deposit' ? bridge.bridgeAddress : bridge.rskBridgeAddress;
-    // TODO: remove (bridge address will be required)
-    if (!bridgeAddress) {
-      return undefined;
-    }
 
     const contract = Bridge__factory.connect(
       bridgeAddress,
@@ -178,5 +174,15 @@ export const startingTokenContractSelector = createSelector(
       provider.getSigner()
     );
     return contract;
+  }
+);
+
+export const isEnoughTokensSelector = createSelector(
+  [feesAndLimitsSelector, startingTokenBalanceSelector],
+  (feesAndLimits, startingTokenBalance) => {
+    if (!feesAndLimits.minTransfer || !startingTokenBalance) {
+      return undefined;
+    }
+    return feesAndLimits.minTransfer >= startingTokenBalance;
   }
 );
