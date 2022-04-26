@@ -3,7 +3,16 @@ import { Store } from '@reduxjs/toolkit';
 
 import { getStore, RootState } from '..';
 import { appActions } from './app.slice';
-import { currentBlockSelector } from './app.selectors';
+import {
+  chainsInCurrentNetworkSelector,
+  currentBlockSelector,
+} from './app.selectors';
+import { AppState } from './app.state';
+import {
+  ChainEnum,
+  mainnetChainsArr,
+  testnetChainsArr,
+} from '../../config/chains';
 
 class MockProvider {
   private callback?: (block: number) => void;
@@ -64,6 +73,35 @@ describe('app store', () => {
       mockProvider.trigger(200);
       // should not sync new blocks when wallet is disconnected
       expect(currentBlockSelector(store.getState())).toBe(undefined);
+    });
+  });
+
+  describe('chainsInCurrentNetwork', () => {
+    it('checks mainnet chains', () => {
+      const filledChainId: AppState['chainId'] = ChainEnum.ETH;
+
+      const filledChains =
+        chainsInCurrentNetworkSelector.resultFunc(filledChainId);
+
+      expect(filledChains).toEqual(mainnetChainsArr);
+    });
+
+    it('checks testnet chains', () => {
+      const filledChainId: AppState['chainId'] = ChainEnum.ETH_TESTNET;
+
+      const filledChains =
+        chainsInCurrentNetworkSelector.resultFunc(filledChainId);
+
+      expect(filledChains).toEqual(testnetChainsArr);
+    });
+
+    it('checks no chainId path', () => {
+      const filledChainId: AppState['chainId'] = undefined;
+
+      const filledChains =
+        chainsInCurrentNetworkSelector.resultFunc(filledChainId);
+
+      expect(filledChains).toEqual([]);
     });
   });
 });
