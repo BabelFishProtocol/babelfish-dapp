@@ -28,7 +28,7 @@ export const ImprobabilityComponent = ({
   const chainOptions = useSelector(chainsInCurrentNetworkSelector);
 
   useEffect(() => {
-    resetField('Network');
+    resetField(ImprobabilityInputs.Network);
   }, [chainOptions, resetField]);
 
   return (
