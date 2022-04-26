@@ -94,5 +94,14 @@ describe('app store', () => {
 
       expect(filledChains).toEqual(testnetChainsArr);
     });
+
+    it('checks no chainId path', () => {
+      const filledChainId: AppState['chainId'] = undefined;
+
+      const filledChains =
+        chainsInCurrentNetworkSelector.resultFunc(filledChainId);
+
+      expect(filledChains).toEqual(undefined);
+    });
   });
 });
