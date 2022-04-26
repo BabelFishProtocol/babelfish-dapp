@@ -16,7 +16,7 @@ export const TestnetInfo = () => {
         left: 0,
         width: '100vw',
         height: '40px',
-        backgroundColor: '#798293',
+        backgroundColor: ({ palette }) => palette.background.paper,
         color: 'black',
       }}
     >
