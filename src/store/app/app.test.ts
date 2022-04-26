@@ -6,6 +6,7 @@ import { appActions } from './app.slice';
 import {
   chainsInCurrentNetworkSelector,
   currentBlockSelector,
+  isOnTestnetSelector,
 } from './app.selectors';
 import { AppState } from './app.state';
 import {
@@ -102,6 +103,24 @@ describe('app store', () => {
         chainsInCurrentNetworkSelector.resultFunc(filledChainId);
 
       expect(filledChains).toEqual([]);
+    });
+  });
+
+  describe('isOnTestnetSelector ', () => {
+    it('checks that testnet is detected', () => {
+      const filledChainId: AppState['chainId'] = ChainEnum.ETH_TESTNET;
+
+      const filledTestnetDetect = isOnTestnetSelector.resultFunc(filledChainId);
+
+      expect(filledTestnetDetect).toEqual(true);
+    });
+
+    it('checks that testnet is not detected', () => {
+      const filledChainId: AppState['chainId'] = ChainEnum.ETH;
+
+      const filledTestnetDetect = isOnTestnetSelector.resultFunc(filledChainId);
+
+      expect(filledTestnetDetect).toEqual(false);
     });
   });
 });
