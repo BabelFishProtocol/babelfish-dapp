@@ -8,7 +8,5 @@ export const ClaimContainer = () => {
     console.log(data);
   };
 
-  return (
-    <ClaimComponent onSubmit={onSubmit} />
-  )
-}
+  return <ClaimComponent onSubmit={onSubmit} />;
+};

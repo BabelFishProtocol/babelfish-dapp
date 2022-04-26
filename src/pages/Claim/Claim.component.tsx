@@ -8,9 +8,7 @@ import { formatDateUTC } from '../../utils/helpers';
 import { ClaimInputs, ClaimDefaultValues } from './Claim.fields';
 import { ClaimComponentProps, ClaimFields } from './Claim.types';
 
-export const ClaimComponent = ({
-  onSubmit
-}: ClaimComponentProps) => {
+export const ClaimComponent = ({ onSubmit }: ClaimComponentProps) => {
   const {
     control,
     handleSubmit,
@@ -46,11 +44,7 @@ export const ClaimComponent = ({
             name={ClaimInputs.ClaimAmount}
             control={control}
           />
-          <Button
-            fullWidth
-            type="submit"
-            disabled={!isValid}
-          >
+          <Button fullWidth type="submit" disabled={!isValid}>
             CLAIM
           </Button>
           <Typography
