@@ -1,8 +1,10 @@
 import { all, put, call, takeLatest } from 'typed-redux-saga';
 
-import { createWatcherSaga } from '../utils';
+import { createWatcherSaga } from '../utils/utils.sagas';
+
 import { stakingActions } from './staking.slice';
 import { vestingActions } from '../vesting/vesting.slice';
+import { addNewStake } from './sagas/addNewStake';
 import { fetchHistoryStaking } from './sagas/fetchHistoryStaking';
 import { fetchStakesList } from './sagas/fetchStakesList';
 import { fetchVotingPower } from './sagas/fetchVotingPower';
@@ -44,6 +46,7 @@ const watchStaking = createWatcherSaga({
 
 export function* stakingSaga() {
   yield* all([
+    takeLatest(stakingActions.addNewStake.type, addNewStake),
     takeLatest(stakingActions.fetchStakingData.type, fetchBalances),
     takeLatest(stakingActions.updateStakingData.type, updateBalances),
     takeLatest(stakingActions.watchStakingData.type, watchStaking),

@@ -1,8 +1,18 @@
-import { ImprobabilityComponent } from './Improbability.component';
+import { useSelector } from 'react-redux';
 import { mockCoins } from './Improbability.mock';
+import { ImprobabilityComponent } from './Improbability.component';
+import { chainsInCurrentNetworkSelector } from '../../store/app/app.selectors';
 
 export const ImprobabilityContainer = () => {
   const coins = mockCoins;
   const state = 'idle';
-  return <ImprobabilityComponent coins={coins} state={state} />;
+  const chainOptions = useSelector(chainsInCurrentNetworkSelector);
+
+  return (
+    <ImprobabilityComponent
+      chainOptions={chainOptions}
+      coins={coins}
+      state={state}
+    />
+  );
 };

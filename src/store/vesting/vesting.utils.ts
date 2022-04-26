@@ -6,7 +6,7 @@ import {
   multicallProviderSelector,
   vestingRegistrySelector,
 } from '../app/app.selectors';
-import { convertForMulticall, multiCall } from '../utils';
+import { convertForMulticall, multiCall } from '../utils/utils.sagas';
 import { UserVestings } from './vesting.types';
 
 export const getVesting = (address: string, provider: Web3Provider) =>

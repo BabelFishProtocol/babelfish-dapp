@@ -1,6 +1,7 @@
 import Typography from '@mui/material/Typography';
 import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
+import { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import { DataTable } from '../../components/DataTable/DataTable.component';
 import { PageView } from '../../components/PageView/PageView.component';
@@ -18,13 +19,16 @@ import { chainsInCurrentNetworkSelector } from '../../store/app/app.selectors';
 export const ImprobabilityComponent = ({
   state,
   coins,
+  chainOptions,
 }: ImprobabilityComponentProps) => {
-  const { setValue, control } = useForm<ImprobabilityFormValues>({
+  const { setValue, control, resetField } = useForm<ImprobabilityFormValues>({
     mode: 'onChange',
     defaultValues: improbabilityDefaultValues,
   });
 
-  const chainOptions = useSelector(chainsInCurrentNetworkSelector);
+  useEffect(() => {
+    resetField(ImprobabilityInputs.Network);
+  }, [chainOptions, resetField]);
 
   return (
     <form>
@@ -44,15 +48,13 @@ export const ImprobabilityComponent = ({
             gap: 2,
           }}
         >
-          {chainOptions && (
-            <ControlledDropdown
-              name={ImprobabilityInputs.Network}
-              placeholder="Choose Network"
-              control={control}
-              options={chainOptions}
-              setValue={setValue}
-            />
-          )}
+          <ControlledDropdown
+            name={ImprobabilityInputs.Network}
+            placeholder="Choose Network"
+            control={control}
+            options={chainOptions}
+            setValue={setValue}
+          />
           <Button
             sx={{
               height: 50,

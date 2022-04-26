@@ -5,7 +5,7 @@ import {
   multicallProviderSelector,
   stakingContractSelector,
 } from '../../app/app.selectors';
-import { convertForMulticall, multiCall } from '../../utils';
+import { convertForMulticall, multiCall } from '../../utils/utils.sagas';
 import { stakingActions } from '../staking.slice';
 
 export function* fetchFishTokenData() {

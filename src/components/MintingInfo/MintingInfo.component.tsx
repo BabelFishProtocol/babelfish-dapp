@@ -1,10 +1,11 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { PrettyTx } from '../PrettyTx/PrettyTx.component';
 import { MintingInfoPros } from './MintingInfo.types';
 
 export const MintingInfo = ({ data }: MintingInfoPros) => (
   <>
-    {data.map(({ label, value, isProminant }, index) => (
+    {data.map(({ label, value, isProminant, formatTx }, index) => (
       <Box
         key={index}
         sx={{
@@ -30,7 +31,11 @@ export const MintingInfo = ({ data }: MintingInfoPros) => (
           })}
           variant="body1"
         >
-          {value}
+          {formatTx ? (
+            <PrettyTx value={value as string} variant="body1" />
+          ) : (
+            value
+          )}
         </Typography>
       </Box>
     ))}

@@ -1,8 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
+import { AddNewStakeFormValues } from '../../pages/Staking/AddNewStake/AddNewStake.types';
 import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/StakingHistory.types';
-import { ActionsType } from '../types';
+
+import { ActionsType, CallState, StepData } from '../types';
 import {
+  handleSetCallError,
+  handleUpdateCallStatus,
+  handleUpdateStepData,
+  handleUpdateSteps,
+} from '../utils/utils.reducers';
+import {
+  AddNewStakeCalls,
   FishTokenInfo,
   StakeConstants,
   StakeListItem,
@@ -11,10 +20,52 @@ import {
 
 const initialState = { ...new StakingState() };
 
+type SetAddStakeStatusPayload = Pick<
+  CallState<AddNewStakeCalls>,
+  'status' | 'currentOperation'
+>;
+
 export const stakingSlice = createSlice({
   name: Reducers.Staking,
   initialState,
   reducers: {
+    addNewStake: (state, _: PayloadAction<AddNewStakeFormValues>) => {
+      state.addNewStakeCall = initialState.addNewStakeCall;
+    },
+    resetAddNewStake: (state) => {
+      state.addNewStakeCall = initialState.addNewStakeCall;
+    },
+    setAddStakeStatus: (
+      state,
+      { payload }: PayloadAction<SetAddStakeStatusPayload>
+    ) => {
+      state.addNewStakeCall = handleUpdateCallStatus(
+        state.addNewStakeCall,
+        payload
+      );
+    },
+    setAddStakeSteps: (
+      state,
+      { payload }: PayloadAction<{ name: AddNewStakeCalls }[]>
+    ) => {
+      state.addNewStakeCall = handleUpdateSteps(state.addNewStakeCall, payload);
+    },
+    setAddStakeStateStepData: (
+      state,
+      { payload }: PayloadAction<Partial<StepData<AddNewStakeCalls>>>
+    ) => {
+      state.addNewStakeCall = handleUpdateStepData(
+        state.addNewStakeCall,
+        payload
+      );
+    },
+    setAddStakeError: (state, { payload }: PayloadAction<Partial<string>>) => {
+      state.addNewStakeCall = handleSetCallError(
+        state.addNewStakeCall,
+        payload
+      );
+    },
+
     watchStakingData: (_) => {},
     stopWatchingStakingData: (state) => {
       state.fishToken.state = 'idle';

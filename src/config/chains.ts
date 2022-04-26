@@ -24,6 +24,13 @@ export enum ChainEnum {
   RSK_TESTNET = 31,
 }
 
+type TestnetChains =
+  | ChainEnum.BSC_TESTNET
+  | ChainEnum.ETH_TESTNET
+  | ChainEnum.RSK_TESTNET;
+
+type MainnetChains = ChainEnum.BSC | ChainEnum.ETH | ChainEnum.RSK;
+
 export type ChainType = {
   name: string;
   icon: string;
@@ -39,7 +46,7 @@ export type ChainType = {
   };
 };
 
-export const testnetChains: Record<TestnetChainEnum, ChainType> = {
+export const testnetChains: Record<TestnetChains, ChainType> = {
   [ChainEnum.ETH_TESTNET]: {
     name: 'Ropsten',
     icon: ethIcon,
@@ -81,7 +88,7 @@ export const testnetChains: Record<TestnetChainEnum, ChainType> = {
   },
 };
 
-export const mainnetChains: Record<MainnetChainEnum, ChainType> = {
+export const mainnetChains: Record<MainnetChains, ChainType> = {
   [ChainEnum.ETH]: {
     name: 'ETH Mainnet',
     icon: ethIcon,
@@ -128,15 +135,11 @@ export const chains: Record<ChainEnum, ChainType> = {
   ...testnetChains,
 };
 
-export const idsOfTestNetworks = [
-  ChainEnum.BSC_TESTNET,
-  ChainEnum.ETH_TESTNET,
-  ChainEnum.RSK_TESTNET,
-];
-
 export const testnetChainsArr = Object.values(testnetChains);
 export const mainnetChainsArr = Object.values(mainnetChains);
 export const allChainsArr = Object.values(chains);
+
+export const idsOfTestNetworks = testnetChainsArr.map(({ id }) => id);
 
 export const SUPPORTED_CHAINS_RSK = [ChainEnum.RSK, ChainEnum.RSK_TESTNET];
 
