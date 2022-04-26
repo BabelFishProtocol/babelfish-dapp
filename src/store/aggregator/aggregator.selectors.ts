@@ -116,12 +116,21 @@ export const allowTokensAddressSelector = createSelector(
 );
 
 export const massetAddressSelector = createSelector(
-  [poolSelector, chainIdSelector],
-  (pool, chainId) => {
-    if (!pool || !chainId) {
+  [poolSelector, flowStateSelector, chainIdSelector, destinationChainSelector],
+  (pool, flowState, startingChain, destinationChain) => {
+    if (!pool || !flowState) {
       return undefined;
     }
-    return pool.masset.addresses[chainId];
+
+    if (flowState === 'deposit' && destinationChain) {
+      return pool.masset.addresses[destinationChain];
+    }
+
+    if (flowState === 'withdraw' && startingChain) {
+      return pool.masset.addresses[startingChain];
+    }
+
+    return undefined;
   }
 );
 
