@@ -123,15 +123,11 @@ export const chains: Record<ChainEnum, ChainType> = {
   ...testnetChains,
 };
 
-export const idsOfTestNetworks = [
-  ChainEnum.BSC_TESTNET,
-  ChainEnum.ETH_TESTNET,
-  ChainEnum.RSK_TESTNET,
-];
-
 export const testnetChainsArr = Object.values(testnetChains);
 export const mainnetChainsArr = Object.values(mainnetChains);
 export const allChainsArr = Object.values(chains);
+
+export const idsOfTestNetworks = testnetChainsArr.map(({ id }) => id);
 
 export const SUPPORTED_CHAINS_RSK = [ChainEnum.RSK, ChainEnum.RSK_TESTNET];
 

@@ -85,7 +85,7 @@ export const unsupportedNetworkSelector = createSelector(
 export const chainsInCurrentNetworkSelector = createSelector(
   chainIdSelector,
   (chainId) => {
-    if (chainId === undefined) return undefined;
+    if (chainId === undefined) return [];
 
     return idsOfTestNetworks.includes(chainId)
       ? testnetChainsArr

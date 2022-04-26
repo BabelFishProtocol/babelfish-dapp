@@ -44,15 +44,13 @@ export const ImprobabilityComponent = ({
             gap: 2,
           }}
         >
-          {chainOptions && (
-            <ControlledDropdown
-              name={ImprobabilityInputs.Network}
-              placeholder="Choose Network"
-              control={control}
-              options={chainOptions}
-              setValue={setValue}
-            />
-          )}
+          <ControlledDropdown
+            name={ImprobabilityInputs.Network}
+            placeholder="Choose Network"
+            control={control}
+            options={chainOptions}
+            setValue={setValue}
+          />
           <Button
             sx={{
               height: 50,
