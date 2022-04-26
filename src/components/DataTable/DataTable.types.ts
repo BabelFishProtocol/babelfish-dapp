@@ -34,7 +34,7 @@ export type DataTableProps<Data extends BaseRowData = BaseRowData> = Pick<
   DataTableBodyProps<Data>,
   'data' | 'columns' | 'state' | 'tableEmptyMessage'
 > & {
-  tableTitle: React.ReactNode;
+  tableTitle?: React.ReactNode;
   tableAction?: React.ReactNode;
   containerSx?: TableContainerProps['sx'];
 };

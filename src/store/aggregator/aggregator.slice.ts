@@ -48,10 +48,12 @@ const aggregatorSlice = createSlice({
     },
     fetchFeesAndLimitsLoading: (state) => {
       state.feesAndLimits.state = 'loading';
+      state.feesAndLimits.data = {};
     },
-    fetchFeesAndLimitsFailure: (state) => {
+    fetchFeesAndLimitsFailure: (state, { payload }: PayloadAction<string>) => {
       state.feesAndLimits.state = 'failure';
       state.feesAndLimits.data = {};
+      state.fetchFeesAndLimitsErrorReason = payload;
     },
     setFeesAndLimits: (
       state,
@@ -92,6 +94,15 @@ const aggregatorSlice = createSlice({
     },
     transferTokensSuccess: (state) => {
       state.transferTokensState = 'success';
+    },
+    resetAggregator: (state) => {
+      state.allowTokensAddress.state = 'idle';
+      state.allowTokensAddress.data = undefined;
+      state.feesAndLimits.state = 'idle';
+      state.feesAndLimits.data = {};
+      state.fetchFeesAndLimitsErrorReason = undefined;
+      state.startingTokenBalance.state = 'idle';
+      state.startingTokenBalance.data = undefined;
     },
   },
 });

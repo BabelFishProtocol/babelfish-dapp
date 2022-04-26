@@ -215,8 +215,19 @@ describe('aggregator store', () => {
           [matchers.select(startingTokenSelector), testStartingToken],
           [matchers.select(tokenAddressSelector), testStartingTokenAddress],
         ])
-        .put(aggregatorActions.fetchFeesAndLimitsFailure())
-        .hasFinalState(failureState)
+        .put(
+          aggregatorActions.fetchFeesAndLimitsFailure(
+            'Not enough data to fetch bridge fees'
+          )
+        )
+        .hasFinalState({
+          ...failureState,
+          [Reducers.Aggregator]: {
+            ...failureState[Reducers.Aggregator],
+            fetchFeesAndLimitsErrorReason:
+              'Not enough data to fetch bridge fees',
+          },
+        })
         .run();
 
       expect(mockAllowTokens.getFeePerToken).not.toHaveBeenCalled();
@@ -235,8 +246,19 @@ describe('aggregator store', () => {
           mockAllowTokens.getFeePerToken,
           testStartingTokenAddress.toLowerCase()
         )
-        .put(aggregatorActions.fetchFeesAndLimitsFailure())
-        .hasFinalState(failureState)
+        .put(
+          aggregatorActions.fetchFeesAndLimitsFailure(
+            'There was some error in fetching fees and limits. Please try again'
+          )
+        )
+        .hasFinalState({
+          ...failureState,
+          [Reducers.Aggregator]: {
+            ...failureState[Reducers.Aggregator],
+            fetchFeesAndLimitsErrorReason:
+              'There was some error in fetching fees and limits. Please try again',
+          },
+        })
         .run();
 
       expect(runResult.effects).toEqual({});
