@@ -17,7 +17,7 @@ import { Button } from '../../components/Button/Button.component';
 export const ImprobabilityComponent = ({
   state,
   coins,
-chainOptions
+  chainOptions,
 }: ImprobabilityComponentProps) => {
   const { setValue, control, resetField } = useForm<ImprobabilityFormValues>({
     mode: 'onChange',
