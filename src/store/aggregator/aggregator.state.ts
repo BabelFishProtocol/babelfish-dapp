@@ -22,6 +22,7 @@ export class AggregatorState {
       dailyLimit: undefined,
     },
   };
+  fetchFeesAndLimitsErrorReason?: string;
   pool: PoolEnum = DEFAULT_POOL;
   startingToken?: TokenEnum;
   destinationChain?: ChainEnum;
