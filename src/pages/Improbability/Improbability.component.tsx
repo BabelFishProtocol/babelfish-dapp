@@ -1,5 +1,4 @@
 import Typography from '@mui/material/Typography';
-import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
 import Box from '@mui/material/Box';
@@ -14,7 +13,6 @@ import {
   ImprobabilityInputs,
 } from './Improbability.fields';
 import { Button } from '../../components/Button/Button.component';
-import { chainsInCurrentNetworkSelector } from '../../store/app/app.selectors';
 
 export const ImprobabilityComponent = ({
   state,
