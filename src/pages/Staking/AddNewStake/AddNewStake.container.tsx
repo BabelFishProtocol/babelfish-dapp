@@ -48,15 +48,6 @@ export const AddNewStakeContainer = ({
   );
 
   const estimateStakeFee: StakingFeeEstimator = useCallback(
-    // async (amount: string, timestamp: number) =>
-    //   staking?.estimateGas.stake(
-    //     utils.parseEther(amount),
-    //     timestamp + ONE_DAY,
-    //     constants.AddressZero,
-    //     constants.AddressZero
-    //   ),
-    // [staking?.estimateGas]
-
     /** We're not able to call the estimate stake when user doesn't have allowance, the number below is an average gas used in transactions */
     async () => BigNumber.from(200000),
     []
