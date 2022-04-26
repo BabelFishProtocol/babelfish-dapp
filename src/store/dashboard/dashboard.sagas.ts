@@ -2,7 +2,11 @@ import { BigNumber, constants } from 'ethers';
 import { all, put, call, select, takeLatest } from 'typed-redux-saga';
 
 import { Staking } from '../../contracts/types';
-import { convertForMulticall, createWatcherSaga, multiCall } from '../utils';
+import {
+  multiCall,
+  createWatcherSaga,
+  convertForMulticall,
+} from '../utils/utils.sagas';
 
 import {
   accountSelector,

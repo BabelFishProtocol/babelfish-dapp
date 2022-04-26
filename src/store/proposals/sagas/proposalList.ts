@@ -1,8 +1,7 @@
 import { put, call, select } from 'typed-redux-saga';
 
 import { GovernorAlpha } from '../../../contracts/types';
-import { createWatcherSaga } from '../../utils';
-
+import { createWatcherSaga } from '../../utils/utils.sagas';
 import { proposalsListQuery } from '../../../queries/proposalListQuery';
 
 import {
