@@ -101,7 +101,7 @@ describe('app store', () => {
       const filledChains =
         chainsInCurrentNetworkSelector.resultFunc(filledChainId);
 
-      expect(filledChains).toEqual(undefined);
+      expect(filledChains).toEqual([]);
     });
   });
 });

@@ -85,7 +85,7 @@ export const unsupportedNetworkSelector = createSelector(
 export const chainsInCurrentNetworkSelector = createSelector(
   chainIdSelector,
   (chainId) => {
-    if (chainId === undefined) return [];
+    if (!chainId) return [];
 
     return idsOfTestNetworks.includes(chainId)
       ? testnetChainsArr
@@ -96,7 +96,7 @@ export const chainsInCurrentNetworkSelector = createSelector(
 export const currentChainSelector = createSelector(
   chainIdSelector,
   (chainId) => {
-    if (chainId === undefined) return undefined;
+    if (!chainId) return undefined;
 
     const currentChain = allChainsArr.find(
       (chain) => chain.chainId === utils.hexlify(chainId)

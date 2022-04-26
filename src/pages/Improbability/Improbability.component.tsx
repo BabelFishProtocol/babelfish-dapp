@@ -1,6 +1,7 @@
 import Typography from '@mui/material/Typography';
 import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
+import { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import { DataTable } from '../../components/DataTable/DataTable.component';
 import { PageView } from '../../components/PageView/PageView.component';
@@ -19,12 +20,16 @@ export const ImprobabilityComponent = ({
   state,
   coins,
 }: ImprobabilityComponentProps) => {
-  const { setValue, control } = useForm<ImprobabilityFormValues>({
+  const { setValue, control, resetField } = useForm<ImprobabilityFormValues>({
     mode: 'onChange',
     defaultValues: improbabilityDefaultValues,
   });
 
   const chainOptions = useSelector(chainsInCurrentNetworkSelector);
+
+  useEffect(() => {
+    resetField('Network');
+  }, [chainOptions, resetField]);
 
   return (
     <form>
