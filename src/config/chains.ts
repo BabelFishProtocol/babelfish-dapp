@@ -3,18 +3,6 @@ import ethIcon from '../assets/icons/chains/eth.svg';
 import bscIcon from '../assets/icons/chains/bsc.svg';
 import rskIcon from '../assets/icons/chains/rsk.svg';
 
-enum TestnetChainEnum {
-  ETH_TESTNET = 3,
-  BSC_TESTNET = 97,
-  RSK_TESTNET = 31,
-}
-
-enum MainnetChainEnum {
-  ETH = 1,
-  BSC = 56,
-  RSK = 30,
-}
-
 export enum ChainEnum {
   ETH = 1,
   ETH_TESTNET = 3,
@@ -23,6 +11,13 @@ export enum ChainEnum {
   RSK = 30,
   RSK_TESTNET = 31,
 }
+
+type TestnetChains =
+  | ChainEnum.BSC_TESTNET
+  | ChainEnum.ETH_TESTNET
+  | ChainEnum.RSK_TESTNET;
+
+type MainnetChains = ChainEnum.BSC | ChainEnum.ETH | ChainEnum.RSK;
 
 export type ChainType = {
   name: string;
@@ -39,7 +34,7 @@ export type ChainType = {
   };
 };
 
-export const testnetChains: Record<TestnetChainEnum, ChainType> = {
+export const testnetChains: Record<TestnetChains, ChainType> = {
   [ChainEnum.ETH_TESTNET]: {
     name: 'Ropsten',
     icon: ethIcon,
@@ -81,7 +76,7 @@ export const testnetChains: Record<TestnetChainEnum, ChainType> = {
   },
 };
 
-export const mainnetChains: Record<MainnetChainEnum, ChainType> = {
+export const mainnetChains: Record<MainnetChains, ChainType> = {
   [ChainEnum.ETH]: {
     name: 'ETH Mainnet',
     icon: ethIcon,
