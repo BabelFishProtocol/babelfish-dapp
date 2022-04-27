@@ -79,29 +79,17 @@ describe('app store', () => {
 
   describe('chainsInCurrentNetwork', () => {
     it('checks mainnet chains', () => {
-      const filledChainId: AppState['chainId'] = ChainEnum.ETH;
-
-      const filledChains =
-        chainsInCurrentNetworkSelector.resultFunc(filledChainId);
-
+      const filledChains = chainsInCurrentNetworkSelector.resultFunc(false);
       expect(filledChains).toEqual(mainnetChainsArr);
     });
 
     it('checks testnet chains', () => {
-      const filledChainId: AppState['chainId'] = ChainEnum.ETH_TESTNET;
-
-      const filledChains =
-        chainsInCurrentNetworkSelector.resultFunc(filledChainId);
-
+      const filledChains = chainsInCurrentNetworkSelector.resultFunc(true);
       expect(filledChains).toEqual(testnetChainsArr);
     });
 
     it('checks no chainId path', () => {
-      const filledChainId: AppState['chainId'] = undefined;
-
-      const filledChains =
-        chainsInCurrentNetworkSelector.resultFunc(filledChainId);
-
+      const filledChains = chainsInCurrentNetworkSelector.resultFunc(undefined);
       expect(filledChains).toEqual([]);
     });
   });
