@@ -3,7 +3,7 @@ import { RootState } from '..';
 import { BridgeDictionary } from '../../config/bridges';
 import { ChainEnum } from '../../config/chains';
 import { pools } from '../../config/pools';
-import { tokenOnChain, tokens } from '../../config/tokens';
+import { tokens } from '../../config/tokens';
 import { Reducers } from '../../constants';
 import {
   AllowTokens__factory,
@@ -131,10 +131,6 @@ export const bridgeContractSelector = createSelector(
 
     const bridgeAddress =
       flowState === 'deposit' ? bridge.bridgeAddress : bridge.rskBridgeAddress;
-    // TODO: remove (bridge address will be required)
-    if (!bridgeAddress) {
-      return undefined;
-    }
 
     const contract = Bridge__factory.connect(
       bridgeAddress,
@@ -167,7 +163,7 @@ export const startingTokenContractSelector = createSelector(
     }
 
     // TODO: <not sure> assert startingChain typeof ChainEnum
-    const address = tokenOnChain[startingToken][startingChain as ChainEnum];
+    const address = tokens[startingToken].addresses[startingChain as ChainEnum];
 
     if (!address) {
       return undefined;
@@ -178,5 +174,15 @@ export const startingTokenContractSelector = createSelector(
       provider.getSigner()
     );
     return contract;
+  }
+);
+
+export const isEnoughTokensSelector = createSelector(
+  [feesAndLimitsSelector, startingTokenBalanceSelector],
+  (feesAndLimits, startingTokenBalance) => {
+    if (!feesAndLimits.minTransfer || !startingTokenBalance) {
+      return undefined;
+    }
+    return feesAndLimits.minTransfer >= startingTokenBalance;
   }
 );

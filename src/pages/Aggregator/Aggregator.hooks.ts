@@ -14,6 +14,7 @@ import {
 } from '../../store/aggregator/aggregator.selectors';
 import { aggregatorActions } from '../../store/aggregator/aggregator.slice';
 import {
+  accountSelector,
   chainIdSelector,
   providerSelector,
 } from '../../store/app/app.selectors';
@@ -145,4 +146,16 @@ export const useConnectedChain = (
     wrongChainConnectedError,
     hideDestinationTokenDropdown: !showDestinationTokenDropdown,
   };
+};
+
+export const useWalletAddress = (
+  setValue: UseFormSetValue<AggregatorFormValues>
+) => {
+  const walletAddress = useSelector(accountSelector);
+
+  useEffect(() => {
+    if (walletAddress) {
+      setValue(AggregatorInputs.ReceiveAddress, walletAddress);
+    }
+  }, [walletAddress, setValue]);
 };
