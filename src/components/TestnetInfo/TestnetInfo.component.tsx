@@ -5,7 +5,9 @@ import { isOnTestnetSelector } from '../../store/app/app.selectors';
 
 export const TestnetInfo = () => {
   const isOnTestnet = useSelector(isOnTestnetSelector);
-  return isOnTestnet ? (
+  if (!isOnTestnet) return null;
+
+  return (
     <Box
       sx={{
         position: 'absolute',
@@ -25,5 +27,5 @@ export const TestnetInfo = () => {
         value here.
       </Typography>
     </Box>
-  ) : null;
+  );
 };
