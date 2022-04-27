@@ -82,21 +82,21 @@ export const unsupportedNetworkSelector = createSelector(
   }
 );
 
-export const isOnTestnetSelector = createSelector(
+export const testnetMainnetSelector = createSelector(
   chainIdSelector,
   (chainId) => {
     if (!chainId) return undefined;
 
-    return idsOfTestNetworks.includes(chainId);
+    return idsOfTestNetworks.includes(chainId) ? 'testnet' : 'mainnet';
   }
 );
 
 export const chainsInCurrentNetworkSelector = createSelector(
-  isOnTestnetSelector,
-  (isOnTestnet) => {
-    if (isOnTestnet === undefined) return [];
+  testnetMainnetSelector,
+  (testnetMainnet) => {
+    if (testnetMainnet === undefined) return [];
 
-    return isOnTestnet ? testnetChainsArr : mainnetChainsArr;
+    return testnetMainnet === 'testnet' ? testnetChainsArr : mainnetChainsArr;
   }
 );
 

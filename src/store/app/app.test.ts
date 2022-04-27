@@ -6,7 +6,7 @@ import { appActions } from './app.slice';
 import {
   chainsInCurrentNetworkSelector,
   currentBlockSelector,
-  isOnTestnetSelector,
+  testnetMainnetSelector,
 } from './app.selectors';
 import { AppState } from './app.state';
 import {
@@ -79,12 +79,12 @@ describe('app store', () => {
 
   describe('chainsInCurrentNetwork', () => {
     it('checks mainnet chains', () => {
-      const filledChains = chainsInCurrentNetworkSelector.resultFunc(false);
+      const filledChains = chainsInCurrentNetworkSelector.resultFunc('mainnet');
       expect(filledChains).toEqual(mainnetChainsArr);
     });
 
     it('checks testnet chains', () => {
-      const filledChains = chainsInCurrentNetworkSelector.resultFunc(true);
+      const filledChains = chainsInCurrentNetworkSelector.resultFunc('testnet');
       expect(filledChains).toEqual(testnetChainsArr);
     });
 
@@ -98,17 +98,19 @@ describe('app store', () => {
     it('checks that testnet is detected', () => {
       const filledChainId: AppState['chainId'] = ChainEnum.ETH_TESTNET;
 
-      const filledTestnetDetect = isOnTestnetSelector.resultFunc(filledChainId);
+      const filledTestnetDetect =
+        testnetMainnetSelector.resultFunc(filledChainId);
 
-      expect(filledTestnetDetect).toEqual(true);
+      expect(filledTestnetDetect).toEqual('testnet');
     });
 
     it('checks that testnet is not detected', () => {
       const filledChainId: AppState['chainId'] = ChainEnum.ETH;
 
-      const filledTestnetDetect = isOnTestnetSelector.resultFunc(filledChainId);
+      const filledTestnetDetect =
+        testnetMainnetSelector.resultFunc(filledChainId);
 
-      expect(filledTestnetDetect).toEqual(false);
+      expect(filledTestnetDetect).toEqual('mainnet');
     });
   });
 });

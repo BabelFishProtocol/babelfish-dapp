@@ -1,11 +1,11 @@
 import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import { useSelector } from 'react-redux';
-import { isOnTestnetSelector } from '../../store/app/app.selectors';
+import { testnetMainnetSelector } from '../../store/app/app.selectors';
 
 export const TestnetInfo = () => {
-  const isOnTestnet = useSelector(isOnTestnetSelector);
-  if (!isOnTestnet) return null;
+  const testnetMainnetFlag = useSelector(testnetMainnetSelector);
+  if (testnetMainnetFlag === 'mainnet') return null;
 
   return (
     <Box
