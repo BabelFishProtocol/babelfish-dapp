@@ -1,10 +1,11 @@
 import { utils } from 'ethers';
 import { call, put, select } from 'typed-redux-saga';
-import { createWatcherSaga } from '../../utils';
+import { createWatcherSaga } from '../../utils/utils.sagas';
 import {
   bridgeContractSelector,
   massetAddressSelector,
   startingTokenAddressSelector,
+  startingTokenContractSelector,
 } from '../aggregator.selectors';
 import { AggregatorActions, aggregatorActions } from '../aggregator.slice';
 
@@ -19,13 +20,19 @@ export function* transferTokens({
   try {
     const bridge = yield* select(bridgeContractSelector);
     const tokenAddress = yield* select(startingTokenAddressSelector);
+    const tokenContract = yield* select(startingTokenContractSelector);
+
     const massetAddress = yield* select(massetAddressSelector);
-    if (!bridge) {
-      throw new Error('Could not connect to bridge');
+    if (!tokenContract || !bridge) {
+      throw new Error('Could not find contracts');
     }
     if (!tokenAddress || !massetAddress) {
       throw new Error('Could not find token address');
     }
+
+    const approve = yield* call(tokenContract.approve, bridge.address, amount);
+
+    yield* call(approve.wait);
 
     const tx = yield* call(
       bridge.receiveTokensAt,

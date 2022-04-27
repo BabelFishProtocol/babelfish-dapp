@@ -1,6 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { BridgeDictionary } from '../../config/bridges';
+import { ChainEnum } from '../../config/chains';
+import { contractsAddresses } from '../../config/contracts';
 import { pools } from '../../config/pools';
 import { tokens } from '../../config/tokens';
 import { Reducers } from '../../constants';
@@ -9,7 +11,11 @@ import {
   Bridge__factory,
   ERC20__factory,
 } from '../../contracts/types';
-import { chainIdSelector, providerSelector } from '../app/app.selectors';
+import {
+  chainIdSelector,
+  providerSelector,
+  testnetMainnetSelector,
+} from '../app/app.selectors';
 
 const aggregatorState = (state: RootState) => state[Reducers.Aggregator];
 
@@ -116,18 +122,16 @@ export const allowTokensAddressSelector = createSelector(
 );
 
 export const massetAddressSelector = createSelector(
-  [poolSelector, flowStateSelector, chainIdSelector, destinationChainSelector],
-  (pool, flowState, startingChain, destinationChain) => {
-    if (!pool || !flowState) {
+  [testnetMainnetSelector, chainIdSelector, destinationChainSelector],
+  (testnetMainnetFlag, startingChain, destinationChain) => {
+    if (!testnetMainnetFlag || !startingChain || !destinationChain)
       return undefined;
-    }
 
-    if (flowState === 'deposit' && destinationChain) {
-      return pool.masset.addresses[destinationChain];
+    if (testnetMainnetFlag === 'mainnet') {
+      return contractsAddresses[ChainEnum.RSK].XUSDMassetProxy;
     }
-
-    if (flowState === 'withdraw' && startingChain) {
-      return pool.masset.addresses[startingChain];
+    if (testnetMainnetFlag === 'testnet') {
+      return contractsAddresses[ChainEnum.RSK_TESTNET].XUSDMassetProxy;
     }
 
     return undefined;
