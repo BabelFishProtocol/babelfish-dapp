@@ -6,6 +6,7 @@ export type StakingHistoryListItem = {
   unlockDate: string;
   txHash: string;
   totalStaked: string;
+  blockTimeStamp: string;
 };
 
 export type StakingHistoryComponentProps = {

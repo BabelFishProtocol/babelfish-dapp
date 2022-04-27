@@ -63,6 +63,7 @@ export const combinedHistoryStakesList: StakingHistoryListItem[] = [
     stakedAmount: stakes[0],
     totalStaked: stakes[0],
     txHash: txHashes[0],
+    blockTimeStamp: dates[0].toString(),
   },
   {
     asset: 'FISH',
@@ -70,6 +71,7 @@ export const combinedHistoryStakesList: StakingHistoryListItem[] = [
     stakedAmount: stakes[0],
     totalStaked: stakes[1],
     txHash: txHashes[1],
+    blockTimeStamp: dates[1].toString(),
   },
 ];
 

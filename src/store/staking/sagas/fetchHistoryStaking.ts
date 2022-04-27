@@ -1,30 +1,41 @@
 import { put, call, select } from 'typed-redux-saga';
-import { historyStakesQuery } from '../../../queries/historyStakeListQuery';
-import { subgraphClientSelector } from '../../app/app.selectors';
-import { stakesAndVestsAddressesSelector } from '../../vesting/vesting.selectors';
+import { userQuery } from '../../../queries/historyStakeListQuery';
+import {
+  accountSelector,
+  subgraphClientSelector,
+} from '../../app/app.selectors';
+import { compareNumbers } from '../../../utils/helpers';
 import { stakingActions } from '../staking.slice';
 
 export function* fetchHistoryStaking() {
   try {
     const subgraphClient = yield* select(subgraphClientSelector);
-    const contractAddresses = yield* select(stakesAndVestsAddressesSelector);
+    const account = yield* select(accountSelector);
 
-    if (!subgraphClient || !contractAddresses?.length)
-      throw new Error('Wallet not connected');
+    if (!subgraphClient || !account) throw new Error('Wallet not connected');
 
-    const { stakeEvents } = yield* call(historyStakesQuery, subgraphClient, {
-      contractAddresses,
+    const { user } = yield* call(userQuery, subgraphClient, {
+      contractAddress: account.toLowerCase(),
     });
 
-    const stakesHistory = stakeEvents.map((stake) => ({
+    const stakesHistory = user.stakes.map((stake) => ({
       asset: 'FISH',
       stakedAmount: stake.amount,
       unlockDate: stake.lockedUntil,
       totalStaked: stake.totalStaked,
       txHash: stake.transactionHash,
+      blockTimeStamp: stake.blockTimeStamp,
     }));
 
-    yield* put(stakingActions.setHistoryStakesList(stakesHistory));
+    stakesHistory.sort((stakePrev, stakeNext) =>
+      compareNumbers(
+        Number(stakePrev.blockTimeStamp),
+        Number(stakeNext.blockTimeStamp)
+      )
+    );
+    const reversedStakesHistory = stakesHistory.reverse();
+
+    yield* put(stakingActions.setHistoryStakesList(reversedStakesHistory));
   } catch (e) {
     yield* put(stakingActions.fetchHistoryStakesListFailure());
   }

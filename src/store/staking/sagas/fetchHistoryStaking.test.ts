@@ -14,10 +14,13 @@ import {
 import { RootState } from '../..';
 import { Reducers } from '../../../constants';
 import { fetchHistoryStaking } from './fetchHistoryStaking';
-import { subgraphClientSelector } from '../../app/app.selectors';
+import {
+  accountSelector,
+  subgraphClientSelector,
+} from '../../app/app.selectors';
 import { stakesAndVestsAddressesSelector } from '../../vesting/vesting.selectors';
 import { mockSubgraphClient } from '../../../testUtils';
-import { historyStakesQuery } from '../../../queries/historyStakeListQuery';
+import { userQuery } from '../../../queries/historyStakeListQuery';
 import { stakingActions } from '../staking.slice';
 
 afterEach(() => {
@@ -46,8 +49,6 @@ describe('fetchHistoryStaking', () => {
 
   const vestAddress = '0x94e907A6483b5ef';
 
-  const addresses = [vestAddress, testAccount];
-
   const stakeEvents = [
     {
       id: 'stakeEvent-1',
@@ -56,6 +57,7 @@ describe('fetchHistoryStaking', () => {
       lockedUntil: dates[0].toString(),
       totalStaked: stakes[0],
       transactionHash: txHashes[0],
+      blockTimeStamp: dates[0].toString(),
     },
     {
       id: 'stakeEvent-2',
@@ -64,6 +66,7 @@ describe('fetchHistoryStaking', () => {
       lockedUntil: dates[0].toString(),
       totalStaked: stakes[0],
       transactionHash: txHashes[0],
+      blockTimeStamp: dates[1].toString(),
     },
     {
       id: 'stakeEvent-3',
@@ -72,32 +75,41 @@ describe('fetchHistoryStaking', () => {
       lockedUntil: dates[1].toString(),
       totalStaked: stakes[1],
       transactionHash: txHashes[1],
+      blockTimeStamp: dates[1].toString(),
     },
   ];
+
+  const user = {
+    address: testAccount,
+    stakes: [stakeEvents[0], stakeEvents[2]],
+    vests: [],
+  };
 
   const getBasePath = () =>
     expectSaga(fetchHistoryStaking)
       .withReducer(stakingReducer)
       .withState(stakingInitialState)
       .select(subgraphClientSelector)
-      .select(stakesAndVestsAddressesSelector);
+      .select(accountSelector);
 
   it('happy path', async () => {
     const runResult = await getBasePath()
       .provide([
         [matchers.select(subgraphClientSelector), mockSubgraphClient],
-        [matchers.select(stakesAndVestsAddressesSelector), addresses],
+        [matchers.select(accountSelector), testAccount],
         [
-          matchers.call(historyStakesQuery, mockSubgraphClient, {
-            contractAddresses: addresses,
+          matchers.call(userQuery, mockSubgraphClient, {
+            contractAddress: testAccount,
           }),
-          { stakeEvents: [stakeEvents[0], stakeEvents[2]] },
+          { user },
         ],
       ])
-      .call(historyStakesQuery, mockSubgraphClient, {
-        contractAddresses: addresses,
+      .call(userQuery, mockSubgraphClient, {
+        contractAddress: testAccount,
       })
-      .put(stakingActions.setHistoryStakesList(combinedHistoryStakesList))
+      .put(
+        stakingActions.setHistoryStakesList(combinedHistoryStakesList.reverse())
+      )
       .hasFinalState(successState)
       .run();
 
@@ -121,16 +133,16 @@ describe('fetchHistoryStaking', () => {
     await getBasePath()
       .provide([
         [matchers.select(subgraphClientSelector), mockSubgraphClient],
-        [matchers.select(stakesAndVestsAddressesSelector), addresses],
+        [matchers.select(accountSelector), testAccount],
         [
-          matchers.call(historyStakesQuery, mockSubgraphClient, {
-            contractAddresses: addresses,
+          matchers.call(userQuery, mockSubgraphClient, {
+            contractAddress: testAccount,
           }),
           throwError(),
         ],
       ])
-      .call(historyStakesQuery, mockSubgraphClient, {
-        contractAddresses: addresses,
+      .call(userQuery, mockSubgraphClient, {
+        contractAddress: testAccount,
       })
       .put(stakingActions.fetchHistoryStakesListFailure())
       .hasFinalState(failureState)
