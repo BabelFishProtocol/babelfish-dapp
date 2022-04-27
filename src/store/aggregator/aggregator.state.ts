@@ -31,6 +31,7 @@ export class AggregatorState {
     state: 'idle',
     data: undefined,
   };
+  startingTokenBalanceErrorReason?: string;
   allowTokensAddress: LoadableAmount = {
     state: 'idle',
     data: undefined,
