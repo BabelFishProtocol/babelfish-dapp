@@ -2,6 +2,7 @@ import { FieldValues } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { SendAmountComponent } from './SendAmount.component';
 import {
+  feesAndLimitsSelector,
   startingTokenBalanceSelector,
   startingTokenBalanceStateSelector,
   startingTokenDecimalsSelector,
@@ -16,15 +17,14 @@ export const SendAmount = <FormValues extends FieldValues>(
   const startingTokenBalanceState = useSelector(
     startingTokenBalanceStateSelector
   );
-
-  // TODO: add validation based on startingTokenBalance
-  // Should check if tokenBalance >= minTransfer
+  const feesAndLimits = useSelector(feesAndLimitsSelector);
 
   return (
     <SendAmountComponent
       startingTokenBalance={startingTokenBalance}
       startingTokenDecimals={startingTokenDecimals}
       startingTokenBalanceState={startingTokenBalanceState}
+      feesAndLimits={feesAndLimits}
       {...props}
     />
   );

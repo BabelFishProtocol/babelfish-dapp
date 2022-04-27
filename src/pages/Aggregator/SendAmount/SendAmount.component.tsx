@@ -9,6 +9,7 @@ export const SendAmountComponent = <FormValues extends FieldValues>({
   startingTokenBalanceState,
   startingTokenBalance,
   startingTokenDecimals,
+  feesAndLimits,
   name,
   control,
   setValue,
@@ -30,6 +31,7 @@ export const SendAmountComponent = <FormValues extends FieldValues>({
       symbol={startingTokenName}
       totalAmount={startingTokenBalance}
       totalAmountDecimals={startingTokenDecimals}
+      feesAndLimits={feesAndLimits}
       control={control}
       setValue={setValue}
     />

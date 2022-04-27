@@ -40,7 +40,7 @@ export const AggregatorInfoComponent = ({
           feesAndLimits.minTransfer || 0,
           tokenDecimals || 18,
           2
-        )} ${tokenName}`}
+        )} ${tokenName || ''}`}
         state={state}
       />
       <InfoRow
@@ -49,7 +49,7 @@ export const AggregatorInfoComponent = ({
           feesAndLimits.maxTransfer || 0,
           18,
           2
-        )} ${tokenName}`}
+        )} ${tokenName || ''}`}
         state={state}
       />
       <InfoRow
@@ -58,7 +58,7 @@ export const AggregatorInfoComponent = ({
           feesAndLimits.bridgeFee || 0,
           tokenDecimals || 18,
           2
-        )} ${tokenName}`}
+        )} ${tokenName || ''}`}
         state={state}
       />
       <InfoRow
@@ -67,7 +67,7 @@ export const AggregatorInfoComponent = ({
           feesAndLimits.dailyLimit || 0,
           18,
           2
-        )} ${tokenName}`}
+        )} ${tokenName || ''}`}
         state={state}
       />
     </Box>

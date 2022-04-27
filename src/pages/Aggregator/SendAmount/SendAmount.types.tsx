@@ -1,6 +1,7 @@
 import { UseFormSetValue } from 'react-hook-form';
 import { ControlledInputType } from '../../../components/TextInput/TextInput.types';
 import { TokenEnum } from '../../../config/tokens';
+import { FeesAndLimitsType } from '../../../store/aggregator/aggregator.state';
 import { FiniteStates } from '../../../utils/types';
 
 export type SendAmountContainerProps<FormValues> = {
@@ -13,6 +14,7 @@ export type TokenBalanceProps = {
   startingTokenBalanceState: FiniteStates;
   startingTokenBalance?: string;
   startingTokenDecimals?: number;
+  feesAndLimits?: FeesAndLimitsType;
 };
 
 export type SendAmountComponentProps<FormValues> =
