@@ -70,7 +70,7 @@ const aggregatorSlice = createSlice({
     ) => {
       state.startingTokenBalance.state = 'failure';
       state.startingTokenBalance.data = undefined;
-      state.startingTokenBalanceErrorReason = payload;
+      state.fetchStartingTokenBalanceErrorReason = payload;
     },
     setStartingTokenBalance: (state, { payload }: PayloadAction<string>) => {
       state.startingTokenBalance.state = 'success';

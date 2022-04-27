@@ -322,8 +322,18 @@ describe('aggregator store', () => {
           [matchers.select(startingTokenContractSelector), mockToken],
           [matchers.call.fn(mockToken.balanceOf), testStartingTokenBalance],
         ])
-        .put(aggregatorActions.fetchStartingTokenBalanceFailure())
-        .hasFinalState(failureState)
+        .put(
+          aggregatorActions.fetchStartingTokenBalanceFailure(
+            'Please connect wallet first'
+          )
+        )
+        .hasFinalState({
+          ...failureState,
+          [Reducers.Aggregator]: {
+            ...failureState[Reducers.Aggregator],
+            fetchStartingTokenBalanceErrorReason: 'Please connect wallet first',
+          },
+        })
         .run();
 
       expect(runResult.effects).toEqual({});
@@ -337,8 +347,19 @@ describe('aggregator store', () => {
         ])
         .put(aggregatorActions.fetchStartingTokenBalanceLoading())
         .call(mockToken.balanceOf, testAccount)
-        .put(aggregatorActions.fetchStartingTokenBalanceFailure())
-        .hasFinalState(failureState)
+        .put(
+          aggregatorActions.fetchStartingTokenBalanceFailure(
+            'Could not fetch starting token balance'
+          )
+        )
+        .hasFinalState({
+          ...failureState,
+          [Reducers.Aggregator]: {
+            ...failureState[Reducers.Aggregator],
+            fetchStartingTokenBalanceErrorReason:
+              'Could not fetch starting token balance',
+          },
+        })
         .run();
 
       expect(runResult.effects).toEqual({});
