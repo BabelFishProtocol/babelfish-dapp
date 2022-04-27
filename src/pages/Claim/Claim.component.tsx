@@ -49,7 +49,6 @@ export const ClaimComponent = ({ onSubmit }: ClaimComponentProps) => {
           </Button>
           <Typography
             variant="body2"
-            align='center'
             sx={({ palette }) => ({
               color: palette.grey[500],
             })}
