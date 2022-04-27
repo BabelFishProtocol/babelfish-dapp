@@ -6,6 +6,7 @@ import { appActions } from './app.slice';
 import {
   chainsInCurrentNetworkSelector,
   currentBlockSelector,
+  isOnTestnetSelector,
 } from './app.selectors';
 import { AppState } from './app.state';
 import {
@@ -78,30 +79,36 @@ describe('app store', () => {
 
   describe('chainsInCurrentNetwork', () => {
     it('checks mainnet chains', () => {
-      const filledChainId: AppState['chainId'] = ChainEnum.ETH;
-
-      const filledChains =
-        chainsInCurrentNetworkSelector.resultFunc(filledChainId);
-
+      const filledChains = chainsInCurrentNetworkSelector.resultFunc(false);
       expect(filledChains).toEqual(mainnetChainsArr);
     });
 
     it('checks testnet chains', () => {
-      const filledChainId: AppState['chainId'] = ChainEnum.ETH_TESTNET;
-
-      const filledChains =
-        chainsInCurrentNetworkSelector.resultFunc(filledChainId);
-
+      const filledChains = chainsInCurrentNetworkSelector.resultFunc(true);
       expect(filledChains).toEqual(testnetChainsArr);
     });
 
     it('checks no chainId path', () => {
-      const filledChainId: AppState['chainId'] = undefined;
-
-      const filledChains =
-        chainsInCurrentNetworkSelector.resultFunc(filledChainId);
-
+      const filledChains = chainsInCurrentNetworkSelector.resultFunc(undefined);
       expect(filledChains).toEqual([]);
+    });
+  });
+
+  describe('isOnTestnetSelector ', () => {
+    it('checks that testnet is detected', () => {
+      const filledChainId: AppState['chainId'] = ChainEnum.ETH_TESTNET;
+
+      const filledTestnetDetect = isOnTestnetSelector.resultFunc(filledChainId);
+
+      expect(filledTestnetDetect).toEqual(true);
+    });
+
+    it('checks that testnet is not detected', () => {
+      const filledChainId: AppState['chainId'] = ChainEnum.ETH;
+
+      const filledTestnetDetect = isOnTestnetSelector.resultFunc(filledChainId);
+
+      expect(filledTestnetDetect).toEqual(false);
     });
   });
 });

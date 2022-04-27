@@ -17,7 +17,7 @@ export const getPalette = () =>
     },
     background: {
       default: '#181a20',
-      paper: '#272626',
+      paper: '#798293',
     },
     success: {
       main: '#32f05f',
