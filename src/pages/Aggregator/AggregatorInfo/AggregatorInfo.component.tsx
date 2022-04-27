@@ -45,11 +45,9 @@ export const AggregatorInfoComponent = ({
       />
       <InfoRow
         label="Max Transfer"
-        value={`${formatUnitAmount(
-          feesAndLimits.maxTransfer || 0,
-          18,
-          2
-        )} ${tokenName || ''}`}
+        value={`${formatUnitAmount(feesAndLimits.maxTransfer || 0, 18, 2)} ${
+          tokenName || ''
+        }`}
         state={state}
       />
       <InfoRow
@@ -63,11 +61,9 @@ export const AggregatorInfoComponent = ({
       />
       <InfoRow
         label="Day Limit"
-        value={`${formatUnitAmount(
-          feesAndLimits.dailyLimit || 0,
-          18,
-          2
-        )} ${tokenName || ''}`}
+        value={`${formatUnitAmount(feesAndLimits.dailyLimit || 0, 18, 2)} ${
+          tokenName || ''
+        }`}
         state={state}
       />
     </Box>
