@@ -1,10 +1,10 @@
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useForm } from 'react-hook-form';
+import { Button } from '../../components/Button/Button.component';
 import { ControlledCurrencyInput } from '../../components/CurrencyInput/CurrencyInput.controlled';
 import { PageView } from '../../components/PageView/PageView.component';
-import { formatDateUTC } from '../../utils/helpers';
+import { formatDate } from '../../utils/helpers';
 import { ClaimInputs, ClaimDefaultValues } from './Claim.fields';
 import { ClaimComponentProps, ClaimFields } from './Claim.types';
 
@@ -49,11 +49,12 @@ export const ClaimComponent = ({ onSubmit }: ClaimComponentProps) => {
           </Button>
           <Typography
             variant="body2"
+            align='center'
             sx={({ palette }) => ({
               color: palette.grey[500],
             })}
           >
-            Withdrawal will be available at {formatDateUTC(new Date())}
+            Withdrawal will be available at {formatDate(new Date())}
           </Typography>
         </Box>
       </PageView>
