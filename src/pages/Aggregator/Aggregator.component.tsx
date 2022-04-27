@@ -16,7 +16,11 @@ import {
   AggregatorFormValues,
 } from './Aggregator.fields';
 import { AggregatorComponentProps } from './Aggregator.types';
-import { useAggregatorDropdowns, useConnectedChain } from './Aggregator.hooks';
+import {
+  useAggregatorDropdowns,
+  useConnectedChain,
+  useWalletAddress,
+} from './Aggregator.hooks';
 import { AggregatorInfoContainer } from './AggregatorInfo/AggregatorInfo.container';
 import { SendAmount } from './SendAmount/SendAmount.container';
 
@@ -64,6 +68,8 @@ export const AggregatorComponent = ({
     reset,
     setValue
   );
+
+  useWalletAddress(setValue);
 
   useEffect(() => {
     if (startingToken) {

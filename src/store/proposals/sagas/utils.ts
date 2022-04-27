@@ -1,7 +1,7 @@
 import { GovernorAlpha } from '../../../contracts/types';
 import { ProposalListQueryItem } from '../../../queries/proposalListQuery';
 import { MulticallProviderType } from '../../types';
-import { convertForMulticall, multiCall } from '../../utils';
+import { convertForMulticall, multiCall } from '../../utils/utils.sagas';
 
 export function* fetchProposalStates(
   proposals: ProposalListQueryItem[],

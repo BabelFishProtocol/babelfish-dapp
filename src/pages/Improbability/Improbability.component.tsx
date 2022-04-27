@@ -1,14 +1,12 @@
 import Typography from '@mui/material/Typography';
 import { useForm } from 'react-hook-form';
+import { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import { DataTable } from '../../components/DataTable/DataTable.component';
 import { PageView } from '../../components/PageView/PageView.component';
 import { ImprobabilityComponentProps } from './Improbability.types';
 import { ControlledDropdown } from '../../components/Dropdown/Dropdown.controlled';
-import {
-  coinsListColumns,
-  improbabilityDropdownOptions,
-} from './Improbability.columns';
+import { coinsListColumns } from './Improbability.columns';
 import {
   improbabilityDefaultValues,
   ImprobabilityFormValues,
@@ -19,11 +17,16 @@ import { Button } from '../../components/Button/Button.component';
 export const ImprobabilityComponent = ({
   state,
   coins,
+  chainOptions,
 }: ImprobabilityComponentProps) => {
-  const { setValue, control } = useForm<ImprobabilityFormValues>({
+  const { setValue, control, resetField } = useForm<ImprobabilityFormValues>({
     mode: 'onChange',
     defaultValues: improbabilityDefaultValues,
   });
+
+  useEffect(() => {
+    resetField(ImprobabilityInputs.Network);
+  }, [chainOptions, resetField]);
 
   return (
     <form>
@@ -47,7 +50,7 @@ export const ImprobabilityComponent = ({
             name={ImprobabilityInputs.Network}
             placeholder="Choose Network"
             control={control}
-            options={improbabilityDropdownOptions}
+            options={chainOptions}
             setValue={setValue}
           />
           <Button

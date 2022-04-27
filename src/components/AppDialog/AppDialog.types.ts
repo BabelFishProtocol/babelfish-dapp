@@ -9,6 +9,7 @@ export type AppDialogProps = {
   title?: string;
   description?: React.ReactNode;
   children?: React.ReactNode;
+  topContent?: React.ReactNode;
   dialogProps?: Partial<DialogProps>;
   dialogContentProps?: Partial<DialogContentProps>;
   dialogPaperProps?: Partial<PaperProps>;

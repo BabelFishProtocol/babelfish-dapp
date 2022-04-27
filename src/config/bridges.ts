@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 import { FlowState } from '../store/aggregator/aggregator.state';
 import { ChainEnum } from './chains';
-import { TokenEnum, tokens, TokenTypeBase } from './tokens';
+import { TokenEnum, tokenOnChain, tokens, TokenTypeBase } from './tokens';
 
 export type TokenAllowed = TokenTypeBase & {
   originalDecimals?: number;
@@ -15,8 +15,8 @@ class Bridge {
     public from: ChainEnum,
     public to: ChainEnum,
     public bridgeAddress: string,
-    public rskBridgeAddress?: string, // TODO: should be required
-    public tokensAllowed?: TokenAllowed[] // TODO: should be required
+    public rskBridgeAddress: string,
+    public tokensAllowed: TokenAllowed[]
   ) {}
 
   public getTokenDecimals(token: TokenEnum, flowState: FlowState) {
@@ -46,8 +46,6 @@ class Bridge {
   }
 }
 
-// TODO: get tokens Addresses from tokenOnChain in BridgeDictionary to avoid repetitions
-
 export class BridgeDictionary {
   public static bridges: Bridge[] = [
     new Bridge(
@@ -58,22 +56,22 @@ export class BridgeDictionary {
       [
         {
           ...tokens.DAI,
-          originalAddress: '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3',
+          originalAddress: tokenOnChain[TokenEnum.DAI][ChainEnum.BSC],
           rskSovrynAddress: '0x6A42Ff12215a90f50866A5cE43A9c9C870116e76',
         },
         {
           ...tokens.USDC,
-          originalAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+          originalAddress: tokenOnChain[TokenEnum.USDC][ChainEnum.BSC],
           rskSovrynAddress: '0x91EDceE9567cd5612c9DEDeaAE24D5e574820af1',
         },
         {
           ...tokens.BUSD,
-          originalAddress: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
+          originalAddress: tokenOnChain[TokenEnum.BUSD][ChainEnum.BSC],
           rskSovrynAddress: '0x61e9604e31a736129d7f5C58964c75935b2d80D6',
         },
         {
           ...tokens.USDT,
-          originalAddress: '0x55d398326f99059ff775485246999027b3197955',
+          originalAddress: tokenOnChain[TokenEnum.USDT][ChainEnum.BSC],
           rskSovrynAddress: '0xFf4299bCA0313C20A61dc5eD597739743BEf3f6d',
         },
       ]
@@ -86,22 +84,22 @@ export class BridgeDictionary {
       [
         {
           ...tokens.DAI,
-          originalAddress: '0x83241490517384cB28382Bdd4D1534eE54d9350F',
+          originalAddress: tokenOnChain[TokenEnum.DAI][ChainEnum.BSC_TESTNET],
           rskSovrynAddress: '0x407ff7d4760D3a81B4740d268eb04490C7dfe7f2',
         },
         {
           ...tokens.USDC,
-          originalAddress: '0x0b654C687dC8b828139406c070E0A34486e5072b',
+          originalAddress: tokenOnChain[TokenEnum.USDC][ChainEnum.BSC_TESTNET],
           rskSovrynAddress: '0x3E2CF87e7fF4048A57f9cDdE9368c9F4BFB43ADF',
         },
         {
           ...tokens.BUSD,
-          originalAddress: '0x137BEc8c83740920ebc4f29f51C7B65b75Beec83',
+          originalAddress: tokenOnChain[TokenEnum.BUSD][ChainEnum.BSC_TESTNET],
           rskSovrynAddress: '0x8C9abb6C9D8D15ddb7aDA2e50086E1050AB32688',
         },
         {
           ...tokens.USDT,
-          originalAddress: '0x268e3bF855CbcDf8FE31bA3557a554aB2283351F',
+          originalAddress: tokenOnChain[TokenEnum.USDT][ChainEnum.BSC_TESTNET],
           rskSovrynAddress: '0x43bC3F0FFFF6c9BBf3C2EAFE464c314d43f561De',
         },
       ]
@@ -115,19 +113,19 @@ export class BridgeDictionary {
       [
         {
           ...tokens.DAI,
-          originalAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+          originalAddress: tokenOnChain[TokenEnum.DAI][ChainEnum.ETH],
           rskSovrynAddress: '0x1A37c482465e78E6DAbE1Ec77B9a24D4236D2A11',
         },
         {
           ...tokens.USDT,
           originalDecimals: 6,
-          originalAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          originalAddress: tokenOnChain[TokenEnum.USDT][ChainEnum.ETH],
           rskSovrynAddress: '0xD9665EA8F5fF70Cf97E1b1Cd1B4Cd0317b0976e8',
         },
         {
           ...tokens.USDC,
           originalDecimals: 6,
-          originalAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+          originalAddress: tokenOnChain[TokenEnum.USDC][ChainEnum.ETH],
           rskSovrynAddress: '0x8D1f7CbC6391D95E2774380e80A666FEbf655D6b',
         },
       ]
@@ -141,19 +139,19 @@ export class BridgeDictionary {
       [
         {
           ...tokens.DAI,
-          originalAddress: '0x974cf21396D4D29F8e63Ac07eCfcbaB51a739bc9',
+          originalAddress: tokenOnChain[TokenEnum.DAI][ChainEnum.ETH_TESTNET],
           rskSovrynAddress: '0xcb92c8d49ec01b92f2a766c7c3c9c501c45271e0',
         },
         {
           ...tokens.USDT,
           originalDecimals: 6,
-          originalAddress: '0xff364ffa4962cb172203a5be01d17cf3fef02419',
+          originalAddress: tokenOnChain[TokenEnum.USDT][ChainEnum.ETH_TESTNET],
           rskSovrynAddress: '0x10c5a7930fc417e728574e334b1488b7895c4b81',
         },
         {
           ...tokens.USDC,
           originalDecimals: 6,
-          originalAddress: '0x4C68058992b8aD1243eE23A5923023C0e15Cf43F',
+          originalAddress: tokenOnChain[TokenEnum.USDC][ChainEnum.ETH_TESTNET],
           rskSovrynAddress: '0xcc8eec21ae75f1a2de4ac7b32a7de888a45cf859',
         },
       ]
