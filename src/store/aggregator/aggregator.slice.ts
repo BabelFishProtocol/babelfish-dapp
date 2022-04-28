@@ -65,9 +65,13 @@ const aggregatorSlice = createSlice({
     fetchStartingTokenBalanceLoading: (state) => {
       state.startingTokenBalance.state = 'loading';
     },
-    fetchStartingTokenBalanceFailure: (state) => {
+    fetchStartingTokenBalanceFailure: (
+      state,
+      { payload }: PayloadAction<string>
+    ) => {
       state.startingTokenBalance.state = 'failure';
       state.startingTokenBalance.data = undefined;
+      state.fetchStartingTokenBalanceErrorReason = payload;
     },
     setStartingTokenBalance: (state, { payload }: PayloadAction<string>) => {
       state.startingTokenBalance.state = 'success';

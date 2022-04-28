@@ -93,6 +93,10 @@ export const successStakingState: StakingState = {
     status: 'idle',
     steps: [],
   },
+  increaseCall: {
+    status: 'idle',
+    steps: [],
+  },
 };
 
 export const failureStakingState: StakingState = {
@@ -103,6 +107,10 @@ export const failureStakingState: StakingState = {
   fishToken: { state: 'failure' as FiniteStates, data: {} },
   selectedStake: undefined,
   addNewStakeCall: {
+    status: 'idle',
+    steps: [],
+  },
+  increaseCall: {
     status: 'idle',
     steps: [],
   },

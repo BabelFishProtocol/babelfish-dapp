@@ -77,12 +77,21 @@ describe('reducers utils', () => {
       });
     });
 
-    it('does nothing when current step is not settled', () => {
+    it('updates first step when current step it is not settled', () => {
       const result = handleUpdateStepData(initialCallState, {
         error: 'test test',
       });
 
-      expect(result).toEqual(initialCallState);
+      expect(result).toEqual({
+        ...initialCallState,
+        steps: [
+          {
+            ...initialCallState.steps[0],
+            error: 'test test',
+          },
+          initialCallState.steps[1],
+        ],
+      });
     });
   });
 
@@ -111,6 +120,13 @@ describe('reducers utils', () => {
       expect(result).toEqual({
         ...initialCallState,
         status: 'failure',
+        steps: [
+          {
+            ...initialCallState.steps[0],
+            error: errorMsg,
+          },
+          initialCallState.steps[1],
+        ],
       });
     });
   });

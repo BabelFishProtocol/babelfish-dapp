@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+import { BigNumber } from 'ethers';
 import { useForm, useWatch } from 'react-hook-form';
 
 import Typography from '@mui/material/Typography';
@@ -8,6 +10,7 @@ import { DialogForm } from '../../../../components/DialogForm/DialogForm.compone
 import { CurrencyInput } from '../../../../components/CurrencyInput/CurrencyInput.component';
 import { ControlledInputWithButtonPillGroup } from '../../../../components/InputPillGroup/InputWithButtonPillGroup.controlled';
 
+import { StakingFeeEstimator } from '../../Staking.types';
 import {
   FeeEstimatorProps,
   IncreaseStakeComponentProps,
@@ -27,9 +30,8 @@ import {
 export const IncreaseStakeComponent = ({
   open,
   onClose,
-  onStake,
-  onApprove,
   unlockDate,
+  handleIncrease,
   currentStakeAmount,
   estimateStakeFee,
   estimateApproveFee,
@@ -46,14 +48,28 @@ export const IncreaseStakeComponent = ({
     IncreaseStakeFields.IncreaseStakeAmount
   );
 
+  const feeEstimator: StakingFeeEstimator = useCallback(
+    async (amount, timestamp) => {
+      const stakeFee = await estimateStakeFee(amount, timestamp);
+
+      if (!needsApproval) return stakeFee;
+
+      const approveFee =
+        (await estimateApproveFee(amount, timestamp)) ?? BigNumber.from(0);
+
+      return approveFee.add(stakeFee ?? BigNumber.from(0));
+    },
+    [needsApproval, estimateApproveFee, estimateStakeFee]
+  );
+
   return (
     <DialogForm
       open={open}
       isValid={formState.isValid}
       onClose={onClose}
       title="Add To Stake"
-      leftButtonText={needsApproval ? 'Approve' : 'Stake'}
-      handleSubmit={handleSubmit(needsApproval ? onApprove : onStake)}
+      leftButtonText="Stake"
+      handleSubmit={handleSubmit(handleIncrease)}
     >
       <CurrencyInput
         disabled
@@ -77,9 +93,7 @@ export const IncreaseStakeComponent = ({
       <FeeEstimator
         control={control}
         unlockDate={unlockDate}
-        needsApproval={needsApproval}
-        estimateStakeFee={estimateStakeFee}
-        estimateApproveFee={estimateApproveFee}
+        feeEstimator={feeEstimator}
       />
     </DialogForm>
   );
@@ -105,9 +119,7 @@ const VotingPower = ({ control, unlockDate }: VotingPowerBlockProps) => {
 const FeeEstimator = ({
   control,
   unlockDate,
-  needsApproval,
-  estimateStakeFee,
-  estimateApproveFee,
+  feeEstimator,
 }: FeeEstimatorProps) => {
   const watchStakeAmount = useWatch({
     name: IncreaseStakeFields.IncreaseStakeAmount,
@@ -117,7 +129,7 @@ const FeeEstimator = ({
   const estimatedFee = useEstimateFee({
     amount: watchStakeAmount,
     timestamp: unlockDate,
-    estimator: needsApproval ? estimateApproveFee : estimateStakeFee,
+    estimator: feeEstimator,
   });
 
   return (

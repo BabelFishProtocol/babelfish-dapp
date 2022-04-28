@@ -3,6 +3,8 @@ import { CallState, LoadableAmount, LoadableValue } from '../types';
 
 export type AddNewStakeCalls = 'stake' | 'approve';
 
+export type IncreaseCalls = 'stake' | 'approve';
+
 export type StakeListItem = {
   asset: string;
   lockedAmount: string;
@@ -26,6 +28,14 @@ export class StakingState {
   selectedStake?: number;
 
   addNewStakeCall: CallState<AddNewStakeCalls> = {
+    status: 'idle',
+    steps: [
+      { name: 'approve', label: 'approving' },
+      { name: 'stake', label: 'staking' },
+    ],
+  };
+
+  increaseCall: CallState<IncreaseCalls> = {
     status: 'idle',
     steps: [
       { name: 'approve', label: 'approving' },

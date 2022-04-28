@@ -83,7 +83,9 @@ export function* fetchStartingTokenBalance() {
       aggregatorActions.setStartingTokenBalance(startingTokenBalance.toString())
     );
   } catch (e) {
-    yield* put(aggregatorActions.fetchStartingTokenBalanceFailure());
+    const msg =
+      e instanceof Error ? e.message : 'Could not fetch starting token balance';
+    yield* put(aggregatorActions.fetchStartingTokenBalanceFailure(msg));
   }
 }
 
