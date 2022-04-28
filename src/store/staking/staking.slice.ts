@@ -106,7 +106,11 @@ export const stakingSlice = createSlice({
     },
 
     selectStake: (state, { payload }: PayloadAction<number>) => {
-      state.selectedStake = payload;
+      const selectedStake = state.stakesList.data.find(
+        (stake) => stake.unlockDate === payload
+      );
+
+      state.selectedStake = selectedStake;
     },
     clearSelectedStake: (state) => {
       state.selectedStake = undefined;
