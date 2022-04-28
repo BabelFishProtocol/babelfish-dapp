@@ -1,10 +1,9 @@
 import { put, call, select } from 'typed-redux-saga';
-import { userQuery } from '../../../queries/historyStakeListQuery';
+import { allUserStakesQuery } from '../../../queries/historyStakeListQuery';
 import {
   accountSelector,
   subgraphClientSelector,
 } from '../../app/app.selectors';
-import { compareNumbers } from '../../../utils/helpers';
 import { stakingActions } from '../staking.slice';
 
 export function* fetchHistoryStaking() {
@@ -14,28 +13,20 @@ export function* fetchHistoryStaking() {
 
     if (!subgraphClient || !account) throw new Error('Wallet not connected');
 
-    const { user } = yield* call(userQuery, subgraphClient, {
+    const { user } = yield* call(allUserStakesQuery, subgraphClient, {
       contractAddress: account.toLowerCase(),
     });
 
-    const stakesHistory = user.stakes.map((stake) => ({
+    const stakesHistory = user.allStakes.map((stake) => ({
       asset: 'FISH',
       stakedAmount: stake.amount,
       unlockDate: stake.lockedUntil,
       totalStaked: stake.totalStaked,
       txHash: stake.transactionHash,
-      blockTimeStamp: stake.blockTimeStamp,
+      blockTimestamp: stake.blockTimestamp,
     }));
 
-    stakesHistory.sort((stakePrev, stakeNext) =>
-      compareNumbers(
-        Number(stakePrev.blockTimeStamp),
-        Number(stakeNext.blockTimeStamp)
-      )
-    );
-    const reversedStakesHistory = stakesHistory.reverse();
-
-    yield* put(stakingActions.setHistoryStakesList(reversedStakesHistory));
+    yield* put(stakingActions.setHistoryStakesList(stakesHistory));
   } catch (e) {
     yield* put(stakingActions.fetchHistoryStakesListFailure());
   }

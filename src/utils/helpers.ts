@@ -87,9 +87,6 @@ const truncate = (str: string, digits = 4) => {
   return str;
 };
 
-export const compareNumbers = (numberA: number, numberB: number) =>
-  numberA - numberB;
-
 export const isValidSignature = (val: string) => val.match(signatureRegex);
 
 export const isValidCalldata = (val: string) => val.match(calldataRegex);
