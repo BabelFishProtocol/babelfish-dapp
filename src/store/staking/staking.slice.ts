@@ -1,30 +1,28 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
 import { AddNewStakeFormValues } from '../../pages/Staking/AddNewStake/AddNewStake.types';
-import { IncreaseStakeFormValues } from '../../pages/Staking/StakesList/IncreaseStake/IncreaseStake.types';
 import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/StakingHistory.types';
+import { IncreaseStakeFormValues } from '../../pages/Staking/StakesList/IncreaseStake/IncreaseStake.types';
 
 import { ActionsType } from '../types';
+import { createStepCallsActions } from '../utils/utils.reducers';
 import {
-  handleSetCallError,
-  handleUpdateCallStatus,
-  handleUpdateStepData,
-  handleUpdateSteps,
-} from '../utils/utils.reducers';
-import { StepCallsActions } from '../utils/utils.types';
-import {
-  AddNewStakeCalls,
-  FishTokenInfo,
-  IncreaseCalls,
-  StakeConstants,
-  StakeListItem,
   StakingState,
+  FishTokenInfo,
+  StakeListItem,
+  StakeConstants,
 } from './staking.state';
 
 const initialState = { ...new StakingState() };
 
-type IncreaseActions = StepCallsActions<IncreaseCalls>;
-type AddStakeActions = StepCallsActions<AddNewStakeCalls>;
+const addStakeStepCallActions = createStepCallsActions(
+  initialState,
+  'addNewStakeCall'
+);
+const increaseStepCallActions = createStepCallsActions(
+  initialState,
+  'increaseCall'
+);
 
 export const stakingSlice = createSlice({
   name: Reducers.Staking,
@@ -32,60 +30,22 @@ export const stakingSlice = createSlice({
   reducers: {
     // ----- add new stake call -----
 
-    addNewStake: (state, _: PayloadAction<AddNewStakeFormValues>) => {
-      state.addNewStakeCall = initialState.addNewStakeCall;
-    },
-    resetAddNewStake: (state) => {
-      state.addNewStakeCall = initialState.addNewStakeCall;
-    },
-    setAddStakeStatus: (state, { payload }: AddStakeActions['setStatus']) => {
-      state.addNewStakeCall = handleUpdateCallStatus(
-        state.addNewStakeCall,
-        payload
-      );
-    },
-    setAddStakeSteps: (state, { payload }: AddStakeActions['setSteps']) => {
-      state.addNewStakeCall = handleUpdateSteps(state.addNewStakeCall, payload);
-    },
-    setAddStakeStepData: (
-      state,
-      { payload }: AddStakeActions['updateStep']
-    ) => {
-      state.addNewStakeCall = handleUpdateStepData(
-        state.addNewStakeCall,
-        payload
-      );
-    },
-    setAddStakeError: (state, { payload }: AddStakeActions['setError']) => {
-      state.addNewStakeCall = handleSetCallError(
-        state.addNewStakeCall,
-        payload
-      );
-    },
+    addNewStake: addStakeStepCallActions.trigger<AddNewStakeFormValues>(),
+    resetAddNewStake: addStakeStepCallActions.reset,
+    setAddStakeStatus: addStakeStepCallActions.setStatus,
+    setAddStakeSteps: addStakeStepCallActions.setSteps,
+    setAddStakeStepData: addStakeStepCallActions.updateStep,
+    setAddStakeError: addStakeStepCallActions.setStepError,
 
     // ----- increase stake call -----
 
-    increaseStake: (state, _: PayloadAction<IncreaseStakeFormValues>) => {
-      state.increaseCall = initialState.increaseCall;
-    },
-    resetIncrease: (state) => {
-      state.increaseCall = initialState.increaseCall;
-    },
-    setIncreaseStatus: (state, { payload }: IncreaseActions['setStatus']) => {
-      state.increaseCall = handleUpdateCallStatus(state.increaseCall, payload);
-    },
-    setIncreaseSteps: (state, { payload }: IncreaseActions['setSteps']) => {
-      state.increaseCall = handleUpdateSteps(state.increaseCall, payload);
-    },
-    setIncreaseStepData: (
-      state,
-      { payload }: IncreaseActions['updateStep']
-    ) => {
-      state.increaseCall = handleUpdateStepData(state.increaseCall, payload);
-    },
-    setIncreaseError: (state, { payload }: IncreaseActions['setError']) => {
-      state.increaseCall = handleSetCallError(state.increaseCall, payload);
-    },
+    increaseStake: increaseStepCallActions.trigger<IncreaseStakeFormValues>(),
+    resetIncrease: increaseStepCallActions.reset,
+    setIncreaseStatus: increaseStepCallActions.setStatus,
+    setIncreaseSteps: increaseStepCallActions.setSteps,
+    setIncreaseStepData: increaseStepCallActions.updateStep,
+    setIncreaseError: increaseStepCallActions.setStepError,
+
 
     watchStakingData: (_) => {},
     stopWatchingStakingData: (state) => {
@@ -96,14 +56,11 @@ export const stakingSlice = createSlice({
     },
     fetchStakingData: (state) => {
       state.constants.state = 'loading';
-      state.fishToken.state = 'loading';
-      state.combinedVotingPower.state = 'loading';
-      state.stakesList.state = 'loading';
-      state.stakesListHistory.state = 'loading';
-      state.fishToken.data = {};
-      state.combinedVotingPower.data = undefined;
-      state.stakesList.data = [];
-      state.stakesListHistory.data = [];
+
+      state.fishToken = initialState.fishToken;
+      state.stakesList = initialState.stakesList;
+      state.stakesListHistory = initialState.stakesListHistory;
+      state.combinedVotingPower = initialState.combinedVotingPower;
     },
     updateStakingData: (state) => {
       state.fishToken.state = 'loading';
