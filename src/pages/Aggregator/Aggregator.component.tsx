@@ -34,7 +34,6 @@ export const AggregatorComponent = ({
   const {
     handleSubmit,
     watch,
-    reset,
     resetField,
     setValue,
     control,
@@ -65,7 +64,7 @@ export const AggregatorComponent = ({
   const { hideDestinationTokenDropdown } = useConnectedChain(
     startingChain,
     destinationChain,
-    reset,
+    resetField,
     setValue
   );
 
