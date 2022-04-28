@@ -213,3 +213,13 @@ export const isEnoughTokensSelector = createSelector(
     return feesAndLimits.minTransfer >= startingTokenBalance;
   }
 );
+
+export const bassetAddressSelector = createSelector(
+  [bridgeSelector, destinationTokenSelector],
+  (bridge, destinationToken) => {
+    if (!bridge || !destinationToken) {
+      return undefined;
+    }
+    return bridge.getRskSovrynTokenAddress(destinationToken)?.toLowerCase();
+  }
+);

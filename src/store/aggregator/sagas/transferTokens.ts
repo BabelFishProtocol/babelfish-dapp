@@ -3,11 +3,13 @@ import { call, put, select } from 'typed-redux-saga';
 import { massetContractSelector } from '../../app/app.selectors';
 import { createWatcherSaga } from '../../utils/utils.sagas';
 import {
+  bassetAddressSelector,
   bridgeContractSelector,
   flowStateSelector,
   massetAddressSelector,
   startingTokenAddressSelector,
   startingTokenContractSelector,
+  startingTokenDecimalsSelector,
 } from '../aggregator.selectors';
 import { AggregatorActions, aggregatorActions } from '../aggregator.slice';
 
@@ -15,25 +17,25 @@ import { AggregatorActions, aggregatorActions } from '../aggregator.slice';
 export function* depositTokens({
   payload,
 }: AggregatorActions['startTokenTransfer']) {
-  const amount = payload.SendAmount;
-  const receiver = payload.ReceiveAddress;
-  const extraData = utils.defaultAbiCoder.encode(['address'], [receiver]);
-
   try {
     const bridge = yield* select(bridgeContractSelector);
     const tokenAddress = yield* select(startingTokenAddressSelector);
+    const tokenDecimals = yield* select(startingTokenDecimalsSelector);
     const tokenContract = yield* select(startingTokenContractSelector);
-
     const massetAddress = yield* select(massetAddressSelector);
+
     if (!tokenContract || !bridge) {
       throw new Error('Could not find contracts');
     }
-    if (!tokenAddress || !massetAddress) {
+    if (!tokenAddress || !massetAddress || !tokenDecimals) {
       throw new Error('Could not find token address');
     }
 
-    const approve = yield* call(tokenContract.approve, bridge.address, amount);
+    const amount = utils.parseUnits(payload.SendAmount, tokenDecimals);
+    const receiver = payload.ReceiveAddress;
+    const extraData = utils.defaultAbiCoder.encode(['address'], [receiver]);
 
+    const approve = yield* call(tokenContract.approve, bridge.address, amount);
     yield* call(approve.wait);
 
     const tx = yield* call(
@@ -43,6 +45,7 @@ export function* depositTokens({
       massetAddress,
       extraData
     );
+
     yield* call(tx.wait);
     yield* put(aggregatorActions.transferTokensSuccess());
   } catch (e) {
@@ -57,23 +60,33 @@ export function* depositTokens({
 export function* withdrawTokens({
   payload,
 }: AggregatorActions['startTokenTransfer']) {
-  const amount = payload.SendAmount;
-  const receiver = payload.ReceiveAddress;
-
   try {
-    const tokenAddress = yield* select(startingTokenAddressSelector);
-    const massetContract = yield* select(massetContractSelector);
+    const tokenDecimals = yield* select(startingTokenDecimalsSelector);
+    const tokenContract = yield* select(startingTokenContractSelector);
 
-    if (!massetContract) {
+    const bassetAddress = yield* select(bassetAddressSelector);
+
+    const massetContract = yield* select(massetContractSelector);
+    if (!massetContract || !tokenContract) {
       throw new Error('Could not find contracts');
     }
-    if (!tokenAddress) {
-      throw new Error('Could not find token address');
+    if (!bassetAddress) {
+      throw new Error('Could not find basset address');
     }
+
+    const amount = utils.parseUnits(payload.SendAmount, tokenDecimals);
+    const receiver = payload.ReceiveAddress;
+
+    const approve = yield* call(
+      tokenContract.approve,
+      massetContract.address,
+      amount
+    );
+    yield* call(approve.wait);
 
     const tx = yield* call(
       massetContract['redeemToBridge(address,uint256,address)'],
-      tokenAddress,
+      bassetAddress,
       amount,
       receiver
     );
