@@ -1,6 +1,8 @@
 import { Controller, FieldValues } from 'react-hook-form';
+import { utils } from 'ethers';
 import { ControlledInputWithButtonPillGroupProps } from './InputWithButtonPillGroup.types';
 import { InputWithButtonPillGroup } from './InputWithButtonPillGroup.component';
+import { fieldsErrors } from '../../constants';
 
 export const ControlledInputWithButtonPillGroup = <
   FormValues extends FieldValues
@@ -20,6 +22,11 @@ export const ControlledInputWithButtonPillGroup = <
     });
   };
 
+  const defaultValidate = (v: string) =>
+    !totalAmount || utils.parseUnits(v, totalAmountDecimals).lte(totalAmount)
+      ? true
+      : fieldsErrors.amountGreaterThanBalance;
+
   return (
     <Controller
       render={({ field: { onChange, value, onBlur }, fieldState }) => (
@@ -37,7 +44,7 @@ export const ControlledInputWithButtonPillGroup = <
       name={name}
       control={control}
       rules={{
-        validate,
+        validate: validate || defaultValidate,
         required: true,
         ...rules,
       }}
