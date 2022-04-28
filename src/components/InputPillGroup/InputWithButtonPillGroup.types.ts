@@ -2,7 +2,6 @@ import { FieldError, UseFormSetValue } from 'react-hook-form';
 
 import { OutlinedInputProps } from '@mui/material/OutlinedInput';
 import { ControlledInputType } from '../TextInput/TextInput.types';
-import { FeesAndLimitsType } from '../../store/aggregator/aggregator.state';
 
 export type InputWithButtonPillGroupProps = Partial<
   Omit<OutlinedInputProps, 'error'>
@@ -22,6 +21,6 @@ export type ControlledInputWithButtonPillGroupProps<FormValues> = Omit<
 > &
   ControlledInputType<FormValues> & {
     totalAmountDecimals?: number;
-    feesAndLimits?: FeesAndLimitsType;
+    validate?: (v: string) => string | true | undefined;
     setValue: UseFormSetValue<FormValues>;
   };
