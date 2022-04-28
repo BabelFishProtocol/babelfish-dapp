@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
-import { constants, utils } from 'ethers';
-import { useSelector } from 'react-redux';
-import { useContractCall } from '../../../../hooks/useContractCall';
+import { BigNumber, utils } from 'ethers';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   fishTokenSelector,
   stakingContractSelector,
@@ -9,10 +8,12 @@ import {
 import {
   selectedStakeSelector,
   fishTokenDataSelector,
+  increaseStakeStatusSelector,
 } from '../../../../store/staking/staking.selectors';
+import { stakingActions } from '../../../../store/staking/staking.slice';
 import { StakingFeeEstimator } from '../../Staking.types';
 
-import { SubmitStatusDialog } from '../../../../components/TxDialog/TxDialog.component';
+import { SubmitStepsDialog } from '../../../../components/TxDialog/TxDialog.component';
 
 import {
   IncreaseStakeContainerProps,
@@ -25,12 +26,13 @@ export const IncreaseStakeContainer = ({
   open,
   onClose,
 }: IncreaseStakeContainerProps) => {
+  const dispatch = useDispatch();
+
   const { fishBalance } = useSelector(fishTokenDataSelector);
   const selectedStakeData = useSelector(selectedStakeSelector);
   const staking = useSelector(stakingContractSelector);
   const fishToken = useSelector(fishTokenSelector);
-
-  // ----- approving -----
+  const submitTx = useSelector(increaseStakeStatusSelector);
 
   const estimateApproveFee: StakingFeeEstimator = useCallback(
     async (amount: string, _: number) => {
@@ -46,86 +48,45 @@ export const IncreaseStakeContainer = ({
     [fishToken, staking]
   );
 
-  const onApproveStake = async ({
-    increaseStakeAmount,
-  }: IncreaseStakeFormValues) => {
-    if (!staking || !fishToken) {
-      throw new Error(selectorsErrors.missingData);
-    }
-
-    const tx = await fishToken.approve(
-      staking.address,
-      utils.parseEther(increaseStakeAmount)
-    );
-
-    return tx;
-  };
-
-  const { handleSubmit: handleApprove, ...approveData } =
-    useContractCall(onApproveStake);
-
-  // ----- staking -----
-
   const estimateStakeFee: StakingFeeEstimator = useCallback(
-    async (amount: string, _: number) => {
-      if (!staking || !selectedStakeData) {
-        throw new Error(selectorsErrors.missingData);
-      }
-
-      return staking.estimateGas.stake(
-        utils.parseEther(amount),
-        selectedStakeData.unlockDate,
-        constants.AddressZero,
-        constants.AddressZero
-      );
-    },
-    [selectedStakeData, staking]
+    /** We're not able to call the estimate stake when user doesn't have allowance, the number below is an average gas used in transactions */
+    async () => BigNumber.from(200000),
+    []
   );
-
-  const onStake = async ({ increaseStakeAmount }: IncreaseStakeFormValues) => {
-    if (!staking || !selectedStakeData) {
-      throw new Error(selectorsErrors.missingData);
-    }
-
-    const tx = staking?.stake(
-      utils.parseEther(increaseStakeAmount),
-      selectedStakeData?.unlockDate,
-      constants.AddressZero,
-      constants.AddressZero
-    );
-
-    return tx;
-  };
-
-  const { handleSubmit: handleStake, ...stakeData } = useContractCall(onStake);
 
   if (!selectedStakeData) {
     return null;
   }
+
+  const handleIncrease = (formValues: IncreaseStakeFormValues) => {
+    dispatch(stakingActions.increaseStake(formValues));
+  };
+
+  const handleResetCallData = () => {
+    dispatch(stakingActions.resetIncrease());
+  };
 
   return (
     <>
       <IncreaseStakeComponent
         open={open}
         onClose={onClose}
-        onStake={handleStake}
+        handleIncrease={handleIncrease}
         fishBalance={fishBalance}
-        onApprove={handleApprove}
         estimateStakeFee={estimateStakeFee}
         estimateApproveFee={estimateApproveFee}
         unlockDate={selectedStakeData.unlockDate}
         currentStakeAmount={selectedStakeData.lockedAmount}
       />
 
-      {approveData.status !== 'idle' && (
-        <SubmitStatusDialog operationName="Approving" {...approveData} />
-      )}
-
-      {stakeData.status !== 'idle' && (
-        <SubmitStatusDialog
-          operationName="Staking"
+      {submitTx.status !== 'idle' && (
+        <SubmitStepsDialog
           successCallback={onClose}
-          {...stakeData}
+          onClose={handleResetCallData}
+          steps={submitTx.steps}
+          status={submitTx.status}
+          summary={submitTx.summary}
+          currentStep={submitTx.currentStep}
         />
       )}
     </>
