@@ -13,6 +13,7 @@ export type TokenBalanceProps = {
   startingTokenBalanceState: FiniteStates;
   startingTokenBalance?: string;
   startingTokenDecimals?: number;
+  validate?: (v: string) => string | true | undefined;
 };
 
 export type SendAmountComponentProps<FormValues> =

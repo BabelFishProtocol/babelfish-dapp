@@ -1,10 +1,10 @@
 export type ButtonPillGroupProps = {
   availableValues: number[];
   disabled?: boolean;
-  value?: string;
+  value?: number;
   handleChange?: (
     e: React.MouseEvent<HTMLElement>,
-    newPercentValue: string
+    newPercentValue: number | null
   ) => void;
 };
 
