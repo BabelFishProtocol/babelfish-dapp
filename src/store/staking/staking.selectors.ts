@@ -73,3 +73,7 @@ export const increaseStakeStatusSelector = createSelector(
   stakingState,
   (state) => selectCurrentCallStepData(state.increaseCall)
 );
+
+export const extendStakeStatusSelector = createSelector(stakingState, (state) =>
+  selectCurrentCallStepData(state.extendCall)
+);

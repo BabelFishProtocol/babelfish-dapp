@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
 import { AddNewStakeFormValues } from '../../pages/Staking/AddNewStake/AddNewStake.types';
+import { ExtendStakeValues } from '../../pages/Staking/StakesList/ExtendStake/ExtendStake.fields';
 import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/StakingHistory.types';
 import { IncreaseStakeFormValues } from '../../pages/Staking/StakesList/IncreaseStake/IncreaseStake.types';
 
@@ -22,6 +23,10 @@ const addStakeStepCallActions = createStepCallsActions(
 const increaseStepCallActions = createStepCallsActions(
   initialState,
   'increaseCall'
+);
+const extendStakeStepCallActions = createStepCallsActions(
+  initialState,
+  'extendCall'
 );
 
 export const stakingSlice = createSlice({
@@ -46,6 +51,13 @@ export const stakingSlice = createSlice({
     setIncreaseStepData: increaseStepCallActions.updateStep,
     setIncreaseError: increaseStepCallActions.setStepError,
 
+    // ----- extend stake call -----
+
+    extendStake: extendStakeStepCallActions.trigger<ExtendStakeValues>(),
+    resetExtend: extendStakeStepCallActions.reset,
+    setExtendStatus: extendStakeStepCallActions.setStatus,
+    setExtendStepData: extendStakeStepCallActions.updateStep,
+    setExtendError: extendStakeStepCallActions.setStepError,
 
     watchStakingData: (_) => {},
     stopWatchingStakingData: (state) => {
