@@ -79,6 +79,9 @@ export const fieldsErrors = {
   invalidSignature: 'Value must be a valid Function Signature',
   invalidCalldata: 'Value must be a valid Calldata',
   amountGreaterThanBalance: 'Value cannot be greater than your token balance',
+  amountGreaterThanMaxLimit:
+    'Value cannot be greater than the transaction max limit',
+  amountLessThanMinLimit: 'Value cannot be less than the transaction min limit',
 };
 
 export const selectorsErrors = {

@@ -12,6 +12,7 @@ export const SendAmountComponent = <FormValues extends FieldValues>({
   name,
   control,
   setValue,
+  validate,
 }: SendAmountComponentProps<FormValues>) => (
   <>
     <Box sx={{ mb: 8, position: 'relative' }}>
@@ -32,6 +33,7 @@ export const SendAmountComponent = <FormValues extends FieldValues>({
       totalAmountDecimals={startingTokenDecimals}
       control={control}
       setValue={setValue}
+      validate={validate}
     />
   </>
 );

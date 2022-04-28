@@ -10,6 +10,7 @@ export type InputWithButtonPillGroupProps = Partial<
   symbol: string;
   error?: FieldError;
   totalAmount?: string;
+  totalAmountDecimals?: number;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onButtonChange: (newValue: string) => void;
 };
@@ -20,5 +21,6 @@ export type ControlledInputWithButtonPillGroupProps<FormValues> = Omit<
 > &
   ControlledInputType<FormValues> & {
     totalAmountDecimals?: number;
+    validate?: (v: string) => string | true | undefined;
     setValue: UseFormSetValue<FormValues>;
   };
