@@ -13,6 +13,7 @@ import {
 import { Reducers } from '../../constants';
 import {
   allChainsArr,
+  ChainEnum,
   chains,
   idsOfTestNetworks,
   mainnetChainsArr,
@@ -25,6 +26,7 @@ import {
   Multicall__factory,
   VestingRegistry__factory,
   GovernorAlpha__factory,
+  MassetV3__factory,
 } from '../../contracts/types';
 import { BaseContractFactory, MulticallProviderType } from '../types';
 
@@ -125,7 +127,14 @@ export const subgraphClientSelector = createSelector(
 export const addressesSelector = createSelector(
   currentChainSelector,
   (chainConfig) => {
-    if (!chainConfig || !contractsAddresses[chainConfig.id]) return undefined;
+    if (
+      !chainConfig ||
+      !(
+        chainConfig.id === ChainEnum.RSK ||
+        chainConfig.id === ChainEnum.RSK_TESTNET
+      )
+    )
+      return undefined;
 
     return contractsAddresses[chainConfig.id];
   }
@@ -169,6 +178,11 @@ export const multicallContractSelector = createContractSelector(
 export const vestingRegistrySelector = createContractSelector(
   VestingRegistry__factory,
   'vestingRegistry'
+);
+
+export const massetContractSelector = createContractSelector(
+  MassetV3__factory,
+  'XUSDMassetProxy'
 );
 
 export const multicallProviderSelector = createSelector(
