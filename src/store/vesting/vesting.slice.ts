@@ -34,7 +34,10 @@ export const vestingSlice = createSlice({
     },
 
     selectVest: (state, { payload }: PayloadAction<number>) => {
-      state.selectedVest = payload;
+      const selectedVest = state.vestsList.data.find(
+        (vest) => vest.unlockDate === payload
+      );
+      state.selectedVest = selectedVest;
     },
     clearSelectedVest: (state) => {
       state.selectedVest = undefined;
