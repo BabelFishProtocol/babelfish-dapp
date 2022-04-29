@@ -12,6 +12,7 @@ import { BaseContract } from 'ethers';
 import { ParamType } from 'ethers/lib/utils';
 
 import { appActions } from '../app/app.slice';
+import { providerSelector } from '../app/app.selectors';
 import {
   ContractStepCallSagaParams,
   CreateWatcherSagaOptions,
@@ -20,7 +21,6 @@ import {
   MulticallResult,
   SagaContractCallStep,
 } from '../types';
-import { accountSelector } from '../app/app.selectors';
 
 export const convertForMulticall = <
   Contract extends BaseContract,
@@ -71,14 +71,23 @@ export const createWatcherSaga = ({
   stopAction,
 }: CreateWatcherSagaOptions) => {
   function* runUpdater() {
-    const account = yield* select(accountSelector);
-    if (account) {
+    let provider = yield* select(providerSelector);
+
+    if (provider) {
       yield* call(fetchSaga);
+    }
+
+    function* update() {
+      provider = yield* select(providerSelector);
+
+      if (provider) {
+        yield* call(updateSaga);
+      }
     }
 
     yield* takeLatest(
       [appActions.setAccount.type, appActions.setBlockNumber.type],
-      updateSaga
+      update
     );
 
     yield* takeLatest([appActions.walletConnected.type], fetchSaga);

@@ -9,7 +9,9 @@ export const vestingSlice = createSlice({
   name: Reducers.Vesting,
   initialState,
   reducers: {
-    watchVestingData: (_) => {},
+    watchVestingData: (state) => {
+      state.vestsList.state = 'loading';
+    },
     stopWatchingVestingData: (state) => {
       state.vestsList.state = 'idle';
     },
