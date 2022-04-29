@@ -57,12 +57,7 @@ export const stakesDatesSelector = createSelector(
 
 export const selectedStakeSelector = createSelector(
   [stakingState, stakesListSelector],
-  (state, stakesList) => {
-    const selectedStake = stakesList.find(
-      (stake) => stake.unlockDate === state.selectedStake
-    );
-    return selectedStake;
-  }
+  (state) => state.selectedStake
 );
 export const isSelectedStakeLockedSelector = createSelector(
   selectedStakeSelector,
@@ -77,4 +72,8 @@ export const addStakeSubmitStatusSelector = createSelector(
 export const increaseStakeStatusSelector = createSelector(
   stakingState,
   (state) => selectCurrentCallStepData(state.increaseCall)
+);
+
+export const extendStakeStatusSelector = createSelector(stakingState, (state) =>
+  selectCurrentCallStepData(state.extendCall)
 );

@@ -5,6 +5,7 @@ import { createWatcherSaga } from '../utils/utils.sagas';
 import { stakingActions } from './staking.slice';
 import { vestingActions } from '../vesting/vesting.slice';
 import { addNewStake } from './sagas/addNewStake';
+import { extendStake } from './sagas/extendStake';
 import { increaseStake } from './sagas/increaseStake';
 import { fetchHistoryStaking } from './sagas/fetchHistoryStaking';
 import { fetchStakesList } from './sagas/fetchStakesList';
@@ -49,6 +50,7 @@ export function* stakingSaga() {
   yield* all([
     takeLatest(stakingActions.addNewStake.type, addNewStake),
     takeLatest(stakingActions.increaseStake.type, increaseStake),
+    takeLatest(stakingActions.extendStake.type, extendStake),
     takeLatest(stakingActions.fetchStakingData.type, fetchBalances),
     takeLatest(stakingActions.updateStakingData.type, updateBalances),
     takeLatest(stakingActions.watchStakingData.type, watchStaking),
