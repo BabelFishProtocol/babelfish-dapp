@@ -16,12 +16,12 @@ export function* delegateStake({ payload }: StakingActions['delegateStake']) {
   const selectedStake = yield* select(selectedStakeSelector);
 
   if (!staking) {
-    yield* put(stakingActions.setExtendError('Wallet not connected'));
+    yield* put(stakingActions.setDelegateError('Wallet not connected'));
     return;
   }
 
   if (!selectedStake) {
-    yield* put(stakingActions.setExtendError('No stake selected'));
+    yield* put(stakingActions.setDelegateError('No stake selected'));
     return;
   }
 

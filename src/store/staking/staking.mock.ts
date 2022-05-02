@@ -74,6 +74,7 @@ export const combinedHistoryStakesList: StakingHistoryListItem[] = [
 ];
 
 export const successStakingState: StakingState = {
+  ...new StakingState(),
   combinedVotingPower: { state: 'success' as FiniteStates, data: votingPower },
   stakesList: { state: 'success' as FiniteStates, data: combinedStakesList },
   constants: {
@@ -89,37 +90,14 @@ export const successStakingState: StakingState = {
     data: { allowanceForStaking, fishBalance, totalStaked },
   },
   selectedStake: combinedStakesList[0],
-  addNewStakeCall: {
-    status: 'idle',
-    steps: [],
-  },
-  increaseCall: {
-    status: 'idle',
-    steps: [],
-  },
-  extendCall: {
-    status: 'idle',
-    steps: [],
-  },
 };
 
 export const failureStakingState: StakingState = {
+  ...new StakingState(),
   combinedVotingPower: { state: 'failure' as FiniteStates, data: undefined },
   stakesList: { state: 'failure' as FiniteStates, data: [] },
   constants: { state: 'failure' as FiniteStates, data: {} },
   stakesListHistory: { state: 'failure' as FiniteStates, data: [] },
   fishToken: { state: 'failure' as FiniteStates, data: {} },
   selectedStake: undefined,
-  addNewStakeCall: {
-    status: 'idle',
-    steps: [],
-  },
-  increaseCall: {
-    status: 'idle',
-    steps: [],
-  },
-  extendCall: {
-    status: 'idle',
-    steps: [],
-  },
 };
