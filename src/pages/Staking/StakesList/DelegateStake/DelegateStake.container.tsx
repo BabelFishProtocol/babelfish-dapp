@@ -1,57 +1,34 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   accountSelector,
   stakingContractSelector,
 } from '../../../../store/app/app.selectors';
-import { selectedStakeSelector } from '../../../../store/staking/staking.selectors';
-import { useContractCall } from '../../../../hooks/useContractCall';
+import {
+  delegateStatusSelector,
+  selectedStakeSelector,
+} from '../../../../store/staking/staking.selectors';
+import { stakingActions } from '../../../../store/staking/staking.slice';
 
-import { SubmitStatusDialog } from '../../../../components/TxDialog/TxDialog.component';
+import { SubmitStepsDialog } from '../../../../components/TxDialog/TxDialog.component';
+import { selectorsErrors } from '../../../../constants';
 
-import { DelegateStakeComponent } from './DelegateStake.component';
 import {
   DelegateFeeEstimator,
   DelegateStakeContainerProps,
 } from './DelegateStake.types';
 import { DelegateStakeValues } from './DelegateStake.fields';
-import { selectorsErrors } from '../../../../constants';
+import { DelegateStakeComponent } from './DelegateStake.component';
 
 export const DelegateStakeContainer = ({
   open,
   onClose,
 }: DelegateStakeContainerProps) => {
+  const dispatch = useDispatch();
   const account = useSelector(accountSelector);
   const selectedStakeData = useSelector(selectedStakeSelector);
   const staking = useSelector(stakingContractSelector);
-
-  const handleDelegate = ({ delegateTo }: DelegateStakeValues) => {
-    if (!staking || !selectedStakeData) {
-      throw new Error(selectorsErrors.missingData);
-    }
-
-    return staking.delegate(
-      delegateTo.toLowerCase(),
-      selectedStakeData.unlockDate
-    );
-  };
-
-  const { handleSubmit: onDelegate, ...delegateTxData } =
-    useContractCall(handleDelegate);
-
-  const handleCancelDelegation = () => {
-    if (!staking || !selectedStakeData || !account) {
-      throw new Error(selectorsErrors.missingData);
-    }
-
-    return staking.delegate(
-      account.toLowerCase(),
-      selectedStakeData.unlockDate
-    );
-  };
-
-  const { handleSubmit: onCancelDelegation, ...cancelDelegationTxData } =
-    useContractCall(handleCancelDelegation);
+  const submitTx = useSelector(delegateStatusSelector);
 
   const estimateFee: DelegateFeeEstimator = useCallback(
     (delegateTo) => {
@@ -71,31 +48,38 @@ export const DelegateStakeContainer = ({
     return null;
   }
 
+  const handleDelegate = (values: DelegateStakeValues) => {
+    dispatch(stakingActions.delegateStake(values));
+  };
+
+  const handleCancelDelegation = () => {
+    dispatch(stakingActions.delegateStake({ delegateTo: account }));
+  };
+
+  const handleResetCallData = () => {
+    dispatch(stakingActions.resetDelegate());
+  };
+
   return (
     <>
       <DelegateStakeComponent
         open={open}
         onClose={onClose}
         account={account}
-        onDelegate={onDelegate}
+        onDelegate={handleDelegate}
         estimateFee={estimateFee}
-        onCancelDelegation={onCancelDelegation}
+        onCancelDelegation={handleCancelDelegation}
         currentDelegate={selectedStakeData.votingDelegation}
       />
 
-      {delegateTxData.status !== 'idle' && (
-        <SubmitStatusDialog
+      {submitTx.status !== 'idle' && (
+        <SubmitStepsDialog
           successCallback={onClose}
-          operationName="Delegating stake"
-          {...delegateTxData}
-        />
-      )}
-
-      {cancelDelegationTxData.status !== 'idle' && (
-        <SubmitStatusDialog
-          successCallback={onClose}
-          operationName="Canceling delegation"
-          {...cancelDelegationTxData}
+          onClose={handleResetCallData}
+          steps={submitTx.steps}
+          status={submitTx.status}
+          summary={submitTx.summary}
+          currentStep={submitTx.currentStep}
         />
       )}
     </>
