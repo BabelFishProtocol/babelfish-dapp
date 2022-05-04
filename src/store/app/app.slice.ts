@@ -30,6 +30,8 @@ export const appSlice = createSlice({
       state.currentBlockNumber = undefined;
       state.provider = undefined;
       state.connectedWallet = undefined;
+      state.chainId = undefined;
+      state.account = undefined;
     },
     setBlockNumber: (state, { payload }: PayloadAction<number>) => {
       state.currentBlockNumber = payload;

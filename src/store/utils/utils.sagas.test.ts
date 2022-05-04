@@ -109,7 +109,7 @@ describe('saga utils', () => {
     });
 
     it('should make an initial fetch call when watching is started and address is set', () => {
-      store.dispatch(appActions.setAccount('account'));
+      store.dispatch(appActions.walletConnected(mockProvider));
       store.dispatch(mockActions.watch());
 
       expect(mockFetch).toHaveBeenCalled();
@@ -119,13 +119,14 @@ describe('saga utils', () => {
     describe('watching', () => {
       beforeEach(() => {
         store.dispatch(mockActions.watch());
+        store.dispatch(appActions.walletConnected(mockProvider));
 
         mockFetch.mockClear();
       });
 
       it('should update on account and blockNumber change', () => {
-        store.dispatch(appActions.setAccount());
         store.dispatch(appActions.setBlockNumber(31));
+        store.dispatch(appActions.setAccount('test account'));
 
         expect(mockFetch).not.toHaveBeenCalled();
         expect(mockUpdate).toHaveBeenCalledTimes(2);
@@ -135,6 +136,16 @@ describe('saga utils', () => {
         store.dispatch(appActions.walletConnected(mockProvider));
 
         expect(mockFetch).toHaveBeenCalled();
+        expect(mockUpdate).not.toHaveBeenCalled();
+      });
+
+      it('should not trigger updates when provider is settled', () => {
+        store.dispatch(appActions.walletDisconnected());
+
+        store.dispatch(appActions.setBlockNumber(31));
+        store.dispatch(appActions.setAccount('test account'));
+
+        expect(mockFetch).not.toHaveBeenCalled();
         expect(mockUpdate).not.toHaveBeenCalled();
       });
 

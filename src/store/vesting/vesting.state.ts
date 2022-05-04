@@ -14,7 +14,7 @@ export type VestListAddress = {
 };
 
 export class VestingState {
-  selectedVest?: number;
+  selectedVest?: VestListItem;
 
   vestsList: LoadableValue<VestListItem[]> = {
     data: [],

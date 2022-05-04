@@ -9,7 +9,9 @@ export const dashboardSlice = createSlice({
   name: Reducers.Dashboard,
   initialState,
   reducers: {
-    watchData: (_) => {},
+    watchData: (state) => {
+      state.balances.state = 'loading';
+    },
     stopWatchingData: (state) => {
       state.balances.state = 'idle';
     },
