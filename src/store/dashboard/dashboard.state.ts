@@ -1,3 +1,4 @@
+import { TransactionsQueryItem } from '../../queries/transactionsQuery';
 import { LoadableValue } from '../types';
 
 export type DashboardBalances = {
@@ -6,9 +7,16 @@ export type DashboardBalances = {
   xusdBalance: string;
 };
 
+export type Transactions = TransactionsQueryItem;
+
 export class DashboardState {
   balances: LoadableValue<DashboardBalances | undefined> = {
     state: 'idle',
     data: undefined,
+  };
+
+  transactionList: LoadableValue<Transactions[]> = {
+    state: 'idle',
+    data: [],
   };
 }
