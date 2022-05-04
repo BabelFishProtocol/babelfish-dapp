@@ -1,8 +1,7 @@
 import { BigNumber } from 'ethers';
 import { Vesting__factory } from '../../contracts/types/factories/Vesting__factory';
 import { createMockedContract, mockSigner } from '../../testUtils';
-import { LoadableValue } from '../types';
-import { VestListItem } from './vesting.state';
+import { VestingState, VestListItem } from './vesting.state';
 
 export const vestingAddress = '0x94e907f6B903A393E14FE549113137CA6483b5ef';
 export const accountAddress = '0x012A3';
@@ -38,18 +37,18 @@ export const combinedVestsList: VestListItem[] = [
 export const createMockVestingContract = (address: string) =>
   createMockedContract(Vesting__factory.connect(address, mockSigner), true);
 
-export const successVestingState = {
-  selectedVest: combinedVestsList[0].unlockDate,
+export const successVestingState: VestingState = {
+  selectedVest: combinedVestsList[0],
   vestsList: {
     state: 'success',
     data: combinedVestsList,
-  } as LoadableValue<VestListItem[]>,
+  },
 };
 
-export const failureVestingState = {
+export const failureVestingState: VestingState = {
   selectedVest: undefined,
   vestsList: {
     state: 'failure',
     data: [],
-  } as LoadableValue<VestListItem[]>,
+  },
 };

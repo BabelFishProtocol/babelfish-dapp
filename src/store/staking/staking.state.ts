@@ -5,6 +5,8 @@ export type AddNewStakeCalls = 'stake' | 'approve';
 
 export type IncreaseCalls = 'stake' | 'approve';
 
+export type ExtendCalls = 'extend';
+
 export type StakeListItem = {
   asset: string;
   lockedAmount: string;
@@ -25,7 +27,7 @@ export type StakeConstants = {
 };
 
 export class StakingState {
-  selectedStake?: number;
+  selectedStake?: StakeListItem;
 
   addNewStakeCall: CallState<AddNewStakeCalls> = {
     status: 'idle',
@@ -41,6 +43,11 @@ export class StakingState {
       { name: 'approve', label: 'approving' },
       { name: 'stake', label: 'staking' },
     ],
+  };
+
+  extendCall: CallState<ExtendCalls> = {
+    status: 'idle',
+    steps: [{ name: 'extend', label: 'extending' }],
   };
 
   constants: LoadableValue<StakeConstants> = {

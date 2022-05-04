@@ -4,6 +4,7 @@ export enum Urls {
   Staking = '/stake',
   Aggregator = '/aggregator',
   Improbability = '/improbability',
+  Claim = '/claim',
 }
 
 export enum ProposalState {

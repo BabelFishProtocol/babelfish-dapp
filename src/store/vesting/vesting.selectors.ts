@@ -16,12 +16,7 @@ export const vestsListStatusSelector = createSelector(
 );
 export const selectedVestSelector = createSelector(
   [vestingState, vestsListSelector],
-  (state, vestsList) => {
-    const selectedVest = vestsList.find(
-      (vest) => vest.unlockDate === state.selectedVest
-    );
-    return selectedVest;
-  }
+  (state) => state.selectedVest
 );
 
 export const selectedVestContractSelector = createSelector(

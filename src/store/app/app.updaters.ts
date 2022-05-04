@@ -15,23 +15,27 @@ export const AppUpdater = () => {
 
   useEffect(() => {
     const name = getWalletName(connector);
-    dispatch(appActions.setConnectedWallet(name));
+    if (name) {
+      dispatch(appActions.setConnectedWallet(name));
+    }
   }, [connector, dispatch]);
 
   useEffect(() => {
-    dispatch(appActions.setChainId(chainId));
+    if (chainId) {
+      dispatch(appActions.setChainId(chainId));
+    }
   }, [chainId, dispatch]);
 
   useEffect(() => {
-    dispatch(appActions.setAccount(account));
+    if (account) {
+      dispatch(appActions.setAccount(account));
+    }
   }, [account, dispatch]);
 
   useEffect(() => {
-    if (!library) {
-      dispatch(appActions.walletDisconnected());
-      return;
+    if (library) {
+      dispatch(appActions.walletConnected(library));
     }
-    dispatch(appActions.walletConnected(library));
   }, [library, chainId, dispatch]);
 
   return null;
