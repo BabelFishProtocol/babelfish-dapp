@@ -87,10 +87,6 @@ const aggregatorSlice = createSlice({
       state.pool =
         state.pool === PoolEnum.testnet ? PoolEnum.mainnet : PoolEnum.testnet;
     },
-    watchTransferTokens: () => {},
-    checkTransferTokens: () => {
-      // TODO : Implement checking if can transfer
-    },
     submit: submitStepCallActions.trigger<AggregatorFormValues>(),
     resetSubmitCall: submitStepCallActions.reset,
     setSubmitStatus: submitStepCallActions.setStatus,
