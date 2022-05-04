@@ -53,7 +53,7 @@ export const DataTable = <Data extends BaseRowData = BaseRowData>({
           </TableRow>
         </TableHead>
 
-        <TableHead>
+        <TableHead sx={{ backgroundColor: '#272A34' }}>
           <TableRow>
             {columns.map(({ label }, headIndex) => (
               <TableCell key={headIndex}>{label}</TableCell>
@@ -117,7 +117,10 @@ const DataTableRow = <Data extends BaseRowData = BaseRowData>({
       const value = format ? format(rowData[name]) : rowData[name];
 
       return (
-        <TableCell key={cellIndex}>
+        <TableCell
+          key={cellIndex}
+          sx={{ backgroundColor: rowIndex % 2 === 1 ? '#272A34' : 'inherit' }}
+        >
           {CellComponent ? (
             <CellComponent
               rowIndex={rowIndex}

@@ -104,6 +104,14 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
     styleOverrides: {
       root: {
         fontFamily: 'Archive',
+        '& th:first-child': {
+          borderTopLeftRadius: 10,
+          borderBottomLeftRadius: 10,
+        },
+        '& th:last-child': {
+          borderTopRightRadius: 10,
+          borderBottomRightRadius: 10,
+        },
       },
     },
   },
@@ -119,7 +127,14 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
   MuiTableRow: {
     styleOverrides: {
       root: {
-        borderTop: `1px solid ${palette.borderGrey.main}`,
+        '& td:first-child': {
+          borderTopLeftRadius: 10,
+          borderBottomLeftRadius: 10,
+        },
+        '& td:last-child': {
+          borderTopRightRadius: 10,
+          borderBottomRightRadius: 10,
+        },
       },
     },
   },

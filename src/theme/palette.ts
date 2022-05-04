@@ -16,7 +16,7 @@ export const getPalette = () =>
       light: colors.lightYellow,
     },
     background: {
-      default: '#181a20',
+      default: '#181A20',
       paper: '#798293',
     },
     success: {
