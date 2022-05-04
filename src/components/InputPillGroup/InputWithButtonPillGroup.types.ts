@@ -9,7 +9,7 @@ export type InputWithButtonPillGroupProps = Partial<
   title?: string;
   symbol: string;
   error?: FieldError;
-  totalAmount?: string;
+  totalAmount: string;
   totalAmountDecimals?: number;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onButtonChange: (newValue: string) => void;
