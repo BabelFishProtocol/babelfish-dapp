@@ -1,7 +1,11 @@
 import { utils } from 'ethers';
 import { call, put, select } from 'typed-redux-saga';
-import { massetContractSelector } from '../../app/app.selectors';
-import { createWatcherSaga } from '../../utils/utils.sagas';
+import {
+  accountSelector,
+  massetContractSelector,
+} from '../../app/app.selectors';
+import { SagaContractCallStep } from '../../types';
+import { contractStepCallsSaga } from '../../utils/utils.sagas';
 import {
   bassetAddressSelector,
   bridgeContractSelector,
@@ -12,120 +16,154 @@ import {
   startingTokenDecimalsSelector,
 } from '../aggregator.selectors';
 import { AggregatorActions, aggregatorActions } from '../aggregator.slice';
+import { AggregatorCalls } from '../aggregator.state';
 
-// Just DEPOSIT the basset into masset now
-export function* depositTokens({
-  payload,
-}: AggregatorActions['startTokenTransfer']) {
-  try {
-    const bridge = yield* select(bridgeContractSelector);
-    const tokenAddress = yield* select(startingTokenAddressSelector);
-    const tokenDecimals = yield* select(startingTokenDecimalsSelector);
-    const tokenContract = yield* select(startingTokenContractSelector);
-    const massetAddress = yield* select(massetAddressSelector);
+export function* depositTokens({ payload }: AggregatorActions['submit']) {
+  const bridge = yield* select(bridgeContractSelector);
+  const tokenAddress = yield* select(startingTokenAddressSelector);
+  const tokenDecimals = yield* select(startingTokenDecimalsSelector);
+  const tokenContract = yield* select(startingTokenContractSelector);
+  const massetAddress = yield* select(massetAddressSelector);
+  const account = yield* select(accountSelector);
 
-    if (!tokenContract || !bridge) {
-      throw new Error('Could not find contracts');
-    }
-    if (!tokenAddress || !massetAddress || !tokenDecimals) {
-      throw new Error('Could not find token address');
-    }
-
-    const amount = utils.parseUnits(payload.SendAmount, tokenDecimals);
-    const receiver = payload.ReceiveAddress;
-    const extraData = utils.defaultAbiCoder.encode(['address'], [receiver]);
-
-    const approve = yield* call(tokenContract.approve, bridge.address, amount);
-    yield* call(approve.wait);
-
-    const tx = yield* call(
-      bridge.receiveTokensAt,
-      tokenAddress,
-      amount,
-      massetAddress,
-      extraData
-    );
-
-    yield* call(tx.wait);
-    yield* put(aggregatorActions.transferTokensSuccess());
-  } catch (e) {
-    const msg =
-      e instanceof Error
-        ? e.message
-        : 'There was some error in transferring tokens. Please try again';
-    yield* put(aggregatorActions.transferTokensFailure(msg));
+  if (!tokenContract || !bridge) {
+    yield* put(aggregatorActions.setSubmitError('Could not find contracts'));
+    return;
   }
-}
 
-export function* withdrawTokens({
-  payload,
-}: AggregatorActions['startTokenTransfer']) {
-  try {
-    const tokenDecimals = yield* select(startingTokenDecimalsSelector);
-    const tokenContract = yield* select(startingTokenContractSelector);
+  if (!tokenAddress || !massetAddress || !tokenDecimals || !account) {
+    yield* put(
+      aggregatorActions.setSubmitError('Could not find token address')
+    );
+    return;
+  }
 
-    const bassetAddress = yield* select(bassetAddressSelector);
+  const amount = utils.parseUnits(payload.SendAmount, tokenDecimals);
+  const receiver = payload.ReceiveAddress;
+  const extraData = utils.defaultAbiCoder.encode(['address'], [receiver]);
 
-    const massetContract = yield* select(massetContractSelector);
-    if (!massetContract || !tokenContract) {
-      throw new Error('Could not find contracts');
+  const allowanceBridge = yield* call(
+    tokenContract.allowance,
+    account.toLowerCase(),
+    bridge.address
+  );
+
+  const steps: SagaContractCallStep<AggregatorCalls>[] = [];
+
+  if (allowanceBridge.lt(amount)) {
+    if (allowanceBridge.gt(0)) {
+      const resetEffect = call(
+        tokenContract.approve,
+        bridge.address.toLowerCase(),
+        0
+      );
+
+      steps.push({
+        name: 'reset allowance',
+        effect: resetEffect,
+      });
     }
-    if (!bassetAddress) {
-      throw new Error('Could not find basset address');
-    }
-
-    const amount = utils.parseUnits(payload.SendAmount, tokenDecimals);
-    const receiver = payload.ReceiveAddress;
-
-    const approve = yield* call(
+    const approveEffect = call(
       tokenContract.approve,
-      massetContract.address,
+      bridge.address.toLowerCase(),
       amount
     );
-    yield* call(approve.wait);
 
-    const tx = yield* call(
-      massetContract['redeemToBridge(address,uint256,address)'],
-      bassetAddress,
-      amount,
-      receiver
-    );
-
-    yield* call(tx.wait);
-
-    yield* put(aggregatorActions.transferTokensSuccess());
-  } catch (e) {
-    const msg =
-      e instanceof Error
-        ? e.message
-        : 'There was some error in transferring tokens. Please try again';
-    yield* put(aggregatorActions.transferTokensFailure(msg));
+    steps.push({
+      name: 'approve',
+      effect: approveEffect,
+    });
   }
+
+  const submitEffect = call(
+    bridge.receiveTokensAt,
+    tokenAddress,
+    amount,
+    massetAddress,
+    extraData
+  );
+  steps.push({
+    name: 'deposit',
+    effect: submitEffect,
+  });
+
+  yield* put(aggregatorActions.setSubmitSteps(steps));
+  yield* contractStepCallsSaga<AggregatorCalls>({
+    steps,
+    setErrorAction: aggregatorActions.setSubmitError,
+    setStatusAction: aggregatorActions.setSubmitStatus,
+    setStepDataAction: aggregatorActions.setSubmitStepData,
+  });
 }
 
-export function* transferTokens({
-  payload,
-  type,
-}: AggregatorActions['startTokenTransfer']) {
+export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
+  const tokenDecimals = yield* select(startingTokenDecimalsSelector);
+  const tokenContract = yield* select(startingTokenContractSelector);
+  const bassetAddress = yield* select(bassetAddressSelector);
+  const massetContract = yield* select(massetContractSelector);
+  const account = yield* select(accountSelector);
+
+  if (!massetContract || !tokenContract) {
+    yield* put(aggregatorActions.setSubmitError('Could not find contracts'));
+    return;
+  }
+
+  if (!bassetAddress || !account) {
+    yield* put(
+      aggregatorActions.setSubmitError('Could not find token address')
+    );
+    return;
+  }
+
+  const amount = utils.parseUnits(payload.SendAmount, tokenDecimals);
+  const allowanceMasset = yield* call(
+    tokenContract.allowance,
+    account,
+    massetContract.address.toLowerCase()
+  );
+  const receiver = payload.ReceiveAddress;
+  const steps: SagaContractCallStep<AggregatorCalls>[] = [];
+
+  if (allowanceMasset.lt(amount)) {
+    const approveEffect = call(
+      tokenContract.approve,
+      massetContract.address.toLowerCase(),
+      amount
+    );
+
+    steps.push({
+      name: 'approve',
+      effect: approveEffect,
+    });
+  }
+
+  const submitEffect = call(
+    massetContract['redeemToBridge(address,uint256,address)'],
+    bassetAddress,
+    amount,
+    receiver
+  );
+
+  steps.push({
+    name: 'withdraw',
+    effect: submitEffect,
+  });
+
+  yield* put(aggregatorActions.setSubmitSteps(steps));
+  yield* contractStepCallsSaga<AggregatorCalls>({
+    steps,
+    setErrorAction: aggregatorActions.setSubmitError,
+    setStatusAction: aggregatorActions.setSubmitStatus,
+    setStepDataAction: aggregatorActions.setSubmitStepData,
+  });
+}
+
+export function* transferTokens(action: AggregatorActions['submit']) {
   const flowState = yield* select(flowStateSelector);
 
   if (flowState === 'deposit') {
-    yield* depositTokens({ payload, type });
+    yield* depositTokens(action);
   } else if (flowState === 'withdraw') {
-    yield* withdrawTokens({ payload, type });
+    yield* withdrawTokens(action);
   }
 }
-
-function* triggerFetch() {
-  yield* put(aggregatorActions.checkTransferTokens());
-}
-
-function* triggerUpdate() {
-  yield* put(aggregatorActions.checkTransferTokens());
-}
-
-export const watchTransferTokens = createWatcherSaga({
-  fetchSaga: triggerFetch,
-  updateSaga: triggerUpdate,
-  stopAction: aggregatorActions.stopWatchingTransferTokens.type,
-});

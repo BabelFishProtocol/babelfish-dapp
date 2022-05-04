@@ -16,6 +16,7 @@ import {
   providerSelector,
   testnetMainnetSelector,
 } from '../app/app.selectors';
+import { selectCurrentCallStepData } from '../utils/utils.selectors';
 
 const aggregatorState = (state: RootState) => state[Reducers.Aggregator];
 
@@ -222,4 +223,14 @@ export const bassetAddressSelector = createSelector(
     }
     return bridge.getRskSovrynTokenAddress(destinationToken)?.toLowerCase();
   }
+);
+
+const callSelector = createSelector(
+  aggregatorState,
+  (state) => state.submitCall
+);
+
+export const submitAggregatorStatusSelector = createSelector(
+  callSelector,
+  (state) => selectCurrentCallStepData(state)
 );
