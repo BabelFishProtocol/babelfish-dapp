@@ -8,5 +8,5 @@ export const injectedConnector = new InjectedConnector({
 
 // export const portisConnector = new PortisConnector({
 //   dAppId: 'd5bd0255-e892-439b-b43c-92b83dfe2be1',
-//   networks: SUPPORTED_CHAINS as ChainEnum[],
+//   networks: SUPPORTED_CHAINS,
 // });
