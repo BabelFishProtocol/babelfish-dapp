@@ -72,7 +72,12 @@ export const stakingSlice = createSlice({
     setDelegateStepData: delegateStakeStepCallActions.updateStep,
     setDelegateError: delegateStakeStepCallActions.setStepError,
 
-    watchStakingData: (_) => {},
+    watchStakingData: (state) => {
+      state.fishToken.state = 'loading';
+      state.combinedVotingPower.state = 'loading';
+      state.stakesList.state = 'loading';
+      state.stakesListHistory.state = 'loading';
+    },
     stopWatchingStakingData: (state) => {
       state.fishToken.state = 'idle';
       state.combinedVotingPower.state = 'idle';
@@ -81,11 +86,14 @@ export const stakingSlice = createSlice({
     },
     fetchStakingData: (state) => {
       state.constants.state = 'loading';
-
-      state.fishToken = initialState.fishToken;
-      state.stakesList = initialState.stakesList;
-      state.stakesListHistory = initialState.stakesListHistory;
-      state.combinedVotingPower = initialState.combinedVotingPower;
+      state.fishToken.state = 'loading';
+      state.combinedVotingPower.state = 'loading';
+      state.stakesList.state = 'loading';
+      state.stakesListHistory.state = 'loading';
+      state.fishToken.data = {};
+      state.combinedVotingPower.data = undefined;
+      state.stakesList.data = [];
+      state.stakesListHistory.data = [];
     },
     updateStakingData: (state) => {
       state.fishToken.state = 'loading';

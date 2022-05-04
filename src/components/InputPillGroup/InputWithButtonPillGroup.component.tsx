@@ -29,11 +29,7 @@ export const InputWithButtonPillGroup = ({
     e: React.MouseEvent<HTMLElement>,
     newPercentValue: number | null
   ) => {
-    if (
-      !totalAmount ||
-      !totalAmountDecimals ||
-      !Number.isFinite(newPercentValue)
-    ) {
+    if (!totalAmount || !Number.isFinite(newPercentValue)) {
       return;
     }
 

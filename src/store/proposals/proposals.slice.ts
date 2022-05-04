@@ -16,7 +16,9 @@ export const proposalSlice = createSlice({
   name: Reducers.Proposals,
   initialState,
   reducers: {
-    watchProposalsList: () => {},
+    watchProposalsList: (state) => {
+      state.proposalsList.state = 'loading';
+    },
     stopWatchingProposalsList: (state) => {
       state.proposalsList.state = 'idle';
     },
