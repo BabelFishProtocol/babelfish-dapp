@@ -12,6 +12,7 @@ import { Header } from './components/Header/Header.component';
 // import { MintingProcessInfo } from './components/MintingInfo/MintingInfo.types';
 import { Urls } from './constants';
 import { AggregatorContainer } from './pages/Aggregator/Aggregator.container';
+import { ClaimContainer } from './pages/Claim/Claim.container';
 import { DashboardContainer } from './pages/Dashboard/Dashboard.container';
 import { ImprobabilityContainer } from './pages/Improbability/Improbability.container';
 import { ProposalDetailsContainer } from './pages/ProposalDetails/ProposalDetails.container';
@@ -149,6 +150,7 @@ export const App = () => (
       />
       <Route path={Urls.Aggregator} element={<AggregatorContainer />} />
       <Route path={Urls.Improbability} element={<ImprobabilityContainer />} />
+      <Route path={Urls.Claim} element={<ClaimContainer />} />
       <Route path="*" element={<Navigate to={Urls.Dashboard} />} />
     </Routes>
 
