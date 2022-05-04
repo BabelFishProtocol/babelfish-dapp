@@ -1,7 +1,7 @@
 import { ChainEnum } from '../../config/chains';
 import { DEFAULT_POOL, PoolEnum } from '../../config/pools';
 import { TokenEnum } from '../../config/tokens';
-import { LoadableAmount, LoadableValue } from '../types';
+import { CallState, LoadableAmount, LoadableValue } from '../types';
 
 export type FeesAndLimitsType = {
   bridgeFee?: string;
@@ -11,6 +11,13 @@ export type FeesAndLimitsType = {
 };
 
 export type FlowState = 'deposit' | 'withdraw';
+
+export type AggregatorCalls =
+  | 'approve'
+  | 'deposit'
+  | 'withdraw'
+  | 'reset allowance';
+
 export class AggregatorState {
   flowState: FlowState = 'deposit';
   feesAndLimits: LoadableValue<FeesAndLimitsType> = {
@@ -35,5 +42,14 @@ export class AggregatorState {
   allowTokensAddress: LoadableAmount = {
     state: 'idle',
     data: undefined,
+  };
+  submitCall: CallState<AggregatorCalls> = {
+    status: 'idle',
+    steps: [
+      { name: 'reset allowance', label: 'resetting allowance' },
+      { name: 'approve', label: 'approving' },
+      { name: 'deposit', label: 'depositing' },
+      { name: 'withdraw', label: 'withdrawing' },
+    ],
   };
 }

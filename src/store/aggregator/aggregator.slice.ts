@@ -3,8 +3,15 @@ import { Reducers } from '../../constants';
 import { ActionsType } from '../types';
 import { PoolEnum } from '../../config/pools';
 import { AggregatorState, FeesAndLimitsType } from './aggregator.state';
+import { createStepCallsActions } from '../utils/utils.reducers';
+import { AggregatorFormValues } from '../../pages/Aggregator/Aggregator.fields';
 
 const initialState = { ...new AggregatorState() };
+
+const submitStepCallActions = createStepCallsActions(
+  initialState,
+  'submitCall'
+);
 
 const aggregatorSlice = createSlice({
   name: Reducers.Aggregator,
@@ -80,6 +87,12 @@ const aggregatorSlice = createSlice({
       state.pool =
         state.pool === PoolEnum.testnet ? PoolEnum.mainnet : PoolEnum.testnet;
     },
+    submit: submitStepCallActions.trigger<AggregatorFormValues>(),
+    resetSubmitCall: submitStepCallActions.reset,
+    setSubmitStatus: submitStepCallActions.setStatus,
+    setSubmitSteps: submitStepCallActions.setSteps,
+    setSubmitStepData: submitStepCallActions.updateStep,
+    setSubmitError: submitStepCallActions.setStepError,
     resetAggregator: (state) => {
       state.allowTokensAddress.state = 'idle';
       state.allowTokensAddress.data = undefined;
