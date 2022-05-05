@@ -8,6 +8,7 @@ import { addNewStake } from './sagas/addNewStake';
 import { extendStake } from './sagas/extendStake';
 import { increaseStake } from './sagas/increaseStake';
 import { delegateStake } from './sagas/delegateStake';
+import { withdrawStake } from './sagas/withdrawStake';
 import { fetchHistoryStaking } from './sagas/fetchHistoryStaking';
 import { fetchStakesList } from './sagas/fetchStakesList';
 import { fetchVotingPower } from './sagas/fetchVotingPower';
@@ -53,6 +54,7 @@ export function* stakingSaga() {
     takeLatest(stakingActions.increaseStake.type, increaseStake),
     takeLatest(stakingActions.extendStake.type, extendStake),
     takeLatest(stakingActions.delegateStake.type, delegateStake),
+    takeLatest(stakingActions.withdrawStake.type, withdrawStake),
     takeLatest(stakingActions.fetchStakingData.type, fetchBalances),
     takeLatest(stakingActions.updateStakingData.type, updateBalances),
     takeLatest(stakingActions.watchStakingData.type, watchStaking),

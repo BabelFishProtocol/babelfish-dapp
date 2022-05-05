@@ -2,11 +2,9 @@ import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/Staki
 import { CallState, LoadableAmount, LoadableValue } from '../types';
 
 export type AddNewStakeCalls = 'stake' | 'approve';
-
 export type IncreaseCalls = 'stake' | 'approve';
-
 export type ExtendCalls = 'extend';
-
+export type WithdrawCalls = 'withdraw';
 export type DelegateCalls = 'delegate';
 
 export type StakeListItem = {
@@ -55,6 +53,11 @@ export class StakingState {
   delegateCall: CallState<DelegateCalls> = {
     status: 'idle',
     steps: [{ name: 'delegate', label: 'delegating' }],
+  };
+
+  withdrawCall: CallState<WithdrawCalls> = {
+    status: 'idle',
+    steps: [{ name: 'withdraw', label: 'Unstaking FISH' }],
   };
 
   constants: LoadableValue<StakeConstants> = {

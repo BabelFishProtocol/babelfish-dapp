@@ -122,7 +122,7 @@ export const AggregatorComponent = ({
       >
         <Box
           sx={{
-            width: 310,
+            maxWidth: 310,
             mx: 'auto',
           }}
         >
@@ -167,7 +167,7 @@ export const AggregatorComponent = ({
       >
         <Box
           sx={{
-            width: 310,
+            maxWidth: 310,
             mx: 'auto',
           }}
         >

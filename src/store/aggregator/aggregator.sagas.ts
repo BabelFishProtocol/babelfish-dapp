@@ -9,6 +9,7 @@ import {
   tokenAddressSelector,
 } from './aggregator.selectors';
 import { aggregatorActions } from './aggregator.slice';
+import { transferTokens } from './sagas/transferTokens';
 
 export function* fetchAllowTokenAddress() {
   try {
@@ -106,8 +107,11 @@ export function* aggregatorSaga() {
       fetchBridgeFeesAndLimits
     ),
     takeLatest(aggregatorActions.setDestinationToken, fetchBridgeFeesAndLimits),
+
     takeLatest(aggregatorActions.setDestinationChain, fetchAllowTokenAddress),
     takeLatest(aggregatorActions.setDestinationToken, fetchAllowTokenAddress),
     takeLatest(aggregatorActions.setStartingToken, fetchStartingTokenBalance),
+
+    takeLatest(aggregatorActions.submit, transferTokens),
   ]);
 }
