@@ -1,111 +1,39 @@
-import { utils } from 'ethers';
-import { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
-  accountSelector,
-  stakingContractSelector,
-} from '../../../../store/app/app.selectors';
-import {
-  stakingConstantsSelector,
   selectedStakeSelector,
   isSelectedStakeLockedSelector,
+  withdrawalStatusSelector,
 } from '../../../../store/staking/staking.selectors';
-import { useContractCall } from '../../../../hooks/useContractCall';
-import { SubmitStatusDialog } from '../../../../components/TxDialog/TxDialog.component';
+import { stakingActions } from '../../../../store/staking/staking.slice';
+import { SubmitStepsDialog } from '../../../../components/TxDialog/TxDialog.component';
 
-import { StakingFeeEstimator } from '../../Staking.types';
 import { WithdrawStakeComponent } from './WithdrawStake.component';
 import { WithdrawStakeFormValues } from './WithdrawStake.fields';
+import { useWithdrawCalculations } from './WithdrawStake.hooks';
 import { WithdrawStakeContainerProps } from './WithdrawStake.types';
-import { selectorsErrors } from '../../../../constants';
-
-const useWithdrawCalculations = () => {
-  const account = useSelector(accountSelector);
-  const staking = useSelector(stakingContractSelector);
-  const selectedStakeData = useSelector(selectedStakeSelector);
-
-  const [forfeitWithdraw, setForfeitWithdraw] = useState('0');
-  const [forfeitPercent, setForfeitPercent] = useState('0');
-
-  const calculateFeeAndForfeit: StakingFeeEstimator = useCallback(
-    async (withdrawAmount) => {
-      if (!staking || !selectedStakeData || !account) {
-        throw new Error(selectorsErrors.missingData);
-      }
-
-      const getPunishmentAmount = async () => {
-        const [, punishment] = await staking.getWithdrawAmounts(
-          utils.parseEther(withdrawAmount),
-          selectedStakeData.unlockDate
-        );
-
-        setForfeitWithdraw(punishment.toString());
-
-        setForfeitPercent(
-          punishment
-            .mul(100)
-            .div(selectedStakeData.lockedAmount)
-            .toNumber()
-            .toFixed(1)
-        );
-      };
-
-      const estimateFee = () =>
-        staking.estimateGas.withdraw(
-          utils.parseEther(withdrawAmount),
-          selectedStakeData.unlockDate,
-          account
-        );
-
-      const [estimatedFee] = await Promise.all([
-        estimateFee(),
-        getPunishmentAmount(),
-      ]);
-
-      return estimatedFee;
-    },
-    [account, selectedStakeData, staking]
-  );
-
-  return {
-    forfeitPercent,
-    forfeitWithdraw,
-    calculateFeeAndForfeit,
-  };
-};
 
 export const WithdrawStakeContainer = ({
   open,
   onClose,
 }: WithdrawStakeContainerProps) => {
-  const account = useSelector(accountSelector);
-  const staking = useSelector(stakingContractSelector);
-  const { kickoffTs } = useSelector(stakingConstantsSelector);
-  const selectedStakeData = useSelector(selectedStakeSelector);
+  const dispatch = useDispatch();
   const isLocked = useSelector(isSelectedStakeLockedSelector);
+  const submitTx = useSelector(withdrawalStatusSelector);
+  const selectedStakeData = useSelector(selectedStakeSelector);
 
   const { forfeitPercent, forfeitWithdraw, calculateFeeAndForfeit } =
     useWithdrawCalculations();
 
-  const handleWithdraw = async ({
-    withdrawStakeAmount,
-  }: WithdrawStakeFormValues) => {
-    if (!staking || !selectedStakeData || !account) {
-      throw new Error(selectorsErrors.missingData);
-    }
-
-    return staking.withdraw(
-      utils.parseEther(withdrawStakeAmount),
-      selectedStakeData.unlockDate,
-      account
-    );
+  const handleWithdraw = (formValues: WithdrawStakeFormValues) => {
+    dispatch(stakingActions.withdrawStake(formValues));
   };
 
-  const { handleSubmit: onWithdraw, ...withdrawTxData } =
-    useContractCall(handleWithdraw);
+  const handleResetCallData = () => {
+    dispatch(stakingActions.resetExtend());
+  };
 
-  if (!kickoffTs || !selectedStakeData) {
+  if (!selectedStakeData) {
     return null;
   }
 
@@ -115,18 +43,21 @@ export const WithdrawStakeContainer = ({
         open={open}
         onClose={onClose}
         isLocked={!!isLocked}
-        onWithdraw={onWithdraw}
+        onWithdraw={handleWithdraw}
         forfeitPercent={forfeitPercent}
         forfeitWithdraw={forfeitWithdraw}
         calculateFeeAndForfeit={calculateFeeAndForfeit}
         currentStakeAmount={selectedStakeData.lockedAmount}
       />
 
-      {withdrawTxData.status !== 'idle' && (
-        <SubmitStatusDialog
-          operationName="Withdrawing stake"
+      {submitTx.status !== 'idle' && (
+        <SubmitStepsDialog
           successCallback={onClose}
-          {...withdrawTxData}
+          onClose={handleResetCallData}
+          steps={submitTx.steps}
+          status={submitTx.status}
+          summary={submitTx.summary}
+          currentStep={submitTx.currentStep}
         />
       )}
     </>

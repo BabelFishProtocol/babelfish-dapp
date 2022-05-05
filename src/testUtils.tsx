@@ -7,10 +7,37 @@ import { GraphQLClient } from 'graphql-request';
 import createMockStore from 'redux-mock-store';
 import { DeepPartial } from '@reduxjs/toolkit';
 import { RootState } from './store';
+import { Writeable } from './utils/types';
+
+type MockedEstimateGasMethods<C extends Contract> = {
+  [p in keyof C['estimateGas']]: jest.Mock;
+};
 
 type MockedContract<C extends Contract> = {
-  [k in keyof C]: C[k] extends Function ? jest.Mock : C[k];
+  [k in keyof C]: C[k] extends Function
+    ? jest.Mock
+    : k extends 'estimateGas'
+    ? MockedEstimateGasMethods<C>
+    : C[k];
 };
+
+const mockEstimateGasMethods = <C extends Contract>(
+  contract: C
+): MockedEstimateGasMethods<C> => {
+  const estimateMethods = Object.keys(contract.estimateGas).reduce(
+    (prev, curr: keyof C['estimateGas']) => {
+      prev[curr] = jest.fn();
+
+      return prev;
+    },
+    {} as MockedEstimateGasMethods<C>
+  );
+
+  return estimateMethods;
+};
+
+const isEstimate = <C extends Contract>(curr: keyof C): curr is 'estimateGas' =>
+  curr === 'estimateGas';
 
 export const createMockedContract = <C extends Contract, T extends boolean>(
   contract: C,
@@ -19,11 +46,18 @@ export const createMockedContract = <C extends Contract, T extends boolean>(
   const mockedContract = Object.keys(contract).reduce((prev, curr: keyof C) => {
     const currMethod = contract[curr];
     if (typeof currMethod === 'function') {
-      // @ts-expect-error
-      prev[curr] = jest.fn();
-    } else {
-      prev[curr] = currMethod;
+      (prev[curr] as Function) = jest.fn();
+
+      return prev;
     }
+
+    if (isEstimate(curr)) {
+      (prev as Writeable<C>)[curr] = mockEstimateGasMethods(contract);
+
+      return prev;
+    }
+
+    prev[curr] = currMethod;
 
     return prev;
   }, {} as MockedContract<C>);

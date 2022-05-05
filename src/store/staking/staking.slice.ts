@@ -4,6 +4,7 @@ import { AddNewStakeFormValues } from '../../pages/Staking/AddNewStake/AddNewSta
 import { ExtendStakeValues } from '../../pages/Staking/StakesList/ExtendStake/ExtendStake.fields';
 import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/StakingHistory.types';
 import { IncreaseStakeFormValues } from '../../pages/Staking/StakesList/IncreaseStake/IncreaseStake.types';
+import { WithdrawStakeFormValues } from '../../pages/Staking/StakesList/WithdrawStake/WithdrawStake.fields';
 
 import { ActionsType } from '../types';
 import { createStepCallsActions } from '../utils/utils.reducers';
@@ -27,6 +28,10 @@ const increaseStepCallActions = createStepCallsActions(
 const extendStakeStepCallActions = createStepCallsActions(
   initialState,
   'extendCall'
+);
+const withdrawStepCallActions = createStepCallsActions(
+  initialState,
+  'withdrawCall'
 );
 
 export const stakingSlice = createSlice({
@@ -58,6 +63,14 @@ export const stakingSlice = createSlice({
     setExtendStatus: extendStakeStepCallActions.setStatus,
     setExtendStepData: extendStakeStepCallActions.updateStep,
     setExtendError: extendStakeStepCallActions.setStepError,
+
+    // ----- withdraw stake call -----
+
+    withdrawStake: withdrawStepCallActions.trigger<WithdrawStakeFormValues>(),
+    resetWithdrawal: withdrawStepCallActions.reset,
+    setWithdrawalStatus: withdrawStepCallActions.setStatus,
+    setWithdrawalStepData: withdrawStepCallActions.updateStep,
+    setWithdrawalError: withdrawStepCallActions.setStepError,
 
     watchStakingData: (state) => {
       state.fishToken.state = 'loading';
