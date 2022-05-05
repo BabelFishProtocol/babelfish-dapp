@@ -10,6 +10,7 @@ const transactionsTableColumns: DataTableColumn<TransactionsTableItem>[] = [
   { label: 'Asset', name: 'asset' },
   { label: 'Amount', name: 'amount' },
   { label: 'Date', name: 'date' },
+  // TODO add status using localStorage
   // { label: 'Status', name: 'status' },
 ];
 

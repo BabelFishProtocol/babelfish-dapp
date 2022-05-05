@@ -16,10 +16,5 @@ export const TransactionsTableContainer = () => {
     };
   }, [dispatch]);
 
-  return (
-    <TransactionsTableComponent
-      state={state}
-      transactions={data}
-    />
-  );
+  return <TransactionsTableComponent state={state} transactions={data} />;
 };
