@@ -10,9 +10,10 @@ export function* fetchTransactions() {
 
     if (!subgraphClient) throw new Error('Wallet not connected!');
 
-    const { transactions } = yield* call(transactionsQuery, subgraphClient);
+    const { xusdTransactions } = yield* call(transactionsQuery, subgraphClient);
 
-    yield* put(dashboardActions.setTransactions(transactions));
+    console.log(xusdTransactions);
+    yield* put(dashboardActions.setTransactions(xusdTransactions));
   } catch (e) {
     yield* put(dashboardActions.fetchTransactionsFailure());
   }

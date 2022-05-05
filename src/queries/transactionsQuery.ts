@@ -9,12 +9,12 @@ export type TransactionsQueryItem = {
 };
 
 export type TransactionsQueryResult = {
-  transactions: TransactionsQueryItem[];
+  xusdTransactions: TransactionsQueryItem[];
 };
 
 const findTransactionsQuery = gql`
   query getTransactions {
-    transactions(orderBy: date) {
+    xusdTransactions(orderBy: date) {
       asset
       id
       date
