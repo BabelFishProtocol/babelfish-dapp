@@ -1,90 +1,33 @@
 import { put, call, select } from 'typed-redux-saga';
-
-import { GovernorAlpha } from '../../../contracts/types';
 import { createWatcherSaga } from '../../utils/utils.sagas';
-import { proposalsListQuery } from '../../../queries/proposalListQuery';
+import { subgraphClientSelector } from '../../app/app.selectors';
+import { transactionsQuery } from '../../../queries/transactionsQuery';
+import { dashboardActions } from '../dashboard.slice';
 
-import {
-  providerSelector,
-  governorAdminSelector,
-  governorOwnerSelector,
-  subgraphClientSelector,
-  multicallProviderSelector,
-} from '../../app/app.selectors';
-
-import { Proposal } from '../proposals.state';
-import { parseProposals } from '../proposals.utils';
-import { proposalsActions } from '../proposals.slice';
-import { governorContractsSelector } from '../proposals.selectors';
-import { fetchProposalStates } from './utils';
-
-
-export function* fetchProposalsForContract(governor: GovernorAlpha) {
-  const provider = yield* select(providerSelector);
-  const multicallProvider = yield* select(multicallProviderSelector);
-  const subgraphClient = yield* select(subgraphClientSelector);
-  const governorsAddresses = yield* select(governorContractsSelector);
-
-  if (!provider || !subgraphClient || !multicallProvider || !governorsAddresses)
-    throw new Error('Wallet not connected!');
-
-  const { proposals } = yield* call(proposalsListQuery, subgraphClient, {
-    contractAddress: governor.address,
-  });
-
-  const proposalsStates = yield* fetchProposalStates(
-    proposals,
-    governor,
-    multicallProvider
-  );
-
-  const parsedProposals = yield* call(
-    parseProposals,
-    proposals,
-    proposalsStates,
-    governorsAddresses
-  );
-
-  return parsedProposals;
-}
-
-export function* fetchProposalsList() {
+export function* fetchTransactions() {
   try {
-    const governorAdmin = yield* select(governorAdminSelector);
-    const governorOwner = yield* select(governorOwnerSelector);
+    const subgraphClient = yield* select(subgraphClientSelector);
 
-    if (!governorAdmin) {
-      throw new Error('Wallet not connected');
-    }
+    if (!subgraphClient) throw new Error('Wallet not connected!');
 
-    const adminItems = yield* call(fetchProposalsForContract, governorAdmin);
+    const { transactions } = yield* call(transactionsQuery, subgraphClient);
 
-    let ownerItems: Proposal[] = [];
-
-    if (governorOwner && governorOwner.address !== governorAdmin.address) {
-      ownerItems = yield* call(fetchProposalsForContract, governorOwner);
-    }
-
-    const mergedProposals = [...adminItems, ...ownerItems].sort(
-      (a, b) => b.startBlock - a.startBlock
-    );
-
-    yield* put(proposalsActions.setProposalsList(mergedProposals));
+    yield* put(dashboardActions.setTransactions(transactions));
   } catch (e) {
-    yield* put(proposalsActions.fetchProposalsListFailure());
+    yield* put(dashboardActions.fetchTransactionsFailure());
   }
 }
 
 function* triggerFetch() {
-  yield* put(proposalsActions.fetchProposalsList());
+  yield* put(dashboardActions.fetchTransactions());
 }
 
 function* triggerUpdate() {
-  yield* put(proposalsActions.updateProposalsList());
+  yield* put(dashboardActions.updateTransactions());
 }
 
 export const watchTransactions = createWatcherSaga({
   fetchSaga: triggerFetch,
   updateSaga: triggerUpdate,
-  stopAction: proposalsActions.stopWatchingProposalsList.type,
+  stopAction: dashboardActions.stopWatchingTransactions.type,
 });

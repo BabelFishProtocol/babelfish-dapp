@@ -1,22 +1,22 @@
 import { BigNumber, constants } from 'ethers';
-import { all, put, call, select, takeLatest } from 'typed-redux-saga';
+import { all, put, call, select } from 'typed-redux-saga';
 
-import { Staking } from '../../contracts/types';
+import { Staking } from '../../../contracts/types';
 import {
   multiCall,
   createWatcherSaga,
   convertForMulticall,
-} from '../utils/utils.sagas';
+} from '../../utils/utils.sagas';
 
 import {
   accountSelector,
   stakingContractSelector,
   fishTokenSelector,
   multicallProviderSelector,
-} from '../app/app.selectors';
-import { getUserVestings } from '../vesting/vesting.utils';
-import { dashboardActions } from './dashboard.slice';
-import { xusdTokenSelector } from './dashboard.selectors';
+} from '../../app/app.selectors';
+import { getUserVestings } from '../../vesting/vesting.utils';
+import { dashboardActions } from '../dashboard.slice';
+import { xusdTokenSelector } from '../dashboard.selectors';
 
 export function* getVestBalance(staking: Staking, vestingAddress: string) {
   if (!vestingAddress || vestingAddress === constants.AddressZero) {
@@ -106,16 +106,8 @@ function* triggerFetch() {
   yield* put(dashboardActions.fetchData());
 }
 
-const watchVesting = createWatcherSaga({
+export const watchDashboardBalances = createWatcherSaga({
   fetchSaga: triggerFetch,
   updateSaga: triggerUpdate,
   stopAction: dashboardActions.stopWatchingData.type,
 });
-
-export function* dashboardSaga() {
-  yield* all([
-    takeLatest(dashboardActions.fetchData.type, fetchDashboardBalances),
-    takeLatest(dashboardActions.updateData.type, fetchDashboardBalances),
-    takeLatest(dashboardActions.watchData.type, watchVesting),
-  ]);
-}
