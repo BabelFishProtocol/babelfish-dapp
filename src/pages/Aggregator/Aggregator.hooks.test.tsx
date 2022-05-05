@@ -50,8 +50,8 @@ const testSequence = (func: jest.Mock, ...args: AggregatorInputs[]) => {
   );
 };
 
-let resetField: jest.Mock;
-let setValue: jest.Mock;
+const resetField = jest.fn();
+const setValue = jest.fn();
 const dispatch = jest.fn();
 
 jest.mock('../../utils/switchConnectedChain');
@@ -62,8 +62,6 @@ jest.mock('react-redux', () => ({
 
 beforeEach(() => {
   jest.clearAllMocks();
-  resetField = jest.fn();
-  setValue = jest.fn();
 });
 
 const mockedStore = createMockStore();
