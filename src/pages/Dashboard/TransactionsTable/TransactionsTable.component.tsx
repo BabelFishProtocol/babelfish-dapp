@@ -6,11 +6,11 @@ import {
 } from './TransactionsTable.types';
 
 const transactionsTableColumns: DataTableColumn<TransactionsTableItem>[] = [
-  { label: 'Event', name: 'eventName' },
+  { label: 'Event', name: 'event' },
   { label: 'Asset', name: 'asset' },
   { label: 'Amount', name: 'amount' },
   { label: 'Date', name: 'date' },
-  { label: 'Status', name: 'status' },
+  // { label: 'Status', name: 'status' },
 ];
 
 export const TransactionsTableComponent = ({

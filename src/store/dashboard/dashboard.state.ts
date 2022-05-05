@@ -7,15 +7,13 @@ export type DashboardBalances = {
   xusdBalance: string;
 };
 
-export type Transactions = TransactionsQueryItem;
-
 export class DashboardState {
   balances: LoadableValue<DashboardBalances | undefined> = {
     state: 'idle',
     data: undefined,
   };
 
-  transactionList: LoadableValue<Transactions[]> = {
+  transactionList: LoadableValue<TransactionsQueryItem[]> = {
     state: 'idle',
     data: [],
   };
