@@ -11,9 +11,9 @@ import {
 
 export function* dashboardSaga() {
   yield* all([
-    takeLatest(dashboardActions.fetchData.type, fetchDashboardBalances),
-    takeLatest(dashboardActions.updateData.type, fetchDashboardBalances),
-    takeLatest(dashboardActions.watchData.type, watchDashboardBalances),
+    takeLatest(dashboardActions.fetchBalances.type, fetchDashboardBalances),
+    takeLatest(dashboardActions.updateBalances.type, fetchDashboardBalances),
+    takeLatest(dashboardActions.watchBalances.type, watchDashboardBalances),
 
     takeLatest(dashboardActions.fetchTransactions.type, fetchTransactions),
     takeLatest(dashboardActions.updateTransactions.type, fetchTransactions),

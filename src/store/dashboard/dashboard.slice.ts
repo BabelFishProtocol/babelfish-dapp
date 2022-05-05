@@ -9,17 +9,17 @@ export const dashboardSlice = createSlice({
   name: Reducers.Dashboard,
   initialState,
   reducers: {
-    watchData: (state) => {
+    watchBalances: (state) => {
       state.balances.state = 'loading';
     },
-    stopWatchingData: (state) => {
+    stopWatchingBalances: (state) => {
       state.balances.state = 'idle';
     },
-    fetchData: (state) => {
+    fetchBalances: (state) => {
       state.balances.state = 'loading';
       state.balances.data = undefined;
     },
-    updateData: (state) => {
+    updateBalances: (state) => {
       state.balances.state = 'loading';
     },
     fetchBalancesFailure: (state) => {

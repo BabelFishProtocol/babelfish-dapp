@@ -99,15 +99,15 @@ export function* fetchDashboardBalances() {
 }
 
 function* triggerUpdate() {
-  yield* put(dashboardActions.updateData());
+  yield* put(dashboardActions.updateBalances());
 }
 
 function* triggerFetch() {
-  yield* put(dashboardActions.fetchData());
+  yield* put(dashboardActions.fetchBalances());
 }
 
 export const watchDashboardBalances = createWatcherSaga({
   fetchSaga: triggerFetch,
   updateSaga: triggerUpdate,
-  stopAction: dashboardActions.stopWatchingData.type,
+  stopAction: dashboardActions.stopWatchingBalances.type,
 });
