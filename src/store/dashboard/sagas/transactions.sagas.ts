@@ -7,12 +7,10 @@ import { dashboardActions } from '../dashboard.slice';
 export function* fetchTransactions() {
   try {
     const subgraphClient = yield* select(subgraphClientSelector);
-
     if (!subgraphClient) throw new Error('Wallet not connected!');
 
     const { xusdTransactions } = yield* call(transactionsQuery, subgraphClient);
 
-    console.log(xusdTransactions);
     yield* put(dashboardActions.setTransactions(xusdTransactions));
   } catch (e) {
     yield* put(dashboardActions.fetchTransactionsFailure());
