@@ -27,8 +27,8 @@ import { UserVestings } from '../vesting/vesting.types';
 
 import { dashboardActions } from './dashboard.slice';
 import { DashboardBalances, DashboardState } from './dashboard.state';
-import { fetchDashboardBalances, getVestBalance } from './dashboard.sagas';
 import { xusdTokenSelector } from './dashboard.selectors';
+import { fetchDashboardBalances, getVestBalance } from './sagas/dashboardBalances.sagas';
 
 jest.mock('../utils/utils.sagas', () => ({
   ...jest.requireActual('../utils/utils.sagas'),
