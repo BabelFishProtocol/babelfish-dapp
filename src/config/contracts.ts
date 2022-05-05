@@ -10,10 +10,12 @@ export type ContractsForNetwork = {
   priceFeed: string;
   swapNetwork: string;
   multicall: string;
+  XUSDMassetProxy: string;
 };
 
-export type ContractsAddresses = Partial<
-  Record<ChainEnum, ContractsForNetwork>
+export type ContractsAddresses = Record<
+  ChainEnum.RSK | ChainEnum.RSK_TESTNET,
+  ContractsForNetwork
 >;
 
 export const contractsAddresses: ContractsAddresses = {
@@ -27,6 +29,7 @@ export const contractsAddresses: ContractsAddresses = {
     governorOwner: '0x409b92978ca7745DA04f9e62a386774cABE02B46',
     feeSharingProxy: '0x12B1B0C67d9A771EB5Db7726d23fdc6848fd93ef',
     vestingRegistry: '0x036ab2DB0a3d1574469a4a7E09887Ed76fB56C41',
+    XUSDMassetProxy: '0x1440d19436bEeaF8517896bffB957a88EC95a00F',
   },
   [ChainEnum.RSK_TESTNET]: {
     staking: '0x786CD2E46fFa407114cCDb78b57F9fbe3b83Cd24',
@@ -38,5 +41,6 @@ export const contractsAddresses: ContractsAddresses = {
     governorOwner: '0x82dF1C8d73235128A5176Af4Bdac7dDb7e049e5E',
     feeSharingProxy: '0xBF56E401e3CbE1ddF3d8fEee770d9A3a19076751',
     vestingRegistry: '0x64e0C4bBe361B3efbbcE35870FaFc9DC1A049AC6',
+    XUSDMassetProxy: '0xca8b437d9d586b938CE000e765476A0594856b51',
   },
 };
