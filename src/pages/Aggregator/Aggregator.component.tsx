@@ -110,9 +110,7 @@ export const AggregatorComponent = ({
 
   useEffect(() => {
     resetField(AggregatorInputs.SendAmount);
-    setValue(AggregatorInputs.SendAmount, '');
     resetField(AggregatorInputs.ReceiveAmount);
-    setValue(AggregatorInputs.ReceiveAmount, '');
   }, [flowState, resetField, setValue]);
 
   return (
