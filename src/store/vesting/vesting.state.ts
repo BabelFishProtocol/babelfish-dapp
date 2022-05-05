@@ -1,5 +1,7 @@
 import { StakeListItem } from '../staking/staking.state';
-import { LoadableValue } from '../types';
+import { CallState, LoadableValue } from '../types';
+
+export type DelegateVestCalls = 'delegate';
 
 export type VestListItem = StakeListItem & {
   stakingPeriodStart: number;
@@ -14,6 +16,11 @@ export type VestListAddress = {
 };
 
 export class VestingState {
+  delegateCall: CallState<DelegateVestCalls> = {
+    status: 'idle',
+    steps: [{ name: 'delegate', label: 'Delegating vest' }],
+  };
+
   selectedVest?: VestListItem;
 
   vestsList: LoadableValue<VestListItem[]> = {
