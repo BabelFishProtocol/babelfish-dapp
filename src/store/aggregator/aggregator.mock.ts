@@ -1,7 +1,11 @@
 import { constants } from 'ethers';
 import { ChainEnum } from '../../config/chains';
 import { TokenEnum } from '../../config/tokens';
-import { Bridge__factory, ERC20__factory, MassetV3__factory } from '../../contracts/types';
+import {
+  Bridge__factory,
+  ERC20__factory,
+  MassetV3__factory,
+} from '../../contracts/types';
 import { AggregatorInputs } from '../../pages/Aggregator/Aggregator.fields';
 import { createMockedContract, mockSigner } from '../../testUtils';
 

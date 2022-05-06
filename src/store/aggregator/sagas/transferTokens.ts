@@ -32,9 +32,7 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
   }
 
   if (!tokenAddress || !massetAddress || !tokenDecimals || !account) {
-    yield* put(
-      aggregatorActions.setSubmitError('Could not find addresses')
-    );
+    yield* put(aggregatorActions.setSubmitError('Could not find addresses'));
     return;
   }
 
@@ -109,9 +107,7 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
   }
 
   if (!bassetAddress || !account) {
-    yield* put(
-      aggregatorActions.setSubmitError('Could not find addresses')
-    );
+    yield* put(aggregatorActions.setSubmitError('Could not find addresses'));
     return;
   }
 
