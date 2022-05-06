@@ -1,59 +1,53 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
-import { SubmitStatusDialog } from '../../../../components/TxDialog/TxDialog.component';
-import { useContractCall } from '../../../../hooks/useContractCall';
-import {
-  accountSelector,
-  providerSelector,
-} from '../../../../store/app/app.selectors';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { combinedVotingPowerSelector } from '../../../../store/staking/staking.selectors';
-
-import { DelegateVestComponent } from './DelegateVest.component';
-import { FeeEstimator } from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
-import { DelegateVestContainerProps } from './DelegateVest.types';
-import { DelegateVestValues } from './DelegateVest.fields';
-import { selectorsErrors } from '../../../../constants';
 import {
+  delegateVestStatusSelector,
   selectedVestContractSelector,
   selectedVestSelector,
 } from '../../../../store/vesting/vesting.selectors';
+import { selectorsErrors } from '../../../../constants';
+import { vestingActions } from '../../../../store/vesting/vesting.slice';
+import { combinedVotingPowerSelector } from '../../../../store/staking/staking.selectors';
+import { SubmitStepsDialog } from '../../../../components/TxDialog/TxDialog.component';
+
+import { FeeEstimator } from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
+import { DelegateVestValues } from './DelegateVest.fields';
+import { DelegateVestComponent } from './DelegateVest.component';
+import { DelegateVestContainerProps } from './DelegateVest.types';
 
 export const DelegateVestContainer = ({
   open,
   onClose,
 }: DelegateVestContainerProps) => {
-  const account = useSelector(accountSelector);
+  const dispatch = useDispatch();
   const selectedVestData = useSelector(selectedVestSelector);
   const combinedVotingPower = useSelector(combinedVotingPowerSelector);
-  const provider = useSelector(providerSelector);
   const vesting = useSelector(selectedVestContractSelector);
-
-  const handleDelegate = ({ delegateTo }: DelegateVestValues) => {
-    if (!vesting || !provider || !selectedVestData || !account) {
-      throw new Error(selectorsErrors.missingData);
-    }
-
-    return vesting.delegate(delegateTo.toLowerCase(), { from: account });
-  };
-
-  const { handleSubmit: onDelegate, ...delegateTxData } =
-    useContractCall(handleDelegate);
+  const submitTx = useSelector(delegateVestStatusSelector);
 
   const estimateFee: FeeEstimator = useCallback(
     (delegateTo) => {
-      if (!vesting || !selectedVestData) {
+      if (!vesting) {
         throw new Error(selectorsErrors.missingData);
       }
 
       return vesting.estimateGas.delegate(delegateTo);
     },
-    [selectedVestData, vesting]
+    [vesting]
   );
 
-  if (!selectedVestData || !account || !combinedVotingPower.data) {
+  if (!selectedVestData || !combinedVotingPower.data) {
     return null;
   }
+
+  const handleDelegate = (formValues: DelegateVestValues) => {
+    dispatch(vestingActions.delegateVest(formValues));
+  };
+
+  const handleReset = () => {
+    dispatch(vestingActions.resetDelegateVest());
+  };
 
   return (
     <>
@@ -62,14 +56,17 @@ export const DelegateVestContainer = ({
         onClose={onClose}
         votingPower={combinedVotingPower.data}
         currentDelegate={selectedVestData.votingDelegation}
-        onDelegate={onDelegate}
+        onDelegate={handleDelegate}
         estimateFee={estimateFee}
       />
-      {delegateTxData.status !== 'idle' && (
-        <SubmitStatusDialog
+      {submitTx.status !== 'idle' && (
+        <SubmitStepsDialog
           successCallback={onClose}
-          operationName="Delegating vest"
-          {...delegateTxData}
+          onClose={handleReset}
+          steps={submitTx.steps}
+          status={submitTx.status}
+          summary={submitTx.summary}
+          currentStep={submitTx.currentStep}
         />
       )}
     </>

@@ -1,6 +1,8 @@
 import { ExternalProvider } from '@ethersproject/providers/lib/web3-provider';
 import { BaseContract } from 'ethers';
 
+export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+
 export type FiniteStates = 'idle' | 'loading' | 'success' | 'failure';
 
 type Ethereumish = ExternalProvider & {

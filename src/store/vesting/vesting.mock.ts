@@ -38,6 +38,7 @@ export const createMockVestingContract = (address: string) =>
   createMockedContract(Vesting__factory.connect(address, mockSigner), true);
 
 export const successVestingState: VestingState = {
+  ...new VestingState(),
   selectedVest: combinedVestsList[0],
   vestsList: {
     state: 'success',
@@ -46,6 +47,7 @@ export const successVestingState: VestingState = {
 };
 
 export const failureVestingState: VestingState = {
+  ...new VestingState(),
   selectedVest: undefined,
   vestsList: {
     state: 'failure',

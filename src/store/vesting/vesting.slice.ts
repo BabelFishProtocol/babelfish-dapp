@@ -1,14 +1,30 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
+import { DelegateVestValues } from '../../pages/Staking/VestsList/DelegateVest/DelegateVest.fields';
 import { ActionsType } from '../types';
+import { createStepCallsActions } from '../utils/utils.reducers';
 import { VestingState, VestListItem } from './vesting.state';
 
 const initialState = { ...new VestingState() };
+
+const delegateVestStepCallActions = createStepCallsActions(
+  initialState,
+  'delegateCall'
+);
 
 export const vestingSlice = createSlice({
   name: Reducers.Vesting,
   initialState,
   reducers: {
+    // ----- delegate vest call -----
+
+    delegateVest: delegateVestStepCallActions.trigger<DelegateVestValues>(),
+    resetDelegateVest: delegateVestStepCallActions.reset,
+    setDelegateStatus: delegateVestStepCallActions.setStatus,
+    setDelegateSteps: delegateVestStepCallActions.setSteps,
+    setDelegateStepData: delegateVestStepCallActions.updateStep,
+    setDelegateError: delegateVestStepCallActions.setStepError,
+
     watchVestingData: (state) => {
       state.vestsList.state = 'loading';
     },

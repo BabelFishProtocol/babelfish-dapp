@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import { useForm } from 'react-hook-form';
 
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { PageView } from '../../components/PageView/PageView.component';
 import { ControlledCurrencyInput } from '../../components/CurrencyInput/CurrencyInput.controlled';
 import { ControlledAddressInput } from '../../components/AddressInput/AddressInput.controlled';
@@ -23,6 +24,18 @@ import {
 } from './Aggregator.hooks';
 import { AggregatorInfoContainer } from './AggregatorInfo/AggregatorInfo.container';
 import { SendAmount } from './SendAmount/SendAmount.container';
+import { flowStateSelector } from '../../store/aggregator/aggregator.selectors';
+
+const PageViewTitle: React.FC = ({ children }) => (
+  <Box
+    sx={{
+      py: 2.5,
+      px: 3,
+    }}
+  >
+    <Typography variant="h2">{children}</Typography>
+  </Box>
+);
 
 export const AggregatorComponent = ({
   getReceiveAmount,
@@ -31,6 +44,7 @@ export const AggregatorComponent = ({
   onStartingTokenChange,
   onDestinationTokenChange,
 }: AggregatorComponentProps) => {
+  const flowState = useSelector(flowStateSelector);
   const {
     handleSubmit,
     watch,
@@ -94,6 +108,11 @@ export const AggregatorComponent = ({
     }
   }, [amount, getReceiveAmount, setValue]);
 
+  useEffect(() => {
+    resetField(AggregatorInputs.SendAmount);
+    resetField(AggregatorInputs.ReceiveAmount);
+  }, [flowState, resetField]);
+
   return (
     <form
       style={{
@@ -106,16 +125,7 @@ export const AggregatorComponent = ({
       onSubmit={handleSubmit(onSubmit)}
     >
       <PageView
-        title={
-          <Box
-            sx={{
-              py: 2.5,
-              px: 3,
-            }}
-          >
-            <Typography variant="h2">Starting chain</Typography>
-          </Box>
-        }
+        title={<PageViewTitle>Starting chain</PageViewTitle>}
         sx={{
           height: 'min-content',
         }}
@@ -153,18 +163,7 @@ export const AggregatorComponent = ({
         </Box>
       </PageView>
       <AggregatorInfoContainer />
-      <PageView
-        title={
-          <Box
-            sx={{
-              py: 2.5,
-              px: 3,
-            }}
-          >
-            <Typography variant="h2">Destination chain</Typography>
-          </Box>
-        }
-      >
+      <PageView title={<PageViewTitle>Destination chain</PageViewTitle>}>
         <Box
           sx={{
             maxWidth: 310,
