@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import { Logo } from '../Logo/Logo.component';
+import { Navigation } from '../Navigation/Navigation.component';
 import { TestnetInfo } from '../TestnetInfo/TestnetInfo.component';
 import { WalletConnector } from '../Wallet/WalletConnector.component';
 
@@ -14,6 +15,7 @@ export const Header = () => (
   >
     <TestnetInfo />
     <Logo />
+    <Navigation />
     <WalletConnector />
   </Box>
 );
