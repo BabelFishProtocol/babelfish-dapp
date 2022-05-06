@@ -13,8 +13,8 @@ export type DelegateStakeContainerProps = Pick<
 export type DelegateStakeComponentProps = DelegateStakeContainerProps &
   Pick<FeeEstimatorProps<DelegateStakeValues>, 'estimateFee'> & {
     account: string;
-    onDelegate: (formValues: DelegateStakeValues) => Promise<void>;
-    onCancelDelegation: () => Promise<void>;
+    onDelegate: (formValues: DelegateStakeValues) => void;
+    onCancelDelegation: () => void;
     currentDelegate: string;
   };
 

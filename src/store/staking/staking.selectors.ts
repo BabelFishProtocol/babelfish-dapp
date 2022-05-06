@@ -78,6 +78,10 @@ export const extendStakeStatusSelector = createSelector(stakingState, (state) =>
   selectCurrentCallStepData(state.extendCall)
 );
 
+export const delegateStatusSelector = createSelector(stakingState, (state) =>
+  selectCurrentCallStepData(state.delegateCall)
+);
+
 export const withdrawalStatusSelector = createSelector(stakingState, (state) =>
   selectCurrentCallStepData(state.withdrawCall)
 );
