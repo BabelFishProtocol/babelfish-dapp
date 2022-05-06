@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
 import { DelegateVestValues } from '../../pages/Staking/VestsList/DelegateVest/DelegateVest.fields';
+import { WithdrawVestFormValues } from '../../pages/Staking/VestsList/WithdrawVest/WithdrawVest.fields';
 import { ActionsType } from '../types';
 import { createStepCallsActions } from '../utils/utils.reducers';
 import { VestingState, VestListItem } from './vesting.state';
@@ -10,6 +11,11 @@ const initialState = { ...new VestingState() };
 const delegateVestStepCallActions = createStepCallsActions(
   initialState,
   'delegateCall'
+);
+
+const withdrawVestStepCallActions = createStepCallsActions(
+  initialState,
+  'withdrawCall'
 );
 
 export const vestingSlice = createSlice({
@@ -24,6 +30,15 @@ export const vestingSlice = createSlice({
     setDelegateSteps: delegateVestStepCallActions.setSteps,
     setDelegateStepData: delegateVestStepCallActions.updateStep,
     setDelegateError: delegateVestStepCallActions.setStepError,
+
+    // ----- withdraw vest call -----
+
+    withdrawVest: withdrawVestStepCallActions.trigger<WithdrawVestFormValues>(),
+    resetWithdrawVest: withdrawVestStepCallActions.reset,
+    setWithdrawStatus: withdrawVestStepCallActions.setStatus,
+    setWithdrawSteps: withdrawVestStepCallActions.setSteps,
+    setWithdrawStepData: withdrawVestStepCallActions.updateStep,
+    setWithdrawError: withdrawVestStepCallActions.setStepError,
 
     watchVestingData: (state) => {
       state.vestsList.state = 'loading';
