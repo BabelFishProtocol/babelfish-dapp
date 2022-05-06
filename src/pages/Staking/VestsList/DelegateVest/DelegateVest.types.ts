@@ -11,5 +11,5 @@ export type DelegateVestComponentProps = DelegateVestContainerProps &
   Pick<FeeEstimatorProps<DelegateVestValues>, 'estimateFee'> & {
     votingPower: string;
     currentDelegate: string;
-    onDelegate: (formValues: DelegateVestValues) => Promise<void>;
+    onDelegate: (formValues: DelegateVestValues) => void;
   };
