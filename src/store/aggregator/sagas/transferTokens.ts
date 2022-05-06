@@ -39,7 +39,6 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
   const amount = utils.parseUnits(payload.SendAmount, tokenDecimals);
   const receiver = payload.ReceiveAddress;
   const extraData = utils.defaultAbiCoder.encode(['address'], [receiver]);
-
   const allowanceBridge = yield* call(
     tokenContract.allowance,
     account.toLowerCase(),
@@ -139,7 +138,6 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
     amount,
     receiver
   );
-
   steps.push({
     name: 'withdraw',
     effect: submitEffect,

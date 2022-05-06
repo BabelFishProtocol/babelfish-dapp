@@ -1,4 +1,4 @@
-import { ContractTransaction } from 'ethers';
+import { ContractTransaction, utils } from 'ethers';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import { expectSaga } from 'redux-saga-test-plan';
 import {
@@ -20,10 +20,12 @@ import { AggregatorState } from '../aggregator.state';
 import {
   depositMockValues,
   mockAccount,
+  mockAmount,
   mockBassetAddress,
   mockBridge,
   mockMasset,
   mockMassetAddress,
+  mockReceiver,
   mockToken,
   mockTokenAddress,
   mockTokenDecimals,
@@ -47,18 +49,19 @@ afterEach(() => {
 });
 
 describe('transferTokens', () => {
-  const mockExtendTx = {
+  const mockTx = {
     hash: '0x01',
     wait: jest.fn() as ContractTransaction['wait'],
   } as ContractTransaction;
 
-  const mockExtendReceipt = {
+  const mockReceipt = {
     transactionHash: '0x01',
   } as TransactionReceipt;
 
   const initialSteps = aggregatorInitialState?.submitCall?.steps;
 
   describe('deposit', () => {
+    const extraData = utils.defaultAbiCoder.encode(['address'], [mockReceiver]);
     const mockSelectors: (EffectProviders | StaticProvider)[] = [
       [matchers.select(flowStateSelector), 'deposit'],
       [matchers.select(bridgeContractSelector), mockBridge],
@@ -78,8 +81,8 @@ describe('transferTokens', () => {
           steps: [
             {
               ...initialSteps?.[2],
-              tx: mockExtendTx,
-              txReceipt: mockExtendReceipt,
+              tx: mockTx,
+              txReceipt: mockReceipt,
             },
           ],
         },
@@ -94,9 +97,21 @@ describe('transferTokens', () => {
         .provide([
           ...mockSelectors,
           [matchers.call.fn(mockToken.allowance), parseUnits('11')],
-          [matchers.call.fn(mockBridge.receiveTokensAt), mockExtendTx],
-          [matchers.call.fn(mockExtendTx.wait), mockExtendReceipt],
+          [matchers.call.fn(mockBridge.receiveTokensAt), mockTx],
+          [matchers.call.fn(mockTx.wait), mockReceipt],
         ])
+        .call(
+          mockToken.allowance,
+          mockAccount.toLowerCase(),
+          mockBridge.address
+        )
+        .call(
+          mockBridge.receiveTokensAt,
+          mockTokenAddress,
+          mockAmount,
+          mockMassetAddress,
+          extraData
+        )
         .hasFinalState(expectedState)
         .run();
     });
@@ -110,18 +125,18 @@ describe('transferTokens', () => {
           steps: [
             {
               ...initialSteps?.[0],
-              tx: mockExtendTx,
-              txReceipt: mockExtendReceipt,
+              tx: mockTx,
+              txReceipt: mockReceipt,
             },
             {
               ...initialSteps?.[1],
-              tx: mockExtendTx,
-              txReceipt: mockExtendReceipt,
+              tx: mockTx,
+              txReceipt: mockReceipt,
             },
             {
               ...initialSteps?.[2],
-              tx: mockExtendTx,
-              txReceipt: mockExtendReceipt,
+              tx: mockTx,
+              txReceipt: mockReceipt,
             },
           ],
         },
@@ -136,10 +151,24 @@ describe('transferTokens', () => {
         .provide([
           ...mockSelectors,
           [matchers.call.fn(mockToken.allowance), parseUnits('5')],
-          [matchers.call.fn(mockToken.approve), mockExtendTx],
-          [matchers.call.fn(mockBridge.receiveTokensAt), mockExtendTx],
-          [matchers.call.fn(mockExtendTx.wait), mockExtendReceipt],
+          [matchers.call.fn(mockToken.approve), mockTx],
+          [matchers.call.fn(mockBridge.receiveTokensAt), mockTx],
+          [matchers.call.fn(mockTx.wait), mockReceipt],
         ])
+        .call(
+          mockToken.allowance,
+          mockAccount.toLowerCase(),
+          mockBridge.address
+        )
+        .call(mockToken.approve, mockBridge.address.toLowerCase(), 0)
+        .call(mockToken.approve, mockBridge.address.toLowerCase(), mockAmount)
+        .call(
+          mockBridge.receiveTokensAt,
+          mockTokenAddress,
+          mockAmount,
+          mockMassetAddress,
+          extraData
+        )
         .hasFinalState(expectedState)
         .run();
     });
@@ -153,13 +182,13 @@ describe('transferTokens', () => {
           steps: [
             {
               ...initialSteps?.[1],
-              tx: mockExtendTx,
-              txReceipt: mockExtendReceipt,
+              tx: mockTx,
+              txReceipt: mockReceipt,
             },
             {
               ...initialSteps?.[2],
-              tx: mockExtendTx,
-              txReceipt: mockExtendReceipt,
+              tx: mockTx,
+              txReceipt: mockReceipt,
             },
           ],
         },
@@ -174,10 +203,23 @@ describe('transferTokens', () => {
         .provide([
           ...mockSelectors,
           [matchers.call.fn(mockToken.allowance), parseUnits('0')],
-          [matchers.call.fn(mockToken.approve), mockExtendTx],
-          [matchers.call.fn(mockBridge.receiveTokensAt), mockExtendTx],
-          [matchers.call.fn(mockExtendTx.wait), mockExtendReceipt],
+          [matchers.call.fn(mockToken.approve), mockTx],
+          [matchers.call.fn(mockBridge.receiveTokensAt), mockTx],
+          [matchers.call.fn(mockTx.wait), mockReceipt],
         ])
+        .call(
+          mockToken.allowance,
+          mockAccount.toLowerCase(),
+          mockBridge.address
+        )
+        .call(mockToken.approve, mockBridge.address.toLowerCase(), mockAmount)
+        .call(
+          mockBridge.receiveTokensAt,
+          mockTokenAddress,
+          mockAmount,
+          mockMassetAddress,
+          extraData
+        )
         .hasFinalState(expectedState)
         .run();
     });
@@ -207,10 +249,11 @@ describe('transferTokens', () => {
           ...mockSelectors.slice(0, -1),
           [matchers.select(accountSelector), undefined],
           [matchers.call.fn(mockToken.allowance), parseUnits('15')],
-          [matchers.call.fn(mockToken.approve), mockExtendTx],
-          [matchers.call.fn(mockBridge.receiveTokensAt), mockExtendTx],
-          [matchers.call.fn(mockExtendTx.wait), mockExtendReceipt],
+          [matchers.call.fn(mockToken.approve), mockTx],
+          [matchers.call.fn(mockBridge.receiveTokensAt), mockTx],
+          [matchers.call.fn(mockTx.wait), mockReceipt],
         ])
+        .put(aggregatorActions.setSubmitError('Could not find addresses'))
         .hasFinalState(expectedState)
         .run();
     });
@@ -235,8 +278,8 @@ describe('transferTokens', () => {
           steps: [
             {
               ...initialSteps?.[3],
-              tx: mockExtendTx,
-              txReceipt: mockExtendReceipt,
+              tx: mockTx,
+              txReceipt: mockReceipt,
             },
           ],
         },
@@ -255,10 +298,21 @@ describe('transferTokens', () => {
             matchers.call.fn(
               mockMasset['redeemToBridge(address,uint256,address)']
             ),
-            mockExtendTx,
+            mockTx,
           ],
-          [matchers.call.fn(mockExtendTx.wait), mockExtendReceipt],
+          [matchers.call.fn(mockTx.wait), mockReceipt],
         ])
+        .call(
+          mockToken.allowance,
+          mockAccount,
+          mockMasset.address.toLowerCase()
+        )
+        .call(
+          mockMasset['redeemToBridge(address,uint256,address)'],
+          mockBassetAddress,
+          mockAmount,
+          mockReceiver
+        )
         .hasFinalState(expectedState)
         .run();
     });
@@ -272,13 +326,13 @@ describe('transferTokens', () => {
           steps: [
             {
               ...initialSteps?.[1],
-              tx: mockExtendTx,
-              txReceipt: mockExtendReceipt,
+              tx: mockTx,
+              txReceipt: mockReceipt,
             },
             {
               ...initialSteps?.[3],
-              tx: mockExtendTx,
-              txReceipt: mockExtendReceipt,
+              tx: mockTx,
+              txReceipt: mockReceipt,
             },
           ],
         },
@@ -293,15 +347,27 @@ describe('transferTokens', () => {
         .provide([
           ...mockSelectors,
           [matchers.call.fn(mockToken.allowance), parseUnits('4')],
-          [matchers.call.fn(mockToken.approve), mockExtendTx],
+          [matchers.call.fn(mockToken.approve), mockTx],
           [
             matchers.call.fn(
               mockMasset['redeemToBridge(address,uint256,address)']
             ),
-            mockExtendTx,
+            mockTx,
           ],
-          [matchers.call.fn(mockExtendTx.wait), mockExtendReceipt],
+          [matchers.call.fn(mockTx.wait), mockReceipt],
         ])
+        .call(
+          mockToken.allowance,
+          mockAccount,
+          mockMasset.address.toLowerCase()
+        )
+        .call(mockToken.approve, mockMasset.address.toLowerCase(), mockAmount)
+        .call(
+          mockMasset['redeemToBridge(address,uint256,address)'],
+          mockBassetAddress,
+          mockAmount,
+          mockReceiver
+        )
         .hasFinalState(expectedState)
         .run();
     });
@@ -331,15 +397,16 @@ describe('transferTokens', () => {
           ...mockSelectors.slice(0, -1),
           [matchers.select(massetContractSelector), undefined],
           [matchers.call.fn(mockToken.allowance), parseUnits('4')],
-          [matchers.call.fn(mockToken.approve), mockExtendTx],
+          [matchers.call.fn(mockToken.approve), mockTx],
           [
             matchers.call.fn(
               mockMasset['redeemToBridge(address,uint256,address)']
             ),
-            mockExtendTx,
+            mockTx,
           ],
-          [matchers.call.fn(mockExtendTx.wait), mockExtendReceipt],
+          [matchers.call.fn(mockTx.wait), mockReceipt],
         ])
+        .put(aggregatorActions.setSubmitError('Could not find contracts'))
         .hasFinalState(expectedState)
         .run();
     });

@@ -1,4 +1,5 @@
 import { constants } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 import { ChainEnum } from '../../config/chains';
 import { TokenEnum } from '../../config/tokens';
 import {
@@ -15,6 +16,8 @@ export const mockMassetAddress = '0x971b97c8cc82e7d27bc467c2dc3f219c6ee2e350';
 export const mockBassetAddress = '0x971b97c8cc82e7h25bc467c2dc3f219c6ee2e350';
 export const mockAccount = '0x5250D37B096099678b0957bae32153915ca2C043';
 
+export const mockAmount = parseUnits('11', mockTokenDecimals);
+
 export const mockToken = createMockedContract(
   ERC20__factory.connect(constants.AddressZero, mockSigner),
   true
@@ -30,6 +33,8 @@ export const mockMasset = createMockedContract(
   true
 );
 
+export const mockReceiver = '0x6EEA29791737779006e31bA0e2910045f3e4C8CE';
+
 export const depositMockValues = {
   [AggregatorInputs.StartingChain]: ChainEnum.ETH_TESTNET,
   [AggregatorInputs.StartingToken]: TokenEnum.USDT,
@@ -37,6 +42,5 @@ export const depositMockValues = {
   [AggregatorInputs.DestinationChain]: ChainEnum.RSK_TESTNET,
   [AggregatorInputs.DestinationToken]: TokenEnum.XUSD,
   [AggregatorInputs.ReceiveAmount]: '10.45',
-  [AggregatorInputs.ReceiveAddress]:
-    '0x6EEA29791737779006e31bA0e2910045f3e4C8CE',
+  [AggregatorInputs.ReceiveAddress]: mockReceiver,
 };
