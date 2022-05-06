@@ -3,13 +3,26 @@ import { createWatcherSaga } from '../../utils/utils.sagas';
 import { subgraphClientSelector } from '../../app/app.selectors';
 import { transactionsQuery } from '../../../queries/transactionsQuery';
 import { dashboardActions } from '../dashboard.slice';
+import { mockedAccount as account } from './transactions.mocks';
 
 export function* fetchTransactions() {
   try {
     const subgraphClient = yield* select(subgraphClientSelector);
-    if (!subgraphClient) throw new Error('Wallet not connected!');
 
-    const { xusdTransactions } = yield* call(transactionsQuery, subgraphClient);
+    /* TODO: for now we are using mocked account address,
+    that alrady have some tx on testnet,
+    but in prod we should use selector to grab current wallet address 
+
+    const account = yield* select(accountSelector);
+    */
+
+    if (!subgraphClient || !account) throw new Error('Wallet not connected!');
+
+    const { xusdTransactions } = yield* call(
+      transactionsQuery,
+      subgraphClient,
+      { user: account }
+    );
 
     yield* put(dashboardActions.setTransactions(xusdTransactions));
   } catch (e) {
