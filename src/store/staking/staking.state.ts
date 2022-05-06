@@ -5,6 +5,7 @@ export type AddNewStakeCalls = 'stake' | 'approve';
 export type IncreaseCalls = 'stake' | 'approve';
 export type ExtendCalls = 'extend';
 export type WithdrawCalls = 'withdraw';
+export type DelegateCalls = 'delegate';
 
 export type StakeListItem = {
   asset: string;
@@ -47,6 +48,11 @@ export class StakingState {
   extendCall: CallState<ExtendCalls> = {
     status: 'idle',
     steps: [{ name: 'extend', label: 'extending' }],
+  };
+
+  delegateCall: CallState<DelegateCalls> = {
+    status: 'idle',
+    steps: [{ name: 'delegate', label: 'delegating' }],
   };
 
   withdrawCall: CallState<WithdrawCalls> = {

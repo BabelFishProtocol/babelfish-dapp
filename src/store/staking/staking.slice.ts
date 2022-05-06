@@ -4,6 +4,7 @@ import { AddNewStakeFormValues } from '../../pages/Staking/AddNewStake/AddNewSta
 import { ExtendStakeValues } from '../../pages/Staking/StakesList/ExtendStake/ExtendStake.fields';
 import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/StakingHistory.types';
 import { IncreaseStakeFormValues } from '../../pages/Staking/StakesList/IncreaseStake/IncreaseStake.types';
+import { DelegateStakeValues } from '../../pages/Staking/StakesList/DelegateStake/DelegateStake.fields';
 import { WithdrawStakeFormValues } from '../../pages/Staking/StakesList/WithdrawStake/WithdrawStake.fields';
 
 import { ActionsType } from '../types';
@@ -28,6 +29,10 @@ const increaseStepCallActions = createStepCallsActions(
 const extendStakeStepCallActions = createStepCallsActions(
   initialState,
   'extendCall'
+);
+const delegateStakeStepCallActions = createStepCallsActions(
+  initialState,
+  'delegateCall'
 );
 const withdrawStepCallActions = createStepCallsActions(
   initialState,
@@ -63,6 +68,14 @@ export const stakingSlice = createSlice({
     setExtendStatus: extendStakeStepCallActions.setStatus,
     setExtendStepData: extendStakeStepCallActions.updateStep,
     setExtendError: extendStakeStepCallActions.setStepError,
+
+    // ----- delegate stake call -----
+
+    delegateStake: delegateStakeStepCallActions.trigger<DelegateStakeValues>(),
+    resetDelegate: delegateStakeStepCallActions.reset,
+    setDelegateStatus: delegateStakeStepCallActions.setStatus,
+    setDelegateStepData: delegateStakeStepCallActions.updateStep,
+    setDelegateError: delegateStakeStepCallActions.setStepError,
 
     // ----- withdraw stake call -----
 
