@@ -1,70 +1,67 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
-import { SubmitStatusDialog } from '../../../../components/TxDialog/TxDialog.component';
-import { selectorsErrors } from '../../../../constants';
-import { useContractCall } from '../../../../hooks/useContractCall';
-import { accountSelector } from '../../../../store/app/app.selectors';
-import {
-  selectedVestSelector,
-  selectedVestContractSelector,
-} from '../../../../store/vesting/vesting.selectors';
-import { FeeEstimator } from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { WithdrawVestComponent } from './WithdrawVest.component';
+import {
+  selectedVestContractSelector,
+  withdrawVestStatusSelector,
+} from '../../../../store/vesting/vesting.selectors';
+import { selectorsErrors } from '../../../../constants';
+import { vestingActions } from '../../../../store/vesting/vesting.slice';
+import { SubmitStepsDialog } from '../../../../components/TxDialog/TxDialog.component';
+
+import { FeeEstimator } from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
 import { useGetUnlockedVesting } from './WithdrawVest.hooks';
+import { WithdrawVestComponent } from './WithdrawVest.component';
+import { WithdrawVestFormValues } from './WithdrawVest.fields';
 import { WithdrawVestContainerProps } from './WithdrawVest.types';
 
 export const WithdrawVestContainer = ({
   open,
   onClose,
 }: WithdrawVestContainerProps) => {
-  const account = useSelector(accountSelector);
-  const selectedVestData = useSelector(selectedVestSelector);
+  const dispatch = useDispatch();
   const vesting = useSelector(selectedVestContractSelector);
-
+  const withdrawTx = useSelector(withdrawVestStatusSelector);
   const { amount } = useGetUnlockedVesting();
-
-  const handleWithdraw = async () => {
-    if (!vesting || !selectedVestData || !account) {
-      throw new Error(selectorsErrors.missingData);
-    }
-
-    return vesting.withdrawTokens(selectedVestData.address);
-  };
-
-  const { handleSubmit: onWithdraw, ...withdrawTxData } =
-    useContractCall(handleWithdraw);
 
   const estimateFee: FeeEstimator = useCallback(
     (withdrawTo) => {
-      if (!vesting || !selectedVestData) {
-        throw new Error(selectorsErrors.missingData);
-      }
+      if (!vesting) throw new Error(selectorsErrors.missingData);
 
       return vesting.estimateGas.withdrawTokens(withdrawTo);
     },
-    [selectedVestData, vesting]
+    [vesting]
   );
 
-  if (!selectedVestData) {
+  if (!vesting) {
     return null;
   }
+
+  const handleWithdraw = (formValues: WithdrawVestFormValues) => {
+    dispatch(vestingActions.withdrawVest(formValues));
+  };
+  const handleReset = () => {
+    dispatch(vestingActions.resetWithdrawVest());
+  };
 
   return (
     <>
       <WithdrawVestComponent
         open={open}
         onClose={onClose}
-        onWithdraw={onWithdraw}
+        onWithdraw={handleWithdraw}
         isLocked={amount === '0'}
         currentVestAmount={amount}
         estimateFee={estimateFee}
       />
-      {withdrawTxData.status !== 'idle' && (
-        <SubmitStatusDialog
-          operationName="Withdrawing stake"
+      {withdrawTx.status !== 'idle' && (
+        <SubmitStepsDialog
           successCallback={onClose}
-          {...withdrawTxData}
+          onClose={handleReset}
+          steps={withdrawTx.steps}
+          status={withdrawTx.status}
+          summary={withdrawTx.summary}
+          currentStep={withdrawTx.currentStep}
         />
       )}
     </>
