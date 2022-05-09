@@ -4,37 +4,37 @@ import { throwError } from 'redux-saga-test-plan/providers';
 import { combineReducers, DeepPartial } from '@reduxjs/toolkit';
 import { BaseContract, BigNumber, constants } from 'ethers';
 
-import { pick } from '../../utils/helpers';
-import { Reducers } from '../../constants';
-import { convertForMulticall } from '../utils/utils.sagas';
-import { rootReducer, RootState } from '..';
-import { ERC20__factory, Staking__factory } from '../../contracts/types';
+import { pick } from '../../../utils/helpers';
+import { Reducers } from '../../../constants';
+import { convertForMulticall } from '../../utils/utils.sagas';
+import { rootReducer, RootState } from '../..';
+import { ERC20__factory, Staking__factory } from '../../../contracts/types';
 
 import {
   mockSigner,
   createMockedContract,
   mockMulticallProvider,
-} from '../../testUtils';
+} from '../../../testUtils';
 
 import {
   accountSelector,
   fishTokenSelector,
   multicallProviderSelector,
   stakingContractSelector,
-} from '../app/app.selectors';
-import { getUserVestings } from '../vesting/vesting.utils';
-import { UserVestings } from '../vesting/vesting.types';
+} from '../../app/app.selectors';
+import { getUserVestings } from '../../vesting/vesting.utils';
+import { UserVestings } from '../../vesting/vesting.types';
 
-import { dashboardActions } from './dashboard.slice';
-import { DashboardBalances, DashboardState } from './dashboard.state';
-import { xusdTokenSelector } from './dashboard.selectors';
+import { dashboardActions } from '../dashboard.slice';
+import { DashboardBalances, DashboardState } from '../dashboard.state';
+import { xusdTokenSelector } from '../dashboard.selectors';
 import {
   fetchDashboardBalances,
   getVestBalance,
-} from './sagas/fetchDashboardBalances';
+} from './fetchDashboardBalances';
 
-jest.mock('../utils/utils.sagas', () => ({
-  ...jest.requireActual('../utils/utils.sagas'),
+jest.mock('../../utils/utils.sagas', () => ({
+  ...jest.requireActual('../../utils/utils.sagas'),
   convertForMulticall: jest.fn(),
 }));
 
