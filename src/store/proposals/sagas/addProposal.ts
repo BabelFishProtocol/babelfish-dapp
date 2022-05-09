@@ -13,58 +13,63 @@ import {
   subgraphClientSelector,
   multicallProviderSelector,
 } from '../../app/app.selectors';
-import { createWatcherSaga } from '../../utils/utils.sagas';
+import { SagaContractCallStep } from '../../types';
+import {
+  createWatcherSaga,
+  contractStepCallsSaga,
+} from '../../utils/utils.sagas';
 import { selectedGovernorSelector } from '../proposals.selectors';
 import { ProposalsActions, proposalsActions } from '../proposals.slice';
+import { AddProposalCall } from '../proposals.state';
 import { fetchProposalStates } from './utils';
 
-export function* addProposal({ payload }: ProposalsActions['startProposal']) {
-  try {
-    const account = yield* select(accountSelector);
-    const isGovAdmin =
-      payload[AddProposalInputs.SendProposalContract] ===
-      GOVERNANCE_OPTIONS.GOVERNOR_ADMIN.id;
+export function* addProposal({ payload }: ProposalsActions['addProposal']) {
+  const account = yield* select(accountSelector);
+  const isGovAdmin =
+    payload[AddProposalInputs.SendProposalContract] ===
+    GOVERNANCE_OPTIONS.GOVERNOR_ADMIN.id;
 
-    const govSelector = isGovAdmin
-      ? governorAdminSelector
-      : governorOwnerSelector;
+  const govSelector = isGovAdmin
+    ? governorAdminSelector
+    : governorOwnerSelector;
 
-    const governor = yield* select(govSelector);
+  const governor = yield* select(govSelector);
 
-    if (!account || !governor) {
-      throw new Error('Wallet not connected');
-    }
+  if (!account || !governor) {
+    yield* put(proposalsActions.setAddProposalError('Wallet not connected'));
+    return;
+  }
 
-    const rows = payload[AddProposalInputs.Values];
+  const rows = payload[AddProposalInputs.Values];
 
-    const targets = rows.map((row) => row[AddProposalInputs.Target]);
-    const values: BigNumberish[] = rows.map(
-      (row) => row[AddProposalInputs.Value]
-    );
-    const signatures = rows.map((row) => row[AddProposalInputs.Signature]);
-    const calldatas: BytesLike[] = rows.map(
-      (row) => row[AddProposalInputs.Calldata]
-    );
-    const description = payload[AddProposalInputs.Description];
+  const targets = rows.map((row) => row[AddProposalInputs.Target]);
+  const values: BigNumberish[] = rows.map(
+    (row) => row[AddProposalInputs.Value]
+  );
+  const signatures = rows.map((row) => row[AddProposalInputs.Signature]);
+  const calldatas: BytesLike[] = rows.map(
+    (row) => row[AddProposalInputs.Calldata]
+  );
+  const description = payload[AddProposalInputs.Description];
 
-    const tx = yield* call(
+  const proposeCall: SagaContractCallStep<AddProposalCall> = {
+    name: 'propose',
+    effect: call(
       governor.propose,
       targets,
       values,
       signatures,
       calldatas,
       description
-    );
-    yield* call(tx.wait);
-    yield* put(proposalsActions.proposalSuccess());
-  } catch (e) {
-    const msg =
-      e instanceof Error
-        ? e.message
-        : 'There was some error in Adding the proposal. Please try again';
+    ),
+  };
 
-    yield* put(proposalsActions.proposalFailure(msg));
-  }
+  yield* contractStepCallsSaga({
+    steps: [proposeCall],
+    setErrorAction: proposalsActions.setAddProposalError,
+    setStatusAction: proposalsActions.setAddProposalStatus,
+    setStepDataAction: proposalsActions.setAddProposalStepData,
+  });
 }
 
 export function* checkAddEligibility() {

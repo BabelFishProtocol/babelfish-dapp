@@ -9,6 +9,7 @@ import {
   addressesSelector,
   providerSelector,
 } from '../app/app.selectors';
+import { selectCurrentCallStepData } from '../utils/utils.selectors';
 import { VoteType } from './proposals.types';
 
 const proposalsState = (state: RootState) => state[Reducers.Proposals];
@@ -176,4 +177,9 @@ export const reasonToBlockSelector = createSelector(
 export const selectedGovernorSelector = createSelector(
   proposalsState,
   (state) => state.selectedGovernor
+);
+
+export const addProposalStatusSelector = createSelector(
+  proposalsState,
+  (state) => selectCurrentCallStepData(state.addProposalCall)
 );

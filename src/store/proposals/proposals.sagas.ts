@@ -21,8 +21,8 @@ export function* proposalsSaga() {
     takeLatest(proposalsActions.updateProposalsList.type, fetchProposalsList),
     takeLatest(proposalsActions.watchProposalsList.type, watchProposalsList),
 
-    takeLatest(proposalsActions.startProposal, addProposal),
-    takeLatest(proposalsActions.watchAddProposal, watchAddProposals),
-    takeLatest(proposalsActions.checkAddProposal, checkAddEligibility),
+    takeLatest(proposalsActions.addProposal.type, addProposal),
+    takeLatest(proposalsActions.watchAddProposal.type, watchAddProposals),
+    takeLatest(proposalsActions.checkAddProposal.type, checkAddEligibility),
   ]);
 }
