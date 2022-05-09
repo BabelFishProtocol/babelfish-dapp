@@ -3,11 +3,11 @@ import { dashboardActions } from './dashboard.slice';
 import {
   fetchDashboardBalances,
   watchDashboardBalances,
-} from './sagas/dashboardBalances.sagas';
+} from './sagas/fetchDashboardBalances';
 import {
   fetchTransactions,
   watchTransactions,
-} from './sagas/transactions.sagas';
+} from './sagas/fetchTransactions';
 
 export function* dashboardSaga() {
   yield* all([

@@ -31,7 +31,7 @@ import { xusdTokenSelector } from './dashboard.selectors';
 import {
   fetchDashboardBalances,
   getVestBalance,
-} from './sagas/dashboardBalances.sagas';
+} from './sagas/fetchDashboardBalances';
 
 jest.mock('../utils/utils.sagas', () => ({
   ...jest.requireActual('../utils/utils.sagas'),
