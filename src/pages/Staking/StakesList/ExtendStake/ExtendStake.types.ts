@@ -13,7 +13,7 @@ export type ExtendStakeComponentProps = ExtendStakeContainerProps &
   Pick<DateSelectorProps, 'kickoffTs' | 'stakes'> & {
     prevDate: number;
     stakedAmount: string;
-    onExtend: (formValues: ExtendStakeValues) => Promise<void>;
+    onExtend: (formValues: ExtendStakeValues) => void;
     estimateExtendFee: StakingFeeEstimator;
   };
 

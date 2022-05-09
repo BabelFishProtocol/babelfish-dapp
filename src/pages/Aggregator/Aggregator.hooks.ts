@@ -1,9 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  UseFormReset,
-  UseFormResetField,
-  UseFormSetValue,
-} from 'react-hook-form';
+import { UseFormResetField, UseFormSetValue } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { ChainEnum, ChainType } from '../../config/chains';
 import { poolHasChain } from '../../config/pools';
@@ -14,6 +10,7 @@ import {
 } from '../../store/aggregator/aggregator.selectors';
 import { aggregatorActions } from '../../store/aggregator/aggregator.slice';
 import {
+  accountSelector,
   chainIdSelector,
   providerSelector,
 } from '../../store/app/app.selectors';
@@ -100,7 +97,7 @@ export const useAggregatorDropdowns = (
 export const useConnectedChain = (
   startingChain: ChainEnum | '',
   destinationChain: ChainEnum | '',
-  reset: UseFormReset<AggregatorFormValues>,
+  resetField: UseFormResetField<AggregatorFormValues>,
   setValue: UseFormSetValue<AggregatorFormValues>
 ) => {
   const dispatch = useDispatch();
@@ -121,7 +118,11 @@ export const useConnectedChain = (
   useEffect(() => {
     if (connectedChain && wrongChainConnectedError && setValue) {
       if (!poolHasChain({ pool, chain: connectedChain })) {
-        reset();
+        resetField(AggregatorInputs.StartingChain);
+        resetField(AggregatorInputs.StartingToken);
+        resetField(AggregatorInputs.DestinationChain);
+        resetField(AggregatorInputs.DestinationToken);
+
         dispatch(aggregatorActions.setStartingToken(undefined));
         dispatch(aggregatorActions.setDestinationChain(undefined));
         dispatch(aggregatorActions.setDestinationToken(undefined));
@@ -145,4 +146,16 @@ export const useConnectedChain = (
     wrongChainConnectedError,
     hideDestinationTokenDropdown: !showDestinationTokenDropdown,
   };
+};
+
+export const useWalletAddress = (
+  setValue: UseFormSetValue<AggregatorFormValues>
+) => {
+  const walletAddress = useSelector(accountSelector);
+
+  useEffect(() => {
+    if (walletAddress) {
+      setValue(AggregatorInputs.ReceiveAddress, walletAddress);
+    }
+  }, [walletAddress, setValue]);
 };

@@ -1,5 +1,11 @@
 import { StakingHistoryListItem } from '../../pages/Staking/StakingHistory/StakingHistory.types';
-import { LoadableAmount, LoadableValue } from '../types';
+import { CallState, LoadableAmount, LoadableValue } from '../types';
+
+export type AddNewStakeCalls = 'stake' | 'approve';
+export type IncreaseCalls = 'stake' | 'approve';
+export type ExtendCalls = 'extend';
+export type WithdrawCalls = 'withdraw';
+export type DelegateCalls = 'delegate';
 
 export type StakeListItem = {
   asset: string;
@@ -21,7 +27,38 @@ export type StakeConstants = {
 };
 
 export class StakingState {
-  selectedStake?: number;
+  selectedStake?: StakeListItem;
+
+  addNewStakeCall: CallState<AddNewStakeCalls> = {
+    status: 'idle',
+    steps: [
+      { name: 'approve', label: 'approving' },
+      { name: 'stake', label: 'staking' },
+    ],
+  };
+
+  increaseCall: CallState<IncreaseCalls> = {
+    status: 'idle',
+    steps: [
+      { name: 'approve', label: 'approving' },
+      { name: 'stake', label: 'staking' },
+    ],
+  };
+
+  extendCall: CallState<ExtendCalls> = {
+    status: 'idle',
+    steps: [{ name: 'extend', label: 'extending' }],
+  };
+
+  delegateCall: CallState<DelegateCalls> = {
+    status: 'idle',
+    steps: [{ name: 'delegate', label: 'delegating' }],
+  };
+
+  withdrawCall: CallState<WithdrawCalls> = {
+    status: 'idle',
+    steps: [{ name: 'withdraw', label: 'Unstaking FISH' }],
+  };
 
   constants: LoadableValue<StakeConstants> = {
     state: 'idle',

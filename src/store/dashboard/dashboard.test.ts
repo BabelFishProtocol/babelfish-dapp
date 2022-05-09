@@ -6,7 +6,7 @@ import { BaseContract, BigNumber, constants } from 'ethers';
 
 import { pick } from '../../utils/helpers';
 import { Reducers } from '../../constants';
-import { convertForMulticall } from '../utils';
+import { convertForMulticall } from '../utils/utils.sagas';
 import { rootReducer, RootState } from '..';
 import { ERC20__factory, Staking__factory } from '../../contracts/types';
 
@@ -30,8 +30,8 @@ import { DashboardBalances, DashboardState } from './dashboard.state';
 import { fetchDashboardBalances, getVestBalance } from './dashboard.sagas';
 import { xusdTokenSelector } from './dashboard.selectors';
 
-jest.mock('../utils', () => ({
-  ...jest.requireActual('../utils'),
+jest.mock('../utils/utils.sagas', () => ({
+  ...jest.requireActual('../utils/utils.sagas'),
   convertForMulticall: jest.fn(),
 }));
 

@@ -9,6 +9,7 @@ import {
   tokenAddressSelector,
 } from './aggregator.selectors';
 import { aggregatorActions } from './aggregator.slice';
+import { transferTokens } from './sagas/transferTokens';
 
 export function* fetchAllowTokenAddress() {
   try {
@@ -82,7 +83,9 @@ export function* fetchStartingTokenBalance() {
       aggregatorActions.setStartingTokenBalance(startingTokenBalance.toString())
     );
   } catch (e) {
-    yield* put(aggregatorActions.fetchStartingTokenBalanceFailure());
+    const msg =
+      e instanceof Error ? e.message : 'Could not fetch starting token balance';
+    yield* put(aggregatorActions.fetchStartingTokenBalanceFailure(msg));
   }
 }
 
@@ -104,8 +107,11 @@ export function* aggregatorSaga() {
       fetchBridgeFeesAndLimits
     ),
     takeLatest(aggregatorActions.setDestinationToken, fetchBridgeFeesAndLimits),
+
     takeLatest(aggregatorActions.setDestinationChain, fetchAllowTokenAddress),
     takeLatest(aggregatorActions.setDestinationToken, fetchAllowTokenAddress),
     takeLatest(aggregatorActions.setStartingToken, fetchStartingTokenBalance),
+
+    takeLatest(aggregatorActions.submit, transferTokens),
   ]);
 }

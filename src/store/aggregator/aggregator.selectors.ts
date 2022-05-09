@@ -2,15 +2,21 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { BridgeDictionary } from '../../config/bridges';
 import { ChainEnum } from '../../config/chains';
+import { contractsAddresses } from '../../config/contracts';
 import { pools } from '../../config/pools';
-import { tokenOnChain, tokens } from '../../config/tokens';
+import { tokens } from '../../config/tokens';
 import { Reducers } from '../../constants';
 import {
   AllowTokens__factory,
   Bridge__factory,
   ERC20__factory,
 } from '../../contracts/types';
-import { chainIdSelector, providerSelector } from '../app/app.selectors';
+import {
+  chainIdSelector,
+  providerSelector,
+  testnetMainnetSelector,
+} from '../app/app.selectors';
+import { selectCurrentCallStepData } from '../utils/utils.selectors';
 
 const aggregatorState = (state: RootState) => state[Reducers.Aggregator];
 
@@ -116,6 +122,23 @@ export const allowTokensAddressSelector = createSelector(
   (state) => state.allowTokensAddress.data
 );
 
+export const massetAddressSelector = createSelector(
+  [testnetMainnetSelector, chainIdSelector, destinationChainSelector],
+  (testnetMainnetFlag, startingChain, destinationChain) => {
+    if (!testnetMainnetFlag || !startingChain || !destinationChain)
+      return undefined;
+
+    if (testnetMainnetFlag === 'mainnet') {
+      return contractsAddresses[ChainEnum.RSK].XUSDMassetProxy;
+    }
+    if (testnetMainnetFlag === 'testnet') {
+      return contractsAddresses[ChainEnum.RSK_TESTNET].XUSDMassetProxy;
+    }
+
+    return undefined;
+  }
+);
+
 export const bridgeContractSelector = createSelector(
   [
     providerSelector,
@@ -131,10 +154,6 @@ export const bridgeContractSelector = createSelector(
 
     const bridgeAddress =
       flowState === 'deposit' ? bridge.bridgeAddress : bridge.rskBridgeAddress;
-    // TODO: remove (bridge address will be required)
-    if (!bridgeAddress) {
-      return undefined;
-    }
 
     const contract = Bridge__factory.connect(
       bridgeAddress,
@@ -159,24 +178,59 @@ export const allowTokensContractSelector = createSelector(
   }
 );
 
-export const startingTokenContractSelector = createSelector(
-  [providerSelector, chainIdSelector, startingTokenSelector],
-  (provider, startingChain, startingToken) => {
-    if (!provider || !startingChain || !startingToken) {
+export const startingTokenAddressSelector = createSelector(
+  [chainIdSelector, startingTokenSelector],
+  (startingChain, startingToken) => {
+    if (!startingChain || !startingToken) {
       return undefined;
     }
+    const address = tokens[startingToken].addresses[startingChain];
 
-    // TODO: <not sure> assert startingChain typeof ChainEnum
-    const address = tokenOnChain[startingToken][startingChain as ChainEnum];
+    return address;
+  }
+);
 
-    if (!address) {
+export const startingTokenContractSelector = createSelector(
+  [providerSelector, startingTokenAddressSelector],
+  (provider, startingTokenAddress) => {
+    if (!provider || !startingTokenAddress) {
       return undefined;
     }
 
     const contract = ERC20__factory.connect(
-      address.toLowerCase(),
+      startingTokenAddress.toLowerCase(),
       provider.getSigner()
     );
     return contract;
   }
+);
+
+export const isEnoughTokensSelector = createSelector(
+  [feesAndLimitsSelector, startingTokenBalanceSelector],
+  (feesAndLimits, startingTokenBalance) => {
+    if (!feesAndLimits.minTransfer || !startingTokenBalance) {
+      return undefined;
+    }
+    return feesAndLimits.minTransfer >= startingTokenBalance;
+  }
+);
+
+export const bassetAddressSelector = createSelector(
+  [bridgeSelector, destinationTokenSelector],
+  (bridge, destinationToken) => {
+    if (!bridge || !destinationToken) {
+      return undefined;
+    }
+    return bridge.getRskSovrynTokenAddress(destinationToken)?.toLowerCase();
+  }
+);
+
+const callSelector = createSelector(
+  aggregatorState,
+  (state) => state.submitCall
+);
+
+export const submitAggregatorStatusSelector = createSelector(
+  callSelector,
+  (state) => selectCurrentCallStepData(state)
 );

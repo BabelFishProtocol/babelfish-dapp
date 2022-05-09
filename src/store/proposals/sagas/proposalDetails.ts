@@ -1,7 +1,7 @@
 import { put, select, call } from 'typed-redux-saga';
 
 import { ProposalState } from '../../../constants';
-import { createWatcherSaga } from '../../utils';
+import { createWatcherSaga } from '../../utils/utils.sagas';
 import { proposalDetailsQuery } from '../../../queries/proposalDetailsQuery';
 import { subgraphClientSelector } from '../../app/app.selectors';
 

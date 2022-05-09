@@ -11,7 +11,14 @@ import {
   ContractsForNetwork,
 } from '../../config/contracts';
 import { Reducers } from '../../constants';
-import { chains } from '../../config/chains';
+import {
+  allChainsArr,
+  ChainEnum,
+  chains,
+  idsOfTestNetworks,
+  mainnetChainsArr,
+  testnetChainsArr,
+} from '../../config/chains';
 import { subgraphClients } from '../../config/subgraph';
 import {
   ERC20__factory,
@@ -19,6 +26,7 @@ import {
   Multicall__factory,
   VestingRegistry__factory,
   GovernorAlpha__factory,
+  MassetV3__factory,
 } from '../../contracts/types';
 import { BaseContractFactory, MulticallProviderType } from '../types';
 
@@ -76,16 +84,34 @@ export const unsupportedNetworkSelector = createSelector(
   }
 );
 
+export const testnetMainnetSelector = createSelector(
+  chainIdSelector,
+  (chainId) => {
+    if (!chainId) return undefined;
+
+    return idsOfTestNetworks.includes(chainId) ? 'testnet' : 'mainnet';
+  }
+);
+
+export const chainsInCurrentNetworkSelector = createSelector(
+  testnetMainnetSelector,
+  (testnetMainnet) => {
+    if (testnetMainnet === undefined) return [];
+
+    return testnetMainnet === 'testnet' ? testnetChainsArr : mainnetChainsArr;
+  }
+);
+
 export const currentChainSelector = createSelector(
   chainIdSelector,
   (chainId) => {
-    if (chainId === undefined) return undefined;
+    if (!chainId) return undefined;
 
-    const chainConfig = Object.values(chains).find(
+    const currentChain = allChainsArr.find(
       (chain) => chain.chainId === utils.hexlify(chainId)
     );
 
-    return chainConfig;
+    return currentChain;
   }
 );
 
@@ -101,7 +127,14 @@ export const subgraphClientSelector = createSelector(
 export const addressesSelector = createSelector(
   currentChainSelector,
   (chainConfig) => {
-    if (!chainConfig || !contractsAddresses[chainConfig.id]) return undefined;
+    if (
+      !chainConfig ||
+      !(
+        chainConfig.id === ChainEnum.RSK ||
+        chainConfig.id === ChainEnum.RSK_TESTNET
+      )
+    )
+      return undefined;
 
     return contractsAddresses[chainConfig.id];
   }
@@ -145,6 +178,11 @@ export const multicallContractSelector = createContractSelector(
 export const vestingRegistrySelector = createContractSelector(
   VestingRegistry__factory,
   'vestingRegistry'
+);
+
+export const massetContractSelector = createContractSelector(
+  MassetV3__factory,
+  'XUSDMassetProxy'
 );
 
 export const multicallProviderSelector = createSelector(

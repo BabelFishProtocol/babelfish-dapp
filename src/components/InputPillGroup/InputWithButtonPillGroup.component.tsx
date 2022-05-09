@@ -10,6 +10,7 @@ export const InputWithButtonPillGroup = ({
   title,
   symbol,
   totalAmount,
+  totalAmountDecimals,
   value,
   error,
   disabled,
@@ -22,22 +23,22 @@ export const InputWithButtonPillGroup = ({
     onInputChange(e);
   };
 
-  const [percentValue, setPercentValue] = useState<string>();
+  const [percentValue, setPercentValue] = useState<number>();
 
   const handleButtonChange = (
     e: React.MouseEvent<HTMLElement>,
-    newPercentValue: string
+    newPercentValue: number | null
   ) => {
-    if (!totalAmount) {
+    if (!totalAmount || !Number.isFinite(newPercentValue)) {
       return;
     }
-    const newValue = utils.formatUnits(
-      BigNumber.from(totalAmount)
-        ?.mul(BigNumber.from(newPercentValue))
-        .div(BigNumber.from('100'))
-    );
 
-    setPercentValue(newPercentValue);
+    const calculatedAmount = BigNumber.from(totalAmount)
+      ?.mul(BigNumber.from(newPercentValue))
+      .div(BigNumber.from('100'));
+    const newValue = utils.formatUnits(calculatedAmount, totalAmountDecimals);
+
+    setPercentValue(newPercentValue as number);
     onButtonChange(newValue);
   };
 

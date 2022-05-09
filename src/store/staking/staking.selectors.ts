@@ -2,6 +2,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { Reducers } from '../../constants';
 import { isTimeStampLocked } from '../../utils/helpers';
+import { selectCurrentCallStepData } from '../utils/utils.selectors';
 
 const stakingState = (state: RootState) => state[Reducers.Staking];
 
@@ -56,14 +57,31 @@ export const stakesDatesSelector = createSelector(
 
 export const selectedStakeSelector = createSelector(
   [stakingState, stakesListSelector],
-  (state, stakesList) => {
-    const selectedStake = stakesList.find(
-      (stake) => stake.unlockDate === state.selectedStake
-    );
-    return selectedStake;
-  }
+  (state) => state.selectedStake
 );
 export const isSelectedStakeLockedSelector = createSelector(
   selectedStakeSelector,
   (stake) => (stake ? isTimeStampLocked(stake.unlockDate) : undefined)
+);
+
+export const addStakeSubmitStatusSelector = createSelector(
+  stakingState,
+  (state) => selectCurrentCallStepData(state.addNewStakeCall)
+);
+
+export const increaseStakeStatusSelector = createSelector(
+  stakingState,
+  (state) => selectCurrentCallStepData(state.increaseCall)
+);
+
+export const extendStakeStatusSelector = createSelector(stakingState, (state) =>
+  selectCurrentCallStepData(state.extendCall)
+);
+
+export const delegateStatusSelector = createSelector(stakingState, (state) =>
+  selectCurrentCallStepData(state.delegateCall)
+);
+
+export const withdrawalStatusSelector = createSelector(stakingState, (state) =>
+  selectCurrentCallStepData(state.withdrawCall)
 );

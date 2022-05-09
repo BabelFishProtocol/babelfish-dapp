@@ -7,7 +7,7 @@ import {
   stakingContractSelector,
   providerSelector,
 } from '../../app/app.selectors';
-import { createWatcherSaga } from '../../utils';
+import { createWatcherSaga } from '../../utils/utils.sagas';
 import { vestingActions } from '../vesting.slice';
 import { VestListAddress, VestListItem } from '../vesting.state';
 import { getUserVestings, getVesting } from '../vesting.utils';

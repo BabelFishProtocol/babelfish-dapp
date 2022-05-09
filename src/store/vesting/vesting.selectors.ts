@@ -2,6 +2,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { Reducers } from '../../constants';
 import { accountSelector, providerSelector } from '../app/app.selectors';
+import { selectCurrentCallStepData } from '../utils/utils.selectors';
 import { getVesting } from './vesting.utils';
 
 export const vestingState = (state: RootState) => state[Reducers.Vesting];
@@ -16,12 +17,7 @@ export const vestsListStatusSelector = createSelector(
 );
 export const selectedVestSelector = createSelector(
   [vestingState, vestsListSelector],
-  (state, vestsList) => {
-    const selectedVest = vestsList.find(
-      (vest) => vest.unlockDate === state.selectedVest
-    );
-    return selectedVest;
-  }
+  (state) => state.selectedVest
 );
 
 export const selectedVestContractSelector = createSelector(
@@ -47,4 +43,9 @@ export const stakesAndVestsAddressesSelector = createSelector(
     addresses.push(account.toLowerCase());
     return addresses;
   }
+);
+
+export const delegateVestStatusSelector = createSelector(
+  vestingState,
+  (state) => selectCurrentCallStepData(state.delegateCall)
 );

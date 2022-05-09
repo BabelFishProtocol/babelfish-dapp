@@ -1,16 +1,26 @@
+import {
+  put,
+  take,
+  call,
+  fork,
+  cancel,
+  select,
+  takeLatest,
+} from 'typed-redux-saga';
 import { ContractCall } from 'ethers-multicall';
 import { BaseContract } from 'ethers';
 import { ParamType } from 'ethers/lib/utils';
-import { call, cancel, fork, select, take, takeLatest } from 'typed-redux-saga';
 
-import { appActions } from './app/app.slice';
+import { appActions } from '../app/app.slice';
+import { providerSelector } from '../app/app.selectors';
 import {
+  ContractStepCallSagaParams,
   CreateWatcherSagaOptions,
   MulticallContractCall,
   MulticallProviderType,
   MulticallResult,
-} from './types';
-import { accountSelector } from './app/app.selectors';
+  SagaContractCallStep,
+} from '../types';
 
 export const convertForMulticall = <
   Contract extends BaseContract,
@@ -61,14 +71,23 @@ export const createWatcherSaga = ({
   stopAction,
 }: CreateWatcherSagaOptions) => {
   function* runUpdater() {
-    const account = yield* select(accountSelector);
-    if (account) {
+    let provider = yield* select(providerSelector);
+
+    if (provider) {
       yield* call(fetchSaga);
+    }
+
+    function* update() {
+      provider = yield* select(providerSelector);
+
+      if (provider) {
+        yield* call(updateSaga);
+      }
     }
 
     yield* takeLatest(
       [appActions.setAccount.type, appActions.setBlockNumber.type],
-      updateSaga
+      update
     );
 
     yield* takeLatest([appActions.walletConnected.type], fetchSaga);
@@ -84,3 +103,57 @@ export const createWatcherSaga = ({
 
   return runWatcher;
 };
+
+function* stepCall<Operations extends string>(
+  { effect, name }: SagaContractCallStep<Operations>,
+  setStatusAction: ContractStepCallSagaParams<Operations>['setStatusAction'],
+  setStepDataAction: ContractStepCallSagaParams<Operations>['setStepDataAction']
+) {
+  yield* put(
+    setStatusAction({
+      currentOperation: name,
+      status: 'loading',
+    })
+  );
+
+  const tx = yield* effect;
+
+  yield* put(setStepDataAction({ tx }));
+
+  const txReceipt = yield* call(tx.wait);
+
+  yield* put(setStepDataAction({ txReceipt }));
+}
+
+/**
+ * @description function that calls multiple contract calls with proper state updates
+ * @param config Object containing:
+ *    - steps:             List of contract calls with corresponding names
+ *    - setErrorAction:    Action that will be dispatched in case of error
+ *    - setStatusAction:   Action to update the state
+ *    - setStepDataAction: Action to update step call data
+ */
+export function* contractStepCallsSaga<Operations extends string>({
+  steps,
+  setErrorAction,
+  setStatusAction,
+  setStepDataAction,
+}: ContractStepCallSagaParams<Operations>) {
+  try {
+    yield* put(setStatusAction({ status: 'loading' }));
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const step of steps) {
+      yield* stepCall(step, setStatusAction, setStepDataAction);
+    }
+
+    yield* put(setStatusAction({ status: 'success' }));
+  } catch (e) {
+    const msg =
+      e instanceof Error
+        ? e.message
+        : 'An unexpected error has occurred. Please try again';
+
+    yield* put(setErrorAction(msg));
+  }
+}

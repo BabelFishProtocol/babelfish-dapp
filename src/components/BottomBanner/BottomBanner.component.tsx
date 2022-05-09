@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import closeIcon from '../../assets/icons/cross.svg';
 
 export const BottomBanner = () => {
@@ -20,7 +20,7 @@ export const BottomBanner = () => {
         py: 2,
         textAlign: 'center',
         width: '100%',
-        backgroundColor: '#798293',
+        backgroundColor: ({ palette }) => palette.background.paper,
         color: 'black',
       }}
     >

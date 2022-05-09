@@ -4,7 +4,7 @@ import { throwError } from 'redux-saga-test-plan/providers';
 import { combineReducers, DeepPartial } from '@reduxjs/toolkit';
 
 import { pick } from '../../../utils/helpers';
-import { convertForMulticall } from '../../utils';
+import { convertForMulticall } from '../../utils/utils.sagas';
 import { GovernorTypes, ProposalState, Reducers } from '../../../constants';
 import { GovernorAlpha__factory } from '../../../contracts/types';
 import { rootReducer, RootState } from '../..';
@@ -37,8 +37,8 @@ import { governorContractsSelector } from '../proposals.selectors';
 
 import { fetchProposalsForContract, fetchProposalsList } from './proposalList';
 
-jest.mock('../../utils', () => ({
-  ...jest.requireActual('../../utils'),
+jest.mock('../../utils/utils.sagas', () => ({
+  ...jest.requireActual('../../utils/utils.sagas'),
   convertForMulticall: jest.fn(),
 }));
 
