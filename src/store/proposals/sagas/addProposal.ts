@@ -4,6 +4,7 @@ import { put, call, select } from 'typed-redux-saga';
 import { GOVERNANCE_OPTIONS, ProposalState } from '../../../constants';
 import { AddProposalInputs } from '../../../pages/AddProposal/AddProposal.fields';
 import { proposalsListQuery } from '../../../queries/proposalListQuery';
+import { formatWeiAmount } from '../../../utils/helpers';
 
 import {
   governorAdminSelector,
@@ -98,7 +99,9 @@ export function* checkAddEligibility() {
 
     if (threshold.gt(votes)) {
       throw new Error(
-        `Your voting power must be at least ${threshold} to make a proposal`
+        `Your voting power must be at least ${formatWeiAmount(
+          threshold
+        )} to make a proposal`
       );
     }
 
