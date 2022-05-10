@@ -1,6 +1,6 @@
-import { Fields } from '../../DelegateFeeEstimator/DelegateFeeEstimator.fields';
-
-export const WithdrawVestFields = Fields;
+export enum WithdrawVestFields {
+  withdrawTo = 'withdrawTo',
+}
 
 export type WithdrawVestFormValues = {
   [WithdrawVestFields.withdrawTo]: string;

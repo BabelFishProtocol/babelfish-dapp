@@ -49,3 +49,8 @@ export const delegateVestStatusSelector = createSelector(
   vestingState,
   (state) => selectCurrentCallStepData(state.delegateCall)
 );
+
+export const withdrawVestStatusSelector = createSelector(
+  vestingState,
+  (state) => selectCurrentCallStepData(state.withdrawCall)
+);

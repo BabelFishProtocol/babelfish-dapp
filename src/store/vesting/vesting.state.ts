@@ -2,6 +2,7 @@ import { StakeListItem } from '../staking/staking.state';
 import { CallState, LoadableValue } from '../types';
 
 export type DelegateVestCalls = 'delegate';
+export type WithdrawVestCalls = 'withdraw';
 
 export type VestListItem = StakeListItem & {
   stakingPeriodStart: number;
@@ -19,6 +20,11 @@ export class VestingState {
   delegateCall: CallState<DelegateVestCalls> = {
     status: 'idle',
     steps: [{ name: 'delegate', label: 'Delegating vest' }],
+  };
+
+  withdrawCall: CallState<WithdrawVestCalls> = {
+    status: 'idle',
+    steps: [{ name: 'withdraw', label: 'Withdrawing vest' }],
   };
 
   selectedVest?: VestListItem;
