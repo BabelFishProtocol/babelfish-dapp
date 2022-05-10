@@ -1,9 +1,11 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useForm } from 'react-hook-form';
+import { Breadcrumbs } from '../../components/Breadcrumbs/Breadcrumbs.component';
 import { Button } from '../../components/Button/Button.component';
 import { ControlledCurrencyInput } from '../../components/CurrencyInput/CurrencyInput.controlled';
 import { PageView } from '../../components/PageView/PageView.component';
+import { UrlNames } from '../../constants';
 import { formatDate } from '../../utils/helpers';
 import { ClaimInputs, ClaimDefaultValues } from './Claim.fields';
 import { ClaimComponentProps, ClaimFields } from './Claim.types';
@@ -20,6 +22,15 @@ export const ClaimComponent = ({ onSubmit }: ClaimComponentProps) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      <Box
+        sx={{
+          p: 0,
+          maxWidth: { xs: 1300 },
+          margin: '0 auto',
+        }}
+      >
+        <Breadcrumbs links={[{ title: UrlNames.Claim }]} />
+      </Box>
       <PageView
         title={
           <Typography variant="h2" padding={1}>

@@ -10,7 +10,8 @@ import {
   PageAligner,
 } from '../../components/PageView/PageView.component';
 import { BalanceBlock } from '../../components/BalanceBlock/BalanceBlock.component';
-import { Urls } from '../../constants';
+import { Breadcrumbs } from '../../components/Breadcrumbs/Breadcrumbs.component';
+import { UrlNames, Urls } from '../../constants';
 import { formatWeiAmount } from '../../utils/helpers';
 
 import { VestsListContainer } from './VestsList/VestsList.container';
@@ -41,6 +42,7 @@ export const StakingComponent = ({
           flexDirection: 'column',
         }}
       >
+        <Breadcrumbs links={[{ title: UrlNames.Staking }]} sx={{ pb: 1 }} />
         <CenteredBox sx={{ width: '100%', gap: 2, alignItems: 'stretch' }}>
           <BalanceBlock label="Total Staked Fish" {...fishStaked}>
             <Button
