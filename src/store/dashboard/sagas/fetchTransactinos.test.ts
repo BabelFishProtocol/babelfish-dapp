@@ -20,11 +20,6 @@ import { expectedTransactions } from './fetchTransactinos.mock';
 import { fetchTransactions } from './fetchTransactions';
 import { transactionsQuery } from '../../../queries/transactionsQuery';
 
-jest.mock('../../utils/utils.sagas', () => ({
-  ...jest.requireActual('../../utils/utils.sagas'),
-  convertForMulticall: jest.fn(),
-}));
-
 afterEach(() => {
   jest.clearAllMocks();
 });
