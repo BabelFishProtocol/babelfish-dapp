@@ -1,5 +1,6 @@
 import { expectSaga } from 'redux-saga-test-plan';
 import * as matchers from 'redux-saga-test-plan/matchers';
+import { throwError } from 'redux-saga-test-plan/providers';
 import { combineReducers, DeepPartial } from '@reduxjs/toolkit';
 
 import { pick } from '../../../utils/helpers';
@@ -49,6 +50,14 @@ describe('dashboard store', () => {
       },
     };
 
+    const failureState: DeepPartial<RootState> = {
+      ...initialState,
+      [Reducers.Dashboard]: {
+        ...initialState[Reducers.Dashboard],
+        transactionList: { state: 'failure', data: [] },
+      },
+    };
+
     const getBasePath = () =>
       expectSaga(fetchTransactions)
         .withReducer(reducer)
@@ -57,7 +66,7 @@ describe('dashboard store', () => {
         .select(accountSelector);
 
     it('happy path', async () => {
-      await getBasePath()
+      const runResult = await getBasePath()
         .provide([
           [matchers.select(subgraphClientSelector), mockSubgraphClient],
           [matchers.select(accountSelector), testAccount],
@@ -71,6 +80,36 @@ describe('dashboard store', () => {
         )
         .hasFinalState(successState)
         .run();
+
+      expect(runResult.effects).toEqual({});
+    });
+
+    it('when wallet is not connected', async () => {
+      const runResult = await getBasePath()
+        .provide([
+          [matchers.select(subgraphClientSelector), undefined],
+          [matchers.select(accountSelector), testAccount],
+        ])
+        .put(dashboardActions.fetchTransactionsFailure())
+        .hasFinalState(failureState)
+        .run();
+
+      expect(runResult.effects).toEqual({});
+    });
+
+    it('fetching error', async () => {
+      const runResult = await getBasePath()
+        .provide([
+          [matchers.select(subgraphClientSelector), mockSubgraphClient],
+          [matchers.select(accountSelector), testAccount],
+          [matchers.call.fn(transactionsQuery), throwError()],
+        ])
+        .call(transactionsQuery, mockSubgraphClient, { user: testAccount })
+        .put(dashboardActions.fetchTransactionsFailure())
+        .hasFinalState(failureState)
+        .run();
+
+      expect(runResult.effects).toEqual({});
     });
   });
 });
