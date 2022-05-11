@@ -21,9 +21,7 @@ export const proposalSlice = createSlice({
   reducers: {
     // ----- proposal details calls -----
 
-    castVote: (state, action: PayloadAction<{ support: boolean }>) => {
-      voteCallActions.trigger()(state, action);
-    },
+    castVote: voteCallActions.trigger<{ support: boolean }>(),
     resetVoteCall: voteCallActions.reset,
     setVoteCallStatus: voteCallActions.setStatus,
     setVoteCallStepData: voteCallActions.updateStep,
