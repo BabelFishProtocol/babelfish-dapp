@@ -1,8 +1,6 @@
-import {
-  Breadcrumbs as MUIBreadcrumbs,
-  Link as MUILink,
-  Typography,
-} from '@mui/material';
+import MUIBreadcrumbs from '@mui/material/Breadcrumbs';
+import MUILink from '@mui/material/Link';
+import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
 import { UrlNames, Urls } from '../../constants';
 import { BreadcrumbsProps } from './Breadcrumbs.types';
