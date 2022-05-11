@@ -27,7 +27,11 @@ export const DropdownOptions = <
   }, [setValueWhenOneOption]);
 
   return (
-    <FormControl fullWidth disabled={disabled || options.length === 1} sx={sx}>
+    <FormControl
+      fullWidth
+      disabled={disabled || (options.length === 1 && !!value)}
+      sx={sx}
+    >
       <Typography variant="h3" sx={{ mb: 1.5 }}>
         {title}
       </Typography>

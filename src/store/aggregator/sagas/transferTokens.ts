@@ -1,14 +1,16 @@
 import { utils } from 'ethers';
 import { call, put, select } from 'typed-redux-saga';
+import { ChainEnum } from '../../../config/chains';
 import {
   accountSelector,
   massetContractSelector,
 } from '../../app/app.selectors';
-import { SagaContractCallStep } from '../../types';
+import { SagaContactEffect, SagaContractCallStep } from '../../types';
 import { contractStepCallsSaga } from '../../utils/utils.sagas';
 import {
   bassetAddressSelector,
   bridgeContractSelector,
+  destinationChainSelector,
   flowStateSelector,
   massetAddressSelector,
   startingTokenAddressSelector,
@@ -24,9 +26,14 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
   const tokenDecimals = yield* select(startingTokenDecimalsSelector);
   const tokenContract = yield* select(startingTokenContractSelector);
   const massetAddress = yield* select(massetAddressSelector);
+  const massetContract = yield* select(massetContractSelector);
   const account = yield* select(accountSelector);
+  const destinationChain = yield* select(destinationChainSelector);
+  const isRSK =
+    destinationChain === ChainEnum.RSK ||
+    destinationChain === ChainEnum.RSK_TESTNET;
 
-  if (!tokenContract || !bridge) {
+  if (!massetContract || !tokenContract || !bridge) {
     yield* put(aggregatorActions.setSubmitError('Could not find contracts'));
     return;
   }
@@ -37,34 +44,26 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
   }
 
   const amount = utils.parseUnits(payload.SendAmount, tokenDecimals);
+  const spender = isRSK ? massetAddress : bridge.address.toLowerCase();
   const receiver = payload.ReceiveAddress;
   const extraData = utils.defaultAbiCoder.encode(['address'], [receiver]);
-  const allowanceBridge = yield* call(
+  const allowanceSpender = yield* call(
     tokenContract.allowance,
     account.toLowerCase(),
     bridge.address
   );
-
   const steps: SagaContractCallStep<AggregatorCalls>[] = [];
 
-  if (allowanceBridge.lt(amount)) {
-    if (allowanceBridge.gt(0)) {
-      const resetEffect = call(
-        tokenContract.approve,
-        bridge.address.toLowerCase(),
-        0
-      );
+  if (allowanceSpender.lt(amount)) {
+    if (allowanceSpender.gt(0)) {
+      const resetEffect = call(tokenContract.approve, spender, 0);
 
       steps.push({
         name: 'reset allowance',
         effect: resetEffect,
       });
     }
-    const approveEffect = call(
-      tokenContract.approve,
-      bridge.address.toLowerCase(),
-      amount
-    );
+    const approveEffect = call(tokenContract.approve, spender, amount);
 
     steps.push({
       name: 'approve',
@@ -72,13 +71,20 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
     });
   }
 
-  const submitEffect = call(
-    bridge.receiveTokensAt,
-    tokenAddress,
-    amount,
-    massetAddress,
-    extraData
-  );
+  let submitEffect: SagaContactEffect;
+
+  if (isRSK) {
+    submitEffect = call(massetContract.mintTo, tokenAddress, amount, receiver);
+  } else {
+    submitEffect = call(
+      bridge.receiveTokensAt,
+      tokenAddress,
+      amount,
+      massetAddress,
+      extraData
+    );
+  }
+
   steps.push({
     name: 'deposit',
     effect: submitEffect,
@@ -99,6 +105,7 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
   const bassetAddress = yield* select(bassetAddressSelector);
   const massetContract = yield* select(massetContractSelector);
   const account = yield* select(accountSelector);
+  const destinationChain = yield* select(destinationChainSelector);
 
   if (!massetContract || !tokenContract) {
     yield* put(aggregatorActions.setSubmitError('Could not find contracts'));
@@ -132,12 +139,27 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
     });
   }
 
-  const submitEffect = call(
-    massetContract['redeemToBridge(address,uint256,address)'],
-    bassetAddress,
-    amount,
-    receiver
-  );
+  let submitEffect: SagaContactEffect;
+
+  if (
+    destinationChain === ChainEnum.RSK ||
+    destinationChain === ChainEnum.RSK_TESTNET
+  ) {
+    submitEffect = call(
+      massetContract.redeemTo,
+      bassetAddress,
+      amount,
+      receiver
+    );
+  } else {
+    submitEffect = call(
+      massetContract['redeemToBridge(address,uint256,address)'],
+      bassetAddress,
+      amount,
+      receiver
+    );
+  }
+
   steps.push({
     name: 'withdraw',
     effect: submitEffect,
