@@ -29,6 +29,7 @@ import {
   mockToken,
   mockTokenAddress,
   mockTokenDecimals,
+  withdrawMockValues,
 } from '../aggregator.mock';
 import {
   bassetAddressSelector,
@@ -65,6 +66,7 @@ describe('transferTokens', () => {
     const mockSelectors: (EffectProviders | StaticProvider)[] = [
       [matchers.select(flowStateSelector), 'deposit'],
       [matchers.select(bridgeContractSelector), mockBridge],
+      [matchers.select(massetContractSelector), mockMasset],
       [matchers.select(startingTokenAddressSelector), mockTokenAddress],
       [matchers.select(startingTokenDecimalsSelector), mockTokenDecimals],
       [matchers.select(startingTokenContractSelector), mockToken],
@@ -287,7 +289,7 @@ describe('transferTokens', () => {
 
       await expectSaga(
         transferTokens,
-        aggregatorActions.submit(depositMockValues)
+        aggregatorActions.submit(withdrawMockValues)
       )
         .withReducer(aggregatorReducer)
         .withState(aggregatorInitialState)
@@ -340,7 +342,7 @@ describe('transferTokens', () => {
 
       await expectSaga(
         transferTokens,
-        aggregatorActions.submit(depositMockValues)
+        aggregatorActions.submit(withdrawMockValues)
       )
         .withReducer(aggregatorReducer)
         .withState(aggregatorInitialState)
@@ -389,7 +391,7 @@ describe('transferTokens', () => {
 
       await expectSaga(
         transferTokens,
-        aggregatorActions.submit(depositMockValues)
+        aggregatorActions.submit(withdrawMockValues)
       )
         .withReducer(aggregatorReducer)
         .withState(aggregatorInitialState)

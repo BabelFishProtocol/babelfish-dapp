@@ -10,7 +10,6 @@ import { contractStepCallsSaga } from '../../utils/utils.sagas';
 import {
   bassetAddressSelector,
   bridgeContractSelector,
-  destinationChainSelector,
   flowStateSelector,
   massetAddressSelector,
   startingTokenAddressSelector,
@@ -28,12 +27,9 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
   const massetAddress = yield* select(massetAddressSelector);
   const massetContract = yield* select(massetContractSelector);
   const account = yield* select(accountSelector);
-  const destinationChain = yield* select(destinationChainSelector);
-  const isRSK =
-    destinationChain === ChainEnum.RSK ||
-    destinationChain === ChainEnum.RSK_TESTNET;
+  const { StartingChain: startingChain, ReceiveAddress: receiver } = payload;
 
-  if (!massetContract || !tokenContract || !bridge) {
+  if (!massetContract || !tokenContract || !bridge || !startingChain) {
     yield* put(aggregatorActions.setSubmitError('Could not find contracts'));
     return;
   }
@@ -43,9 +39,10 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
     return;
   }
 
+  const isRSK =
+    startingChain === ChainEnum.RSK || startingChain === ChainEnum.RSK_TESTNET;
   const amount = utils.parseUnits(payload.SendAmount, tokenDecimals);
   const spender = isRSK ? massetAddress : bridge.address.toLowerCase();
-  const receiver = payload.ReceiveAddress;
   const extraData = utils.defaultAbiCoder.encode(['address'], [receiver]);
   const allowanceSpender = yield* call(
     tokenContract.allowance,
@@ -105,9 +102,10 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
   const bassetAddress = yield* select(bassetAddressSelector);
   const massetContract = yield* select(massetContractSelector);
   const account = yield* select(accountSelector);
-  const destinationChain = yield* select(destinationChainSelector);
+  const { DestinationChain: destinationChain, ReceiveAddress: receiver } =
+    payload;
 
-  if (!massetContract || !tokenContract) {
+  if (!massetContract || !tokenContract || !destinationChain) {
     yield* put(aggregatorActions.setSubmitError('Could not find contracts'));
     return;
   }
@@ -123,7 +121,6 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
     account,
     massetContract.address.toLowerCase()
   );
-  const receiver = payload.ReceiveAddress;
   const steps: SagaContractCallStep<AggregatorCalls>[] = [];
 
   if (allowanceMasset.lt(amount)) {
@@ -139,12 +136,12 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
     });
   }
 
+  const isRSK =
+    destinationChain === ChainEnum.RSK ||
+    destinationChain === ChainEnum.RSK_TESTNET;
   let submitEffect: SagaContactEffect;
 
-  if (
-    destinationChain === ChainEnum.RSK ||
-    destinationChain === ChainEnum.RSK_TESTNET
-  ) {
+  if (isRSK) {
     submitEffect = call(
       massetContract.redeemTo,
       bassetAddress,
