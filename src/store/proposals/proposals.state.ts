@@ -4,8 +4,9 @@ import {
   ProposalState,
 } from '../../constants';
 import { FiniteStates } from '../../utils/types';
-import { LoadableValue } from '../types';
+import { CallState, LoadableValue } from '../types';
 
+export type VoteCall = 'vote for' | 'vote against';
 export type ProposalUrlParams = Pick<Proposal, 'id' | 'governorType'>;
 
 export type Proposal = {
@@ -49,6 +50,14 @@ export class ProposalsState {
   reasonToBlockProposal?: string;
   selectedGovernor: string = GOVERNANCE_OPTIONS.GOVERNOR_ADMIN.id;
   addProposalState: FiniteStates = 'idle';
+
+  voteCall: CallState<VoteCall> = {
+    status: 'idle',
+    steps: [
+      { name: 'vote for', label: 'voting' },
+      { name: 'vote against', label: 'voting' },
+    ],
+  };
 
   proposalsList: LoadableValue<Proposal[]> = {
     state: 'idle',

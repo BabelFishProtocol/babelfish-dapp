@@ -3,6 +3,7 @@ import { Reducers } from '../../constants';
 import { AddProposalFields } from '../../pages/AddProposal/AddProposal.types';
 import { FiniteStates } from '../../utils/types';
 import { ActionsType } from '../types';
+import { createStepCallsActions } from '../utils/utils.reducers';
 import {
   Proposal,
   ProposalDetails,
@@ -12,10 +13,23 @@ import {
 
 const initialState = { ...new ProposalsState() };
 
+const voteCallActions = createStepCallsActions(initialState, 'voteCall');
+
 export const proposalSlice = createSlice({
   name: Reducers.Proposals,
   initialState,
   reducers: {
+    // ----- proposal details calls -----
+
+    castVote: (state, action: PayloadAction<{ support: boolean }>) => {
+      voteCallActions.trigger()(state, action);
+    },
+    resetVoteCall: voteCallActions.reset,
+    setVoteCallStatus: voteCallActions.setStatus,
+    setVoteCallStepData: voteCallActions.updateStep,
+    setVoteCallSteps: voteCallActions.setSteps,
+    setVoteCallError: voteCallActions.setStepError,
+
     watchProposalsList: (state) => {
       state.proposalsList.state = 'loading';
     },

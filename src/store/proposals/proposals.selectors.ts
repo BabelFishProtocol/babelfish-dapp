@@ -3,7 +3,9 @@ import { BigNumber } from 'ethers';
 import { RootState } from '..';
 import { GovernorTypes, Reducers } from '../../constants';
 import { GovernorAlpha__factory } from '../../contracts/types';
+import { FiniteStates } from '../../utils/types';
 import { compareAddresses } from '../../utils/helpers';
+import { selectCurrentCallStepData } from '../utils/utils.selectors';
 import {
   accountSelector,
   addressesSelector,
@@ -176,4 +178,19 @@ export const reasonToBlockSelector = createSelector(
 export const selectedGovernorSelector = createSelector(
   proposalsState,
   (state) => state.selectedGovernor
+);
+
+const voteCall = createSelector(proposalsState, (state) => state.voteCall);
+export const voteCallStatusSelector = createSelector(voteCall, (state) =>
+  selectCurrentCallStepData(state)
+);
+export const forVoteStatusSelector = createSelector(
+  voteCall,
+  (state): FiniteStates =>
+    state.currentOperation === 'vote for' ? state.status : 'idle'
+);
+export const againstVoteStatusSelector = createSelector(
+  voteCall,
+  (state): FiniteStates =>
+    state.currentOperation === 'vote against' ? state.status : 'idle'
 );
