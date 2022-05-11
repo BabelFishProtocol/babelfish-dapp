@@ -17,7 +17,7 @@ export enum TokenEnum {
   XUSD = 'XUSD',
   RDOC = 'RDOC',
   BDUS = 'BDUS',
-  ZUSD = 'ZUSD'
+  ZUSD = 'ZUSD',
 }
 
 export interface TokenTypeBase {
@@ -116,7 +116,7 @@ export const tokens: TokensType = {
     icon: rdocIcon, // not provided yet
     addresses: {
       [ChainEnum.RSK]: '0x4A0741FA749Ed6b1F810224D09f1f511952e67De', // not provided yet - the same as RSK testnet
-      [ChainEnum.RSK_TESTNET]: '0x4A0741FA749Ed6b1F810224D09f1f511952e67De', 
+      [ChainEnum.RSK_TESTNET]: '0x4A0741FA749Ed6b1F810224D09f1f511952e67De',
     },
   },
 } as const;
