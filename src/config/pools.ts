@@ -45,7 +45,7 @@ const testnetBaseChains: BaseChainType[] = [
   {
     ...chains[ChainEnum.BSC_TESTNET],
     bassets: [tokens.USDT, tokens.USDC, tokens.BUSD, tokens.DAI],
-  },
+  }
 ];
 export const testnetPool = {
   baseChains: testnetBaseChains,
