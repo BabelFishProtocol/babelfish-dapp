@@ -205,7 +205,11 @@ export const startingTokenContractSelector = createSelector(
   }
 );
 
-/** Original destination token selector e.g. DAI, USDC, BDUS */
+/** Original destination token selector
+ ** for 'deposit' flowState: XUSD
+ ** for 'withdraw' flowState through bridge: DAI, USDT, ..
+ ** for 'withdraw' flowState on RSK: BDUS, RDOC, ...
+ */
 export const destinationTokenAddressSelector = createSelector(
   [destinationChainSelector, destinationTokenSelector],
   (destinationChain, destinationToken) => {
@@ -229,7 +233,7 @@ export const isEnoughTokensSelector = createSelector(
 );
 
 /**
- * Pool token selector e.g. esDAI, bsUSDC
+ * Pool token selector e.g. DAIes, USDCbs
  ** NOTE: Don't use for native rsk tokens e.g BDUS, ZUSD
  */
 export const bassetAddressSelector = createSelector(
