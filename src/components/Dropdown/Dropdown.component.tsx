@@ -25,13 +25,11 @@ export const DropdownOptions = <
   useEffect(() => {
     setValueWhenOneOption?.();
   }, [setValueWhenOneOption]);
+  const isDisabled =
+    disabled || !options.length || (options.length === 1 && !!value);
 
   return (
-    <FormControl
-      fullWidth
-      disabled={disabled || (options.length === 1 && !!value)}
-      sx={sx}
-    >
+    <FormControl fullWidth disabled={isDisabled} sx={sx}>
       <Typography variant="h3" sx={{ mb: 1.5 }}>
         {title}
       </Typography>

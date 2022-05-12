@@ -67,14 +67,14 @@ export type CallState<Operations extends string> = {
   steps: StepData<Operations>[];
 };
 
-export type SagaContactEffect = SagaGenerator<
+export type SagaContractEffect = SagaGenerator<
   ContractTransaction,
   CallEffect<ContractTransaction>
 >;
 
 export type SagaContractCallStep<Operations extends string> = {
   name: Operations;
-  effect: SagaContactEffect;
+  effect: SagaContractEffect;
 };
 
 export type ContractStepCallSagaParams<Operations extends string> = {

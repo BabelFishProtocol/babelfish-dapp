@@ -5,7 +5,7 @@ import {
   accountSelector,
   massetContractSelector,
 } from '../../app/app.selectors';
-import { SagaContactEffect, SagaContractCallStep } from '../../types';
+import { SagaContractEffect, SagaContractCallStep } from '../../types';
 import { contractStepCallsSaga } from '../../utils/utils.sagas';
 import {
   bridgeContractSelector,
@@ -69,7 +69,7 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
     });
   }
 
-  let submitEffect: SagaContactEffect;
+  let submitEffect: SagaContractEffect;
 
   if (isRSK) {
     submitEffect = call(
