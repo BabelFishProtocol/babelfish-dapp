@@ -1,27 +1,29 @@
 import { put, call, select } from 'typed-redux-saga';
-import { historyStakesQuery } from '../../../queries/historyStakeListQuery';
-import { subgraphClientSelector } from '../../app/app.selectors';
-import { stakesAndVestsAddressesSelector } from '../../vesting/vesting.selectors';
+import { allUserStakesQuery } from '../../../queries/historyStakeListQuery';
+import {
+  accountSelector,
+  subgraphClientSelector,
+} from '../../app/app.selectors';
 import { stakingActions } from '../staking.slice';
 
 export function* fetchHistoryStaking() {
   try {
     const subgraphClient = yield* select(subgraphClientSelector);
-    const contractAddresses = yield* select(stakesAndVestsAddressesSelector);
+    const account = yield* select(accountSelector);
 
-    if (!subgraphClient || !contractAddresses?.length)
-      throw new Error('Wallet not connected');
+    if (!subgraphClient || !account) throw new Error('Wallet not connected');
 
-    const { stakeEvents } = yield* call(historyStakesQuery, subgraphClient, {
-      contractAddresses,
+    const { user } = yield* call(allUserStakesQuery, subgraphClient, {
+      contractAddress: account.toLowerCase(),
     });
 
-    const stakesHistory = stakeEvents.map((stake) => ({
+    const stakesHistory = user.allStakes.map((stake) => ({
       asset: 'FISH',
       stakedAmount: stake.amount,
       unlockDate: stake.lockedUntil,
       totalStaked: stake.totalStaked,
       txHash: stake.transactionHash,
+      blockTimestamp: stake.blockTimestamp,
     }));
 
     yield* put(stakingActions.setHistoryStakesList(stakesHistory));
