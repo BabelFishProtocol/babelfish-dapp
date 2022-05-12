@@ -1,5 +1,5 @@
 import styled from '@mui/material/styles/styled';
-import { Urls } from '../../constants';
+import { UrlNames, Urls } from '../../constants';
 import { NavLink } from './NavLink.component';
 
 const StyledNav = styled('nav')`
@@ -11,9 +11,9 @@ const StyledNav = styled('nav')`
 
 export const Navigation = () => (
   <StyledNav>
-    <NavLink to={Urls.Aggregator}>DEPOSIT/WITHDRAW XUSD</NavLink>
-    <NavLink to={Urls.Staking}>STAKE YOUR FISH</NavLink>
-    <NavLink to={Urls.Proposals}>DAO/GOVERN WITH FISH</NavLink>
-    <NavLink to={Urls.Claim}>CLAIM</NavLink>
+    <NavLink to={Urls.Aggregator}>{UrlNames.Aggregator}</NavLink>
+    <NavLink to={Urls.Staking}>{UrlNames.Staking}</NavLink>
+    <NavLink to={Urls.Proposals}>{UrlNames.Proposals}</NavLink>
+    <NavLink to={Urls.Claim}>{UrlNames.Claim}</NavLink>
   </StyledNav>
 );
