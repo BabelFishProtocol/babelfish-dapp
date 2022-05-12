@@ -9,6 +9,7 @@ import {
   ContractTransaction,
 } from 'ethers';
 
+import { TransactionReceipt } from '@ethersproject/providers';
 import { pick } from '../../../utils/helpers';
 import { GovernorTypes, ProposalState, Reducers } from '../../../constants';
 import {
@@ -32,18 +33,19 @@ import {
   subgraphClientSelector,
 } from '../../app/app.selectors';
 
-import {
-  governorContractsSelector,
-  selectedGovernorSelector,
-  selectedProposalGovernor,
-  selectedProposalSelector,
-} from '../proposals.selectors';
+import { selectedGovernorSelector } from '../proposals.selectors';
 import { ProposalsActions, proposalsActions } from '../proposals.slice';
-import { ProposalDetails, ProposalsState } from '../proposals.state';
+import { ProposalsState } from '../proposals.state';
 
 import { addProposal, checkAddEligibility } from './addProposal';
 import { testAccount } from '../../staking/staking.mock';
-import { proposalsListQuery } from '../../../queries/proposalListQuery';
+import { userProposalsListQuery } from '../../../queries/proposalListQuery';
+import { convertForMulticall } from '../../utils/utils.sagas';
+
+jest.mock('../../utils/utils.sagas', () => ({
+  ...jest.requireActual('../../utils/utils.sagas'),
+  convertForMulticall: jest.fn(),
+}));
 
 const mockGovernorContract = createMockedContract(
   GovernorAlpha__factory.connect('0x123', mockSigner),
@@ -61,28 +63,58 @@ afterEach(() => {
 
 describe('add proposal sagas', () => {
   const reducer = combineReducers(pick(rootReducer, [Reducers.Proposals]));
+  const initialState: DeepPartial<RootState> = {
+    [Reducers.Proposals]: {
+      ...new ProposalsState(),
+    },
+  };
 
   describe('addProposal', () => {
-    const mockGovernorAddress = '0x0';
-    const mockProposalGuardian = '0x12';
-    const mockProposalType = GovernorTypes.GovernorAdmin;
+    const initialSteps =
+      initialState[Reducers.Proposals]?.addProposalCall?.steps;
 
-    const mockGovernorContracts = {
-      [GovernorTypes.GovernorOwner]: 'wrongGovernorAddress',
-      [mockProposalType]: mockGovernorAddress,
-    };
+    const mockTx = {
+      hash: '0x01',
+      wait: jest.fn() as ContractTransaction['wait'],
+    } as ContractTransaction;
 
-    const initialState: DeepPartial<RootState> = {
-      [Reducers.Proposals]: {
-        ...new ProposalsState(),
-      },
-    };
+    const mockTxReceipt = {
+      transactionHash: '0x01',
+    } as TransactionReceipt;
 
     const successState: DeepPartial<RootState> = {
       ...initialState,
       [Reducers.Proposals]: {
         ...initialState[Reducers.Proposals],
-        addProposalState: 'success',
+        addProposalCall: {
+          status: 'success',
+          currentOperation: 'propose',
+          steps: [
+            {
+              ...initialSteps?.[0],
+              tx: mockTx,
+              txReceipt: mockTxReceipt,
+            },
+          ],
+        },
+      },
+    };
+    const errorMsg = 'An unexpected error has occurred. Please try again';
+
+    const failureState: DeepPartial<RootState> = {
+      ...initialState,
+      [Reducers.Proposals]: {
+        ...initialState[Reducers.Proposals],
+        addProposalCall: {
+          status: 'failure',
+          steps: [
+            {
+              ...initialSteps?.[0],
+              error: errorMsg,
+            },
+          ],
+          currentOperation: 'propose',
+        },
       },
     };
 
@@ -90,24 +122,21 @@ describe('add proposal sagas', () => {
       ...initialState,
       [Reducers.Proposals]: {
         ...initialState[Reducers.Proposals],
-        addProposalState: 'failure',
-        addProposalErrorReason: 'Wallet not connected',
-      },
-    };
-    const failureState: DeepPartial<RootState> = {
-      ...initialState,
-      [Reducers.Proposals]: {
-        ...initialState[Reducers.Proposals],
-        addProposalState: 'failure',
-        addProposalErrorReason:
-          'There was some error in Adding the proposal. Please try again',
+        addProposalCall: {
+          status: 'failure',
+          steps: [
+            {
+              ...initialSteps?.[0],
+              error: 'Wallet not connected',
+            },
+          ],
+        },
       },
     };
 
-    const proposalGovernorAdminPayload: ProposalsActions['startProposal'] = {
+    const proposalGovernorAdminPayload: ProposalsActions['addProposal'] = {
       payload: {
         SendProposalContract: GovernorTypes.GovernorAdmin,
-        // SendProposalContract: '0x056665655DA3',
         Description: 'test description of proposal',
         Values: [
           {
@@ -118,13 +147,9 @@ describe('add proposal sagas', () => {
           },
         ],
       },
-      type: '',
+      type: 'proposals/addProposal',
     };
 
-    const mockTxReceipt = { testTxReceipt: [] };
-    const mockTx = {
-      wait: jest.fn().mockReturnValue(mockTxReceipt),
-    } as unknown as ContractTransaction;
     const getBasePath = () =>
       expectSaga(addProposal, proposalGovernorAdminPayload)
         .withReducer(reducer)
@@ -132,7 +157,7 @@ describe('add proposal sagas', () => {
         .select(accountSelector);
 
     it('happy path', async () => {
-      const runResult = await getBasePath()
+      await getBasePath()
         .provide([
           [matchers.select(accountSelector), testAccount],
           [matchers.select(governorAdminSelector), mockGovernorContract],
@@ -160,16 +185,12 @@ describe('add proposal sagas', () => {
           [proposalGovernorAdminPayload.payload.Values[0].Calldata],
           proposalGovernorAdminPayload.payload.Description
         )
-        .call(mockTx.wait)
-        .put(proposalsActions.proposalSuccess())
         .hasFinalState(successState)
         .run();
-
-      expect(runResult.effects).toEqual({});
     });
 
     it('when wallet is not connected', async () => {
-      const runResult = await getBasePath()
+      await getBasePath()
         .provide([
           [matchers.select(accountSelector), undefined],
           [matchers.select(governorAdminSelector), mockGovernorContract],
@@ -189,15 +210,12 @@ describe('add proposal sagas', () => {
           [matchers.call(mockTx.wait), mockTxReceipt],
         ])
         .select(governorAdminSelector)
-        .put(proposalsActions.proposalFailure('Wallet not connected'))
         .hasFinalState(failureWalletNotConnectedState)
         .run();
-
-      expect(runResult.effects).toEqual({});
     });
 
     it('fetching error', async () => {
-      const runResult = await getBasePath()
+      await getBasePath()
         .provide([
           [matchers.select(accountSelector), testAccount],
           [matchers.select(governorAdminSelector), mockGovernorContract],
@@ -225,63 +243,14 @@ describe('add proposal sagas', () => {
           [proposalGovernorAdminPayload.payload.Values[0].Calldata],
           proposalGovernorAdminPayload.payload.Description
         )
-        .put(
-          proposalsActions.proposalFailure(
-            'There was some error in Adding the proposal. Please try again'
-          )
-        )
         .hasFinalState(failureState)
         .run();
-
-      expect(runResult.effects).toEqual({});
     });
   });
   describe('checkAddEligibility', () => {
-    const mockGovernorAddress = '0x0';
-    const mockProposalGuardian = '0x12';
-    const mockProposalType = GovernorTypes.GovernorAdmin;
-
-    const mockGovernorContracts = {
-      [GovernorTypes.GovernorOwner]: 'wrongGovernorAddress',
-      [mockProposalType]: mockGovernorAddress,
-    };
-
-    const initialState: DeepPartial<RootState> = {
-      [Reducers.Proposals]: {
-        ...new ProposalsState(),
-      },
-    };
-
-    const successState: DeepPartial<RootState> = {
-      ...initialState,
-      [Reducers.Proposals]: {
-        ...initialState[Reducers.Proposals],
-        addProposalState: 'success',
-      },
-    };
-
-    const failureWalletNotConnectedState: DeepPartial<RootState> = {
-      ...initialState,
-      [Reducers.Proposals]: {
-        ...initialState[Reducers.Proposals],
-        addProposalState: 'failure',
-        addProposalErrorReason: 'Wallet not connected',
-      },
-    };
-    const failureState: DeepPartial<RootState> = {
-      ...initialState,
-      [Reducers.Proposals]: {
-        ...initialState[Reducers.Proposals],
-        addProposalState: 'failure',
-        addProposalErrorReason:
-          'There was some error in Adding the proposal. Please try again',
-      },
-    };
-
-    const proposalGovernorAdminPayload: ProposalsActions['startProposal'] = {
+    const proposalGovernorAdminPayload: ProposalsActions['addProposal'] = {
       payload: {
         SendProposalContract: GovernorTypes.GovernorAdmin,
-        // SendProposalContract: '0x056665655DA3',
         Description: 'test description of proposal',
         Values: [
           {
@@ -295,12 +264,21 @@ describe('add proposal sagas', () => {
       type: '',
     };
 
-    const adminProposalStates = [ProposalState.Pending];
+    const multicallResult = {
+      name: 'mocked args for multicall',
+    };
 
-    const mockTxReceipt = { testTxReceipt: [] };
-    const mockTx = {
-      wait: jest.fn().mockReturnValue(mockTxReceipt),
-    } as unknown as ContractTransaction;
+    (convertForMulticall as jest.Mock).mockImplementation(
+      () => multicallResult
+    );
+
+    const addProposalStates = [ProposalState.Canceled];
+
+    const mockThreshold = BigNumber.from(555555555544455);
+    const mockVotes = BigNumber.from(4555555555544455);
+
+    const mockSelectedGovernor = GovernorTypes.GovernorAdmin;
+
     const getBasePath = () =>
       expectSaga(checkAddEligibility)
         .withReducer(reducer)
@@ -311,132 +289,314 @@ describe('add proposal sagas', () => {
         .select(multicallProviderSelector)
         .select(selectedGovernorSelector);
 
-    const proposals = [proposalGovernorAdminPayload];
-    const multicallResultAdmin = {
-      name: 'mocked args for governor admin multicall',
-    };
-
-    const mockThreshold: BigNumber = BigNumber.from(5555);
-
     it('happy path', async () => {
-      const runResult = await getBasePath()
+      const successState: DeepPartial<RootState> = {
+        ...initialState,
+        [Reducers.Proposals]: {
+          ...initialState[Reducers.Proposals],
+          reasonToBlockProposal: undefined,
+        },
+      };
+      await getBasePath()
         .provide([
           [matchers.select(accountSelector), testAccount],
           [matchers.select(stakingContractSelector), mockStaking],
           [matchers.select(subgraphClientSelector), mockSubgraphClient],
           [matchers.select(multicallProviderSelector), mockMulticallProvider],
+          [matchers.select(selectedGovernorSelector), mockSelectedGovernor],
           [matchers.select(governorAdminSelector), mockGovernorContract],
           [
             matchers.call(mockGovernorContract.proposalThreshold),
             mockThreshold,
           ],
-          [matchers.call(mockStaking.getCurrentVotes, testAccount), 44445],
-          [matchers.call(mockThreshold.gt, 44445), true],
+          [matchers.call(mockStaking.getCurrentVotes, testAccount), mockVotes],
           [
-            matchers.call(proposalsListQuery, mockSubgraphClient, {
+            matchers.call(userProposalsListQuery, mockSubgraphClient, {
               contractAddress: mockGovernorContract.address,
+              proposerAddress: testAccount,
             }),
             {
               proposals: [proposalGovernorAdminPayload],
             },
           ],
-
-          // [matchers.call(fetchProposalStates, proposals, mockGovernorContract, mockMulticallProvider), {
-          //   adminProposalStates,
-          // }
-          // ],
           [
             matchers.call(
               [mockMulticallProvider, mockMulticallProvider.all],
-              [multicallResultAdmin]
+              [multicallResult]
             ),
-            adminProposalStates,
+            addProposalStates,
           ],
         ])
         .select(governorAdminSelector)
-        .call(mockGovernorContract.proposalThreshold, mockThreshold)
+        .call(mockGovernorContract.proposalThreshold)
         .call(mockStaking.getCurrentVotes, testAccount)
-        .call(mockThreshold.gt, 44445)
-        .call(proposalsListQuery, mockSubgraphClient, {
+        .call(userProposalsListQuery, mockSubgraphClient, {
           contractAddress: mockGovernorContract.address,
+          proposerAddress: testAccount,
         })
         .call(
           [mockMulticallProvider, mockMulticallProvider.all],
-          [multicallResultAdmin]
+          [multicallResult]
         )
         .put(proposalsActions.eligibleForAddProposal())
         .hasFinalState(successState)
         .run();
+    });
 
-      expect(runResult.effects).toEqual({});
+    it('when user has a live proposal', async () => {
+      const liveProposalErrorState: DeepPartial<RootState> = {
+        ...initialState,
+        [Reducers.Proposals]: {
+          ...initialState[Reducers.Proposals],
+          reasonToBlockProposal:
+            'You already have a live proposal. You cannot add another one at this time',
+        },
+      };
+      const existingProposalStates = [ProposalState.Pending];
+
+      // await getBasePath()
+      //   .provide([
+      //     [matchers.select(accountSelector), testAccount],
+      //     [matchers.select(stakingContractSelector), mockStaking],
+      //     [matchers.select(subgraphClientSelector), mockSubgraphClient],
+      //     [matchers.select(multicallProviderSelector), mockMulticallProvider],
+      //     [matchers.select(selectedGovernorSelector), mockSelectedGovernor],
+      //     [matchers.select(governorAdminSelector), mockGovernorContract],
+      //     [
+      //       matchers.call(mockGovernorContract.proposalThreshold),
+      //       mockThreshold,
+      //     ],
+      //     [matchers.call(mockStaking.getCurrentVotes, testAccount), mockVotes],
+      //     [
+      //       matchers.call(userProposalsListQuery, mockSubgraphClient, {
+      //         contractAddress: mockGovernorContract.address,
+      //         proposerAddress: testAccount,
+      //       }),
+      //       {
+      //         proposals: [proposalGovernorAdminPayload],
+      //       },
+      //     ],
+      //     [
+      //       matchers.call(
+      //         [mockMulticallProvider, mockMulticallProvider.all],
+      //         [multicallResult]
+      //       ),
+      //       existingProposalStates,
+      //     ],
+      //   ])
+      //   .select(governorAdminSelector)
+      //   .call(mockGovernorContract.proposalThreshold)
+      //   .call(mockStaking.getCurrentVotes, testAccount)
+      //   .call(userProposalsListQuery, mockSubgraphClient, {
+      //     contractAddress: mockGovernorContract.address,
+      //     proposerAddress: testAccount,
+      //   })
+      //   .call(
+      //     [mockMulticallProvider, mockMulticallProvider.all],
+      //     [multicallResult]
+      //   )
+      //   .put(proposalsActions.eligibleForAddProposal())
+      //   .hasFinalState(liveProposalErrorState)
+      //   .run();
+      await getBasePath()
+        .provide([
+          [matchers.select(accountSelector), testAccount],
+          [matchers.select(stakingContractSelector), mockStaking],
+          [matchers.select(subgraphClientSelector), mockSubgraphClient],
+          [matchers.select(multicallProviderSelector), mockMulticallProvider],
+          [matchers.select(selectedGovernorSelector), mockSelectedGovernor],
+          [matchers.select(governorAdminSelector), mockGovernorContract],
+          [
+            matchers.call(mockGovernorContract.proposalThreshold),
+            mockThreshold,
+          ],
+          [matchers.call(mockStaking.getCurrentVotes, testAccount), mockVotes],
+          [
+            matchers.call(userProposalsListQuery, mockSubgraphClient, {
+              contractAddress: mockGovernorContract.address,
+              proposerAddress: testAccount,
+            }),
+            {
+              proposals: [proposalGovernorAdminPayload],
+            },
+          ],
+          [
+            matchers.call(
+              [mockMulticallProvider, mockMulticallProvider.all],
+              [multicallResult]
+            ),
+            existingProposalStates,
+          ],
+        ])
+        .select(governorAdminSelector)
+        .call(mockGovernorContract.proposalThreshold)
+        .call(mockStaking.getCurrentVotes, testAccount)
+        .call(userProposalsListQuery, mockSubgraphClient, {
+          contractAddress: mockGovernorContract.address,
+          proposerAddress: testAccount,
+        })
+        .call(
+          [mockMulticallProvider, mockMulticallProvider.all],
+          [multicallResult]
+        )
+        .put(
+          proposalsActions.notEligibleForAddProposal(
+            'You already have a live proposal. You cannot add another one at this time'
+          )
+        )
+        .hasFinalState(liveProposalErrorState)
+        .run();
     });
 
     it('when wallet is not connected', async () => {
+      const walletErrorState: DeepPartial<RootState> = {
+        ...initialState,
+        [Reducers.Proposals]: {
+          ...initialState[Reducers.Proposals],
+          reasonToBlockProposal: 'Wallet not connected',
+        },
+      };
       const runResult = await getBasePath()
         .provide([
           [matchers.select(accountSelector), undefined],
+          [matchers.select(stakingContractSelector), mockStaking],
+          [matchers.select(subgraphClientSelector), mockSubgraphClient],
+          [matchers.select(multicallProviderSelector), mockMulticallProvider],
+          [matchers.select(selectedGovernorSelector), mockSelectedGovernor],
           [matchers.select(governorAdminSelector), mockGovernorContract],
           [
-            matchers.call(
-              mockGovernorContract.propose,
-              [proposalGovernorAdminPayload.payload.Values[0].Target],
-              [
-                proposalGovernorAdminPayload.payload.Values[0].Value,
-              ] as BigNumberish[],
-              [proposalGovernorAdminPayload.payload.Values[0].Signature],
-              [proposalGovernorAdminPayload.payload.Values[0].Calldata],
-              proposalGovernorAdminPayload.payload.Description
-            ),
-            mockTx,
+            matchers.call(mockGovernorContract.proposalThreshold),
+            mockThreshold,
           ],
-          [matchers.call(mockTx.wait), mockTxReceipt],
+          [matchers.call(mockStaking.getCurrentVotes, testAccount), mockVotes],
+          // [matchers.call(mockThreshold.gt, mockVotes), false],
+          [
+            matchers.call(userProposalsListQuery, mockSubgraphClient, {
+              contractAddress: mockGovernorContract.address,
+              proposerAddress: testAccount,
+            }),
+            {
+              proposals: [proposalGovernorAdminPayload],
+            },
+          ],
+          [
+            matchers.call(
+              [mockMulticallProvider, mockMulticallProvider.all],
+              [multicallResult]
+            ),
+            addProposalStates,
+          ],
         ])
         .select(governorAdminSelector)
-        .put(proposalsActions.proposalFailure('Wallet not connected'))
-        .hasFinalState(failureWalletNotConnectedState)
+        .put(proposalsActions.notEligibleForAddProposal('Wallet not connected'))
+        .hasFinalState(walletErrorState)
         .run();
 
       expect(runResult.effects).toEqual({});
     });
 
-    it('fetching error', async () => {
-      const runResult = await getBasePath()
+    it('when threshold is bigger then votes', async () => {
+      const mockLowerVotes = BigNumber.from(45555555554445);
+      const thresholdErrorState: DeepPartial<RootState> = {
+        ...initialState,
+        [Reducers.Proposals]: {
+          ...initialState[Reducers.Proposals],
+          reasonToBlockProposal:
+            'Your voting power must be at least 0.0005 to make a proposal',
+        },
+      };
+
+      await getBasePath()
         .provide([
           [matchers.select(accountSelector), testAccount],
+          [matchers.select(stakingContractSelector), mockStaking],
+          [matchers.select(subgraphClientSelector), mockSubgraphClient],
+          [matchers.select(multicallProviderSelector), mockMulticallProvider],
+          [matchers.select(selectedGovernorSelector), mockSelectedGovernor],
           [matchers.select(governorAdminSelector), mockGovernorContract],
           [
-            matchers.call(
-              mockGovernorContract.propose,
-              [proposalGovernorAdminPayload.payload.Values[0].Target],
-              [
-                proposalGovernorAdminPayload.payload.Values[0].Value,
-              ] as BigNumberish[],
-              [proposalGovernorAdminPayload.payload.Values[0].Signature],
-              [proposalGovernorAdminPayload.payload.Values[0].Calldata],
-              proposalGovernorAdminPayload.payload.Description
-            ),
-            throwError(),
+            matchers.call(mockGovernorContract.proposalThreshold),
+            mockThreshold,
           ],
-          [matchers.call(mockTx.wait), mockTxReceipt],
+          [
+            matchers.call(mockStaking.getCurrentVotes, testAccount),
+            mockLowerVotes,
+          ],
+          [
+            matchers.call(userProposalsListQuery, mockSubgraphClient, {
+              contractAddress: mockGovernorContract.address,
+              proposerAddress: testAccount,
+            }),
+            {
+              proposals: [proposalGovernorAdminPayload],
+            },
+          ],
+          [
+            matchers.call(
+              [mockMulticallProvider, mockMulticallProvider.all],
+              [multicallResult]
+            ),
+            addProposalStates,
+          ],
         ])
         .select(governorAdminSelector)
-        .call(
-          mockGovernorContract.propose,
-          [proposalGovernorAdminPayload.payload.Values[0].Target],
-          [proposalGovernorAdminPayload.payload.Values[0].Value],
-          [proposalGovernorAdminPayload.payload.Values[0].Signature],
-          [proposalGovernorAdminPayload.payload.Values[0].Calldata],
-          proposalGovernorAdminPayload.payload.Description
-        )
+        .call(mockGovernorContract.proposalThreshold)
+        .call(mockStaking.getCurrentVotes, testAccount)
         .put(
-          proposalsActions.proposalFailure(
-            'There was some error in Adding the proposal. Please try again'
+          proposalsActions.notEligibleForAddProposal(
+            'Your voting power must be at least 0.0005 to make a proposal'
+          )
+        )
+        .hasFinalState(thresholdErrorState)
+        .run();
+    });
+
+    it('fetching error', async () => {
+      const failureState: DeepPartial<RootState> = {
+        ...initialState,
+        [Reducers.Proposals]: {
+          ...initialState[Reducers.Proposals],
+          reasonToBlockProposal:
+            'You cannot add the proposal right now. Please try again later',
+        },
+      };
+
+      await getBasePath()
+        .provide([
+          [matchers.select(accountSelector), testAccount],
+          [matchers.select(stakingContractSelector), mockStaking],
+          [matchers.select(subgraphClientSelector), mockSubgraphClient],
+          [matchers.select(multicallProviderSelector), mockMulticallProvider],
+          [matchers.select(selectedGovernorSelector), mockSelectedGovernor],
+          [matchers.select(governorAdminSelector), mockGovernorContract],
+          [matchers.call(mockGovernorContract.proposalThreshold), throwError()],
+          [matchers.call(mockStaking.getCurrentVotes, testAccount), mockVotes],
+          [
+            matchers.call(userProposalsListQuery, mockSubgraphClient, {
+              contractAddress: mockGovernorContract.address,
+              proposerAddress: testAccount,
+            }),
+            {
+              proposals: [proposalGovernorAdminPayload],
+            },
+          ],
+          [
+            matchers.call(
+              [mockMulticallProvider, mockMulticallProvider.all],
+              [multicallResult]
+            ),
+            addProposalStates,
+          ],
+        ])
+        .select(governorAdminSelector)
+        .call(mockGovernorContract.proposalThreshold)
+        .put(
+          proposalsActions.notEligibleForAddProposal(
+            'You cannot add the proposal right now. Please try again later'
           )
         )
         .hasFinalState(failureState)
         .run();
-
-      expect(runResult.effects).toEqual({});
     });
   });
 });

@@ -15,7 +15,10 @@ import {
   multicallProviderSelector,
 } from '../../app/app.selectors';
 import { SagaContractCallStep } from '../../types';
-import { contractStepCallsSaga } from '../../utils/utils.sagas';
+import {
+  contractStepCallsSaga,
+  createWatcherSaga,
+} from '../../utils/utils.sagas';
 import { selectedGovernorSelector } from '../proposals.selectors';
 import { ProposalsActions, proposalsActions } from '../proposals.slice';
 import { AddProposalCalls } from '../proposals.state';
@@ -84,7 +87,7 @@ export function* checkAddEligibility() {
   const isGovAdmin = selectedGovernor === GOVERNANCE_OPTIONS.GOVERNOR_ADMIN.id;
 
   const governor = yield* getGovernor(isGovAdmin);
-  console.log('test');
+
   try {
     if (
       !account ||
@@ -138,3 +141,17 @@ export function* checkAddEligibility() {
     yield* put(proposalsActions.notEligibleForAddProposal(msg));
   }
 }
+
+function* triggerFetch() {
+  yield* put(proposalsActions.checkEligibility());
+}
+
+function* triggerUpdate() {
+  yield* put(proposalsActions.checkEligibility());
+}
+
+export const watchEligibility = createWatcherSaga({
+  fetchSaga: triggerFetch,
+  updateSaga: triggerUpdate,
+  stopAction: proposalsActions.eligibleForAddProposal.type,
+});

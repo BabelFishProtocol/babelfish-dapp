@@ -84,7 +84,8 @@ export const proposalSlice = createSlice({
     setGovernor: (state, { payload }: PayloadAction<string>) => {
       state.selectedGovernor = payload;
     },
-    checkAddProposal: () => {},
+    checkEligibility: () => {},
+    watchEligibility: () => {},
     eligibleForAddProposal: (state) => {
       state.reasonToBlockProposal = undefined;
     },

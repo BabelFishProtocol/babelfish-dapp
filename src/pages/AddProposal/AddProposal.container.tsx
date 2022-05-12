@@ -29,7 +29,11 @@ export const AddProposalContainer = ({
   };
 
   useEffect(() => {
-    dispatch(proposalsActions.checkAddProposal());
+    dispatch(proposalsActions.watchEligibility());
+
+    return () => {
+      dispatch(proposalsActions.eligibleForAddProposal());
+    };
   }, [dispatch, govSelector]);
 
   const onGovernorChange = useCallback(
