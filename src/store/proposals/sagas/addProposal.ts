@@ -3,7 +3,7 @@ import { put, call, select } from 'typed-redux-saga';
 
 import { GOVERNANCE_OPTIONS, ProposalState } from '../../../constants';
 import { AddProposalInputs } from '../../../pages/AddProposal/AddProposal.fields';
-import { proposalsListQuery } from '../../../queries/proposalListQuery';
+import { userProposalsListQuery } from '../../../queries/proposalListQuery';
 import { formatWeiAmount } from '../../../utils/helpers';
 
 import {
@@ -14,58 +14,64 @@ import {
   subgraphClientSelector,
   multicallProviderSelector,
 } from '../../app/app.selectors';
-import { createWatcherSaga } from '../../utils/utils.sagas';
+import { SagaContractCallStep } from '../../types';
+import { contractStepCallsSaga } from '../../utils/utils.sagas';
 import { selectedGovernorSelector } from '../proposals.selectors';
 import { ProposalsActions, proposalsActions } from '../proposals.slice';
+import { AddProposalCalls } from '../proposals.state';
 import { fetchProposalStates } from './utils';
 
-export function* addProposal({ payload }: ProposalsActions['startProposal']) {
-  try {
-    const account = yield* select(accountSelector);
-    const isGovAdmin =
-      payload[AddProposalInputs.SendProposalContract] ===
-      GOVERNANCE_OPTIONS.GOVERNOR_ADMIN.id;
+export function* getGovernor(isGovAdmin: boolean) {
+  const govSelector = isGovAdmin
+    ? governorAdminSelector
+    : governorOwnerSelector;
 
-    const govSelector = isGovAdmin
-      ? governorAdminSelector
-      : governorOwnerSelector;
+  return yield* select(govSelector);
+}
 
-    const governor = yield* select(govSelector);
+export function* addProposal({ payload }: ProposalsActions['addProposal']) {
+  const account = yield* select(accountSelector);
+  const isGovAdmin =
+    payload[AddProposalInputs.SendProposalContract] ===
+    GOVERNANCE_OPTIONS.GOVERNOR_ADMIN.id;
 
-    if (!account || !governor) {
-      throw new Error('Wallet not connected');
-    }
+  const governor = yield* getGovernor(isGovAdmin);
 
-    const rows = payload[AddProposalInputs.Values];
+  if (!account || !governor) {
+    yield* put(proposalsActions.setAddProposalError('Wallet not connected'));
+    return;
+  }
 
-    const targets = rows.map((row) => row[AddProposalInputs.Target]);
-    const values: BigNumberish[] = rows.map(
-      (row) => row[AddProposalInputs.Value]
-    );
-    const signatures = rows.map((row) => row[AddProposalInputs.Signature]);
-    const calldatas: BytesLike[] = rows.map(
-      (row) => row[AddProposalInputs.Calldata]
-    );
-    const description = payload[AddProposalInputs.Description];
+  const rows = payload[AddProposalInputs.Values];
 
-    const tx = yield* call(
+  const targets = rows.map((row) => row[AddProposalInputs.Target]);
+  const values: BigNumberish[] = rows.map(
+    (row) => row[AddProposalInputs.Value]
+  );
+  const signatures = rows.map((row) => row[AddProposalInputs.Signature]);
+  const calldatas: BytesLike[] = rows.map(
+    (row) => row[AddProposalInputs.Calldata]
+  );
+  const description = payload[AddProposalInputs.Description];
+
+  const addProposalStep: SagaContractCallStep<AddProposalCalls> = {
+    name: 'propose',
+    effect: call(
       governor.propose,
       targets,
       values,
       signatures,
       calldatas,
       description
-    );
-    yield* call(tx.wait);
-    yield* put(proposalsActions.proposalSuccess());
-  } catch (e) {
-    const msg =
-      e instanceof Error
-        ? e.message
-        : 'There was some error in Adding the proposal. Please try again';
+    ),
+  };
 
-    yield* put(proposalsActions.proposalFailure(msg));
-  }
+  yield* contractStepCallsSaga<AddProposalCalls>({
+    steps: [addProposalStep],
+    setErrorAction: proposalsActions.setAddProposalError,
+    setStatusAction: proposalsActions.setAddProposalStatus,
+    setStepDataAction: proposalsActions.setAddProposalStepData,
+  });
 }
 
 export function* checkAddEligibility() {
@@ -77,12 +83,8 @@ export function* checkAddEligibility() {
 
   const isGovAdmin = selectedGovernor === GOVERNANCE_OPTIONS.GOVERNOR_ADMIN.id;
 
-  const govSelector = isGovAdmin
-    ? governorAdminSelector
-    : governorOwnerSelector;
-
-  const governor = yield* select(govSelector);
-
+  const governor = yield* getGovernor(isGovAdmin);
+  console.log('test');
   try {
     if (
       !account ||
@@ -105,8 +107,9 @@ export function* checkAddEligibility() {
       );
     }
 
-    const { proposals } = yield* call(proposalsListQuery, subgraphClient, {
+    const { proposals } = yield* call(userProposalsListQuery, subgraphClient, {
       contractAddress: governor.address,
+      proposerAddress: account,
     });
 
     const proposalsStates = yield* fetchProposalStates(
@@ -135,17 +138,3 @@ export function* checkAddEligibility() {
     yield* put(proposalsActions.notEligibleForAddProposal(msg));
   }
 }
-
-function* triggerFetch() {
-  yield* put(proposalsActions.checkAddProposal());
-}
-
-function* triggerUpdate() {
-  yield* put(proposalsActions.checkAddProposal());
-}
-
-export const watchAddProposals = createWatcherSaga({
-  fetchSaga: triggerFetch,
-  updateSaga: triggerUpdate,
-  stopAction: proposalsActions.stopWatchingAddProposal.type,
-});

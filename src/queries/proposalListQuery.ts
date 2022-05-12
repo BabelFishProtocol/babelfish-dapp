@@ -1,6 +1,9 @@
 import { gql, GraphQLClient } from 'graphql-request';
 
 type ProposalListQueryParams = { contractAddress: string };
+type UserProposalListQueryParams = ProposalListQueryParams & {
+  proposerAddress: string;
+};
 
 export type ProposalListQueryItem = {
   proposalId: string;
@@ -34,5 +37,29 @@ export const proposalsListQuery = (
 ) =>
   client.request<ProposalListQueryResult, ProposalListQueryParams>(
     findProposalsQuery,
+    params
+  );
+
+const findUserProposalsQuery = gql`
+  query getProposals($contractAddress: Bytes!, $proposerAddress: Bytes!) {
+    proposals(
+      where: { contractAddress: $contractAddress, proposer: $proposerAddress }
+    ) {
+      description
+      startDate
+      startBlock
+      endBlock
+      proposalId
+      contractAddress
+    }
+  }
+`;
+
+export const userProposalsListQuery = (
+  client: GraphQLClient,
+  params: UserProposalListQueryParams
+) =>
+  client.request<ProposalListQueryResult, UserProposalListQueryParams>(
+    findUserProposalsQuery,
     params
   );
