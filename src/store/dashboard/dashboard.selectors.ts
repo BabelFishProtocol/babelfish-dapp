@@ -51,3 +51,8 @@ export const xusdBalanceSelector = createSelector(
     data: data?.xusdBalance,
   })
 );
+
+export const transactionsSelector = createSelector(
+  dashboardState,
+  (state) => state.transactionList
+);

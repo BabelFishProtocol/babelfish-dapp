@@ -18,10 +18,10 @@ export const Container = () => {
   const xusdBalance = useSelector(xusdBalanceSelector);
 
   useEffect(() => {
-    dispatch(dashboardActions.watchData());
+    dispatch(dashboardActions.watchBalances());
 
     return () => {
-      dashboardActions.stopWatchingData();
+      dashboardActions.stopWatchingBalances();
     };
   }, [dispatch]);
 

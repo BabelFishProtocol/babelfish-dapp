@@ -1,40 +1,20 @@
-import { TransactionsTableItem } from './TransactionsTable.types';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { TransactionsTableComponent } from './TransactionsTable.component';
+import { dashboardActions } from '../../../store/dashboard/dashboard.slice';
+import { transactionsSelector } from '../../../store/dashboard/dashboard.selectors';
 
-const mockTransactionsData: TransactionsTableItem[] = [
-  {
-    eventName: 'Deposit',
-    asset: 'XUSD',
-    amount: '+100,000.0000',
-    date: '03/10/21',
-    status: 'Pending',
-  },
-  {
-    eventName: 'Withdraw',
-    asset: 'XUSD',
-    amount: '-100,000.0000',
-    date: '03/01/22',
-    status: 'Failed',
-  },
-  {
-    eventName: 'Deposit',
-    asset: 'XUSD',
-    amount: '+100,000.0000',
-    date: '02/01/22',
-    status: 'Confirmed',
-  },
-  {
-    eventName: 'Reward',
-    asset: 'FISH',
-    amount: '+100,000.0000',
-    date: '01/01/22',
-    status: 'Confirmed',
-  },
-];
+export const TransactionsTableContainer = () => {
+  const { data, state } = useSelector(transactionsSelector);
 
-export const TransactionsTableContainer = () => (
-  <TransactionsTableComponent
-    state="idle"
-    transactions={mockTransactionsData}
-  />
-);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(dashboardActions.watchTransactions());
+
+    return () => {
+      dashboardActions.stopWatchingTransactions();
+    };
+  }, [dispatch]);
+
+  return <TransactionsTableComponent state={state} transactions={data} />;
+};
