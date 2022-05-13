@@ -81,7 +81,7 @@ export const ProposalDetailsComponent = ({
               }}
             >
               <IconButton
-                sx={{ mr: 1, p: 0.2 }}
+                sx={{ width: '2rem', height: '2rem', mr: 1 }}
                 component={Link}
                 to={Urls.Proposals}
               >
