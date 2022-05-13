@@ -21,7 +21,6 @@ import {
   TxPendingDialogProps,
   TxSuccessDialogProps,
   SubmitStepsDialogProps,
-  SubmitStatusDialogProps,
 } from './TxDialog.types';
 import { StepData } from '../../store/types';
 
@@ -128,37 +127,6 @@ export const TxPendingDialog = ({
     >
       <MintingInfo data={txData} />
     </AppDialog>
-  );
-};
-
-export const SubmitStatusDialog = ({
-  tx,
-  status,
-  txReceipt,
-  ...dialogProps
-}: SubmitStatusDialogProps) => {
-  if (status === 'failure') {
-    return (
-      <TxErrorDialog isOpenDialog={status === 'failure'} {...dialogProps} />
-    );
-  }
-
-  if (status === 'success') {
-    return (
-      <TxSuccessDialog
-        txReceipt={txReceipt}
-        isOpenDialog={status === 'success'}
-        {...dialogProps}
-      />
-    );
-  }
-
-  return (
-    <TxPendingDialog
-      tx={tx}
-      isOpenDialog={status === 'loading'}
-      {...dialogProps}
-    />
   );
 };
 
