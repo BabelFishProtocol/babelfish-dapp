@@ -2,7 +2,7 @@ import { ProposalDetails } from '../../store/proposals/proposals.state';
 
 export type ProposalData = Omit<ProposalDetails, 'votes'>;
 
-type ProposalCall = () => Promise<void>;
+type ProposalCall = () => void;
 
 export type ProposalDetailsComponentProps = Record<
   'handleCancel' | 'handleQueue' | 'handleExecute',

@@ -14,12 +14,16 @@ import {
 const initialState = { ...new ProposalsState() };
 
 const voteCallActions = createStepCallsActions(initialState, 'voteCall');
+const proposalDetailsCallsActions = createStepCallsActions(
+  initialState,
+  'proposalDetailsCall'
+);
 
 export const proposalSlice = createSlice({
   name: Reducers.Proposals,
   initialState,
   reducers: {
-    // ----- proposal details calls -----
+    // ----- cast vote calls -----
 
     castVote: voteCallActions.trigger<{ support: boolean }>(),
     resetVoteCall: voteCallActions.reset,
@@ -27,6 +31,17 @@ export const proposalSlice = createSlice({
     setVoteCallStepData: voteCallActions.updateStep,
     setVoteCallSteps: voteCallActions.setSteps,
     setVoteCallError: voteCallActions.setStepError,
+
+    // ----- proposal details calls -----
+
+    queueProposal: proposalDetailsCallsActions.trigger<undefined>(),
+    cancelProposal: proposalDetailsCallsActions.trigger<undefined>(),
+    executeProposal: proposalDetailsCallsActions.trigger<undefined>(),
+    resetProposalDetailsCalls: proposalDetailsCallsActions.reset,
+    setProposalDetailsCallStatus: proposalDetailsCallsActions.setStatus,
+    setProposalDetailsCallStepData: proposalDetailsCallsActions.updateStep,
+    setProposalDetailsCallSteps: proposalDetailsCallsActions.setSteps,
+    setProposalDetailsCallError: proposalDetailsCallsActions.setStepError,
 
     watchProposalsList: (state) => {
       state.proposalsList.state = 'loading';

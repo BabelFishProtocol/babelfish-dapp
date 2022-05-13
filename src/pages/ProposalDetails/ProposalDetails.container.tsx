@@ -5,17 +5,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { proposalsActions } from '../../store/proposals/proposals.slice';
 import {
   isGuardianSelector,
+  proposalDetailsCallStatusSelector,
   proposalDetailsSelector,
-  selectedProposalGovernor,
   voteCallStatusSelector,
 } from '../../store/proposals/proposals.selectors';
-import { useContractCall } from '../../hooks/useContractCall';
-import { GovernorTypes, selectorsErrors } from '../../constants';
+import { GovernorTypes } from '../../constants';
 
-import {
-  SubmitStepsDialog,
-  SubmitStatusDialog,
-} from '../../components/TxDialog/TxDialog.component';
+import { SubmitStepsDialog } from '../../components/TxDialog/TxDialog.component';
 
 import { ProposalDetailsFailure } from './ProposalDetails.failure';
 import { ProposalDetailsLoadable } from './ProposalDetails.loadable';
@@ -32,8 +28,8 @@ export const ProposalDetailsContainer = () => {
   const { id, governorType } = useParams();
   const { data, state } = useSelector(proposalDetailsSelector);
   const isGuardian = useSelector(isGuardianSelector);
-  const governorContract = useSelector(selectedProposalGovernor);
   const voteTx = useSelector(voteCallStatusSelector);
+  const proposalDetailsCall = useSelector(proposalDetailsCallStatusSelector);
 
   useEffect(() => {
     if (isProperGovernor(governorType) && id) {
@@ -41,38 +37,15 @@ export const ProposalDetailsContainer = () => {
     }
   }, [dispatch, governorType, id]);
 
-  const { handleSubmit: handleCancel, ...cancelTxData } = useContractCall(
-    async () => {
-      if (!data) {
-        throw new Error(selectorsErrors.missingData);
-      }
-
-      return governorContract?.cancel(data.id);
-    }
-  );
-
-  const { handleSubmit: handleQueue, ...queueTxData } = useContractCall(
-    async () => {
-      if (!data) {
-        throw new Error(selectorsErrors.missingData);
-      }
-
-      return governorContract?.queue(data.id);
-    }
-  );
-
-  const { handleSubmit: handleExecute, ...executeTxData } = useContractCall(
-    async () => {
-      if (!data) {
-        throw new Error(selectorsErrors.missingData);
-      }
-
-      return governorContract?.execute(data.id);
-    }
-  );
+  const handleQueue = () => dispatch(proposalsActions.queueProposal());
+  const handleCancel = () => dispatch(proposalsActions.cancelProposal());
+  const handleExecute = () => dispatch(proposalsActions.executeProposal());
 
   const handleResetVoteCall = () => {
     dispatch(proposalsActions.resetVoteCall());
+  };
+  const handleResetProposalDetailsCalls = () => {
+    dispatch(proposalsActions.resetProposalDetailsCalls());
   };
 
   if (!id) return <>Missing proposal data</>;
@@ -98,27 +71,6 @@ export const ProposalDetailsContainer = () => {
         handleQueue={handleQueue}
         handleExecute={handleExecute}
       />
-      {cancelTxData.status !== 'idle' && (
-        <SubmitStatusDialog
-          operationName="Canceling Proposal"
-          successCallback={cancelTxData.onClose}
-          {...cancelTxData}
-        />
-      )}
-      {queueTxData.status !== 'idle' && (
-        <SubmitStatusDialog
-          operationName="Queue Proposal"
-          successCallback={queueTxData.onClose}
-          {...queueTxData}
-        />
-      )}
-      {executeTxData.status !== 'idle' && (
-        <SubmitStatusDialog
-          operationName="Executing Proposal"
-          successCallback={executeTxData.onClose}
-          {...executeTxData}
-        />
-      )}
       {voteTx.status !== 'idle' && (
         <SubmitStepsDialog
           onClose={handleResetVoteCall}
@@ -126,6 +78,15 @@ export const ProposalDetailsContainer = () => {
           status={voteTx.status}
           summary={voteTx.summary}
           currentStep={voteTx.currentStep}
+        />
+      )}
+      {proposalDetailsCall.status !== 'idle' && (
+        <SubmitStepsDialog
+          onClose={handleResetProposalDetailsCalls}
+          steps={proposalDetailsCall.steps}
+          status={proposalDetailsCall.status}
+          summary={proposalDetailsCall.summary}
+          currentStep={proposalDetailsCall.currentStep}
         />
       )}
     </>

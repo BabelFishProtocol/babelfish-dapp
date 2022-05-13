@@ -179,7 +179,14 @@ export const selectedGovernorSelector = createSelector(
   proposalsState,
   (state) => state.selectedGovernor
 );
-
+const proposalDetailsCall = createSelector(
+  proposalsState,
+  (state) => state.proposalDetailsCall
+);
+export const proposalDetailsCallStatusSelector = createSelector(
+  proposalDetailsCall,
+  (state) => selectCurrentCallStepData(state)
+);
 const voteCall = createSelector(proposalsState, (state) => state.voteCall);
 export const voteCallStatusSelector = createSelector(voteCall, (state) =>
   selectCurrentCallStepData(state)
