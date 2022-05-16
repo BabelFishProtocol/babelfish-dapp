@@ -16,7 +16,7 @@ import {
 
 import { dashboardActions } from '../dashboard.slice';
 import { DashboardState } from '../dashboard.state';
-import { expectedTransactions } from './fetchTransactinos.mock';
+import { expectedTransactions } from './fetchTransactions.mock';
 import { fetchTransactions } from './fetchTransactions';
 import { transactionsQuery } from '../../../queries/transactionsQuery';
 
