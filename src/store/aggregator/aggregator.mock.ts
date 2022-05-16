@@ -50,7 +50,7 @@ export const depositMockValues = {
 export const depositRSKMockValues = {
   ...depositMockValues,
   [AggregatorInputs.StartingChain]: ChainEnum.RSK_TESTNET,
-  [AggregatorInputs.StartingToken]: TokenEnum.ZUSD,
+  [AggregatorInputs.StartingToken]: TokenEnum.RDOC,
 };
 
 export const withdrawMockValues = {
@@ -66,5 +66,5 @@ export const withdrawMockValues = {
 export const withdrawRSKMockValues = {
   ...withdrawMockValues,
   [AggregatorInputs.DestinationChain]: ChainEnum.RSK_TESTNET,
-  [AggregatorInputs.DestinationToken]: TokenEnum.BDUS,
+  [AggregatorInputs.DestinationToken]: TokenEnum.RDOC,
 };

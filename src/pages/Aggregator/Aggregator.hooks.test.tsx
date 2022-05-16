@@ -147,6 +147,44 @@ describe('Aggregator hooks', () => {
       expect(result.current.startingChainOptions).toEqual([pool.masterChain]);
       expect(result.current.startingTokenOptions).toEqual([pool.masset]);
     });
+
+    it('resets form when connected to the unsupported chain', () => {
+      const startingChain = '';
+      const destinationChain = ChainEnum.RSK;
+      const connectedChain = 46;
+
+      jest
+        .spyOn(aggregatorSelectors, 'flowStateSelector')
+        .mockReturnValueOnce('withdraw');
+      jest
+        .spyOn(appSelectors, 'chainIdSelector')
+        .mockReturnValueOnce(connectedChain);
+
+      const { result } = renderHook(
+        () =>
+          useAggregatorDropdowns(
+            startingChain,
+            destinationChain,
+            resetField,
+            setValue
+          ),
+        {
+          wrapper,
+        }
+      );
+
+      testSequence(
+        resetField,
+        AggregatorInputs.StartingChain,
+        AggregatorInputs.StartingToken,
+        AggregatorInputs.DestinationChain,
+        AggregatorInputs.DestinationToken
+      );
+      expect(result.current.destinationChainOptions).toEqual([]);
+      expect(result.current.destinationTokenOptions).toEqual([]);
+      expect(result.current.startingChainOptions).toEqual([]);
+      expect(result.current.startingTokenOptions).toEqual([]);
+    });
   });
 
   describe('useConnectedChain', () => {
