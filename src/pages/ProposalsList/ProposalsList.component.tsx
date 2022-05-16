@@ -32,8 +32,8 @@ type RowData = Omit<Proposal, 'canceled' | 'executed'>;
 const ViewProposalComponent: CustomColumn<RowData> = ({ value, rowData }) => (
   <Button
     sx={{
-      pr: 2,
-      pl: 2,
+      px: 2,
+      py: 0.5,
     }}
     size="small"
     variant="outlined"
