@@ -100,6 +100,14 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
       },
     },
   },
+  MuiTable: {
+    styleOverrides: {
+      root: {
+        borderCollapse: 'separate',
+        borderSpacing: 0,
+      },
+    },
+  },
   MuiTableHead: {
     styleOverrides: {
       root: {

@@ -6,6 +6,7 @@ export const colors = {
   lightYellow: '#fddc90',
   borderGrey: 'rgba(255, 255, 255, 0.2)',
   borderGreyDark: 'rgba(255, 255, 255, 0.1)',
+  darkBlue: '#2C2F3B',
 };
 
 export const getPalette = () =>
