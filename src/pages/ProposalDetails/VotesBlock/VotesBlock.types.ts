@@ -11,7 +11,7 @@ export type VoteStatus = {
 export type VoteButtonProps = {
   voteStatus: VoteStatus;
   proposalState?: ProposalState;
-  handleCastVote: () => Promise<void>;
+  handleCastVote: () => void;
 };
 
 export type VotesListComponentProps = {

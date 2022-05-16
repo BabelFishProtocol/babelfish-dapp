@@ -7,6 +7,15 @@ export enum Urls {
   Claim = '/claim',
 }
 
+export enum UrlNames {
+  Proposals = 'DAO/GOVERN WITH FISH',
+  ProposalDetails = 'VIEW PROPOSAL',
+  Dashboard = 'HOME',
+  Staking = 'STAKE YOUR FISH',
+  Aggregator = 'DEPOSIT/WITHDRAW XUSD',
+  Claim = 'CLAIM',
+}
+
 export enum ProposalState {
   Pending = 0,
   Active = 1,

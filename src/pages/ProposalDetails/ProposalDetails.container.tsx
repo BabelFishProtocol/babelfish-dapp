@@ -7,11 +7,15 @@ import {
   isGuardianSelector,
   proposalDetailsSelector,
   selectedProposalGovernor,
+  voteCallStatusSelector,
 } from '../../store/proposals/proposals.selectors';
 import { useContractCall } from '../../hooks/useContractCall';
 import { GovernorTypes, selectorsErrors } from '../../constants';
 
-import { SubmitStatusDialog } from '../../components/TxDialog/TxDialog.component';
+import {
+  SubmitStepsDialog,
+  SubmitStatusDialog,
+} from '../../components/TxDialog/TxDialog.component';
 
 import { ProposalDetailsFailure } from './ProposalDetails.failure';
 import { ProposalDetailsLoadable } from './ProposalDetails.loadable';
@@ -29,6 +33,7 @@ export const ProposalDetailsContainer = () => {
   const { data, state } = useSelector(proposalDetailsSelector);
   const isGuardian = useSelector(isGuardianSelector);
   const governorContract = useSelector(selectedProposalGovernor);
+  const voteTx = useSelector(voteCallStatusSelector);
 
   useEffect(() => {
     if (isProperGovernor(governorType) && id) {
@@ -65,6 +70,10 @@ export const ProposalDetailsContainer = () => {
       return governorContract?.execute(data.id);
     }
   );
+
+  const handleResetVoteCall = () => {
+    dispatch(proposalsActions.resetVoteCall());
+  };
 
   if (!id) return <>Missing proposal data</>;
 
@@ -108,6 +117,15 @@ export const ProposalDetailsContainer = () => {
           operationName="Executing Proposal"
           successCallback={executeTxData.onClose}
           {...executeTxData}
+        />
+      )}
+      {voteTx.status !== 'idle' && (
+        <SubmitStepsDialog
+          onClose={handleResetVoteCall}
+          steps={voteTx.steps}
+          status={voteTx.status}
+          summary={voteTx.summary}
+          currentStep={voteTx.currentStep}
         />
       )}
     </>

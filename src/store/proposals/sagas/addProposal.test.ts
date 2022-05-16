@@ -354,50 +354,6 @@ describe('add proposal sagas', () => {
       };
       const existingProposalStates = [ProposalState.Pending];
 
-      // await getBasePath()
-      //   .provide([
-      //     [matchers.select(accountSelector), testAccount],
-      //     [matchers.select(stakingContractSelector), mockStaking],
-      //     [matchers.select(subgraphClientSelector), mockSubgraphClient],
-      //     [matchers.select(multicallProviderSelector), mockMulticallProvider],
-      //     [matchers.select(selectedGovernorSelector), mockSelectedGovernor],
-      //     [matchers.select(governorAdminSelector), mockGovernorContract],
-      //     [
-      //       matchers.call(mockGovernorContract.proposalThreshold),
-      //       mockThreshold,
-      //     ],
-      //     [matchers.call(mockStaking.getCurrentVotes, testAccount), mockVotes],
-      //     [
-      //       matchers.call(userProposalsListQuery, mockSubgraphClient, {
-      //         contractAddress: mockGovernorContract.address,
-      //         proposerAddress: testAccount,
-      //       }),
-      //       {
-      //         proposals: [proposalGovernorAdminPayload],
-      //       },
-      //     ],
-      //     [
-      //       matchers.call(
-      //         [mockMulticallProvider, mockMulticallProvider.all],
-      //         [multicallResult]
-      //       ),
-      //       existingProposalStates,
-      //     ],
-      //   ])
-      //   .select(governorAdminSelector)
-      //   .call(mockGovernorContract.proposalThreshold)
-      //   .call(mockStaking.getCurrentVotes, testAccount)
-      //   .call(userProposalsListQuery, mockSubgraphClient, {
-      //     contractAddress: mockGovernorContract.address,
-      //     proposerAddress: testAccount,
-      //   })
-      //   .call(
-      //     [mockMulticallProvider, mockMulticallProvider.all],
-      //     [multicallResult]
-      //   )
-      //   .put(proposalsActions.eligibleForAddProposal())
-      //   .hasFinalState(liveProposalErrorState)
-      //   .run();
       await getBasePath()
         .provide([
           [matchers.select(accountSelector), testAccount],
@@ -469,7 +425,6 @@ describe('add proposal sagas', () => {
             mockThreshold,
           ],
           [matchers.call(mockStaking.getCurrentVotes, testAccount), mockVotes],
-          // [matchers.call(mockThreshold.gt, mockVotes), false],
           [
             matchers.call(userProposalsListQuery, mockSubgraphClient, {
               contractAddress: mockGovernorContract.address,

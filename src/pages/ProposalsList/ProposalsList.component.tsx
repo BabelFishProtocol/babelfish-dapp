@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 import { Proposal } from '../../store/proposals/proposals.state';
-import { ProposalState, proposalStateNames } from '../../constants';
+import { ProposalState, proposalStateNames, UrlNames } from '../../constants';
 import {
   formatBlockNumber,
   formatTimestamp,
@@ -21,6 +21,7 @@ import {
 } from '../../components/DataTable/DataTable.types';
 import { DataTable } from '../../components/DataTable/DataTable.component';
 import { PageView } from '../../components/PageView/PageView.component';
+import { Breadcrumbs } from '../../components/Breadcrumbs/Breadcrumbs.component';
 
 import { AddProposalContainer } from '../AddProposal/AddProposal.container';
 import { ProposalsListComponentProps } from './ProposalsList.types';
@@ -57,50 +58,61 @@ export const ProposalsListComponent = ({
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   return (
-    <PageView
-      title={
-        <Typography variant="h2" padding={1}>
-          BABELFISH BITOCRACY
-        </Typography>
-      }
-    >
-      <DataTable
-        state={state}
-        data={proposals as RowData[]}
-        columns={proposalsListColumns}
-        tableTitle="GOVERNANCE PROPOSALS"
-        tableAction={
-          <Button
-            variant="text"
-            onClick={() => {
-              setIsAddDialogOpen(true);
-            }}
-          >
-            +CREATE PROPOSAL
-          </Button>
-        }
-        containerSx={{ minHeight: 250 }}
-      />
-
+    <>
       <Box
         sx={{
-          pt: 3,
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
+          p: 0,
+          maxWidth: { xs: 1300 },
+          margin: '0 auto',
         }}
       >
-        <Button variant="outlined">View All Proposals</Button>
+        <Breadcrumbs links={[{ title: UrlNames.Proposals }]} />
       </Box>
-
-      {isAddDialogOpen && (
-        <AddProposalContainer
-          isOpenDialog={isAddDialogOpen}
-          onClose={() => {
-            setIsAddDialogOpen(false);
-          }}
+      <PageView
+        title={
+          <Typography variant="h2" padding={1}>
+            BABELFISH BITOCRACY
+          </Typography>
+        }
+      >
+        <DataTable
+          state={state}
+          data={proposals as RowData[]}
+          columns={proposalsListColumns}
+          tableTitle="GOVERNANCE PROPOSALS"
+          tableAction={
+            <Button
+              variant="text"
+              onClick={() => {
+                setIsAddDialogOpen(true);
+              }}
+            >
+              +CREATE PROPOSAL
+            </Button>
+          }
+          containerSx={{ minHeight: 250 }}
         />
-      )}
-    </PageView>
+
+        <Box
+          sx={{
+            pt: 3,
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <Button variant="outlined">View All Proposals</Button>
+        </Box>
+
+        {isAddDialogOpen && (
+          <AddProposalContainer
+            isOpenDialog={isAddDialogOpen}
+            onClose={() => {
+              setIsAddDialogOpen(false);
+            }}
+          />
+        )}
+      </PageView>
+    </>
   );
 };

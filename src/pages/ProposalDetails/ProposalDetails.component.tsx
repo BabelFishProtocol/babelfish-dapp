@@ -13,7 +13,13 @@ import {
 } from '../../components/PageView/PageView.component';
 import { Button } from '../../components/Button/Button.component';
 import { PrettyTx } from '../../components/PrettyTx/PrettyTx.component';
-import { ProposalState, proposalStateNames, Urls } from '../../constants';
+import { Breadcrumbs } from '../../components/Breadcrumbs/Breadcrumbs.component';
+import {
+  ProposalState,
+  proposalStateNames,
+  UrlNames,
+  Urls,
+} from '../../constants';
 
 import { formatTimestamp, getCurrentTimestamp } from '../../utils/helpers';
 
@@ -39,181 +45,201 @@ export const ProposalDetailsComponent = ({
   const executingEnabled = getCurrentTimestamp() >= Number(proposal.eta);
 
   return (
-    <PageView
-      title={
-        <Box
-          sx={{
-            p: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <CenteredBox
-            sx={{
-              flex: 1,
-              display: 'flex',
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-              justifyContent: 'flex-start',
-            }}
-          >
-            <IconButton
-              sx={{ mr: 1, p: 0.2 }}
-              component={Link}
-              to={Urls.Proposals}
-            >
-              {'<'}
-            </IconButton>
-            <Typography variant="h2" noWrap>
-              {proposal.title}
-            </Typography>
-          </CenteredBox>
-
-          <Typography variant="body1" sx={{ ml: 2 }}>
-            Voting Ends: {formatTimestamp(proposal.endTime)}
-          </Typography>
-        </Box>
-      }
-    >
-      <Box sx={{ p: ({ spacing }) => spacing(0, 2), mb: 1 }}>
-        <VotesRatioBlock />
+    <>
+      <Box
+        sx={{
+          p: 0,
+          maxWidth: { xs: 1300 },
+          margin: '0 auto',
+        }}
+      >
+        <Breadcrumbs
+          links={[
+            { title: UrlNames.Proposals, href: Urls.Proposals },
+            { title: UrlNames.ProposalDetails },
+          ]}
+        />
       </Box>
-
-      <Grid container>
-        <Grid item sm={6} p={1}>
-          <ForVotesContainer />
-
-          <Container
+      <PageView
+        title={
+          <Box
             sx={{
-              p: 2,
-              mt: 2,
-              height: 300,
+              p: 1,
               display: 'flex',
-              flexDirection: 'column',
+              alignItems: 'center',
               justifyContent: 'space-between',
             }}
           >
-            <Box sx={{ overflow: 'auto', mb: 2 }}>
-              <Typography variant="body2">{proposal.description}</Typography>
-            </Box>
-
-            {proposal.actions?.map(
-              ({ contract, signature, calldata }, index) => (
-                <Box key={index} sx={{ mb: 2 }}>
-                  <ProposalInfoItem label="Function to invoke" width={140}>
-                    <Typography
-                      color="primary"
-                      variant="body2"
-                      component="span"
-                    >
-                      {signature}
-                    </Typography>
-                  </ProposalInfoItem>
-
-                  <ProposalInfoItem label="Calldata" width={140}>
-                    <PrettyTx value={calldata} />
-                  </ProposalInfoItem>
-
-                  <ProposalInfoItem label="Contract Address" width={140}>
-                    <PrettyTx value={contract} />
-                  </ProposalInfoItem>
-                </Box>
-              )
-            )}
-          </Container>
-        </Grid>
-
-        <Grid item sm={6} p={1}>
-          <AgainstVotesContainer />
-
-          <Container
-            sx={{
-              p: 2,
-              mt: 2,
-              height: 300,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-evenly',
-            }}
-          >
-            <ProposalInfoItem label="Status">
-              <Typography color="primary" variant="body2" component="span">
-                {proposalStateNames[proposal.state]}
+            <CenteredBox
+              sx={{
+                flex: 1,
+                display: 'flex',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+                justifyContent: 'flex-start',
+              }}
+            >
+              <IconButton
+                sx={{ mr: 1, p: 0.2 }}
+                component={Link}
+                to={Urls.Proposals}
+              >
+                {'<'}
+              </IconButton>
+              <Typography variant="h2" noWrap>
+                {proposal.title}
               </Typography>
-            </ProposalInfoItem>
-
-            <ProposalInfoItem label="Proposed by">
-              <PrettyTx value={proposal.proposer} />
-            </ProposalInfoItem>
-
-            <ProposalInfoItem label="Proposed on">
-              <Box>
-                <Typography variant="body2">
-                  {formatTimestamp(proposal.startTime)}
-                </Typography>
-                <Typography color="primary" variant="body2">
-                  #{proposal.startBlock}
-                </Typography>
-              </Box>
-            </ProposalInfoItem>
-
-            <ProposalInfoItem label="Deadline">
-              <Box>
-                <Typography variant="body2">
-                  {formatTimestamp(proposal.endTime)}
-                </Typography>
-                <Typography color="primary" variant="body2">
-                  #{proposal.endBlock}
-                </Typography>
-              </Box>
-            </ProposalInfoItem>
-
-            <ProposalInfoItem label="Proposal ID">
-              <Typography color="primary" variant="body2" component="span">
-                {proposal.id}
-              </Typography>
-            </ProposalInfoItem>
-
-            <CenteredBox sx={{ mt: 1, gap: 2 }}>
-              {canCancel && (
-                <Button variant="outlined" size="small" onClick={handleCancel}>
-                  Cancel
-                </Button>
-              )}
-              {proposal.state === ProposalState.Succeeded && (
-                <Button variant="outlined" size="small" onClick={handleQueue}>
-                  Queue
-                </Button>
-              )}
-              {proposal.state === ProposalState.Queued && (
-                <Tooltip
-                  title={
-                    !executingEnabled
-                      ? `Executing this proposal will be enabled from ${formatTimestamp(
-                          proposal.eta
-                        )}`
-                      : ''
-                  }
-                >
-                  <div>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      disabled={!executingEnabled}
-                      onClick={handleExecute}
-                    >
-                      Execute
-                    </Button>
-                  </div>
-                </Tooltip>
-              )}
             </CenteredBox>
-          </Container>
+
+            <Typography variant="body1" sx={{ ml: 2 }}>
+              Voting Ends: {formatTimestamp(proposal.endTime)}
+            </Typography>
+          </Box>
+        }
+      >
+        <Box sx={{ p: ({ spacing }) => spacing(0, 2), mb: 1 }}>
+          <VotesRatioBlock />
+        </Box>
+
+        <Grid container>
+          <Grid item sm={6} p={1}>
+            <ForVotesContainer />
+
+            <Container
+              sx={{
+                p: 2,
+                mt: 2,
+                height: 300,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Box sx={{ overflow: 'auto', mb: 2 }}>
+                <Typography variant="body2">{proposal.description}</Typography>
+              </Box>
+
+              {proposal.actions?.map(
+                ({ contract, signature, calldata }, index) => (
+                  <Box key={index} sx={{ mb: 2 }}>
+                    <ProposalInfoItem label="Function to invoke" width={140}>
+                      <Typography
+                        color="primary"
+                        variant="body2"
+                        component="span"
+                      >
+                        {signature}
+                      </Typography>
+                    </ProposalInfoItem>
+
+                    <ProposalInfoItem label="Calldata" width={140}>
+                      <PrettyTx value={calldata} />
+                    </ProposalInfoItem>
+
+                    <ProposalInfoItem label="Contract Address" width={140}>
+                      <PrettyTx value={contract} />
+                    </ProposalInfoItem>
+                  </Box>
+                )
+              )}
+            </Container>
+          </Grid>
+
+          <Grid item sm={6} p={1}>
+            <AgainstVotesContainer />
+
+            <Container
+              sx={{
+                p: 2,
+                mt: 2,
+                height: 300,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-evenly',
+              }}
+            >
+              <ProposalInfoItem label="Status">
+                <Typography color="primary" variant="body2" component="span">
+                  {proposalStateNames[proposal.state]}
+                </Typography>
+              </ProposalInfoItem>
+
+              <ProposalInfoItem label="Proposed by">
+                <PrettyTx value={proposal.proposer} />
+              </ProposalInfoItem>
+
+              <ProposalInfoItem label="Proposed on">
+                <Box>
+                  <Typography variant="body2">
+                    {formatTimestamp(proposal.startTime)}
+                  </Typography>
+                  <Typography color="primary" variant="body2">
+                    #{proposal.startBlock}
+                  </Typography>
+                </Box>
+              </ProposalInfoItem>
+
+              <ProposalInfoItem label="Deadline">
+                <Box>
+                  <Typography variant="body2">
+                    {formatTimestamp(proposal.endTime)}
+                  </Typography>
+                  <Typography color="primary" variant="body2">
+                    #{proposal.endBlock}
+                  </Typography>
+                </Box>
+              </ProposalInfoItem>
+
+              <ProposalInfoItem label="Proposal ID">
+                <Typography color="primary" variant="body2" component="span">
+                  {proposal.id}
+                </Typography>
+              </ProposalInfoItem>
+
+              <CenteredBox sx={{ mt: 1, gap: 2 }}>
+                {canCancel && (
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </Button>
+                )}
+                {proposal.state === ProposalState.Succeeded && (
+                  <Button variant="outlined" size="small" onClick={handleQueue}>
+                    Queue
+                  </Button>
+                )}
+                {proposal.state === ProposalState.Queued && (
+                  <Tooltip
+                    title={
+                      !executingEnabled
+                        ? `Executing this proposal will be enabled from ${formatTimestamp(
+                            proposal.eta
+                          )}`
+                        : ''
+                    }
+                  >
+                    <div>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        disabled={!executingEnabled}
+                        onClick={handleExecute}
+                      >
+                        Execute
+                      </Button>
+                    </div>
+                  </Tooltip>
+                )}
+              </CenteredBox>
+            </Container>
+          </Grid>
         </Grid>
-      </Grid>
-    </PageView>
+      </PageView>
+    </>
   );
 };
 

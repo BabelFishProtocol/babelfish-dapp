@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
 import { AddProposalFields } from '../../pages/AddProposal/AddProposal.types';
-// import { FiniteStates } from '../../utils/types';
 import { ActionsType } from '../types';
 import { createStepCallsActions } from '../utils/utils.reducers';
 import {
@@ -18,6 +17,8 @@ const addProposalStepCallActions = createStepCallsActions(
   'addProposalCall'
 );
 
+const voteCallActions = createStepCallsActions(initialState, 'voteCall');
+
 export const proposalSlice = createSlice({
   name: Reducers.Proposals,
   initialState,
@@ -30,6 +31,15 @@ export const proposalSlice = createSlice({
     setAddProposalSteps: addProposalStepCallActions.setSteps,
     setAddProposalStepData: addProposalStepCallActions.updateStep,
     setAddProposalError: addProposalStepCallActions.setStepError,
+
+    // ----- proposal details calls -----
+
+    castVote: voteCallActions.trigger<{ support: boolean }>(),
+    resetVoteCall: voteCallActions.reset,
+    setVoteCallStatus: voteCallActions.setStatus,
+    setVoteCallStepData: voteCallActions.updateStep,
+    setVoteCallSteps: voteCallActions.setSteps,
+    setVoteCallError: voteCallActions.setStepError,
 
     watchProposalsList: (state) => {
       state.proposalsList.state = 'loading';
