@@ -73,7 +73,7 @@ export const useAggregatorDropdowns = (
       setStartingTokenOptions([pool.masset]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [flowState, setValue, resetField, pool]);
+  }, [flowState, setValue, resetField, pool, isSupportedChain]);
 
   useEffect(() => {
     if (!isSupportedChain) return;
