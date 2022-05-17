@@ -70,14 +70,6 @@ export const DataTable = <Data extends BaseRowData = BaseRowData>({
                 sx={{
                   padding: ({ spacing }) => spacing(1.0625, 1.25),
                   lineHeight: 2.575,
-                  '&::first-of-type': {
-                    borderBottomLeftRadius: 8,
-                    borderTopLeftRadius: 8,
-                  },
-                  '&:last-of-type': {
-                    borderBottomRightRadius: 8,
-                    borderTopRightRadius: 8,
-                  },
                 }}
                 key={headIndex}
               >
@@ -155,15 +147,6 @@ const DataTableRow = <Data extends BaseRowData = BaseRowData>({
           sx={{
             lineHeight: 2.575,
             padding: ({ spacing }) => spacing(1.0625, 1.25),
-
-            '&:first-of-type': {
-              borderBottomLeftRadius: 8,
-              borderTopLeftRadius: 8,
-            },
-            '&:last-of-type': {
-              borderBottomRightRadius: 8,
-              borderTopRightRadius: 8,
-            },
           }}
         >
           {CellComponent ? (

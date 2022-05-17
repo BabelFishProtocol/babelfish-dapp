@@ -45,6 +45,6 @@ export const VestsListComponent = ({
     columns={vestsColumns}
     tableTitle="Current Vests"
     tableEmptyMessage="You don't have any vesting contracts."
-    containerSx={{ p: 1, minHeight: 250 }}
+    containerSx={{ p: 2, minHeight: 250 }}
   />
 );
