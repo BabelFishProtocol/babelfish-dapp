@@ -36,7 +36,7 @@ export const PageView = ({
     <Container
       sx={{
         p: { xs: 0 },
-        maxWidth: { xs: 1300 },
+        maxWidth: { xs: 1400 },
         width: '90%',
         height: '100%',
         ...sx,

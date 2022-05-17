@@ -42,7 +42,7 @@ export const StakingComponent = ({
           flexDirection: 'column',
         }}
       >
-        <Breadcrumbs links={[{ title: UrlNames.Staking }]} sx={{ pb: 1 }} />
+        <Breadcrumbs links={[{ title: UrlNames.Staking }]} />
         <CenteredBox sx={{ width: '100%', gap: 2, alignItems: 'stretch' }}>
           <BalanceBlock label="Total Staked Fish" {...fishStaked}>
             <Button

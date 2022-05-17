@@ -118,11 +118,11 @@ export const AggregatorComponent = ({
   return (
     <Box
       sx={{
-        maxWidth: 1120,
+        maxWidth: 1400,
         margin: '0 auto',
       }}
     >
-      <Breadcrumbs links={[{ title: UrlNames.Aggregator }]} sx={{ p: 3 }} />
+      <Breadcrumbs links={[{ title: UrlNames.Aggregator }]} />
       <form
         style={{
           display: 'flex',
@@ -135,12 +135,13 @@ export const AggregatorComponent = ({
         <PageView
           title={<PageViewTitle>Starting chain</PageViewTitle>}
           sx={{
+            maxWidth: { xs: 400 },
             height: 'min-content',
           }}
         >
           <Box
             sx={{
-              maxWidth: 310,
+              maxWidth: 320,
               mx: 'auto',
             }}
           >
@@ -171,10 +172,16 @@ export const AggregatorComponent = ({
           </Box>
         </PageView>
         <AggregatorInfoContainer />
-        <PageView title={<PageViewTitle>Destination chain</PageViewTitle>}>
+        <PageView
+          title={<PageViewTitle>Destination chain</PageViewTitle>}
+          sx={{
+            maxWidth: { xs: 400 },
+            height: 'min-content',
+          }}
+        >
           <Box
             sx={{
-              maxWidth: 310,
+              maxWidth: 320,
               mx: 'auto',
             }}
           >
