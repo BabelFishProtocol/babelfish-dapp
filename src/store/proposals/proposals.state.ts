@@ -7,6 +7,7 @@ import { CallState, LoadableValue } from '../types';
 
 export type AddProposalCalls = 'propose';
 export type VoteCall = 'vote for' | 'vote against';
+export type ProposalDetailsCalls = 'queue' | 'cancel' | 'execute';
 export type ProposalUrlParams = Pick<Proposal, 'id' | 'governorType'>;
 
 export type Proposal = {
@@ -54,6 +55,15 @@ export class ProposalsState {
     steps: [
       { name: 'vote for', label: 'voting' },
       { name: 'vote against', label: 'voting' },
+    ],
+  };
+
+  proposalDetailsCall: CallState<ProposalDetailsCalls> = {
+    status: 'idle',
+    steps: [
+      { name: 'queue', label: 'queue proposal' },
+      { name: 'cancel', label: 'canceling proposal' },
+      { name: 'execute', label: 'executing proposal' },
     ],
   };
 

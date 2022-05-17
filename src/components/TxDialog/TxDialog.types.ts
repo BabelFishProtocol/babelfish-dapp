@@ -28,7 +28,7 @@ export type SubmitDialogTxData = {
   summary?: MintingProcessInfo[];
 };
 
-export type SubmitStatusDialogProps = Pick<AppDialogProps, 'onClose'> &
+type SubmitStatusDialogProps = Pick<AppDialogProps, 'onClose'> &
   SubmitDialogTxData & {
     operationName?: string;
     successCallback?: () => void;
