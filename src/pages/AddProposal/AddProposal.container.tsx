@@ -1,80 +1,38 @@
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDialog } from '../../components/AppDialog/AppDialog.component';
 import {
   reasonToBlockSelector,
-  addProposalErrorSelector,
-  addProposalStateSelector,
   selectedGovernorSelector,
+  addProposalStatusSelector,
 } from '../../store/proposals/proposals.selectors';
 import { proposalsActions } from '../../store/proposals/proposals.slice';
 import { AddProposal } from './AddProposal.component';
 import {
   AddProposalContainerProps,
   AddProposalFields,
-  AddProposalStatusDialogProps,
 } from './AddProposal.types';
 
-import loadingIcon from '../../assets/icons/loading.svg';
-import successIcon from '../../assets/icons/success.svg';
-import errorIcon from '../../assets/icons/error.svg';
+import { SubmitStepsDialog } from '../../components/TxDialog/TxDialog.component';
 
-const AddProposalStatusDialog = ({
-  clearState,
-  closeDialog,
-  status,
-  message,
-}: AddProposalStatusDialogProps) => (
-  <>
-    <AppDialog
-      isOpenDialog={status === 'loading'}
-      title="Please Wait"
-      description="Your proposal is being added. Please wait"
-      icon={loadingIcon}
-    />
-    <AppDialog
-      isOpenDialog={status === 'success'}
-      title="Success"
-      description="Your proposal was added successfully"
-      onClose={() => {
-        clearState();
-        if (closeDialog) closeDialog();
-      }}
-      icon={successIcon}
-    />
-    <AppDialog
-      isOpenDialog={status === 'failure'}
-      title="Error Occurred"
-      description={message ?? 'There was a problem while adding the proposal'}
-      onClose={clearState}
-      icon={errorIcon}
-    />
-  </>
-);
 export const AddProposalContainer = ({
   isOpenDialog,
   onClose,
 }: AddProposalContainerProps) => {
   const dispatch = useDispatch();
 
-  const currentStatus = useSelector(addProposalStateSelector);
+  const submitTx = useSelector(addProposalStatusSelector);
   const reasonToBlock = useSelector(reasonToBlockSelector);
-  const errorReason = useSelector(addProposalErrorSelector);
   const govSelector = useSelector(selectedGovernorSelector);
 
   const onSubmit = (data: AddProposalFields) => {
-    dispatch(proposalsActions.startProposal(data));
-  };
-
-  const setStateIdle = () => {
-    dispatch(proposalsActions.setAddProposalState('idle'));
+    dispatch(proposalsActions.addProposal(data));
   };
 
   useEffect(() => {
-    dispatch(proposalsActions.watchAddProposal());
+    dispatch(proposalsActions.watchEligibility());
 
     return () => {
-      dispatch(proposalsActions.stopWatchingAddProposal());
+      dispatch(proposalsActions.stopWatchEligibility());
     };
   }, [dispatch, govSelector]);
 
@@ -85,14 +43,27 @@ export const AddProposalContainer = ({
     [dispatch]
   );
 
+  const handleResetCallData = () => {
+    dispatch(proposalsActions.resetProposal());
+  };
+
+  const handleSuccessCallback = () => {
+    dispatch(proposalsActions.clearReasonToBlockState());
+    onClose();
+  };
+
   return (
     <>
-      <AddProposalStatusDialog
-        status={currentStatus}
-        message={errorReason}
-        clearState={setStateIdle}
-        closeDialog={onClose}
-      />
+      {submitTx.status !== 'idle' && (
+        <SubmitStepsDialog
+          successCallback={handleSuccessCallback}
+          onClose={handleResetCallData}
+          steps={submitTx.steps}
+          status={submitTx.status}
+          summary={submitTx.summary}
+          currentStep={submitTx.currentStep}
+        />
+      )}
       <AddProposal
         isOpenDialog={isOpenDialog}
         onClose={onClose}

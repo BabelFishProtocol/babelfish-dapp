@@ -16,8 +16,9 @@ import { Reducers } from '../../constants';
 import { mockProvider } from '../../testUtils';
 import { appActions, appReducer } from '../app/app.slice';
 import { indexSaga } from '../saga';
-import { CallState, SagaContractCallStep, StepData } from '../types';
+import { SagaContractCallStep } from '../types';
 import { contractStepCallsSaga, createWatcherSaga } from './utils.sagas';
+import { StepCallsActions } from './utils.types';
 
 const mockReducers = {
   watch: () => {},
@@ -187,15 +188,18 @@ describe('saga utils', () => {
         .mockReturnValue(mockStep2Tx),
     };
 
-    const mockSetErrorAction = createAction<string>('mockSetErrorAction');
+    const mockSetErrorAction =
+      createAction<StepCallsActions<string>['setError']['payload']>(
+        'mockSetErrorAction'
+      );
 
     const mockSetStatusAction = createAction<
-      Pick<CallState<string>, 'status' | 'currentOperation'>
+      StepCallsActions<string>['setStatus']['payload']
     >('mockSetStatusAction');
 
-    const mockSetStepDataAction = createAction<Partial<StepData<string>>>(
-      'mockSetStepDataAction'
-    );
+    const mockSetStepDataAction = createAction<
+      StepCallsActions<string>['updateStep']['payload']
+    >('mockSetStepDataAction');
 
     it('proper saga flow', async () => {
       const mockSteps: SagaContractCallStep<MockSteps>[] = [
@@ -218,9 +222,7 @@ describe('saga utils', () => {
         .next()
         .put(mockSetStatusAction({ status: 'loading' }))
         .next()
-        .put(
-          mockSetStatusAction({ currentOperation: 'step1', status: 'loading' })
-        )
+        .put(mockSetStatusAction({ currentOperation: 'step1' }))
         .next()
         .call(mockContract.testStep1Method, 1)
         .next(mockStep1Tx)
@@ -230,9 +232,7 @@ describe('saga utils', () => {
         .next(mockStep1TxReceipt)
         .put(mockSetStepDataAction({ txReceipt: mockStep1TxReceipt }))
         .next()
-        .put(
-          mockSetStatusAction({ currentOperation: 'step2', status: 'loading' })
-        )
+        .put(mockSetStatusAction({ currentOperation: 'step2' }))
         .next()
         .call(mockContract.testStep2Method, 2)
         .next(mockStep2Tx)
@@ -275,14 +275,10 @@ describe('saga utils', () => {
         .call(mockContract.testStep2Method, 2)
         .call(mockStep1Tx.wait)
         .put(mockSetStatusAction({ status: 'loading' }))
-        .put(
-          mockSetStatusAction({ currentOperation: 'step1', status: 'loading' })
-        )
+        .put(mockSetStatusAction({ currentOperation: 'step1' }))
         .put(mockSetStepDataAction({ tx: mockStep1Tx }))
         .put(mockSetStepDataAction({ txReceipt: mockStep1TxReceipt }))
-        .put(
-          mockSetStatusAction({ currentOperation: 'step2', status: 'loading' })
-        )
+        .put(mockSetStatusAction({ currentOperation: 'step2' }))
         .put(mockSetErrorAction('test error'))
         .run();
 

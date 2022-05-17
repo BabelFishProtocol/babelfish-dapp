@@ -14,13 +14,13 @@ import { ParamType } from 'ethers/lib/utils';
 import { appActions } from '../app/app.slice';
 import { providerSelector } from '../app/app.selectors';
 import {
-  ContractStepCallSagaParams,
   CreateWatcherSagaOptions,
   MulticallContractCall,
   MulticallProviderType,
   MulticallResult,
   SagaContractCallStep,
 } from '../types';
+import { ContractStepCallSagaParams } from './utils.types';
 
 export const convertForMulticall = <
   Contract extends BaseContract,
@@ -112,7 +112,6 @@ function* stepCall<Operations extends string>(
   yield* put(
     setStatusAction({
       currentOperation: name,
-      status: 'loading',
     })
   );
 
