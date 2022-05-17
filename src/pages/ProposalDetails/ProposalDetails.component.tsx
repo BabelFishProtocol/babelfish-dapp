@@ -93,7 +93,7 @@ export const ProposalDetailsComponent = ({
             </CenteredBox>
 
             <Typography variant="body1" sx={{ ml: 2 }}>
-              Voting Ends: {formatTimestamp(proposal.endTime)}
+              Voting Ends, Estimate: {formatTimestamp(proposal.endTime)}
             </Typography>
           </Box>
         }
