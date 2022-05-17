@@ -18,7 +18,7 @@ export const VotesRatioBlock = () => {
 
   return (
     <CenteredBox>
-      <Typography variant="h5" sx={{ m: 1, fontSize: `33px !important` }}>
+      <Typography variant="h6" sx={{ mr: 2, fontWeight: 'bold' }}>
         {votesRatio.toFixed(2)}%
       </Typography>
       <Box
@@ -27,8 +27,9 @@ export const VotesRatioBlock = () => {
           height: 14,
           position: 'relative',
           borderRadius: '8px',
-          backgroundImage: ({ palette }) =>
-            `linear-gradient(to right, ${palette.error.light}, ${palette.error.dark} 90%);`,
+          backgroundImage: `linear-gradient(to right, #B78367 ${votesRatio}%, #FF3636 ${
+            votesRatio + 10
+          }%)`,
         }}
       >
         <Box
@@ -37,12 +38,11 @@ export const VotesRatioBlock = () => {
             width: `${votesRatio}%`,
             height: 14,
             borderRadius: '8px',
-            backgroundImage: ({ palette }) =>
-              `linear-gradient(to right, ${palette.success.light}, ${palette.success.dark} 90%);`,
+            background: `linear-gradient(to right, #6FCF97 ${votesRatio}%, #B78367 100%)`,
           }}
         />
       </Box>
-      <Typography variant="h5" sx={{ m: 1, fontSize: `33px !important` }}>
+      <Typography variant="h6" sx={{ ml: 2, fontWeight: 'bold' }}>
         {(100 - votesRatio).toFixed(2)}%
       </Typography>
     </CenteredBox>
