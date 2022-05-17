@@ -26,6 +26,7 @@ export const ClaimComponent = ({ onSubmit }: ClaimComponentProps) => {
         sx={{
           p: 0,
           maxWidth: { xs: 1400 },
+          width: '90%',
           margin: '0 auto',
         }}
       >

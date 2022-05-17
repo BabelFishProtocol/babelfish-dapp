@@ -119,6 +119,7 @@ export const AggregatorComponent = ({
     <Box
       sx={{
         maxWidth: 1400,
+        width: '90%',
         margin: '0 auto',
       }}
     >
