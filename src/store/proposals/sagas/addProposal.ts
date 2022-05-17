@@ -146,12 +146,8 @@ function* triggerFetch() {
   yield* put(proposalsActions.checkEligibility());
 }
 
-function* triggerUpdate() {
-  yield* put(proposalsActions.checkEligibility());
-}
-
 export const watchEligibility = createWatcherSaga({
   fetchSaga: triggerFetch,
-  updateSaga: triggerUpdate,
+  updateSaga: triggerFetch,
   stopAction: proposalsActions.eligibleForAddProposal.type,
 });

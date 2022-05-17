@@ -2,12 +2,7 @@ import { expectSaga } from 'redux-saga-test-plan';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import { throwError } from 'redux-saga-test-plan/providers';
 import { combineReducers, DeepPartial } from '@reduxjs/toolkit';
-import {
-  BigNumber,
-  BigNumberish,
-  constants,
-  ContractTransaction,
-} from 'ethers';
+import { BigNumber, constants, ContractTransaction } from 'ethers';
 
 import { TransactionReceipt } from '@ethersproject/providers';
 import { pick } from '../../../utils/helpers';
@@ -34,13 +29,14 @@ import {
 } from '../../app/app.selectors';
 
 import { selectedGovernorSelector } from '../proposals.selectors';
-import { ProposalsActions, proposalsActions } from '../proposals.slice';
+import { proposalsActions } from '../proposals.slice';
 import { ProposalsState } from '../proposals.state';
 
 import { addProposal, checkAddEligibility } from './addProposal';
 import { testAccount } from '../../staking/staking.mock';
 import { userProposalsListQuery } from '../../../queries/proposalListQuery';
 import { convertForMulticall } from '../../utils/utils.sagas';
+import { AddProposalFields } from '../../../pages/AddProposal/AddProposal.types';
 
 jest.mock('../../utils/utils.sagas', () => ({
   ...jest.requireActual('../../utils/utils.sagas'),
@@ -67,6 +63,19 @@ describe('add proposal sagas', () => {
     [Reducers.Proposals]: {
       ...new ProposalsState(),
     },
+  };
+
+  const mockAddProposalValues: AddProposalFields = {
+    SendProposalContract: GovernorTypes.GovernorAdmin,
+    Description: 'test description of proposal',
+    Values: [
+      {
+        Target: '0x03f4',
+        Value: '1000000000',
+        Signature: 'Signature',
+        Calldata: '0x616263640000',
+      },
+    ],
   };
 
   describe('addProposal', () => {
@@ -134,24 +143,11 @@ describe('add proposal sagas', () => {
       },
     };
 
-    const proposalGovernorAdminPayload: ProposalsActions['addProposal'] = {
-      payload: {
-        SendProposalContract: GovernorTypes.GovernorAdmin,
-        Description: 'test description of proposal',
-        Values: [
-          {
-            Target: '0x03f4',
-            Value: '1000000000',
-            Signature: 'Signature',
-            Calldata: '0x616263640000',
-          },
-        ],
-      },
-      type: 'proposals/addProposal',
-    };
-
     const getBasePath = () =>
-      expectSaga(addProposal, proposalGovernorAdminPayload)
+      expectSaga(
+        addProposal,
+        proposalsActions.addProposal(mockAddProposalValues)
+      )
         .withReducer(reducer)
         .withState(initialState)
         .select(accountSelector);
@@ -161,109 +157,62 @@ describe('add proposal sagas', () => {
         .provide([
           [matchers.select(accountSelector), testAccount],
           [matchers.select(governorAdminSelector), mockGovernorContract],
-          [
-            matchers.call(
-              mockGovernorContract.propose,
-              [proposalGovernorAdminPayload.payload.Values[0].Target],
-              [
-                proposalGovernorAdminPayload.payload.Values[0].Value,
-              ] as BigNumberish[],
-              [proposalGovernorAdminPayload.payload.Values[0].Signature],
-              [proposalGovernorAdminPayload.payload.Values[0].Calldata],
-              proposalGovernorAdminPayload.payload.Description
-            ),
-            mockTx,
-          ],
+          [matchers.call.fn(mockGovernorContract.propose), mockTx],
           [matchers.call(mockTx.wait), mockTxReceipt],
         ])
         .select(governorAdminSelector)
-        .call(
-          mockGovernorContract.propose,
-          [proposalGovernorAdminPayload.payload.Values[0].Target],
-          [proposalGovernorAdminPayload.payload.Values[0].Value],
-          [proposalGovernorAdminPayload.payload.Values[0].Signature],
-          [proposalGovernorAdminPayload.payload.Values[0].Calldata],
-          proposalGovernorAdminPayload.payload.Description
-        )
+        .call.fn(mockGovernorContract.propose)
         .hasFinalState(successState)
         .run();
     });
 
     it('when wallet is not connected', async () => {
-      await getBasePath()
+      const runResult = await getBasePath()
         .provide([
           [matchers.select(accountSelector), undefined],
           [matchers.select(governorAdminSelector), mockGovernorContract],
-          [
-            matchers.call(
-              mockGovernorContract.propose,
-              [proposalGovernorAdminPayload.payload.Values[0].Target],
-              [
-                proposalGovernorAdminPayload.payload.Values[0].Value,
-              ] as BigNumberish[],
-              [proposalGovernorAdminPayload.payload.Values[0].Signature],
-              [proposalGovernorAdminPayload.payload.Values[0].Calldata],
-              proposalGovernorAdminPayload.payload.Description
-            ),
-            mockTx,
-          ],
+          [matchers.call.fn(mockGovernorContract.propose), mockTx],
           [matchers.call(mockTx.wait), mockTxReceipt],
         ])
         .select(governorAdminSelector)
+        .put(proposalsActions.setAddProposalError('Wallet not connected'))
         .hasFinalState(failureWalletNotConnectedState)
         .run();
+
+      expect(runResult.effects).toEqual({});
     });
 
     it('fetching error', async () => {
-      await getBasePath()
+      const runResult = await getBasePath()
         .provide([
           [matchers.select(accountSelector), testAccount],
           [matchers.select(governorAdminSelector), mockGovernorContract],
-          [
-            matchers.call(
-              mockGovernorContract.propose,
-              [proposalGovernorAdminPayload.payload.Values[0].Target],
-              [
-                proposalGovernorAdminPayload.payload.Values[0].Value,
-              ] as BigNumberish[],
-              [proposalGovernorAdminPayload.payload.Values[0].Signature],
-              [proposalGovernorAdminPayload.payload.Values[0].Calldata],
-              proposalGovernorAdminPayload.payload.Description
-            ),
-            throwError(),
-          ],
-          [matchers.call(mockTx.wait), mockTxReceipt],
+          [matchers.call.fn(mockGovernorContract.propose), throwError()],
         ])
         .select(governorAdminSelector)
-        .call(
-          mockGovernorContract.propose,
-          [proposalGovernorAdminPayload.payload.Values[0].Target],
-          [proposalGovernorAdminPayload.payload.Values[0].Value],
-          [proposalGovernorAdminPayload.payload.Values[0].Signature],
-          [proposalGovernorAdminPayload.payload.Values[0].Calldata],
-          proposalGovernorAdminPayload.payload.Description
+        .call.fn(mockGovernorContract.propose)
+        .put(
+          proposalsActions.setAddProposalStatus({
+            status: 'loading',
+          })
+        )
+        .put(
+          proposalsActions.setAddProposalStatus({
+            currentOperation: 'propose',
+          })
+        )
+        .put(
+          proposalsActions.setAddProposalError(
+            'An unexpected error has occurred. Please try again'
+          )
         )
         .hasFinalState(failureState)
         .run();
+
+      expect(runResult.effects).toEqual({});
     });
   });
   describe('checkAddEligibility', () => {
-    const proposalGovernorAdminPayload: ProposalsActions['addProposal'] = {
-      payload: {
-        SendProposalContract: GovernorTypes.GovernorAdmin,
-        Description: 'test description of proposal',
-        Values: [
-          {
-            Target: '0x03f4',
-            Value: '1000000000',
-            Signature: '0x1111111111',
-            Calldata: '0x616263640000',
-          },
-        ],
-      },
-      type: '',
-    };
-
     const multicallResult = {
       name: 'mocked args for multicall',
     };
@@ -316,7 +265,7 @@ describe('add proposal sagas', () => {
               proposerAddress: testAccount,
             }),
             {
-              proposals: [proposalGovernorAdminPayload],
+              proposals: [mockAddProposalValues],
             },
           ],
           [
@@ -373,7 +322,7 @@ describe('add proposal sagas', () => {
               proposerAddress: testAccount,
             }),
             {
-              proposals: [proposalGovernorAdminPayload],
+              proposals: [mockAddProposalValues],
             },
           ],
           [
@@ -431,7 +380,7 @@ describe('add proposal sagas', () => {
               proposerAddress: testAccount,
             }),
             {
-              proposals: [proposalGovernorAdminPayload],
+              proposals: [mockAddProposalValues],
             },
           ],
           [
@@ -483,7 +432,7 @@ describe('add proposal sagas', () => {
               proposerAddress: testAccount,
             }),
             {
-              proposals: [proposalGovernorAdminPayload],
+              proposals: [mockAddProposalValues],
             },
           ],
           [
@@ -532,7 +481,7 @@ describe('add proposal sagas', () => {
               proposerAddress: testAccount,
             }),
             {
-              proposals: [proposalGovernorAdminPayload],
+              proposals: [mockAddProposalValues],
             },
           ],
           [

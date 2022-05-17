@@ -23,7 +23,7 @@ export const proposalSlice = createSlice({
   name: Reducers.Proposals,
   initialState,
   reducers: {
-    // ----- add new stake call -----
+    // ----- add new proposal call -----
 
     addProposal: addProposalStepCallActions.trigger<AddProposalFields>(),
     resetProposal: addProposalStepCallActions.reset,
@@ -96,6 +96,9 @@ export const proposalSlice = createSlice({
     },
     checkEligibility: () => {},
     watchEligibility: () => {},
+    stopWatchEligibility: (state) => {
+      state.reasonToBlockProposal = undefined;
+    },
     eligibleForAddProposal: (state) => {
       state.reasonToBlockProposal = undefined;
     },

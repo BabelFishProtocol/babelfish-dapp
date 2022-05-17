@@ -32,7 +32,7 @@ export const AddProposalContainer = ({
     dispatch(proposalsActions.watchEligibility());
 
     return () => {
-      dispatch(proposalsActions.eligibleForAddProposal());
+      dispatch(proposalsActions.stopWatchEligibility());
     };
   }, [dispatch, govSelector]);
 
