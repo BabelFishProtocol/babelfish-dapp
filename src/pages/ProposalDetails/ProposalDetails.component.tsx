@@ -49,7 +49,7 @@ export const ProposalDetailsComponent = ({
       <Box
         sx={{
           p: 0,
-          maxWidth: { xs: 1300 },
+          maxWidth: { xs: 1400 },
           margin: '0 auto',
         }}
       >
