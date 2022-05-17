@@ -101,17 +101,6 @@ export const ProposalsListComponent = ({
           containerSx={{ minHeight: 250 }}
         />
 
-        <Box
-          sx={{
-            pt: 3,
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-          }}
-        >
-          <Button>View All Proposals</Button>
-        </Box>
-
         {isAddDialogOpen && (
           <AddProposalContainer
             isOpenDialog={isAddDialogOpen}
