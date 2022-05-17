@@ -48,6 +48,6 @@ export const StakesListComponent = ({
     columns={stakesColumns}
     tableTitle="Current Stakes"
     tableEmptyMessage="No stakes yet."
-    containerSx={{ p: 1, minHeight: 250 }}
+    containerSx={{ p: 2, minHeight: 250 }}
   />
 );

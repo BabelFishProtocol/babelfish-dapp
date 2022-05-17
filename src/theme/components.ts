@@ -100,6 +100,14 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
       },
     },
   },
+  MuiTable: {
+    styleOverrides: {
+      root: {
+        borderCollapse: 'separate',
+        borderSpacing: 0,
+      },
+    },
+  },
   MuiTableHead: {
     styleOverrides: {
       root: {
@@ -113,6 +121,15 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
         fontFamily: 'inherit',
         border: 'none',
         padding: 10,
+
+        '&:first-of-type': {
+          borderBottomLeftRadius: 8,
+          borderTopLeftRadius: 8,
+        },
+        '&:last-of-type': {
+          borderBottomRightRadius: 8,
+          borderTopRightRadius: 8,
+        },
       },
     },
   },

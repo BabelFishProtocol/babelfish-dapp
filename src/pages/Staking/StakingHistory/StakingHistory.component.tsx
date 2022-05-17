@@ -33,6 +33,6 @@ export const StakingHistoryComponent = ({
     tableTitle="Staking History"
     tableEmptyMessage="No stakes yet."
     columns={stakingHistoryColumns}
-    containerSx={{ p: 1, minHeight: 250 }}
+    containerSx={{ p: 2, minHeight: 250 }}
   />
 );

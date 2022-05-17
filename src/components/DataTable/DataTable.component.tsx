@@ -17,6 +17,7 @@ import {
   TableEmptyProps,
   DataTableBodyProps,
 } from './DataTable.types';
+import { colors } from '../../theme/palette';
 
 export const DataTable = <Data extends BaseRowData = BaseRowData>({
   data,
@@ -41,7 +42,12 @@ export const DataTable = <Data extends BaseRowData = BaseRowData>({
       <Table>
         <TableHead>
           <TableRow sx={{ border: 'none' }}>
-            <TableCell colSpan={columns.length - 1}>
+            <TableCell
+              sx={{
+                padding: ({ spacing }) => spacing(2, 1.25),
+              }}
+              colSpan={columns.length - 1}
+            >
               <Typography variant="h4" component="div" sx={{ display: 'flex' }}>
                 {tableTitle}
                 {isUpdate && (
@@ -53,10 +59,22 @@ export const DataTable = <Data extends BaseRowData = BaseRowData>({
           </TableRow>
         </TableHead>
 
-        <TableHead>
+        <TableHead
+          sx={{
+            backgroundColor: colors.darkBlue,
+          }}
+        >
           <TableRow>
             {columns.map(({ label }, headIndex) => (
-              <TableCell key={headIndex}>{label}</TableCell>
+              <TableCell
+                sx={{
+                  padding: ({ spacing }) => spacing(1.0625, 1.25),
+                  lineHeight: 2.575,
+                }}
+                key={headIndex}
+              >
+                {label}
+              </TableCell>
             ))}
           </TableRow>
         </TableHead>
@@ -111,13 +129,26 @@ const DataTableRow = <Data extends BaseRowData = BaseRowData>({
   columns,
   rowData,
 }: DataTableRowProps<Data>) => (
-  <TableRow key={rowIndex}>
+  <TableRow
+    key={rowIndex}
+    sx={{
+      '&:nth-of-type(even)': {
+        backgroundColor: colors.darkBlue,
+      },
+    }}
+  >
     {columns.map((column, cellIndex) => {
       const { component: CellComponent, format, name } = column;
       const value = format ? format(rowData[name]) : rowData[name];
 
       return (
-        <TableCell key={cellIndex}>
+        <TableCell
+          key={cellIndex}
+          sx={{
+            lineHeight: 2.575,
+            padding: ({ spacing }) => spacing(1.0625, 1.25),
+          }}
+        >
           {CellComponent ? (
             <CellComponent
               rowIndex={rowIndex}
@@ -138,7 +169,13 @@ const LoadingStateRow = <Data extends BaseRowData = BaseRowData>({
 }: LoadingStateRowProps<Data>) => (
   <TableRow data-testid="loading-state-row">
     {columns.map((_, cellIndex) => (
-      <TableCell key={cellIndex}>
+      <TableCell
+        sx={{
+          padding: ({ spacing }) => spacing(2.0625, 1.25),
+          lineHeight: 2.4,
+        }}
+        key={cellIndex}
+      >
         <Skeleton />
       </TableCell>
     ))}
