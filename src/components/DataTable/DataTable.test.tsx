@@ -9,6 +9,10 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
+jest.mock('@mui/material/styles/createPalette', () => ({
+  createPalette: jest.fn(),
+}));
+
 const checkDisplayedHeaders = () => {
   const header = screen.getByText(`${mockDataTable.tableTitle}`);
   expect(header).toBeInTheDocument();

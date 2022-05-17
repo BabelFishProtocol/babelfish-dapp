@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
-import MuiLink from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
@@ -25,18 +24,26 @@ import { Breadcrumbs } from '../../components/Breadcrumbs/Breadcrumbs.component'
 
 import { AddProposalContainer } from '../AddProposal/AddProposal.container';
 import { ProposalsListComponentProps } from './ProposalsList.types';
+import plusSquareIcon from '../../assets/icons/plus-square.svg';
 
 /** Needed because DataTable is not accepting booleans */
 type RowData = Omit<Proposal, 'canceled' | 'executed'>;
 
 const ViewProposalComponent: CustomColumn<RowData> = ({ value, rowData }) => (
-  <MuiLink
+  <Button
+    sx={{
+      px: 2,
+      py: 0.5,
+    }}
+    size="small"
+    variant="outlined"
     component={Link}
-    color="textPrimary"
     to={`${rowData.governorType}/${value}`}
   >
-    View Proposal
-  </MuiLink>
+    <Typography fontWeight="normal" textTransform="capitalize" variant="body2">
+      View Proposal
+    </Typography>
+  </Button>
 );
 
 const proposalsListColumns: DataTableColumn<RowData>[] = [
@@ -83,26 +90,16 @@ export const ProposalsListComponent = ({
           tableAction={
             <Button
               variant="text"
+              startIcon={<img src={plusSquareIcon} alt="plus" />}
               onClick={() => {
                 setIsAddDialogOpen(true);
               }}
             >
-              +CREATE PROPOSAL
+              CREATE PROPOSAL
             </Button>
           }
           containerSx={{ minHeight: 250 }}
         />
-
-        <Box
-          sx={{
-            pt: 3,
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-          }}
-        >
-          <Button variant="outlined">View All Proposals</Button>
-        </Box>
 
         {isAddDialogOpen && (
           <AddProposalContainer

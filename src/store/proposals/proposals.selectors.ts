@@ -160,14 +160,9 @@ export const userVoteTypeSelector = createSelector(
   }
 );
 
-export const addProposalStateSelector = createSelector(
+export const addProposalStatusSelector = createSelector(
   proposalsState,
-  (state) => state.addProposalState
-);
-
-export const addProposalErrorSelector = createSelector(
-  proposalsState,
-  (state) => state.addProposalErrorReason
+  (state) => selectCurrentCallStepData(state.addProposalCall)
 );
 
 export const reasonToBlockSelector = createSelector(

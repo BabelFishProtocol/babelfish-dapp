@@ -3,9 +3,9 @@ import {
   GovernorTypes,
   ProposalState,
 } from '../../constants';
-import { FiniteStates } from '../../utils/types';
 import { CallState, LoadableValue } from '../types';
 
+export type AddProposalCalls = 'propose';
 export type VoteCall = 'vote for' | 'vote against';
 export type ProposalDetailsCalls = 'queue' | 'cancel' | 'execute';
 export type ProposalUrlParams = Pick<Proposal, 'id' | 'governorType'>;
@@ -47,10 +47,8 @@ export type ProposalDetails = Proposal & {
 };
 
 export class ProposalsState {
-  addProposalErrorReason?: string;
   reasonToBlockProposal?: string;
   selectedGovernor: string = GOVERNANCE_OPTIONS.GOVERNOR_ADMIN.id;
-  addProposalState: FiniteStates = 'idle';
 
   voteCall: CallState<VoteCall> = {
     status: 'idle',
@@ -78,4 +76,9 @@ export class ProposalsState {
     data: undefined,
   };
   selectedProposal?: ProposalUrlParams;
+
+  addProposalCall: CallState<AddProposalCalls> = {
+    status: 'idle',
+    steps: [{ name: 'propose', label: 'proposing' }],
+  };
 }

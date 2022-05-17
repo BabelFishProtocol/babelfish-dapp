@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
 import { AddProposalFields } from '../../pages/AddProposal/AddProposal.types';
-import { FiniteStates } from '../../utils/types';
 import { ActionsType } from '../types';
 import { createStepCallsActions } from '../utils/utils.reducers';
 import {
@@ -13,6 +12,11 @@ import {
 
 const initialState = { ...new ProposalsState() };
 
+const addProposalStepCallActions = createStepCallsActions(
+  initialState,
+  'addProposalCall'
+);
+
 const voteCallActions = createStepCallsActions(initialState, 'voteCall');
 const proposalDetailsCallsActions = createStepCallsActions(
   initialState,
@@ -23,6 +27,15 @@ export const proposalSlice = createSlice({
   name: Reducers.Proposals,
   initialState,
   reducers: {
+    // ----- add new proposal call -----
+
+    addProposal: addProposalStepCallActions.trigger<AddProposalFields>(),
+    resetProposal: addProposalStepCallActions.reset,
+    setAddProposalStatus: addProposalStepCallActions.setStatus,
+    setAddProposalSteps: addProposalStepCallActions.setSteps,
+    setAddProposalStepData: addProposalStepCallActions.updateStep,
+    setAddProposalError: addProposalStepCallActions.setStepError,
+
     // ----- cast vote calls -----
 
     castVote: voteCallActions.trigger<{ support: boolean }>(),
@@ -96,29 +109,18 @@ export const proposalSlice = createSlice({
     setGovernor: (state, { payload }: PayloadAction<string>) => {
       state.selectedGovernor = payload;
     },
-    watchAddProposal: () => {},
-    stopWatchingAddProposal: (state) => {
-      state.addProposalState = 'idle';
+    checkEligibility: () => {},
+    watchEligibility: () => {},
+    stopWatchEligibility: (state) => {
+      state.reasonToBlockProposal = undefined;
     },
-    checkAddProposal: () => {},
     eligibleForAddProposal: (state) => {
       state.reasonToBlockProposal = undefined;
     },
     notEligibleForAddProposal: (state, { payload }: PayloadAction<string>) => {
       state.reasonToBlockProposal = payload;
     },
-    startProposal: (state, _: PayloadAction<AddProposalFields>) => {
-      state.addProposalState = 'loading';
-    },
-    proposalFailure: (state, { payload }: PayloadAction<string>) => {
-      state.addProposalState = 'failure';
-      state.addProposalErrorReason = payload;
-    },
-    proposalSuccess: (state) => {
-      state.addProposalState = 'success';
-    },
-    setAddProposalState: (state, { payload }: PayloadAction<FiniteStates>) => {
-      state.addProposalState = payload;
+    clearReasonToBlockState: (state) => {
       state.reasonToBlockProposal = undefined;
     },
   },

@@ -6,7 +6,7 @@ import {
 import {
   addProposal,
   checkAddEligibility,
-  watchAddProposals,
+  watchEligibility,
 } from './sagas/addProposal';
 import { fetchProposalsList, watchProposalsList } from './sagas/proposalList';
 import { proposalsActions } from './proposals.slice';
@@ -32,8 +32,8 @@ export function* proposalsSaga() {
     takeLatest(proposalsActions.updateProposalsList.type, fetchProposalsList),
     takeLatest(proposalsActions.watchProposalsList.type, watchProposalsList),
 
-    takeLatest(proposalsActions.startProposal, addProposal),
-    takeLatest(proposalsActions.watchAddProposal, watchAddProposals),
-    takeLatest(proposalsActions.checkAddProposal, checkAddEligibility),
+    takeLatest(proposalsActions.addProposal.type, addProposal),
+    takeLatest(proposalsActions.checkEligibility.type, checkAddEligibility),
+    takeLatest(proposalsActions.watchEligibility.type, watchEligibility),
   ]);
 }
