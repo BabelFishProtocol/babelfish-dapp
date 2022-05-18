@@ -1,23 +1,22 @@
-import { put, call, select } from 'typed-redux-saga';
-import { allUserStakesQuery } from '../../../queries/historyStakeListQuery';
+import { put, select, take } from 'typed-redux-saga';
 import {
-  accountSelector,
-  subgraphClientSelector,
-} from '../../app/app.selectors';
+  findStakingHistorySubscription,
+  UserQueryParams,
+  UserQueryResult,
+} from '../../../queries/historyStakeListQuery';
+import { accountSelector } from '../../app/app.selectors';
+import { appActions } from '../../app/app.slice';
+import { subscriptionSaga } from '../../utils/utils.sagas';
 import { stakingActions } from '../staking.slice';
 
-export function* fetchHistoryStaking() {
+export function* fetchHistoryStaking(data: UserQueryResult | Error) {
   try {
-    const subgraphClient = yield* select(subgraphClientSelector);
-    const account = yield* select(accountSelector);
+    console.log('inside saga');
+    yield* put(stakingActions.fetchHistoryStakesList());
 
-    if (!subgraphClient || !account) throw new Error('Wallet not connected');
+    if (data instanceof Error) throw data;
 
-    const { user } = yield* call(allUserStakesQuery, subgraphClient, {
-      contractAddress: account.toLowerCase(),
-    });
-
-    const stakesHistory = user.allStakes.map((stake) => ({
+    const stakesHistory = data.user.allStakes.map((stake) => ({
       asset: 'FISH',
       stakedAmount: stake.amount,
       unlockDate: stake.lockedUntil,
@@ -28,6 +27,23 @@ export function* fetchHistoryStaking() {
 
     yield* put(stakingActions.setHistoryStakesList(stakesHistory));
   } catch (e) {
+    console.log(e);
     yield* put(stakingActions.fetchHistoryStakesListFailure());
   }
+}
+
+export function* watchStakingHistory() {
+  let account = yield* select(accountSelector);
+
+  if (!account) {
+    yield* take(appActions.walletConnected.type);
+    account = (yield* select(accountSelector)) as string;
+  }
+
+  yield* subscriptionSaga<UserQueryResult, UserQueryParams>({
+    query: findStakingHistorySubscription,
+    variables: { contractAddress: account.toLowerCase() },
+    fetchSaga: fetchHistoryStaking,
+    stopAction: stakingActions.stopWatchingStakingData,
+  });
 }

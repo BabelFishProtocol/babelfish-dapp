@@ -14,7 +14,7 @@ export const subgraphClients: Partial<Record<ChainEnum, GraphQLClient>> = {
 export const subgraphWsClients: Partial<Record<ChainEnum, SubscriptionClient>> =
   {
     [ChainEnum.RSK_TESTNET]: new SubscriptionClient(
-      'ws://localhost:8001/subgraphs/name/babelfish/rskTestnet-graph',
+      'ws://3.72.58.184:8001/subgraphs/name/babelfish/rskTestnet-graph',
       {
         reconnect: true,
       }
