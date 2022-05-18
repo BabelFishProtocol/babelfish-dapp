@@ -8,6 +8,8 @@ import {
 } from '../../store/proposals/proposals.selectors';
 import { CenteredBox } from '../../components/PageView/PageView.component';
 
+const halfwayColor = '#B78367';
+
 export const VotesRatioBlock = () => {
   const votesRatio = useSelector(votesRatioSelector);
   const hasVotes = useSelector(hasVotesSelector);
@@ -27,9 +29,10 @@ export const VotesRatioBlock = () => {
           height: 14,
           position: 'relative',
           borderRadius: '8px',
-          backgroundImage: `linear-gradient(to right, #B78367 ${votesRatio}%, #FF3636 ${
-            votesRatio + 10
-          }%)`,
+          backgroundImage: ({ palette }) =>
+            `linear-gradient(to right, ${halfwayColor} ${votesRatio}%, ${
+              palette.error.main
+            } ${votesRatio + 5}%)`,
         }}
       >
         <Box
@@ -38,7 +41,8 @@ export const VotesRatioBlock = () => {
             width: `${votesRatio}%`,
             height: 14,
             borderRadius: '8px',
-            background: `linear-gradient(to right, #6FCF97 ${votesRatio}%, #B78367 100%)`,
+            background: ({ palette }) =>
+              `linear-gradient(to right, ${palette.success.main} ${votesRatio}%, #B78367 100%)`,
           }}
         />
       </Box>

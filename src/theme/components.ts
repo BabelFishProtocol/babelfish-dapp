@@ -75,6 +75,22 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
       },
       outlined: {
         borderRadius: 8,
+        '&.MuiButton-outlinedSuccess': {
+          boxShadow: `inset 0 0 0 2px ${palette.success.main}`,
+          backgroundColor: palette.success.light,
+          color: 'white',
+          ':hover': {
+            backgroundColor: palette.success.main,
+          },
+        },
+        '&.MuiButton-outlinedError': {
+          boxShadow: `inset 0 0 0 2px ${palette.error.main}`,
+          backgroundColor: palette.error.light,
+          color: 'white',
+          ':hover': {
+            backgroundColor: palette.error.main,
+          },
+        },
       },
       outlinedPrimary: {
         boxShadow: `inset 0 0 0 2px ${palette.primary.main}`,
