@@ -19,7 +19,7 @@ import {
   mainnetChainsArr,
   testnetChainsArr,
 } from '../../config/chains';
-import { subgraphClients } from '../../config/subgraph';
+import { subgraphClients, subgraphWsClients } from '../../config/subgraph';
 import {
   ERC20__factory,
   Staking__factory,
@@ -121,6 +121,15 @@ export const subgraphClientSelector = createSelector(
     if (!chainConfig || !subgraphClients[chainConfig.id]) return undefined;
 
     return subgraphClients[chainConfig.id];
+  }
+);
+
+export const subgraphWsClientSelector = createSelector(
+  currentChainSelector,
+  (chainConfig) => {
+    if (!chainConfig || !subgraphWsClients[chainConfig.id]) return undefined;
+
+    return subgraphWsClients[chainConfig.id];
   }
 );
 

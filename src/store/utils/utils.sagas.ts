@@ -7,12 +7,18 @@ import {
   select,
   takeLatest,
 } from 'typed-redux-saga';
+import { SubscriptionClient } from 'subscription-client';
+import { END, eventChannel, SagaIterator } from 'redux-saga';
+import { ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
 import { ContractCall } from 'ethers-multicall';
 import { BaseContract } from 'ethers';
 import { ParamType } from 'ethers/lib/utils';
 
 import { appActions } from '../app/app.slice';
-import { providerSelector } from '../app/app.selectors';
+import {
+  providerSelector,
+  subgraphWsClientSelector,
+} from '../app/app.selectors';
 import {
   CreateWatcherSagaOptions,
   MulticallContractCall,
@@ -154,5 +160,70 @@ export function* contractStepCallsSaga<Operations extends string>({
         : 'An unexpected error has occurred. Please try again';
 
     yield* put(setErrorAction(msg));
+  }
+}
+
+type SubscriptionSagaConfig<Result, Variables> = {
+  query: string;
+  stopAction: ActionCreatorWithoutPayload;
+  fetchSaga: (data: Result | Error) => SagaIterator;
+  variables?: Variables;
+};
+
+export function* subscriptionSaga<Result, Variables>({
+  query,
+  fetchSaga,
+  stopAction,
+  variables,
+}: SubscriptionSagaConfig<Result, Variables>) {
+  function createPoolChanel(client: SubscriptionClient) {
+    return eventChannel<Result | Error>((emit) => {
+      const subscription = client
+        .request({
+          query,
+          variables,
+        })
+        .subscribe({
+          next({ data }) {
+            emit(data as unknown as Result);
+          },
+          error(e) {
+            emit(e);
+          },
+        });
+
+      return () => {
+        subscription.unsubscribe();
+        emit(END);
+      };
+    });
+  }
+
+  let subgraphWsClient = yield* select(subgraphWsClientSelector);
+
+  if (!subgraphWsClient) {
+    yield* take(appActions.walletConnected.type);
+    subgraphWsClient = yield* select(subgraphWsClientSelector);
+  }
+
+  const channel = yield* call(
+    createPoolChanel,
+    subgraphWsClient as SubscriptionClient
+  );
+
+  function* closeChannel() {
+    channel.close();
+  }
+
+  yield* takeLatest(stopAction.type, closeChannel);
+
+  try {
+    while (true) {
+      const data = yield* take(channel);
+
+      yield* call(fetchSaga, data);
+    }
+  } finally {
+    yield* closeChannel();
   }
 }
