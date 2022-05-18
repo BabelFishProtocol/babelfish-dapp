@@ -9,21 +9,12 @@ import { UrlNames, Urls } from '../../constants';
 
 export const ProposalDetailsLoadable = () => (
   <>
-    <Box
-      sx={{
-        p: 0,
-        maxWidth: { xs: 1400 },
-        width: '90%',
-        margin: '0 auto',
-      }}
-    >
-      <Breadcrumbs
-        links={[
-          { title: UrlNames.Proposals, href: Urls.Proposals },
-          { title: UrlNames.ProposalDetails },
-        ]}
-      />
-    </Box>
+    <Breadcrumbs
+      links={[
+        { title: UrlNames.Proposals, href: Urls.Proposals },
+        { title: UrlNames.ProposalDetails },
+      ]}
+    />
     <PageView
       title={
         <Box sx={{ p: 1 }}>
