@@ -66,15 +66,7 @@ export const ProposalsListComponent = ({
 
   return (
     <>
-      <Box
-        sx={{
-          p: 0,
-          maxWidth: { xs: 1300 },
-          margin: '0 auto',
-        }}
-      >
-        <Breadcrumbs links={[{ title: UrlNames.Proposals }]} />
-      </Box>
+      <Breadcrumbs links={[{ title: UrlNames.Proposals }]} />
       <PageView
         title={
           <Typography variant="h2" padding={1}>

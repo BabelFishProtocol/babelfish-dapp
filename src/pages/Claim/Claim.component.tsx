@@ -22,15 +22,7 @@ export const ClaimComponent = ({ onSubmit }: ClaimComponentProps) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Box
-        sx={{
-          p: 0,
-          maxWidth: { xs: 1300 },
-          margin: '0 auto',
-        }}
-      >
-        <Breadcrumbs links={[{ title: UrlNames.Claim }]} />
-      </Box>
+      <Breadcrumbs links={[{ title: UrlNames.Claim }]} />
       <PageView
         title={
           <Typography variant="h2" padding={1}>

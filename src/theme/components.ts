@@ -12,6 +12,9 @@ const transition = `250ms cubic-bezier(0.4, 0, 0.2, 1)`;
 export const getComponents = (palette: Palette): Components<Theme> => ({
   MuiCssBaseline: {
     styleOverrides: `
+    body {
+      overflow: overlay;
+    }
     *::-webkit-scrollbar {
       width: 8px;
       border-radius: 10px;

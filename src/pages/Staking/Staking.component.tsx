@@ -32,73 +32,75 @@ export const StakingComponent = ({
   const handleCloseDialog = () => setShowAddStakeDialog(false);
 
   return (
-    <PageAligner>
-      <Box
-        sx={{
-          gap: 2,
-          width: '90%',
-          display: 'flex',
-          maxWidth: 1400,
-          flexDirection: 'column',
-        }}
-      >
-        <Breadcrumbs links={[{ title: UrlNames.Staking }]} sx={{ pb: 1 }} />
-        <CenteredBox sx={{ width: '100%', gap: 2, alignItems: 'stretch' }}>
-          <BalanceBlock label="Total Staked Fish" {...fishStaked}>
-            <Button
-              variant="outlined"
-              onClick={handleOpenDialog}
-              sx={{ width: 'fit-content' }}
+    <>
+      <Breadcrumbs links={[{ title: UrlNames.Staking }]} />
+      <PageAligner>
+        <Box
+          sx={{
+            gap: 2,
+            width: '90%',
+            display: 'flex',
+            maxWidth: 1400,
+            flexDirection: 'column',
+          }}
+        >
+          <CenteredBox sx={{ width: '100%', gap: 2, alignItems: 'stretch' }}>
+            <BalanceBlock label="Total Staked Fish" {...fishStaked}>
+              <Button
+                variant="outlined"
+                onClick={handleOpenDialog}
+                sx={{ width: 'fit-content' }}
+              >
+                Add New Stake
+              </Button>
+            </BalanceBlock>
+
+            <BalanceBlock
+              aprox
+              asset="USD"
+              label="Total Earned Rewards Available"
+              state={totalRewards.state}
+              data={totalRewards.data}
             >
-              Add New Stake
-            </Button>
-          </BalanceBlock>
+              <Box>
+                {rewards.map((reward, index) => (
+                  <RewardBlock key={index} {...reward} />
+                ))}
+              </Box>
+            </BalanceBlock>
 
-          <BalanceBlock
-            aprox
-            asset="USD"
-            label="Total Earned Rewards Available"
-            state={totalRewards.state}
-            data={totalRewards.data}
-          >
-            <Box>
-              {rewards.map((reward, index) => (
-                <RewardBlock key={index} {...reward} />
-              ))}
-            </Box>
-          </BalanceBlock>
-
-          <BalanceBlock
-            asset=""
-            label="Combined Voting Power"
-            data={votingPower.data}
-            state={votingPower.state}
-          >
-            <Button
-              sx={{ width: 'fit-content' }}
-              variant="outlined"
-              component={Link}
-              to={Urls.Proposals}
+            <BalanceBlock
+              asset=""
+              label="Combined Voting Power"
+              data={votingPower.data}
+              state={votingPower.state}
             >
-              View Governance
-            </Button>
-          </BalanceBlock>
-        </CenteredBox>
+              <Button
+                sx={{ width: 'fit-content' }}
+                variant="outlined"
+                component={Link}
+                to={Urls.Proposals}
+              >
+                View Governance
+              </Button>
+            </BalanceBlock>
+          </CenteredBox>
 
-        <StakesListContainer />
+          <StakesListContainer />
 
-        <VestsListContainer />
+          <VestsListContainer />
 
-        <StakingHistoryContainer />
+          <StakingHistoryContainer />
 
-        {showAddStakeDialog && (
-          <AddNewStakeContainer
-            open={showAddStakeDialog}
-            onClose={handleCloseDialog}
-          />
-        )}
-      </Box>
-    </PageAligner>
+          {showAddStakeDialog && (
+            <AddNewStakeContainer
+              open={showAddStakeDialog}
+              onClose={handleCloseDialog}
+            />
+          )}
+        </Box>
+      </PageAligner>
+    </>
   );
 };
 
