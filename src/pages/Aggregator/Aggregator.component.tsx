@@ -87,9 +87,7 @@ export const AggregatorComponent = ({
   useWalletAddress(setValue);
 
   useEffect(() => {
-    if (startingToken) {
-      onStartingTokenChange(startingToken);
-    }
+    onStartingTokenChange(startingToken || undefined);
   }, [startingToken, onStartingTokenChange]);
 
   useEffect(() => {
@@ -99,9 +97,7 @@ export const AggregatorComponent = ({
   }, [destinationChain, onDestinationChainChange]);
 
   useEffect(() => {
-    if (destinationToken) {
-      onDestinationTokenChange(destinationToken);
-    }
+    onDestinationTokenChange(destinationToken || undefined);
   }, [destinationToken, onDestinationTokenChange]);
 
   useEffect(() => {

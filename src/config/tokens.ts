@@ -5,6 +5,7 @@ import usdcIcon from '../assets/icons/tokens/usdc.svg';
 import busdIcon from '../assets/icons/tokens/busd.svg';
 // import usdpIcon from '../assets/icons/tokens/usdp.svg';
 import xusdIcon from '../assets/icons/tokens/xusd.svg';
+import rdocIcon from '../assets/icons/tokens/rdoc.svg';
 import { ChainEnum } from './chains';
 
 export enum TokenEnum {
@@ -14,6 +15,9 @@ export enum TokenEnum {
   DAI = 'DAI',
   // USDP = 'USDP',
   XUSD = 'XUSD',
+  RDOC = 'RDOC',
+  BDUS = 'BDUS',
+  ZUSD = 'ZUSD',
 }
 
 export interface TokenTypeBase {
@@ -86,6 +90,33 @@ export const tokens: TokensType = {
     addresses: {
       [ChainEnum.RSK]: '0xb5999795BE0EbB5bAb23144AA5FD6A02D080299F',
       [ChainEnum.RSK_TESTNET]: '0x152123ec3D9fe2Cf57aBc09917C1ba51324EA8dE', // not sure which one is right for our setup. Need to test when we have access to test tokens
+    },
+  },
+  [TokenEnum.RDOC]: {
+    id: TokenEnum.RDOC,
+    name: TokenEnum.RDOC,
+    icon: rdocIcon,
+    addresses: {
+      [ChainEnum.RSK]: '0x2d919f19d4892381d58edebeca66d5642cef1a1f',
+      [ChainEnum.RSK_TESTNET]: '0xC3De9f38581F83e281F260D0ddBAac0E102Ff9F8',
+    },
+  },
+  [TokenEnum.BDUS]: {
+    id: TokenEnum.BDUS,
+    name: TokenEnum.BDUS,
+    icon: rdocIcon, // not provided yet
+    addresses: {
+      [ChainEnum.RSK]: '0xB450ff06d950eFA9A9c0aD63790C51971C1BE885',
+      [ChainEnum.RSK_TESTNET]: '0xB450ff06d950eFA9A9c0aD63790C51971C1BE885', // not provided yet - the same as RSK
+    },
+  },
+  [TokenEnum.ZUSD]: {
+    id: TokenEnum.ZUSD,
+    name: TokenEnum.ZUSD,
+    icon: rdocIcon, // not provided yet
+    addresses: {
+      [ChainEnum.RSK]: '0x4A0741FA749Ed6b1F810224D09f1f511952e67De', // not provided yet - the same as RSK testnet
+      [ChainEnum.RSK_TESTNET]: '0x4A0741FA749Ed6b1F810224D09f1f511952e67De',
     },
   },
 } as const;

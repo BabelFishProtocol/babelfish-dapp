@@ -84,7 +84,8 @@ export const useAggregatorDropdowns = (
           []
       );
     }
-  }, [flowState, startingChain, destinationChain, resetField, pool]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startingChain, destinationChain, resetField, pool]);
 
   return {
     startingChainOptions,
