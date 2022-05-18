@@ -57,14 +57,11 @@ export const proposalSlice = createSlice({
     setProposalDetailsCallError: proposalDetailsCallsActions.setStepError,
 
     watchProposalsList: (state) => {
+      state.proposalsList.data = [];
       state.proposalsList.state = 'loading';
     },
     stopWatchingProposalsList: (state) => {
       state.proposalsList.state = 'idle';
-    },
-    fetchProposalsList: (state) => {
-      state.proposalsList.data = [];
-      state.proposalsList.state = 'loading';
     },
     updateProposalsList: (state) => {
       state.proposalsList.state = 'loading';

@@ -1,6 +1,6 @@
 import { gql, GraphQLClient } from 'graphql-request';
 
-type ProposalListQueryParams = { contractAddress: string };
+export type ProposalListQueryParams = { contractAddress: string };
 type UserProposalListQueryParams = ProposalListQueryParams & {
   proposerAddress: string;
 };
@@ -21,6 +21,19 @@ export type ProposalListQueryResult = {
 const findProposalsQuery = gql`
   query getProposals($contractAddress: Bytes!) {
     proposals(where: { contractAddress: $contractAddress }) {
+      description
+      startDate
+      startBlock
+      endBlock
+      proposalId
+      contractAddress
+    }
+  }
+`;
+
+export const findAllProposalsSubscription = gql`
+  subscription getProposals {
+    proposals {
       description
       startDate
       startBlock
