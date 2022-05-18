@@ -16,8 +16,8 @@ export enum TokenEnum {
   // USDP = 'USDP',
   XUSD = 'XUSD',
   RDOC = 'RDOC',
-  BDUS = 'BDUS',
-  ZUSD = 'ZUSD',
+  // BDUS = 'BDUS',
+  // ZUSD = 'ZUSD',
 }
 
 export interface TokenTypeBase {
@@ -101,22 +101,22 @@ export const tokens: TokensType = {
       [ChainEnum.RSK_TESTNET]: '0xC3De9f38581F83e281F260D0ddBAac0E102Ff9F8',
     },
   },
-  [TokenEnum.BDUS]: {
-    id: TokenEnum.BDUS,
-    name: TokenEnum.BDUS,
-    icon: rdocIcon, // not provided yet
-    addresses: {
-      [ChainEnum.RSK]: '0xB450ff06d950eFA9A9c0aD63790C51971C1BE885',
-      [ChainEnum.RSK_TESTNET]: '0xB450ff06d950eFA9A9c0aD63790C51971C1BE885', // not provided yet - the same as RSK
-    },
-  },
-  [TokenEnum.ZUSD]: {
-    id: TokenEnum.ZUSD,
-    name: TokenEnum.ZUSD,
-    icon: rdocIcon, // not provided yet
-    addresses: {
-      [ChainEnum.RSK]: '0x4A0741FA749Ed6b1F810224D09f1f511952e67De', // not provided yet - the same as RSK testnet
-      [ChainEnum.RSK_TESTNET]: '0x4A0741FA749Ed6b1F810224D09f1f511952e67De',
-    },
-  },
+  // [TokenEnum.BDUS]: {
+  //   id: TokenEnum.BDUS,
+  //   name: TokenEnum.BDUS,
+  //   icon: rdocIcon, // not provided yet
+  //   addresses: {
+  //     [ChainEnum.RSK]: '0xB450ff06d950eFA9A9c0aD63790C51971C1BE885',
+  //     [ChainEnum.RSK_TESTNET]: '0xB450ff06d950eFA9A9c0aD63790C51971C1BE885', // not provided yet - the same as RSK
+  //   },
+  // },
+  // [TokenEnum.ZUSD]: {
+  //   id: TokenEnum.ZUSD,
+  //   name: TokenEnum.ZUSD,
+  //   icon: rdocIcon, // not provided yet
+  //   addresses: {
+  //     [ChainEnum.RSK]: '0x4A0741FA749Ed6b1F810224D09f1f511952e67De', // not provided yet - the same as RSK testnet
+  //     [ChainEnum.RSK_TESTNET]: '0x4A0741FA749Ed6b1F810224D09f1f511952e67De',
+  //   },
+  // },
 } as const;
