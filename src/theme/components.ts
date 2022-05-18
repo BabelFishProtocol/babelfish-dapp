@@ -155,6 +155,10 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
         '&.Mui-error': {
           borderWidth: 1,
         },
+        '& .MuiSelect-icon': {
+          color: palette.primary.main,
+          fontSize: '2rem',
+        },
       },
     },
   },
