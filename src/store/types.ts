@@ -1,5 +1,8 @@
 import { TransactionReceipt } from '@ethersproject/providers';
-import { ActionCreatorsMapObject, ActionCreatorWithPayload } from '@reduxjs/toolkit';
+import {
+  ActionCreatorsMapObject,
+  ActionCreatorWithPayload,
+} from '@reduxjs/toolkit';
 import { BaseContract, Contract, ContractTransaction, Signer } from 'ethers';
 import { ContractCall, Provider } from 'ethers-multicall';
 import { SagaIterator } from 'redux-saga';
