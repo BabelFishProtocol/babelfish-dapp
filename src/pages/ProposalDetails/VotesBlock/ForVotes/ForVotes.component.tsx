@@ -4,6 +4,15 @@ import { VoteForButton } from '../VotesBlock.voteButtons';
 import { VoteActionBlock } from '../VotesBlock.voteAction';
 import { VotesListComponent } from '../VotesBlock.votesList';
 import { VotesBlockComponentProps } from '../VotesBlock.types';
+import voteForIcon from '../../../../assets/icons/vote-for.svg';
+
+const icon = (
+  <img
+    style={{ height: 32, marginRight: 8 }}
+    src={voteForIcon}
+    alt="vote for"
+  />
+);
 
 export const ForVotesComponent = ({
   state,
@@ -16,6 +25,7 @@ export const ForVotesComponent = ({
 }: VotesBlockComponentProps) => (
   <>
     <VoteActionBlock
+      icon={icon}
       votesAmount={`${formatWeiAmount(votesAmount || 0)} VOTES FOR`}
     >
       <VoteForButton

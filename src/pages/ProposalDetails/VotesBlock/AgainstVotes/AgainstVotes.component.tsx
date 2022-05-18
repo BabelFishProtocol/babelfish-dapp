@@ -4,6 +4,15 @@ import { VoteAgainstButton } from '../VotesBlock.voteButtons';
 import { VoteActionBlock } from '../VotesBlock.voteAction';
 import { VotesListComponent } from '../VotesBlock.votesList';
 import { VotesBlockComponentProps } from '../VotesBlock.types';
+import voteAgainstIcon from '../../../../assets/icons/vote-against.svg';
+
+const icon = (
+  <img
+    style={{ height: 32, marginRight: 8 }}
+    src={voteAgainstIcon}
+    alt="vote against"
+  />
+);
 
 export const AgainstVotesComponent = ({
   state,
@@ -16,6 +25,7 @@ export const AgainstVotesComponent = ({
 }: VotesBlockComponentProps) => (
   <>
     <VoteActionBlock
+      icon={icon}
       votesAmount={`${formatWeiAmount(votesAmount || 0)} VOTES AGAINST`}
     >
       <VoteAgainstButton

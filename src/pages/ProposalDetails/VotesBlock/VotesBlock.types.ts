@@ -35,6 +35,7 @@ export type VotesBlockComponentProps = Pick<
   };
 
 export type VoteActionBlockProps = {
+  icon?: JSX.Element;
   children: React.ReactNode;
   votesAmount: string;
 };
