@@ -28,8 +28,8 @@ import {
   ProposalDetailsComponentProps,
 } from './ProposalDetails.types';
 import { VotesRatioBlock } from './ProposalDetails.votesRatio';
-import { ForVotesContainer } from './VotesBlock/ForVotes/ForVotes.container';
-import { AgainstVotesContainer } from './VotesBlock/AgainstVotes/AgainstVotes.container';
+import { ForVotesContainer } from './VotesBlock/VotesSummary/ForVotes.container';
+import { AgainstVotesContainer } from './VotesBlock/VotesSummary/AgainstVotes.container';
 
 export const ProposalDetailsComponent = ({
   proposal,

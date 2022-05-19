@@ -7,7 +7,7 @@ import {
   againstVoteStatusSelector,
 } from '../../../../store/proposals/proposals.selectors';
 import { proposalsActions } from '../../../../store/proposals/proposals.slice';
-import { VotesSummary } from '../VotesSummary/VotesSummary.component';
+import { VotesSummary } from './VotesSummary.component';
 
 export const AgainstVotesContainer = () => {
   const dispatch = useDispatch();

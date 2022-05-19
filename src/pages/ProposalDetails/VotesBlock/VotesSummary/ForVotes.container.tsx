@@ -7,7 +7,7 @@ import {
   proposalDetailsSelector,
 } from '../../../../store/proposals/proposals.selectors';
 import { proposalsActions } from '../../../../store/proposals/proposals.slice';
-import { VotesSummary } from '../VotesSummary/VotesSummary.component';
+import { VotesSummary } from './VotesSummary.component';
 
 export const ForVotesContainer = () => {
   const dispatch = useDispatch();
