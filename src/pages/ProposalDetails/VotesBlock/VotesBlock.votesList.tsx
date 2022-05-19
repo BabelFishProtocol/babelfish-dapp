@@ -11,6 +11,7 @@ import downvoteIcon from '../../../assets/icons/downvote.svg';
 
 import { TableIconProps, VotesListComponentProps } from './VotesBlock.types';
 import { formatWeiAmount } from '../../../utils/helpers';
+import { colors } from '../../../theme/palette';
 
 type RowData = Omit<Vote, 'isPro'>;
 
@@ -45,7 +46,19 @@ export const VotesListComponent = ({
 
 const TableIcon = ({ children }: TableIconProps) => (
   <Box
-    sx={{ display: 'flex', justifyContent: 'flex-end', '& img': { width: 26 } }}
+    sx={{
+      width: 32,
+      height: 32,
+      p: 0.5,
+      ml: 'auto',
+      backgroundColor: colors.borderGreyDark,
+      border: `2px solid ${colors.borderGrey}`,
+      borderRadius: '6px',
+      '& img': {
+        width: '100%',
+        height: '100%',
+      },
+    }}
   >
     {children}
   </Box>
