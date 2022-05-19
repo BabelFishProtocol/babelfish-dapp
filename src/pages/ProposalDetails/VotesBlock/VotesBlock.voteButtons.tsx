@@ -7,46 +7,41 @@ import thumbDownIcon from '../../../assets/icons/thumb-down.svg';
 
 const VotedText = () => <>voted &#10003;</>;
 
-export const VoteForButton = ({
+export const VoteButton = ({
+  type,
   voteStatus,
   proposalState,
   handleCastVote,
 }: VoteButtonProps) => {
-  const { status, type } = voteStatus;
+  const { status, type: voteResult } = voteStatus;
 
-  const votedFor = type === 'for';
-  const showButton = proposalState === ProposalState.Active || votedFor;
+  if (type === 'for') {
+    const votedFor = voteResult === 'for';
+    const showButton = proposalState === ProposalState.Active || votedFor;
 
-  if (!showButton) {
-    return null;
+    if (!showButton) {
+      return null;
+    }
+
+    return (
+      <Button
+        sx={{ flexGrow: 1 }}
+        color="success"
+        variant="outlined"
+        loadingText="Voting..."
+        disabled={status !== 'idle' || !!voteResult}
+        onClick={handleCastVote}
+        isLoading={status === 'loading'}
+        startIcon={<img src={thumbUpIcon} height={18} alt="vote for" />}
+      >
+        <Typography variant="button">
+          {votedFor ? <VotedText /> : 'Vote For This'}
+        </Typography>
+      </Button>
+    );
   }
 
-  return (
-    <Button
-      sx={{ flexGrow: 1 }}
-      color="success"
-      variant="outlined"
-      loadingText="Voting..."
-      disabled={status !== 'idle' || !!type}
-      onClick={handleCastVote}
-      isLoading={status === 'loading'}
-      startIcon={<img src={thumbUpIcon} height={18} alt="vote for" />}
-    >
-      <Typography variant="button">
-        {votedFor ? <VotedText /> : 'Vote For This'}
-      </Typography>
-    </Button>
-  );
-};
-
-export const VoteAgainstButton = ({
-  voteStatus,
-  proposalState,
-  handleCastVote,
-}: VoteButtonProps) => {
-  const { status, type } = voteStatus;
-
-  const votedAgainst = type === 'against';
+  const votedAgainst = voteResult === 'against';
   const showButton = proposalState === ProposalState.Active || votedAgainst;
 
   if (!showButton) {
@@ -60,7 +55,7 @@ export const VoteAgainstButton = ({
       variant="outlined"
       loadingText="Voting..."
       isLoading={status === 'loading'}
-      disabled={status !== 'idle' || !!type}
+      disabled={status !== 'idle' || !!voteResult}
       onClick={handleCastVote}
       startIcon={<img src={thumbDownIcon} height={18} alt="vote against" />}
     >

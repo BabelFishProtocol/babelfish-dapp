@@ -7,8 +7,7 @@ import {
   proposalDetailsSelector,
 } from '../../../../store/proposals/proposals.selectors';
 import { proposalsActions } from '../../../../store/proposals/proposals.slice';
-
-import { ForVotesComponent } from './ForVotes.component';
+import { VotesSummary } from '../VotesSummary/VotesSummary.component';
 
 export const ForVotesContainer = () => {
   const dispatch = useDispatch();
@@ -24,7 +23,8 @@ export const ForVotesContainer = () => {
   if (!data) return null;
 
   return (
-    <ForVotesComponent
+    <VotesSummary
+      type="for"
       votes={proVotes}
       state={state}
       voteType={voteType}

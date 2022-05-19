@@ -9,6 +9,7 @@ export type VoteStatus = {
 };
 
 export type VoteButtonProps = {
+  type: 'for' | 'against';
   voteStatus: VoteStatus;
   proposalState?: ProposalState;
   handleCastVote: () => void;
@@ -28,7 +29,7 @@ export type VotesBlockComponentProps = Pick<
   VoteButtonProps,
   'handleCastVote' | 'proposalState'
 > &
-  Omit<VotesListComponentProps, 'type'> & {
+  VotesListComponentProps & {
     votesAmount: string;
     voteType: VoteType;
     voteStatus: FiniteStates;
