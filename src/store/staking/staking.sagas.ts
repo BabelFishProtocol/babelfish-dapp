@@ -57,6 +57,6 @@ export function* stakingSaga() {
     takeLatest(stakingActions.fetchStakingData.type, fetchBalances),
     takeLatest(stakingActions.updateStakingData.type, updateBalances),
     takeLatest(stakingActions.watchStakingData.type, watchStaking),
-    takeLatest(stakingActions.watchStakingData.type, watchStakingHistory),
+    takeLatest(stakingActions.watchHistoryStakesList.type, watchStakingHistory),
   ]);
 }

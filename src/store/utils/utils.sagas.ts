@@ -166,6 +166,7 @@ export function* contractStepCallsSaga<Operations extends string>({
 type SubscriptionSagaConfig<Result, Variables> = {
   query: string;
   stopAction: ActionCreatorWithoutPayload;
+  watchData: ActionCreatorWithoutPayload;
   fetchSaga: (data: Result | Error) => SagaIterator;
   variables?: Variables;
 };
@@ -175,6 +176,7 @@ export function* subscriptionSaga<Result, Variables>({
   fetchSaga,
   stopAction,
   variables,
+  watchData,
 }: SubscriptionSagaConfig<Result, Variables>) {
   function createPoolChanel(client: SubscriptionClient) {
     return eventChannel<Result | Error>((emit) => {
@@ -212,10 +214,17 @@ export function* subscriptionSaga<Result, Variables>({
   );
 
   function* closeChannel() {
-    channel.close();
+    yield* call(channel.close);
+  }
+
+  function* restartConnection() {
+    yield* closeChannel();
+    yield* put(watchData());
   }
 
   yield* takeLatest(stopAction.type, closeChannel);
+  yield* takeLatest(appActions.setChainId.type, restartConnection);
+  yield* takeLatest(appActions.setAccount.type, restartConnection);
 
   try {
     while (true) {

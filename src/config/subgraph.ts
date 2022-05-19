@@ -14,13 +14,13 @@ export const subgraphClients: Partial<Record<ChainEnum, GraphQLClient>> = {
 export const subgraphWsClients: Partial<Record<ChainEnum, SubscriptionClient>> =
   {
     [ChainEnum.RSK_TESTNET]: new SubscriptionClient(
-      'ws://3.72.58.184:8001/subgraphs/name/babelfish/rskTestnet-graph',
+      'ws://18.224.138.134:8001/subgraphs/name/babelfish/rskTestnet-graph',
       {
         reconnect: true,
       }
     ),
     [ChainEnum.RSK]: new SubscriptionClient(
-      'ws://3.72.58.184:7001/subgraphs/name/babelfish/rsk-graph',
+      'ws://18.224.138.134:7001/subgraphs/name/babelfish/rsk-graph',
       {
         reconnect: true,
       }
