@@ -11,6 +11,7 @@ import {
   BalanceBlockValueProps,
   BalanceBlockContentProps,
 } from './BalanceBlock.types';
+import { WaveImage } from '../../pages/Staking/WaveImage/WaveImage.component';
 
 export const BalanceBlock = ({
   sx,
@@ -19,6 +20,7 @@ export const BalanceBlock = ({
   state,
   children,
   typographySx,
+  index,
   aprox = false,
   asset = 'FISH',
   centered = false,
@@ -28,10 +30,12 @@ export const BalanceBlock = ({
   return (
     <Container
       sx={{
-        padding: 2,
+        position: 'relative',
+        padding: index ? '2rem 2rem 4rem' : 2,
         display: 'flex',
         flexDirection: 'column',
         alignItems: centered ? 'center' : 'initial',
+        '& *': { zIndex: 1 },
         ...sx,
       }}
     >
@@ -59,6 +63,8 @@ export const BalanceBlock = ({
       {(state === 'success' || isUpdate) && children && (
         <Box sx={{ mt: 2 }}>{children}</Box>
       )}
+
+      {!!index && <WaveImage index={index} />}
     </Container>
   );
 };

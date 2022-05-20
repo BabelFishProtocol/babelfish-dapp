@@ -45,7 +45,7 @@ export const StakingComponent = ({
           }}
         >
           <CenteredBox sx={{ width: '100%', gap: 2, alignItems: 'stretch' }}>
-            <BalanceBlock label="Total Staked Fish" {...fishStaked}>
+            <BalanceBlock label="Total Staked Fish" {...fishStaked} index={1}>
               <Button
                 variant="outlined"
                 onClick={handleOpenDialog}
@@ -61,6 +61,7 @@ export const StakingComponent = ({
               label="Total Earned Rewards Available"
               state={totalRewards.state}
               data={totalRewards.data}
+              index={2}
             >
               <Box>
                 {rewards.map((reward, index) => (
@@ -74,6 +75,7 @@ export const StakingComponent = ({
               label="Combined Voting Power"
               data={votingPower.data}
               state={votingPower.state}
+              index={3}
             >
               <Button
                 sx={{ width: 'fit-content' }}
