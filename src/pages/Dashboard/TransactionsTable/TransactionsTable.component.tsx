@@ -15,8 +15,7 @@ const transactionsTableColumns: DataTableColumn<TransactionsTableItem>[] = [
     name: 'date',
     format: formatTimestamp,
   },
-  // TODO add status using localStorage
-  // { label: 'Status', name: 'status' },
+  { label: 'Status', name: 'status' },
 ];
 
 export const TransactionsTableComponent = ({

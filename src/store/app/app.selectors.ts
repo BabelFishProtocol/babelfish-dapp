@@ -208,3 +208,19 @@ export const multicallProviderSelector = createSelector(
     return multicallProvider as MulticallProviderType;
   }
 );
+
+export const xusdLocalTransactionsSelector = createSelector(
+  [appState, chainIdSelector, accountSelector],
+  (state, chainId, account) => {
+    if (
+      !chainId ||
+      !account ||
+      !state.xusdLocalTransactions[chainId] ||
+      !state.xusdLocalTransactions[chainId][account]
+    ) {
+      return;
+    }
+
+    return state.xusdLocalTransactions[chainId][account];
+  }
+);

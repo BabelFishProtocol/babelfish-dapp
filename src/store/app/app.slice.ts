@@ -79,9 +79,15 @@ export const appSlice = createSlice({
       state,
       { payload }: PayloadAction<TransactionsQueryItem[]>
     ) => {
-      if (!state.chainId || !state.account) {
+      if (
+        !state.chainId ||
+        !state.account ||
+        !state.xusdLocalTransactions[state.chainId] ||
+        !state.xusdLocalTransactions[state.chainId][state.account]
+      ) {
         return;
       }
+
       const getTxHash = ({ txHash }: { txHash: string }) => ({ txHash });
 
       const txsToRemove = new Set(payload.map(getTxHash));
