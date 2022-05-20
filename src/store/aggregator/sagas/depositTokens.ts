@@ -43,6 +43,14 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
     return;
   }
 
+  yield* put(
+    aggregatorActions.setTxDetails({
+      amount: payload.sendAmount,
+      user: account,
+      event: 'Deposit',
+    })
+  );
+
   const amount = utils.parseUnits(payload.sendAmount, tokenDecimals);
   const spender = isRSK ? massetAddress : bridge!.address.toLowerCase();
   const allowanceSpender = yield* call(

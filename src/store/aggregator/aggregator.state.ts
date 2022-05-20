@@ -1,6 +1,7 @@
 import { ChainEnum } from '../../config/chains';
 import { DEFAULT_POOL, PoolEnum } from '../../config/pools';
 import { TokenEnum } from '../../config/tokens';
+import { TransactionsTableItem } from '../../pages/Dashboard/TransactionsTable/TransactionsTable.types';
 import { CallState, LoadableAmount, LoadableValue } from '../types';
 
 export type FeesAndLimitsType = {
@@ -8,6 +9,13 @@ export type FeesAndLimitsType = {
   minTransfer?: string;
   maxTransfer?: string;
   dailyLimit?: string;
+};
+export type XusdLocalTransaction = Omit<TransactionsTableItem, 'id' | 'date'>;
+
+export type TxDetails = {
+  user: string;
+  amount: string;
+  event: 'Deposit' | 'Withdraw';
 };
 
 export type FlowState = 'deposit' | 'withdraw';
@@ -38,6 +46,7 @@ export class AggregatorState {
     state: 'idle',
     data: undefined,
   };
+  txDetails?: TxDetails;
   fetchStartingTokenBalanceErrorReason?: string;
   allowTokensAddress: LoadableAmount = {
     state: 'idle',

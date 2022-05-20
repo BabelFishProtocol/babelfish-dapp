@@ -38,6 +38,14 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
     return;
   }
 
+  yield* put(
+    aggregatorActions.setTxDetails({
+      amount: payload.sendAmount,
+      user: account,
+      event: 'Withdraw',
+    })
+  );
+
   const amount = utils.parseUnits(payload.sendAmount, tokenDecimals);
   const allowanceMasset = yield* call(
     tokenContract.allowance,

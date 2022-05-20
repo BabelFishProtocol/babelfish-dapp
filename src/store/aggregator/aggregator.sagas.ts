@@ -7,9 +7,12 @@ import {
   flowStateSelector,
   startingTokenContractSelector,
   startingTokenSelector,
+  submitCallCurrentOperation,
+  submitTxDetails,
   tokenAddressSelector,
 } from './aggregator.selectors';
 import { AggregatorActions, aggregatorActions } from './aggregator.slice';
+import { XusdLocalTransaction } from './aggregator.state';
 import { depositTokens } from './sagas/depositTokens';
 import { withdrawTokens } from './sagas/withdrawTokens';
 
@@ -101,6 +104,29 @@ export function* fetchStartingTokenBalance() {
   }
 }
 
+export function* addTxIntoLocalStorage({
+  payload,
+}: AggregatorActions['setSubmitStepData']) {
+  const currOp = yield* select(submitCallCurrentOperation);
+  const txDetails = yield* select(submitTxDetails);
+
+  if (
+    (currOp !== 'deposit' && currOp !== 'withdraw') ||
+    !payload.tx ||
+    !txDetails
+  ) {
+    return;
+  }
+
+  const dataToSave: XusdLocalTransaction = {
+    txHash: payload.tx.hash,
+    asset: 'XUSD',
+    ...txDetails,
+  };
+
+  yield* put(appActions.setLocalXusdTransactions(dataToSave));
+}
+
 export function* resetAggregator() {
   yield* put(aggregatorActions.resetAggregator());
 }
@@ -108,6 +134,7 @@ export function* resetAggregator() {
 export function* aggregatorSaga() {
   yield* all([
     takeLatest(appActions.walletConnected, resetAggregator),
+    takeLatest(aggregatorActions.setSubmitStepData, addTxIntoLocalStorage),
 
     takeLatest(aggregatorActions.setStartingToken.type, fetchAllowTokenAddress),
     takeLatest(

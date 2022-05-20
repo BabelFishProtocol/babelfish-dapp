@@ -9,6 +9,7 @@ export type TransactionsQueryItem = {
   event: 'Deposit' | 'Withdraw';
   amount: string;
   user: string;
+  txHash: string;
 };
 
 export type TransactionsQueryResult = {

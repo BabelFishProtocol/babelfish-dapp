@@ -1,6 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
+import { XusdLocalTransaction } from '../aggregator/aggregator.state';
 import { ActionsType } from '../types';
 import { AppState } from './app.state';
 
@@ -50,6 +51,47 @@ export const appSlice = createSlice({
       { payload }: PayloadAction<boolean>
     ) => {
       state.walletNotConectedModal = payload;
+    },
+    setLocalXusdTransactions: (
+      state,
+      { payload }: PayloadAction<XusdLocalTransaction>
+    ) => {
+      if (!state.chainId || !state.account) {
+        return;
+      }
+
+      if (!state.xusdLocalTransactions[state.chainId]) {
+        state.xusdLocalTransactions[state.chainId] = {
+          [state.account]: [payload],
+        };
+        return;
+      }
+
+      if (!state.xusdLocalTransactions[state.chainId][state.account]) {
+        state.xusdLocalTransactions[state.chainId][state.account] = [payload];
+        return;
+      }
+
+      state.xusdLocalTransactions[state.chainId][state.account].push(payload);
+    },
+    removeLocalXusdTransactions: (
+      state,
+      { payload }: PayloadAction<XusdLocalTransaction[]>
+    ) => {
+      if (!state.chainId || !state.account) {
+        return;
+      }
+      const txsToRemove = new Set(payload);
+
+      state.xusdLocalTransactions[state.chainId][state.account].filter(
+        (tx) => !txsToRemove.has(tx)
+      );
+
+      if (
+        state.xusdLocalTransactions[state.chainId][state.account].length === 0
+      ) {
+        delete state.xusdLocalTransactions[state.chainId][state.account];
+      }
     },
   },
 });
