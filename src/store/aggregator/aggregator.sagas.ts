@@ -104,27 +104,28 @@ export function* fetchStartingTokenBalance() {
   }
 }
 
-export function* addTxIntoLocalStorage({
+export function* addTransactionIntoLocalStorage({
   payload,
 }: AggregatorActions['setSubmitStepData']) {
-  const currOp = yield* select(submitCallCurrentOperation);
+  const currentOperation = yield* select(submitCallCurrentOperation);
   const txDetails = yield* select(submitTxDetails);
 
   if (
-    (currOp !== 'deposit' && currOp !== 'withdraw') ||
+    (currentOperation !== 'deposit' && currentOperation !== 'withdraw') ||
     !payload.tx ||
     !txDetails
   ) {
     return;
   }
 
-  const dataToSave: XusdLocalTransaction = {
+  const txToSave: XusdLocalTransaction = {
     txHash: payload.tx.hash,
+    status: 'Pending',
     asset: 'XUSD',
     ...txDetails,
   };
 
-  yield* put(appActions.setLocalXusdTransactions(dataToSave));
+  yield* put(appActions.setLocalXusdTransactions(txToSave));
 }
 
 export function* resetAggregator() {
@@ -134,7 +135,10 @@ export function* resetAggregator() {
 export function* aggregatorSaga() {
   yield* all([
     takeLatest(appActions.walletConnected, resetAggregator),
-    takeLatest(aggregatorActions.setSubmitStepData, addTxIntoLocalStorage),
+    takeLatest(
+      aggregatorActions.setSubmitStepData,
+      addTransactionIntoLocalStorage
+    ),
 
     takeLatest(aggregatorActions.setStartingToken.type, fetchAllowTokenAddress),
     takeLatest(

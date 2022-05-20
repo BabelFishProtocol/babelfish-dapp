@@ -97,7 +97,7 @@ const aggregatorSlice = createSlice({
     setSubmitSteps: submitStepCallActions.setSteps,
     setSubmitStepData: submitStepCallActions.updateStep,
     setSubmitError: submitStepCallActions.setStepError,
-    setTxDetails: (state, { payload }: PayloadAction<TxDetails>) => {
+    setTransactionDetails: (state, { payload }: PayloadAction<TxDetails>) => {
       state.txDetails = payload;
     },
     resetAggregator: (state) => {

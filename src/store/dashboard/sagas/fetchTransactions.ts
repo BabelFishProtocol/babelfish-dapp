@@ -6,6 +6,7 @@ import {
 } from '../../app/app.selectors';
 import { transactionsQuery } from '../../../queries/transactionsQuery';
 import { dashboardActions } from '../dashboard.slice';
+import { appActions } from '../../app/app.slice';
 
 export function* fetchTransactions() {
   try {
@@ -19,6 +20,8 @@ export function* fetchTransactions() {
       subgraphClient,
       { user: account }
     );
+
+    yield* put(appActions.removeLocalXusdTransactions(xusdTransactions));
 
     yield* put(dashboardActions.setTransactions(xusdTransactions));
   } catch (e) {

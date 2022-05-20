@@ -39,7 +39,7 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
   }
 
   yield* put(
-    aggregatorActions.setTxDetails({
+    aggregatorActions.setTransactionDetails({
       amount: payload.sendAmount,
       user: account,
       event: 'Withdraw',
