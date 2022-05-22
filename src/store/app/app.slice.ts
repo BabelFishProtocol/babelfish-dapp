@@ -1,7 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
-import { TransactionsQueryItem } from '../../queries/transactionsQuery';
 import { XusdLocalTransaction } from '../aggregator/aggregator.state';
 import { ActionsType } from '../types';
 import { AppState } from './app.state';
@@ -77,7 +76,7 @@ export const appSlice = createSlice({
     },
     removeLocalXusdTransactions: (
       state,
-      { payload }: PayloadAction<TransactionsQueryItem[]>
+      { payload }: PayloadAction<XusdLocalTransaction[]>
     ) => {
       if (
         !state.chainId ||
@@ -88,7 +87,7 @@ export const appSlice = createSlice({
         return;
       }
 
-      const getTxHash = ({ txHash }: { txHash: string }) => ({ txHash });
+      const getTxHash = ({ txHash }: XusdLocalTransaction) => ({ txHash });
 
       const txsToRemove = new Set(payload.map(getTxHash));
 

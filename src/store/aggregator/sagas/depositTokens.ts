@@ -48,6 +48,7 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
       amount: payload.sendAmount,
       user: account,
       event: 'Deposit',
+      status: 'Pending'
     })
   );
 

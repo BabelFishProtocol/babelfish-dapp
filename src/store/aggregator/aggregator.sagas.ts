@@ -120,7 +120,6 @@ export function* addTransactionIntoLocalStorage({
 
   const txToSave: XusdLocalTransaction = {
     txHash: payload.tx.hash,
-    status: 'Pending',
     asset: 'XUSD',
     ...txDetails,
   };

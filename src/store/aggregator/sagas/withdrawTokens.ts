@@ -43,6 +43,7 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
       amount: payload.sendAmount,
       user: account,
       event: 'Withdraw',
+      status: 'Pending'
     })
   );
 

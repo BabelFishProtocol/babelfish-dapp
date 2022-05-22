@@ -7,6 +7,7 @@ import {
 import { transactionsQuery } from '../../../queries/transactionsQuery';
 import { dashboardActions } from '../dashboard.slice';
 import { appActions } from '../../app/app.slice';
+import { XusdLocalTransaction } from '../../aggregator/aggregator.state';
 
 export function* fetchTransactions() {
   try {
@@ -21,9 +22,14 @@ export function* fetchTransactions() {
       { user: account }
     );
 
-    yield* put(appActions.removeLocalXusdTransactions(xusdTransactions));
+    const txWithStatus: XusdLocalTransaction[] = xusdTransactions.map((tx) => ({
+      status: 'Confirmed',
+      ...tx,
+    }));
 
-    yield* put(dashboardActions.setTransactions(xusdTransactions));
+    yield* put(appActions.removeLocalXusdTransactions(txWithStatus));
+
+    yield* put(dashboardActions.setTransactions(txWithStatus));
   } catch (e) {
     yield* put(dashboardActions.fetchTransactionsFailure());
   }

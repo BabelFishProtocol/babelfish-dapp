@@ -9,16 +9,9 @@ export const TransactionsTableContainer = () => {
   const { data: xusdSubgraphTx, state } = useSelector(transactionsSelector);
   const xusdLocalTx = useSelector(xusdLocalTransactionsSelector);
 
-  // TODO is that ok to attach status here?
-  const attachStatusToSubgraphTx = () =>
-    xusdSubgraphTx.map((tx) => ({
-      status: 'Confirmed' as const,
-      ...tx,
-    }));
-
   const transactions = xusdLocalTx
-    ? [...xusdLocalTx, ...attachStatusToSubgraphTx()]
-    : attachStatusToSubgraphTx();
+    ? [...xusdLocalTx, ...xusdSubgraphTx]
+    : xusdSubgraphTx;
 
   const dispatch = useDispatch();
   useEffect(() => {

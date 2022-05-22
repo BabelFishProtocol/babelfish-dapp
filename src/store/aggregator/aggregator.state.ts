@@ -10,13 +10,13 @@ export type FeesAndLimitsType = {
   maxTransfer?: string;
   dailyLimit?: string;
 };
+
 export type XusdLocalTransaction = Omit<TransactionsTableItem, 'id' | 'date'>;
 
-export type TxDetails = {
-  user: string;
-  amount: string;
-  event: 'Deposit' | 'Withdraw';
-};
+export type TxDetails = Pick<
+  TransactionsTableItem,
+  'user' | 'amount' | 'event' | 'status'
+>;
 
 export type FlowState = 'deposit' | 'withdraw';
 
