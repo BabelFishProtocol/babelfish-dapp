@@ -43,6 +43,6 @@ export function* watchStakingHistory() {
     variables: { contractAddress: account.toLowerCase() },
     fetchSaga: fetchHistoryStaking,
     stopAction: stakingActions.stopWatchingStakingData,
-    watchData: stakingActions.watchHistoryStakesList,
+    watchDataAction: stakingActions.watchHistoryStakesList,
   });
 }

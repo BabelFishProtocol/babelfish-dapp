@@ -1,5 +1,8 @@
 import { TransactionReceipt } from '@ethersproject/providers';
-import { ActionCreatorsMapObject } from '@reduxjs/toolkit';
+import {
+  ActionCreatorsMapObject,
+  ActionCreatorWithoutPayload,
+} from '@reduxjs/toolkit';
 import { BaseContract, Contract, ContractTransaction, Signer } from 'ethers';
 import { ContractCall, Provider } from 'ethers-multicall';
 import { SagaIterator } from 'redux-saga';
@@ -67,4 +70,12 @@ export type CallState<Operations extends string> = {
 export type SagaContractCallStep<Operations extends string> = {
   name: Operations;
   effect: SagaGenerator<ContractTransaction, CallEffect<ContractTransaction>>;
+};
+
+export type SubscriptionSagaConfig<Result, Variables> = {
+  query: string;
+  stopAction: ActionCreatorWithoutPayload;
+  watchDataAction: ActionCreatorWithoutPayload;
+  fetchSaga: (data: Result | Error) => SagaIterator;
+  variables?: Variables;
 };
