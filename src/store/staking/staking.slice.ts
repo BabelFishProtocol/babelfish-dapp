@@ -103,17 +103,14 @@ export const stakingSlice = createSlice({
       state.fishToken.state = 'loading';
       state.combinedVotingPower.state = 'loading';
       state.stakesList.state = 'loading';
-      // state.stakesListHistory.state = 'loading';
       state.fishToken.data = {};
       state.combinedVotingPower.data = undefined;
       state.stakesList.data = [];
-      // state.stakesListHistory.data = [];
     },
     updateStakingData: (state) => {
       state.fishToken.state = 'loading';
       state.combinedVotingPower.state = 'loading';
       state.stakesList.state = 'loading';
-      // state.stakesListHistory.state = 'loading';
     },
 
     fetchFishTokenDataFailure: (state) => {
