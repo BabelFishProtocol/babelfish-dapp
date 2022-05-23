@@ -8,6 +8,8 @@ import {
 } from '../../store/proposals/proposals.selectors';
 import { CenteredBox } from '../../components/PageView/PageView.component';
 
+const halfwayColor = '#B78367';
+
 export const VotesRatioBlock = () => {
   const votesRatio = useSelector(votesRatioSelector);
   const hasVotes = useSelector(hasVotesSelector);
@@ -18,7 +20,7 @@ export const VotesRatioBlock = () => {
 
   return (
     <CenteredBox>
-      <Typography variant="h5" sx={{ m: 1, fontSize: `33px !important` }}>
+      <Typography variant="h6" sx={{ mr: 2, fontWeight: 'bold' }}>
         {votesRatio.toFixed(2)}%
       </Typography>
       <Box
@@ -28,7 +30,9 @@ export const VotesRatioBlock = () => {
           position: 'relative',
           borderRadius: '8px',
           backgroundImage: ({ palette }) =>
-            `linear-gradient(to right, ${palette.error.light}, ${palette.error.dark} 90%);`,
+            `linear-gradient(to right, ${halfwayColor} ${votesRatio}%, ${
+              palette.error.main
+            } ${votesRatio + 5}%)`,
         }}
       >
         <Box
@@ -37,12 +41,12 @@ export const VotesRatioBlock = () => {
             width: `${votesRatio}%`,
             height: 14,
             borderRadius: '8px',
-            backgroundImage: ({ palette }) =>
-              `linear-gradient(to right, ${palette.success.light}, ${palette.success.dark} 90%);`,
+            background: ({ palette }) =>
+              `linear-gradient(to right, ${palette.success.main} ${votesRatio}%, #B78367 100%)`,
           }}
         />
       </Box>
-      <Typography variant="h5" sx={{ m: 1, fontSize: `33px !important` }}>
+      <Typography variant="h6" sx={{ ml: 2, fontWeight: 'bold' }}>
         {(100 - votesRatio).toFixed(2)}%
       </Typography>
     </CenteredBox>

@@ -18,14 +18,14 @@ export const AggregatorContainer = () => {
   const submitStatus = useSelector(submitAggregatorStatusSelector);
   const dispatch = useDispatch();
 
-  const onStartingTokenChange = (token: TokenEnum) => {
+  const onStartingTokenChange = (token: TokenEnum | undefined) => {
     dispatch(aggregatorActions.setStartingToken(token));
   };
 
   const onDestinationChainChange = (chain: ChainEnum) => {
     dispatch(aggregatorActions.setDestinationChain(chain));
   };
-  const onDestinationTokenChange = (token: TokenEnum) => {
+  const onDestinationTokenChange = (token: TokenEnum | undefined) => {
     dispatch(aggregatorActions.setDestinationToken(token));
   };
 

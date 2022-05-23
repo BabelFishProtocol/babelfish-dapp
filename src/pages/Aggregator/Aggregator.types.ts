@@ -5,7 +5,7 @@ import { AggregatorFormValues } from './Aggregator.fields';
 export type AggregatorComponentProps = {
   getReceiveAmount: (sendAmount: string) => string;
   onSubmit: (data: AggregatorFormValues) => void;
-  onStartingTokenChange: (token: TokenEnum) => void;
+  onStartingTokenChange: (token: TokenEnum | undefined) => void;
   onDestinationChainChange: (chain: ChainEnum) => void;
-  onDestinationTokenChange: (token: TokenEnum) => void;
+  onDestinationTokenChange: (token: TokenEnum | undefined) => void;
 };

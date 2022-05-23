@@ -205,6 +205,23 @@ export const startingTokenContractSelector = createSelector(
   }
 );
 
+/** Original destination token selector
+ ** for 'deposit' flowState: XUSD
+ ** for 'withdraw' flowState through bridge: DAI, USDT, ..
+ ** for 'withdraw' flowState on RSK: BDUS, RDOC, ...
+ */
+export const destinationTokenAddressSelector = createSelector(
+  [destinationChainSelector, destinationTokenSelector],
+  (destinationChain, destinationToken) => {
+    if (!destinationChain || !destinationToken) {
+      return undefined;
+    }
+    const address = tokens[destinationToken].addresses[destinationChain];
+
+    return address;
+  }
+);
+
 export const isEnoughTokensSelector = createSelector(
   [feesAndLimitsSelector, startingTokenBalanceSelector],
   (feesAndLimits, startingTokenBalance) => {
@@ -215,6 +232,10 @@ export const isEnoughTokensSelector = createSelector(
   }
 );
 
+/**
+ * Pool token selector e.g. DAIes, USDCbs
+ ** NOTE: Don't use for native rsk tokens e.g BDUS, ZUSD
+ */
 export const bassetAddressSelector = createSelector(
   [bridgeSelector, destinationTokenSelector],
   (bridge, destinationToken) => {
