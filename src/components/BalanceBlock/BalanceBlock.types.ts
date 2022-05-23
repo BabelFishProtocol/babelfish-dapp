@@ -18,5 +18,5 @@ export type BalanceBlockProps = BalanceBlockContentProps & {
   label: string;
   children?: React.ReactNode;
   sx?: ContainerProps['sx'];
-  index?: number;
+  imgSrc?: string;
 };

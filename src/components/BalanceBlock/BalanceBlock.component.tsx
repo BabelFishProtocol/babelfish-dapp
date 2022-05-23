@@ -20,7 +20,7 @@ export const BalanceBlock = ({
   state,
   children,
   typographySx,
-  index,
+  imgSrc,
   aprox = false,
   asset = 'FISH',
   centered = false,
@@ -31,7 +31,7 @@ export const BalanceBlock = ({
     <Container
       sx={{
         position: 'relative',
-        padding: index ? '2rem 2rem 4rem' : 2,
+        padding: imgSrc ? '2rem 2rem 4rem' : 2,
         display: 'flex',
         flexDirection: 'column',
         alignItems: centered ? 'center' : 'initial',
@@ -64,7 +64,7 @@ export const BalanceBlock = ({
         <Box sx={{ mt: 2 }}>{children}</Box>
       )}
 
-      {!!index && <WaveImage index={index} />}
+      {!!imgSrc && <WaveImage imgSrc={imgSrc} />}
     </Container>
   );
 };
