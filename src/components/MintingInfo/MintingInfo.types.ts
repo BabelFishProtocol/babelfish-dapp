@@ -1,7 +1,7 @@
 export type MintingProcessInfo = {
   label: string;
   value: React.ReactNode;
-  isProminant?: boolean;
+  isProminent?: boolean;
   formatTx?: boolean;
 };
 

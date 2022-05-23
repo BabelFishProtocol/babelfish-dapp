@@ -1,19 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="256" height="256" viewBox="0 0 256 256" xml:space="preserve">
-    <desc>Created with Fabric.js 4.2.0</desc>
-    <defs>
-    </defs>
-    <g transform="matrix(0 0 0 0 0 0)" id="cd3687ed-5758-45b0-bb81-a48e6e8ddbba">
-    </g>
-    <g transform="matrix(1 0 0 1 128 128)" id="a261a090-93ed-401c-9a1f-eb39b987ba8f">
-        <rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-opacity: 0; fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke" x="-128" y="-128" rx="0" ry="0" width="256" height="256" />
-    </g>
-    <g transform="matrix(3.34 0 0 3.34 127.42 129.42)" id="54b1716e-351f-48cb-933d-13512c3ae15a">
-        <circle style="stroke: rgb(216,17,29); stroke-width: 4; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(216,17,29); fill-opacity: 0.39; fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke" cx="0" cy="0" r="35" />
-    </g>
-    <g transform="matrix(1.45 0 0 1.45 127.98 127.98)">
-        <path style="stroke: rgb(0,0,0); stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(216,17,29); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke" transform=" translate(-50, -50)" d="M 16.28 19.945 L 19.957 16.32 C 22.060000000000002 14.166 25.578000000000003 14.166 27.681 16.32 L 50.007000000000005 38.595 L 72.333 16.32 C 74.43599999999999 14.166 77.954 14.166 80.054 16.32 L 83.68 19.945 C 85.834 22.046 85.834 25.566000000000003 83.68 27.668 L 61.405 49.993 L 83.68 72.32 C 85.834 74.422 85.834 77.939 83.68 80.04299999999999 L 80.054 83.72099999999999 C 77.95400000000001 85.82 74.436 85.82 72.333 83.72099999999999 L 50.007 61.393 L 27.681 83.721 C 25.578 85.82000000000001 22.060000000000002 85.82000000000001 19.957 83.721 L 16.28 80.043 C 14.180000000000001 77.93900000000001 14.180000000000001 74.42200000000001 16.28 72.32000000000001 L 38.606 49.99300000000001 L 16.28 27.667 C 14.18 25.566 14.18 22.046 16.28 19.945 z" stroke-linecap="round" />
-    </g>
+<svg width="94" height="94" viewBox="0 0 94 94" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_2_453)">
+<path d="M27.5546 66.4454C38.294 77.1849 55.706 77.1849 66.4454 66.4454C77.1849 55.706 77.1849 38.294 66.4454 27.5546C55.706 16.8151 38.294 16.8151 27.5546 27.5546C16.8151 38.294 16.8151 55.706 27.5546 66.4454Z" stroke="#EB5757" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M54.7782 39.2219L39.2218 54.7783" stroke="#EB5757" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M39.2218 39.2219L54.7782 54.7783" stroke="#EB5757" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_2_453">
+<rect width="66" height="66" fill="white" transform="translate(47 0.331055) rotate(45)"/>
+</clipPath>
+</defs>
 </svg>

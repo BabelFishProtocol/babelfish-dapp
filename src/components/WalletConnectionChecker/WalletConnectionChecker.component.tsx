@@ -6,7 +6,7 @@ import { ChainEnum } from '../../config/chains';
 
 import {
   supportedChainsInCurrentNetworkSelector,
-  walletNotConectedModalSelector,
+  walletNotConnectedModalSelector,
   wrongNetworkModalSelector,
 } from '../../store/app/app.selectors';
 import { appActions } from '../../store/app/app.slice';
@@ -17,7 +17,7 @@ import alarmIcon from '../../assets/icons/alarmIcon.svg';
 
 export const WalletNotConnectedModal = () => {
   const dispatch = useDispatch();
-  const walletNotConectedModal = useSelector(walletNotConectedModalSelector);
+  const walletNotConnectedModal = useSelector(walletNotConnectedModalSelector);
 
   const onClose = () => {
     dispatch(appActions.setWalletNotConnectedNetworkModal(false));
@@ -25,13 +25,16 @@ export const WalletNotConnectedModal = () => {
 
   return (
     <AppDialog
-      isOpenDialog={walletNotConectedModal}
+      isOpenDialog={walletNotConnectedModal}
       onClose={onClose}
+      icon={alarmIcon}
+      titleSx={{
+        color: 'error.main',
+      }}
       title="Wallet not connected"
       dialogPaperProps={{ sx: { minHeight: 'unset' } }}
-    >
-      Please connect your browser wallet.
-    </AppDialog>
+      description="Please connect your browser wallet."
+    />
   );
 };
 
@@ -56,33 +59,37 @@ export const WrongNetworkModal = () => {
       onClose={onClose}
       icon={alarmIcon}
       title="Wrong network"
+      titleSx={{
+        color: 'error.main',
+      }}
       dialogPaperProps={{ sx: { minHeight: 'unset' } }}
     >
-      <Typography variant="subtitle1">
-        Please connect your browser wallet to a supported network from the list
-        below:
-      </Typography>
-      <br />
-      <Box
-        sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          gap: 1,
-        }}
-      >
-        {supportedChainsInCurrentNetwork.map((network) => (
-          <Button
-            key={network.name}
-            size="small"
-            variant="text"
-            onClick={() => {
-              onNetworkClick(network.id);
-            }}
-          >
-            <Typography variant="body2">{network.name}</Typography>
-          </Button>
-        ))}
+      <Box sx={{ my: 3 }}>
+        <Typography variant="subtitle1" sx={{ mb: 2.5 }}>
+          Please connect your browser wallet to a supported network from the
+          list below:
+        </Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: 1,
+          }}
+        >
+          {supportedChainsInCurrentNetwork.map((network) => (
+            <Button
+              key={network.name}
+              size="small"
+              variant="text"
+              onClick={() => {
+                onNetworkClick(network.id);
+              }}
+            >
+              <Typography variant="body2">{network.name}</Typography>
+            </Button>
+          ))}
+        </Box>
       </Box>
     </AppDialog>
   );
