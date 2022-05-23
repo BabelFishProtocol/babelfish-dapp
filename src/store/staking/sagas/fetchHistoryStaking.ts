@@ -6,16 +6,19 @@ import {
 } from '../../../queries/historyStakeListQuery';
 import { accountSelector } from '../../app/app.selectors';
 import { appActions } from '../../app/app.slice';
+import { SubscriptionResponse } from '../../types';
 import { subscriptionSaga } from '../../utils/utils.sagas';
 import { stakingActions } from '../staking.slice';
 
-export function* fetchHistoryStaking(data: UserQueryResult | Error) {
+export function* fetchHistoryStaking(
+  queryResult: SubscriptionResponse<UserQueryResult>
+) {
   try {
     yield* put(stakingActions.fetchHistoryStakesList());
 
-    if (data instanceof Error) throw data;
+    if (queryResult.isError) throw queryResult.error;
 
-    const stakesHistory = data?.user?.allStakes?.map((stake) => ({
+    const stakesHistory = queryResult.data?.user?.allStakes?.map((stake) => ({
       asset: 'FISH',
       stakedAmount: stake.amount,
       unlockDate: stake.lockedUntil,

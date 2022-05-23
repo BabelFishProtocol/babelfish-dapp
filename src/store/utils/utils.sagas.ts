@@ -24,6 +24,7 @@ import {
   MulticallProviderType,
   MulticallResult,
   SagaContractCallStep,
+  SubscriptionResponse,
   SubscriptionSagaConfig,
 } from '../types';
 import { ContractStepCallSagaParams } from './utils.types';
@@ -180,18 +181,22 @@ export function* subscriptionSaga<Result, Variables>({
   watchDataAction,
 }: SubscriptionSagaConfig<Result, Variables>) {
   function createPoolChanel(client: SubscriptionClient) {
-    return eventChannel<Result | Error>((emit) => {
+    return eventChannel<SubscriptionResponse<Result>>((emit) => {
       const subscription = client
         .request({
           query,
           variables,
         })
         .subscribe({
-          next({ data }) {
-            emit(data as unknown as Result);
-          },
-          error(e) {
-            emit(e);
+          next({ data, errors = [] }) {
+            const [error] = errors;
+
+            if (error) {
+              emit({ isError: true, error });
+              return;
+            }
+
+            emit({ isError: false, data: data as unknown as Result });
           },
         });
 
@@ -206,13 +211,13 @@ export function* subscriptionSaga<Result, Variables>({
 
   if (!subgraphWsClient) {
     yield* take(appActions.walletConnected.type);
-    subgraphWsClient = yield* select(subgraphWsClientSelector);
+
+    subgraphWsClient = (yield* select(
+      subgraphWsClientSelector
+    )) as SubscriptionClient;
   }
 
-  const channel = yield* call(
-    createPoolChanel,
-    subgraphWsClient as SubscriptionClient
-  );
+  const channel = yield* call(createPoolChanel, subgraphWsClient);
 
   function* closeChannel() {
     yield* call(channel.close);
@@ -233,7 +238,7 @@ export function* subscriptionSaga<Result, Variables>({
 
       yield* call(fetchSaga, data);
     }
+    // eslint-disable-next-line no-empty
   } finally {
-    yield* closeChannel();
   }
 }

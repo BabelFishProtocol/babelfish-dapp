@@ -6,6 +6,7 @@ import {
 } from '@reduxjs/toolkit';
 import { BaseContract, Contract, ContractTransaction, Signer } from 'ethers';
 import { ContractCall, Provider } from 'ethers-multicall';
+import { GraphQLError } from 'graphql';
 import { SagaIterator } from 'redux-saga';
 import { ActionPattern, CallEffect } from 'redux-saga/effects';
 import { SagaGenerator } from 'typed-redux-saga/dist';
@@ -87,10 +88,17 @@ export type ContractStepCallSagaParams<Operations extends string> = {
   setStepDataAction: ActionCreatorWithPayload<Partial<StepData<Operations>>>;
 };
 
+export type SubscriptionResponse<Result> =
+  | {
+      isError: true;
+      error: Error | GraphQLError;
+    }
+  | { isError: false; data: Result };
+
 export type SubscriptionSagaConfig<Result, Variables> = {
   query: string;
   stopAction: ActionCreatorWithoutPayload;
   watchDataAction: ActionCreatorWithoutPayload;
-  fetchSaga: (data: Result | Error) => SagaIterator;
+  fetchSaga: (data: SubscriptionResponse<Result>) => SagaIterator;
   variables?: Variables;
 };
