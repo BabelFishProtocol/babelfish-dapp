@@ -19,6 +19,9 @@ import { StakesListContainer } from './StakesList/StakesList.container';
 import { AddNewStakeContainer } from './AddNewStake/AddNewStake.container';
 import { StakingHistoryContainer } from './StakingHistory/StakingHistory.container';
 import { RewardBlockProps, StakingComponentProps } from './Staking.types';
+import wave1Icon from '../../assets/icons/wave1.svg';
+import wave2Icon from '../../assets/icons/wave2.svg';
+import wave3Icon from '../../assets/icons/wave3.svg';
 
 export const StakingComponent = ({
   rewards,
@@ -45,7 +48,11 @@ export const StakingComponent = ({
           }}
         >
           <CenteredBox sx={{ width: '100%', gap: 2, alignItems: 'stretch' }}>
-            <BalanceBlock label="Total Staked Fish" {...fishStaked}>
+            <BalanceBlock
+              label="Total Staked Fish"
+              {...fishStaked}
+              imgSrc={wave1Icon}
+            >
               <Button
                 variant="outlined"
                 onClick={handleOpenDialog}
@@ -61,6 +68,7 @@ export const StakingComponent = ({
               label="Total Earned Rewards Available"
               state={totalRewards.state}
               data={totalRewards.data}
+              imgSrc={wave2Icon}
             >
               <Box>
                 {rewards.map((reward, index) => (
@@ -74,6 +82,7 @@ export const StakingComponent = ({
               label="Combined Voting Power"
               data={votingPower.data}
               state={votingPower.state}
+              imgSrc={wave3Icon}
             >
               <Button
                 sx={{ width: 'fit-content' }}
