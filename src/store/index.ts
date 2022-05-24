@@ -1,4 +1,4 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import createSagaMiddleware from 'redux-saga';
@@ -11,25 +11,26 @@ import { aggregatorReducer } from './aggregator/aggregator.slice';
 import { vestingReducer } from './vesting/vesting.slice';
 import { dashboardReducer } from './dashboard/dashboard.slice';
 
-export const rootReducer = combineReducers({
+const persistConfig = {
+  key: 'xusdLocalTransactions',
+  storage,
+  whitelist: ['xusdLocalTransactions'],
+};
+
+const persistedAppReducer = persistReducer(persistConfig, appReducer);
+
+export const rootReducer = {
   [Reducers.Aggregator]: aggregatorReducer,
-  [Reducers.App]: appReducer,
+  [Reducers.App]: persistedAppReducer,
   [Reducers.Dashboard]: dashboardReducer,
   [Reducers.Staking]: stakingReducer,
   [Reducers.Proposals]: proposalsReducer,
   [Reducers.Vesting]: vestingReducer,
-});
-
-const persistConfig = {
-  key: 'xusdLocalTransactions',
-  storage,
 };
 
 const sagaMiddleware = createSagaMiddleware();
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
-export const getStore = (rootSaga = indexSaga, reducer = persistedReducer) => {
+export const getStore = (rootSaga = indexSaga, reducer = rootReducer) => {
   const store = configureStore({
     reducer,
     middleware: [sagaMiddleware],

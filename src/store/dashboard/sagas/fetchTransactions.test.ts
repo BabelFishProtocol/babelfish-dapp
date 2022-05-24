@@ -70,7 +70,10 @@ describe('dashboard store', () => {
         .call(transactionsQuery, mockSubgraphClient, { user: testAccount })
         .put(
           dashboardActions.setTransactions(
-            expectedTransactions.xusdTransactions
+            expectedTransactions.xusdTransactions.map((tx) => ({
+              status: 'Confirmed',
+              ...tx,
+            }))
           )
         )
         .hasFinalState(successState)

@@ -1,6 +1,7 @@
 import { utils } from 'ethers';
 import { call, put, select } from 'typed-redux-saga';
 import { ChainEnum, SUPPORTED_CHAINS_RSK } from '../../../config/chains';
+import { parseToWei } from '../../../utils/helpers';
 import {
   accountSelector,
   massetContractSelector,
@@ -25,7 +26,7 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
   const massetAddress = yield* select(massetAddressSelector);
   const massetContract = yield* select(massetContractSelector);
   const account = yield* select(accountSelector);
-  const { startingChain, receiveAddress } = payload;
+  const { startingChain, receiveAddress, sendAmount } = payload;
   const isRSK = SUPPORTED_CHAINS_RSK.includes(startingChain as ChainEnum);
 
   if (
@@ -45,10 +46,10 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
 
   yield* put(
     aggregatorActions.setTransactionDetails({
-      amount: payload.sendAmount,
+      amount: parseToWei(sendAmount),
       user: account,
       event: 'Deposit',
-      status: 'Pending'
+      status: 'Pending',
     })
   );
 

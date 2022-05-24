@@ -6,6 +6,9 @@ import {
   TransactionsTableItem,
 } from './TransactionsTable.types';
 
+const formatDate = (timestamp?: number | string) =>
+  timestamp ? formatTimestamp(timestamp) : '------';
+
 const transactionsTableColumns: DataTableColumn<TransactionsTableItem>[] = [
   { label: 'Event', name: 'event' },
   { label: 'Asset', name: 'asset' },
@@ -13,7 +16,7 @@ const transactionsTableColumns: DataTableColumn<TransactionsTableItem>[] = [
   {
     label: 'Date',
     name: 'date',
-    format: formatTimestamp,
+    format: formatDate,
   },
   { label: 'Status', name: 'status' },
 ];

@@ -91,9 +91,12 @@ export const appSlice = createSlice({
 
       const txsToRemove = new Set(payload.map(getTxHash));
 
-      state.xusdLocalTransactions[state.chainId][state.account].filter(
-        (tx) => !txsToRemove.has(tx)
-      );
+      const filteredTransactions = state.xusdLocalTransactions[state.chainId][
+        state.account
+      ].filter((tx) => !txsToRemove.has(tx));
+
+      state.xusdLocalTransactions[state.chainId][state.account] =
+        filteredTransactions;
 
       if (
         state.xusdLocalTransactions[state.chainId][state.account].length === 0

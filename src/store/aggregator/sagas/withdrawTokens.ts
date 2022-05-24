@@ -1,6 +1,7 @@
 import { utils } from 'ethers';
 import { call, put, select } from 'typed-redux-saga';
 import { SUPPORTED_CHAINS_RSK } from '../../../config/chains';
+import { parseToWei } from '../../../utils/helpers';
 import {
   accountSelector,
   massetContractSelector,
@@ -25,7 +26,7 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
   const bassetAddress = yield* select(bassetAddressSelector);
   const massetContract = yield* select(massetContractSelector);
   const account = yield* select(accountSelector);
-  const { destinationChain, receiveAddress } = payload;
+  const { destinationChain, receiveAddress, sendAmount } = payload;
 
   if (!massetContract || !tokenContract || !destinationChain) {
     yield* put(aggregatorActions.setSubmitError('Could not find contracts'));
@@ -40,10 +41,10 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
 
   yield* put(
     aggregatorActions.setTransactionDetails({
-      amount: payload.sendAmount,
+      amount: parseToWei(sendAmount),
       user: account,
       event: 'Withdraw',
-      status: 'Pending'
+      status: 'Pending',
     })
   );
 
