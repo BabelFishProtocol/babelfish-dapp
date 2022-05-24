@@ -7,18 +7,25 @@ import {
   select,
   takeLatest,
 } from 'typed-redux-saga';
+import { SubscriptionClient } from 'subscription-client';
+import { END, eventChannel } from 'redux-saga';
 import { ContractCall } from 'ethers-multicall';
 import { BaseContract } from 'ethers';
 import { ParamType } from 'ethers/lib/utils';
 
 import { appActions } from '../app/app.slice';
-import { providerSelector } from '../app/app.selectors';
+import {
+  providerSelector,
+  subgraphWsClientSelector,
+} from '../app/app.selectors';
 import {
   CreateWatcherSagaOptions,
   MulticallContractCall,
   MulticallProviderType,
   MulticallResult,
   SagaContractCallStep,
+  SubscriptionResponse,
+  SubscriptionSagaConfig,
 } from '../types';
 import { ContractStepCallSagaParams } from './utils.types';
 
@@ -154,5 +161,84 @@ export function* contractStepCallsSaga<Operations extends string>({
         : 'An unexpected error has occurred. Please try again';
 
     yield* put(setErrorAction(msg));
+  }
+}
+
+/**
+ * @description function that handles subgraph subscriptions
+ * @param config
+ *    - query:            Subscription query to be executed
+ *    - variables:        Query variables
+ *    - fetchSaga:        Saga that will be triggered on each event
+ *    - stopAction:       Action to stop the subscription
+ *    - watchDataAction:  Action to start subscription(used for restarting subscriptions)
+ */
+export function* subscriptionSaga<Result, Variables>({
+  query,
+  fetchSaga,
+  stopAction,
+  variables,
+  watchDataAction,
+}: SubscriptionSagaConfig<Result, Variables>) {
+  function createPoolChanel(client: SubscriptionClient) {
+    return eventChannel<SubscriptionResponse<Result>>((emit) => {
+      const subscription = client
+        .request({
+          query,
+          variables,
+        })
+        .subscribe({
+          next({ data, errors = [] }) {
+            const [error] = errors;
+
+            if (error) {
+              emit({ isError: true, error });
+              return;
+            }
+
+            emit({ isError: false, data: data as unknown as Result });
+          },
+        });
+
+      return () => {
+        subscription.unsubscribe();
+        emit(END);
+      };
+    });
+  }
+
+  let subgraphWsClient = yield* select(subgraphWsClientSelector);
+
+  if (!subgraphWsClient) {
+    yield* take(appActions.walletConnected.type);
+
+    subgraphWsClient = (yield* select(
+      subgraphWsClientSelector
+    )) as SubscriptionClient;
+  }
+
+  const channel = yield* call(createPoolChanel, subgraphWsClient);
+
+  function* closeChannel() {
+    yield* call(channel.close);
+  }
+
+  function* restartConnection() {
+    yield* closeChannel();
+    yield* put(watchDataAction());
+  }
+
+  yield* takeLatest(stopAction.type, closeChannel);
+  yield* takeLatest(appActions.setChainId.type, restartConnection);
+  yield* takeLatest(appActions.setAccount.type, restartConnection);
+
+  try {
+    while (true) {
+      const data = yield* take(channel);
+
+      yield* call(fetchSaga, data);
+    }
+    // eslint-disable-next-line no-empty
+  } finally {
   }
 }
