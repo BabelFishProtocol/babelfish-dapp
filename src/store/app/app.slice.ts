@@ -1,7 +1,10 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
-import { XusdLocalTransaction } from '../aggregator/aggregator.state';
+import {
+  UpdateTxStatus,
+  XusdLocalTransaction,
+} from '../aggregator/aggregator.state';
 import { ActionsType } from '../types';
 import { AppState } from './app.state';
 
@@ -74,6 +77,29 @@ export const appSlice = createSlice({
 
       state.xusdLocalTransactions[state.chainId][state.account].push(payload);
     },
+    updateLocalXusdTransactionStatus: (
+      state,
+      { payload }: PayloadAction<UpdateTxStatus>
+    ) => {
+      if (
+        !state.chainId ||
+        !state.account ||
+        !state.xusdLocalTransactions[state.chainId] ||
+        !state.xusdLocalTransactions[state.chainId][state.account]
+      ) {
+        return;
+      }
+
+      const txsToUpdate = state.xusdLocalTransactions[state.chainId][
+        state.account
+      ].find(({ txHash }) => txHash === payload.txHash);
+
+      if (!txsToUpdate) {
+        return;
+      }
+
+      txsToUpdate.status = payload.newStatus;
+    },
     removeLocalXusdTransactions: (
       state,
       { payload }: PayloadAction<XusdLocalTransaction[]>
@@ -97,12 +123,6 @@ export const appSlice = createSlice({
 
       state.xusdLocalTransactions[state.chainId][state.account] =
         filteredTransactions;
-
-      if (
-        state.xusdLocalTransactions[state.chainId][state.account].length === 0
-      ) {
-        delete state.xusdLocalTransactions[state.chainId][state.account];
-      }
     },
   },
 });

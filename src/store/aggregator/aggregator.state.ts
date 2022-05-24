@@ -1,7 +1,10 @@
 import { ChainEnum } from '../../config/chains';
 import { DEFAULT_POOL, PoolEnum } from '../../config/pools';
 import { TokenEnum } from '../../config/tokens';
-import { TransactionsTableItem } from '../../pages/Dashboard/TransactionsTable/TransactionsTable.types';
+import {
+  TransactionsTableItem,
+  TransactionStatus,
+} from '../../pages/Dashboard/TransactionsTable/TransactionsTable.types';
 import { CallState, LoadableAmount, LoadableValue } from '../types';
 
 export type FeesAndLimitsType = {
@@ -12,6 +15,11 @@ export type FeesAndLimitsType = {
 };
 
 export type XusdLocalTransaction = Omit<TransactionsTableItem, 'id' | 'date'>;
+
+export type UpdateTxStatus = {
+  txHash: TransactionsTableItem['txHash'];
+  newStatus: TransactionStatus;
+};
 
 export type TxDetails = Pick<
   TransactionsTableItem,
