@@ -5,7 +5,7 @@ import { MintingInfoPros } from './MintingInfo.types';
 
 export const MintingInfo = ({ data }: MintingInfoPros) => (
   <>
-    {data.map(({ label, value, isProminant, formatTx }, index) => (
+    {data.map(({ label, value, isProminent, formatTx }, index) => (
       <Box
         key={index}
         sx={{
@@ -27,7 +27,7 @@ export const MintingInfo = ({ data }: MintingInfoPros) => (
         <Typography
           sx={({ palette }) => ({
             textAlign: 'left',
-            color: isProminant ? palette.primary.main : 'white',
+            color: isProminent ? palette.primary.main : 'white',
           })}
           variant="body1"
         >
