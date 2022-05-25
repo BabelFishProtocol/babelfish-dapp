@@ -1,5 +1,4 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { useSelector } from 'react-redux';
 import { Reducers } from '../../constants';
 import { RootState } from '..';
 import { LoadableAmount } from '../types';
@@ -61,11 +60,14 @@ export const transactionsSelector = createSelector(
   dashboardState,
   xusdLocalTransactionsSelector,
   (state, xusdLocalTx) => {
-    const fetchedTx = state.transactionList.data;
+    const fetchedTransactions = state.transactionList.data;
+    const fetchingState = state.transactionList.state;
 
     // TODO sort with real data -> 'pending' (w/o. date) first, then sort by date
-    const data = xusdLocalTx ? [...xusdLocalTx, ...fetchedTx] : fetchedTx;
+    const transactions = xusdLocalTx
+      ? [...xusdLocalTx, ...fetchedTransactions]
+      : fetchedTransactions;
 
-    return { data, state: state.transactionList.state };
+    return { data: transactions, state: fetchingState };
   }
 );

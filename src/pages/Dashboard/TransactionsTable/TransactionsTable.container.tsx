@@ -12,33 +12,23 @@ import { appActions } from '../../../store/app/app.slice';
 export const TransactionsTableContainer = () => {
   const dispatch = useDispatch();
 
-  const localTx = useSelector(xusdLocalTransactionsSelector);
+  const localXusdTransactions = useSelector(xusdLocalTransactionsSelector);
   const provider = useSelector(providerSelector);
   const { data, state } = useSelector(transactionsSelector);
 
   useEffect(() => {
-    localTx?.forEach(async (tx) => {
-      const providerTx = await provider?.getTransaction(tx.txHash);
-      await providerTx
-        ?.wait()
-        .then(() =>
-          dispatch(
-            appActions.updateLocalXusdTransactionStatus({
-              txHash: tx.txHash,
-              newStatus: 'Confirmed',
-            })
-          )
+    localXusdTransactions?.forEach(async ({ txHash }) => {
+      const providerTx = await provider?.getTransaction(txHash);
+      await providerTx?.wait().catch(() =>
+        dispatch(
+          appActions.updateLocalXusdTransactionStatus({
+            txHash,
+            newStatus: 'Failed',
+          })
         )
-        .catch(() =>
-          dispatch(
-            appActions.updateLocalXusdTransactionStatus({
-              txHash: tx.txHash,
-              newStatus: 'Failed',
-            })
-          )
-        );
+      );
     });
-  }, [dispatch, provider, localTx]);
+  }, [dispatch, provider, localXusdTransactions]);
 
   useEffect(() => {
     dispatch(dashboardActions.watchTransactions());

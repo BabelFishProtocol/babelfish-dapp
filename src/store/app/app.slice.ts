@@ -90,15 +90,15 @@ export const appSlice = createSlice({
         return;
       }
 
-      const txsToUpdate = state.xusdLocalTransactions[state.chainId][
+      const txToUpdate = state.xusdLocalTransactions[state.chainId][
         state.account
       ].find(({ txHash }) => txHash === payload.txHash);
 
-      if (!txsToUpdate) {
+      if (!txToUpdate || txToUpdate.status === payload.newStatus) {
         return;
       }
 
-      txsToUpdate.status = payload.newStatus;
+      txToUpdate.status = payload.newStatus;
     },
     removeLocalXusdTransactions: (
       state,
