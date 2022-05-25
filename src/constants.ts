@@ -92,6 +92,7 @@ export const fieldsErrors = {
   amountGreaterThanMaxLimit:
     'Value cannot be greater than the transaction max limit',
   amountLessThanMinLimit: 'Value cannot be less than the transaction min limit',
+  amountEqualZero: 'Value cannot be equal zero',
 };
 
 export const selectorsErrors = {
