@@ -3,8 +3,8 @@ import { FiniteStates } from '../../../utils/types';
 
 export type TransactionStatus = 'Pending' | 'Confirmed' | 'Failed';
 
-export type TransactionsTableItem = Omit<TransactionsQueryItem, 'id' | 'date'> &
-  Partial<Pick<TransactionsQueryItem, 'id' | 'date'>> & {
+export type TransactionsTableItem = Omit<TransactionsQueryItem, 'id'> &
+  Partial<Pick<TransactionsQueryItem, 'id'>> & {
     status: TransactionStatus;
   };
 

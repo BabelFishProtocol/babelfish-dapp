@@ -1,4 +1,5 @@
 import { select, call, put, all, takeLatest } from 'typed-redux-saga';
+import { getCurrentTimestamp } from '../../utils/helpers';
 import { accountSelector } from '../app/app.selectors';
 import { appActions } from '../app/app.slice';
 import {
@@ -118,9 +119,12 @@ export function* addTransactionIntoLocalStorage({
     return;
   }
 
+  const now = getCurrentTimestamp().toString(10);
+
   const txToSave: XusdLocalTransaction = {
     txHash: payload.tx.hash,
     asset: 'XUSD',
+    date: now,
     ...txDetails,
   };
 
