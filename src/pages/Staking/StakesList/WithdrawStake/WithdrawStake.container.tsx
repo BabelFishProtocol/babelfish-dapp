@@ -30,7 +30,7 @@ export const WithdrawStakeContainer = ({
   };
 
   const handleResetCallData = () => {
-    dispatch(stakingActions.resetExtend());
+    dispatch(stakingActions.resetWithdrawal());
   };
 
   if (!selectedStakeData) {
