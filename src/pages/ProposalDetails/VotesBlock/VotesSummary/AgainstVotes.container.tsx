@@ -1,37 +1,37 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-  proVotesSelector,
   userVoteTypeSelector,
-  forVoteStatusSelector,
+  againstVotesSelector,
   proposalDetailsSelector,
+  againstVoteStatusSelector,
 } from '../../../../store/proposals/proposals.selectors';
 import { proposalsActions } from '../../../../store/proposals/proposals.slice';
+import { VotesSummary } from './VotesSummary.component';
 
-import { ForVotesComponent } from './ForVotes.component';
-
-export const ForVotesContainer = () => {
+export const AgainstVotesContainer = () => {
   const dispatch = useDispatch();
-  const proVotes = useSelector(proVotesSelector);
+  const proVotes = useSelector(againstVotesSelector);
   const voteType = useSelector(userVoteTypeSelector);
-  const voteStatus = useSelector(forVoteStatusSelector);
+  const voteStatus = useSelector(againstVoteStatusSelector);
   const { state, data } = useSelector(proposalDetailsSelector);
 
   const handleCastVote = () => {
-    dispatch(proposalsActions.castVote({ support: true }));
+    dispatch(proposalsActions.castVote({ support: false }));
   };
 
   if (!data) return null;
 
   return (
-    <ForVotesComponent
+    <VotesSummary
+      type="against"
       votes={proVotes}
       state={state}
       voteType={voteType}
       voteStatus={voteStatus}
       proposalState={data.state}
       handleCastVote={handleCastVote}
-      votesAmount={data.forVotesAmount}
+      votesAmount={data.againstVotesAmount}
     />
   );
 };

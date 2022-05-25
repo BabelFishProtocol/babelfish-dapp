@@ -8,8 +8,7 @@ import {
   takeLatest,
 } from 'typed-redux-saga';
 import { SubscriptionClient } from 'subscription-client';
-import { END, eventChannel, SagaIterator } from 'redux-saga';
-import { ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
+import { END, eventChannel } from 'redux-saga';
 import { ContractCall } from 'ethers-multicall';
 import { BaseContract } from 'ethers';
 import { ParamType } from 'ethers/lib/utils';
@@ -25,6 +24,8 @@ import {
   MulticallProviderType,
   MulticallResult,
   SagaContractCallStep,
+  SubscriptionResponse,
+  SubscriptionSagaConfig,
 } from '../types';
 import { ContractStepCallSagaParams } from './utils.types';
 
@@ -163,32 +164,39 @@ export function* contractStepCallsSaga<Operations extends string>({
   }
 }
 
-type SubscriptionSagaConfig<Result, Variables> = {
-  query: string;
-  stopAction: ActionCreatorWithoutPayload;
-  fetchSaga: (data: Result | Error) => SagaIterator;
-  variables?: Variables;
-};
-
+/**
+ * @description function that handles subgraph subscriptions
+ * @param config
+ *    - query:            Subscription query to be executed
+ *    - variables:        Query variables
+ *    - fetchSaga:        Saga that will be triggered on each event
+ *    - stopAction:       Action to stop the subscription
+ *    - watchDataAction:  Action to start subscription(used for restarting subscriptions)
+ */
 export function* subscriptionSaga<Result, Variables>({
   query,
   fetchSaga,
   stopAction,
   variables,
+  watchDataAction,
 }: SubscriptionSagaConfig<Result, Variables>) {
   function createPoolChanel(client: SubscriptionClient) {
-    return eventChannel<Result | Error>((emit) => {
+    return eventChannel<SubscriptionResponse<Result>>((emit) => {
       const subscription = client
         .request({
           query,
           variables,
         })
         .subscribe({
-          next({ data }) {
-            emit(data as unknown as Result);
-          },
-          error(e) {
-            emit(e);
+          next({ data, errors = [] }) {
+            const [error] = errors;
+
+            if (error) {
+              emit({ isError: true, error });
+              return;
+            }
+
+            emit({ isError: false, data: data as unknown as Result });
           },
         });
 
@@ -203,19 +211,26 @@ export function* subscriptionSaga<Result, Variables>({
 
   if (!subgraphWsClient) {
     yield* take(appActions.walletConnected.type);
-    subgraphWsClient = yield* select(subgraphWsClientSelector);
+
+    subgraphWsClient = (yield* select(
+      subgraphWsClientSelector
+    )) as SubscriptionClient;
   }
 
-  const channel = yield* call(
-    createPoolChanel,
-    subgraphWsClient as SubscriptionClient
-  );
+  const channel = yield* call(createPoolChanel, subgraphWsClient);
 
   function* closeChannel() {
-    channel.close();
+    yield* call(channel.close);
+  }
+
+  function* restartConnection() {
+    yield* closeChannel();
+    yield* put(watchDataAction());
   }
 
   yield* takeLatest(stopAction.type, closeChannel);
+  yield* takeLatest(appActions.setChainId.type, restartConnection);
+  yield* takeLatest(appActions.setAccount.type, restartConnection);
 
   try {
     while (true) {
@@ -223,7 +238,7 @@ export function* subscriptionSaga<Result, Variables>({
 
       yield* call(fetchSaga, data);
     }
+    // eslint-disable-next-line no-empty
   } finally {
-    yield* closeChannel();
   }
 }

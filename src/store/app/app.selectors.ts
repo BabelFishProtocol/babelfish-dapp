@@ -102,6 +102,18 @@ export const chainsInCurrentNetworkSelector = createSelector(
   }
 );
 
+export const supportedChainsInCurrentNetworkSelector = createSelector(
+  [supportedNetworksSelector, chainsInCurrentNetworkSelector],
+  (supportedNetworks, chainsInCurrentNetwork) => {
+    if (!supportedNetworks?.length || !chainsInCurrentNetwork?.length)
+      return [];
+
+    return chainsInCurrentNetwork.filter(({ id }) =>
+      supportedNetworks.includes(id)
+    );
+  }
+);
+
 export const currentChainSelector = createSelector(
   chainIdSelector,
   (chainId) => {

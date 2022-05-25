@@ -15,13 +15,12 @@ import {
 } from '../../app/app.selectors';
 import { aggregatorActions, aggregatorReducer } from '../aggregator.slice';
 
-import { transferTokens } from './transferTokens';
 import { AggregatorState } from '../aggregator.state';
 import {
   depositMockValues,
+  depositRSKMockValues,
   mockAccount,
   mockAmount,
-  mockBassetAddress,
   mockBridge,
   mockMasset,
   mockMassetAddress,
@@ -31,14 +30,13 @@ import {
   mockTokenDecimals,
 } from '../aggregator.mock';
 import {
-  bassetAddressSelector,
   bridgeContractSelector,
-  flowStateSelector,
   massetAddressSelector,
   startingTokenAddressSelector,
   startingTokenContractSelector,
   startingTokenDecimalsSelector,
 } from '../aggregator.selectors';
+import { depositTokens } from './depositTokens';
 
 const aggregatorInitialState: AggregatorState = {
   ...new AggregatorState(),
@@ -48,7 +46,7 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe('transferTokens', () => {
+describe('depositTokens', () => {
   const mockTx = {
     hash: '0x01',
     wait: jest.fn() as ContractTransaction['wait'],
@@ -60,11 +58,11 @@ describe('transferTokens', () => {
 
   const initialSteps = aggregatorInitialState?.submitCall?.steps;
 
-  describe('deposit', () => {
+  describe('through bridge', () => {
     const extraData = utils.defaultAbiCoder.encode(['address'], [mockReceiver]);
     const mockSelectors: (EffectProviders | StaticProvider)[] = [
-      [matchers.select(flowStateSelector), 'deposit'],
       [matchers.select(bridgeContractSelector), mockBridge],
+      [matchers.select(massetContractSelector), mockMasset],
       [matchers.select(startingTokenAddressSelector), mockTokenAddress],
       [matchers.select(startingTokenDecimalsSelector), mockTokenDecimals],
       [matchers.select(startingTokenContractSelector), mockToken],
@@ -89,7 +87,7 @@ describe('transferTokens', () => {
       };
 
       await expectSaga(
-        transferTokens,
+        depositTokens,
         aggregatorActions.submit(depositMockValues)
       )
         .withReducer(aggregatorReducer)
@@ -143,7 +141,7 @@ describe('transferTokens', () => {
       };
 
       await expectSaga(
-        transferTokens,
+        depositTokens,
         aggregatorActions.submit(depositMockValues)
       )
         .withReducer(aggregatorReducer)
@@ -195,7 +193,7 @@ describe('transferTokens', () => {
       };
 
       await expectSaga(
-        transferTokens,
+        depositTokens,
         aggregatorActions.submit(depositMockValues)
       )
         .withReducer(aggregatorReducer)
@@ -240,7 +238,7 @@ describe('transferTokens', () => {
       };
 
       await expectSaga(
-        transferTokens,
+        depositTokens,
         aggregatorActions.submit(depositMockValues)
       )
         .withReducer(aggregatorReducer)
@@ -248,10 +246,6 @@ describe('transferTokens', () => {
         .provide([
           ...mockSelectors.slice(0, -1),
           [matchers.select(accountSelector), undefined],
-          [matchers.call.fn(mockToken.allowance), parseUnits('15')],
-          [matchers.call.fn(mockToken.approve), mockTx],
-          [matchers.call.fn(mockBridge.receiveTokensAt), mockTx],
-          [matchers.call.fn(mockTx.wait), mockReceipt],
         ])
         .put(aggregatorActions.setSubmitError('Could not find addresses'))
         .hasFinalState(expectedState)
@@ -259,14 +253,15 @@ describe('transferTokens', () => {
     });
   });
 
-  describe('withdraw', () => {
+  describe('on RSK only', () => {
     const mockSelectors: (EffectProviders | StaticProvider)[] = [
-      [matchers.select(flowStateSelector), 'withdraw'],
+      [matchers.select(bridgeContractSelector), undefined],
+      [matchers.select(massetContractSelector), mockMasset],
+      [matchers.select(startingTokenAddressSelector), mockTokenAddress],
       [matchers.select(startingTokenDecimalsSelector), mockTokenDecimals],
       [matchers.select(startingTokenContractSelector), mockToken],
-      [matchers.select(bassetAddressSelector), mockBassetAddress],
+      [matchers.select(massetAddressSelector), mockMassetAddress],
       [matchers.select(accountSelector), mockAccount],
-      [matchers.select(massetContractSelector), mockMasset],
     ];
 
     it('when sufficient allowance', async () => {
@@ -274,10 +269,10 @@ describe('transferTokens', () => {
         ...aggregatorInitialState,
         submitCall: {
           status: 'success',
-          currentOperation: 'withdraw',
+          currentOperation: 'deposit',
           steps: [
             {
-              ...initialSteps?.[3],
+              ...initialSteps?.[2],
               tx: mockTx,
               txReceipt: mockReceipt,
             },
@@ -286,43 +281,86 @@ describe('transferTokens', () => {
       };
 
       await expectSaga(
-        transferTokens,
-        aggregatorActions.submit(depositMockValues)
+        depositTokens,
+        aggregatorActions.submit(depositRSKMockValues)
       )
         .withReducer(aggregatorReducer)
         .withState(aggregatorInitialState)
         .provide([
           ...mockSelectors,
           [matchers.call.fn(mockToken.allowance), parseUnits('11')],
-          [
-            matchers.call.fn(
-              mockMasset['redeemToBridge(address,uint256,address)']
-            ),
-            mockTx,
-          ],
+          [matchers.call.fn(mockMasset.mintTo), mockTx],
           [matchers.call.fn(mockTx.wait), mockReceipt],
         ])
+        .call(mockToken.allowance, mockAccount.toLowerCase(), mockMassetAddress)
         .call(
-          mockToken.allowance,
-          mockAccount,
-          mockMasset.address.toLowerCase()
-        )
-        .call(
-          mockMasset['redeemToBridge(address,uint256,address)'],
-          mockBassetAddress,
+          mockMasset.mintTo,
+          mockTokenAddress,
           mockAmount,
-          mockReceiver
+          mockReceiver.toLowerCase()
         )
         .hasFinalState(expectedState)
         .run();
     });
 
-    it('when unsufficient allowance', async () => {
+    it('when unsufficient(non-zero) allowance', async () => {
       const expectedState: AggregatorState = {
         ...aggregatorInitialState,
         submitCall: {
           status: 'success',
-          currentOperation: 'withdraw',
+          currentOperation: 'deposit',
+          steps: [
+            {
+              ...initialSteps?.[0],
+              tx: mockTx,
+              txReceipt: mockReceipt,
+            },
+            {
+              ...initialSteps?.[1],
+              tx: mockTx,
+              txReceipt: mockReceipt,
+            },
+            {
+              ...initialSteps?.[2],
+              tx: mockTx,
+              txReceipt: mockReceipt,
+            },
+          ],
+        },
+      };
+
+      await expectSaga(
+        depositTokens,
+        aggregatorActions.submit(depositRSKMockValues)
+      )
+        .withReducer(aggregatorReducer)
+        .withState(aggregatorInitialState)
+        .provide([
+          ...mockSelectors,
+          [matchers.call.fn(mockToken.allowance), parseUnits('5')],
+          [matchers.call.fn(mockToken.approve), mockTx],
+          [matchers.call.fn(mockMasset.mintTo), mockTx],
+          [matchers.call.fn(mockTx.wait), mockReceipt],
+        ])
+        .call(mockToken.allowance, mockAccount.toLowerCase(), mockMassetAddress)
+        .call(mockToken.approve, mockMassetAddress.toLowerCase(), 0)
+        .call(mockToken.approve, mockMassetAddress.toLowerCase(), mockAmount)
+        .call(
+          mockMasset.mintTo,
+          mockTokenAddress,
+          mockAmount,
+          mockReceiver.toLowerCase()
+        )
+        .hasFinalState(expectedState)
+        .run();
+    });
+
+    it('when zero allowance', async () => {
+      const expectedState: AggregatorState = {
+        ...aggregatorInitialState,
+        submitCall: {
+          status: 'success',
+          currentOperation: 'deposit',
           steps: [
             {
               ...initialSteps?.[1],
@@ -330,7 +368,7 @@ describe('transferTokens', () => {
               txReceipt: mockReceipt,
             },
             {
-              ...initialSteps?.[3],
+              ...initialSteps?.[2],
               tx: mockTx,
               txReceipt: mockReceipt,
             },
@@ -339,40 +377,31 @@ describe('transferTokens', () => {
       };
 
       await expectSaga(
-        transferTokens,
-        aggregatorActions.submit(depositMockValues)
+        depositTokens,
+        aggregatorActions.submit(depositRSKMockValues)
       )
         .withReducer(aggregatorReducer)
         .withState(aggregatorInitialState)
         .provide([
           ...mockSelectors,
-          [matchers.call.fn(mockToken.allowance), parseUnits('4')],
+          [matchers.call.fn(mockToken.allowance), parseUnits('0')],
           [matchers.call.fn(mockToken.approve), mockTx],
-          [
-            matchers.call.fn(
-              mockMasset['redeemToBridge(address,uint256,address)']
-            ),
-            mockTx,
-          ],
+          [matchers.call.fn(mockMasset.mintTo), mockTx],
           [matchers.call.fn(mockTx.wait), mockReceipt],
         ])
+        .call(mockToken.allowance, mockAccount.toLowerCase(), mockMassetAddress)
+        .call(mockToken.approve, mockMassetAddress.toLowerCase(), mockAmount)
         .call(
-          mockToken.allowance,
-          mockAccount,
-          mockMasset.address.toLowerCase()
-        )
-        .call(mockToken.approve, mockMasset.address.toLowerCase(), mockAmount)
-        .call(
-          mockMasset['redeemToBridge(address,uint256,address)'],
-          mockBassetAddress,
+          mockMasset.mintTo,
+          mockTokenAddress,
           mockAmount,
-          mockReceiver
+          mockReceiver.toLowerCase()
         )
         .hasFinalState(expectedState)
         .run();
     });
 
-    it('when no masset contract', async () => {
+    it('when no address provided', async () => {
       const expectedState: AggregatorState = {
         ...aggregatorInitialState,
         submitCall: {
@@ -380,7 +409,7 @@ describe('transferTokens', () => {
           steps: [
             {
               ...initialSteps?.[0],
-              error: 'Could not find contracts',
+              error: 'Could not find addresses',
             },
             ...initialSteps.slice(1, 4),
           ],
@@ -388,25 +417,16 @@ describe('transferTokens', () => {
       };
 
       await expectSaga(
-        transferTokens,
-        aggregatorActions.submit(depositMockValues)
+        depositTokens,
+        aggregatorActions.submit(depositRSKMockValues)
       )
         .withReducer(aggregatorReducer)
         .withState(aggregatorInitialState)
         .provide([
           ...mockSelectors.slice(0, -1),
-          [matchers.select(massetContractSelector), undefined],
-          [matchers.call.fn(mockToken.allowance), parseUnits('4')],
-          [matchers.call.fn(mockToken.approve), mockTx],
-          [
-            matchers.call.fn(
-              mockMasset['redeemToBridge(address,uint256,address)']
-            ),
-            mockTx,
-          ],
-          [matchers.call.fn(mockTx.wait), mockReceipt],
+          [matchers.select(accountSelector), undefined],
         ])
-        .put(aggregatorActions.setSubmitError('Could not find contracts'))
+        .put(aggregatorActions.setSubmitError('Could not find addresses'))
         .hasFinalState(expectedState)
         .run();
     });

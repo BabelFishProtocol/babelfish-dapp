@@ -12,6 +12,9 @@ const transition = `250ms cubic-bezier(0.4, 0, 0.2, 1)`;
 export const getComponents = (palette: Palette): Components<Theme> => ({
   MuiCssBaseline: {
     styleOverrides: `
+    body {
+      overflow: overlay;
+    }
     *::-webkit-scrollbar {
       width: 8px;
       border-radius: 10px;
@@ -75,6 +78,22 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
       },
       outlined: {
         borderRadius: 8,
+        '&.MuiButton-outlinedSuccess': {
+          boxShadow: `inset 0 0 0 2px ${palette.success.main}`,
+          backgroundColor: palette.success.light,
+          color: 'white',
+          ':hover': {
+            backgroundColor: palette.success.main,
+          },
+        },
+        '&.MuiButton-outlinedError': {
+          boxShadow: `inset 0 0 0 2px ${palette.error.main}`,
+          backgroundColor: palette.error.light,
+          color: 'white',
+          ':hover': {
+            backgroundColor: palette.error.main,
+          },
+        },
       },
       outlinedPrimary: {
         boxShadow: `inset 0 0 0 2px ${palette.primary.main}`,
@@ -154,6 +173,10 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
         borderRadius: 0,
         '&.Mui-error': {
           borderWidth: 1,
+        },
+        '& .MuiSelect-icon': {
+          color: palette.primary.main,
+          fontSize: '2rem',
         },
       },
     },

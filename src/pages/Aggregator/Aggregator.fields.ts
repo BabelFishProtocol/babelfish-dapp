@@ -3,13 +3,13 @@ import { ChainEnum } from '../../config/chains';
 import { TokenEnum } from '../../config/tokens';
 
 export enum AggregatorInputs {
-  StartingChain = 'StartingChain',
-  StartingToken = 'StartingToken',
-  SendAmount = 'SendAmount',
-  DestinationChain = 'DestinationChain',
-  DestinationToken = 'DestinationToken',
-  ReceiveAmount = 'ReceiveAmount',
-  ReceiveAddress = 'ReceiveAddress',
+  StartingChain = 'startingChain',
+  StartingToken = 'startingToken',
+  SendAmount = 'sendAmount',
+  DestinationChain = 'destinationChain',
+  DestinationToken = 'destinationToken',
+  ReceiveAmount = 'receiveAmount',
+  ReceiveAddress = 'receiveAddress',
 }
 
 export type AggregatorFormValues = {

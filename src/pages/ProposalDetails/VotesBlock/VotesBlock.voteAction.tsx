@@ -7,6 +7,7 @@ import { VoteActionBlockProps } from './VotesBlock.types';
 
 export const VoteActionBlock = ({
   votesAmount,
+  icon,
   children,
 }: VoteActionBlockProps) => (
   <Box
@@ -26,7 +27,8 @@ export const VoteActionBlock = ({
         backgroundColor: ({ palette }) => palette.borderGrey.dark,
       }}
     >
-      <Typography variant="body1">{votesAmount}</Typography>
+      {icon}
+      <Typography variant="button">{votesAmount}</Typography>
     </CenteredBox>
     {children}
   </Box>

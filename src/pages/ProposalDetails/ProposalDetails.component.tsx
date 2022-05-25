@@ -28,8 +28,8 @@ import {
   ProposalDetailsComponentProps,
 } from './ProposalDetails.types';
 import { VotesRatioBlock } from './ProposalDetails.votesRatio';
-import { ForVotesContainer } from './VotesBlock/ForVotes/ForVotes.container';
-import { AgainstVotesContainer } from './VotesBlock/AgainstVotes/AgainstVotes.container';
+import { ForVotesContainer } from './VotesBlock/VotesSummary/ForVotes.container';
+import { AgainstVotesContainer } from './VotesBlock/VotesSummary/AgainstVotes.container';
 
 export const ProposalDetailsComponent = ({
   proposal,
@@ -46,20 +46,12 @@ export const ProposalDetailsComponent = ({
 
   return (
     <>
-      <Box
-        sx={{
-          p: 0,
-          maxWidth: { xs: 1300 },
-          margin: '0 auto',
-        }}
-      >
-        <Breadcrumbs
-          links={[
-            { title: UrlNames.Proposals, href: Urls.Proposals },
-            { title: UrlNames.ProposalDetails },
-          ]}
-        />
-      </Box>
+      <Breadcrumbs
+        links={[
+          { title: UrlNames.Proposals, href: Urls.Proposals },
+          { title: UrlNames.ProposalDetails },
+        ]}
+      />
       <PageView
         title={
           <Box
@@ -93,7 +85,7 @@ export const ProposalDetailsComponent = ({
             </CenteredBox>
 
             <Typography variant="body1" sx={{ ml: 2 }}>
-              Voting Ends: {formatTimestamp(proposal.endTime)}
+              Voting Ends, Estimate: {formatTimestamp(proposal.endTime)}
             </Typography>
           </Box>
         }

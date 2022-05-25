@@ -3,13 +3,12 @@ import { all, put, call, takeLatest } from 'typed-redux-saga';
 import { createWatcherSaga } from '../utils/utils.sagas';
 
 import { stakingActions } from './staking.slice';
-import { vestingActions } from '../vesting/vesting.slice';
 import { addNewStake } from './sagas/addNewStake';
 import { extendStake } from './sagas/extendStake';
 import { increaseStake } from './sagas/increaseStake';
 import { delegateStake } from './sagas/delegateStake';
 import { withdrawStake } from './sagas/withdrawStake';
-import { fetchHistoryStaking } from './sagas/fetchHistoryStaking';
+import { watchStakingHistory } from './sagas/fetchHistoryStaking';
 import { fetchStakesList } from './sagas/fetchStakesList';
 import { fetchVotingPower } from './sagas/fetchVotingPower';
 import { fetchStakeConstants } from './sagas/fetchStakeConstants';
@@ -58,9 +57,6 @@ export function* stakingSaga() {
     takeLatest(stakingActions.fetchStakingData.type, fetchBalances),
     takeLatest(stakingActions.updateStakingData.type, updateBalances),
     takeLatest(stakingActions.watchStakingData.type, watchStaking),
-    takeLatest(
-      [stakingActions.setStakesList, vestingActions.setVestsList],
-      fetchHistoryStaking
-    ),
+    takeLatest(stakingActions.watchHistoryStakesList.type, watchStakingHistory),
   ]);
 }

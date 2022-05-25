@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { UseFormResetField, UseFormSetValue } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { ChainEnum, ChainType } from '../../config/chains';
+import { ChainEnum, ChainType, SUPPORTED_CHAINS } from '../../config/chains';
 import { poolHasChain } from '../../config/pools';
 import { TokenTypeBase } from '../../config/tokens';
 import {
@@ -23,8 +23,11 @@ export const useAggregatorDropdowns = (
   resetField: UseFormResetField<AggregatorFormValues>,
   setValue: UseFormSetValue<AggregatorFormValues>
 ) => {
+  const connectedChain = useSelector(chainIdSelector);
   const flowState = useSelector(flowStateSelector);
   const pool = useSelector(poolSelector);
+  const isSupportedChain =
+    !connectedChain || SUPPORTED_CHAINS.includes(connectedChain);
 
   const [startingChainOptions, setStartingChainOptions] = useState<ChainType[]>(
     []
@@ -41,6 +44,8 @@ export const useAggregatorDropdowns = (
   >([]);
 
   useEffect(() => {
+    if (!isSupportedChain) return;
+
     if (flowState === 'deposit') {
       setValue(AggregatorInputs.StartingChain, destinationChain);
       setStartingChainOptions(pool.baseChains);
@@ -68,9 +73,11 @@ export const useAggregatorDropdowns = (
       setStartingTokenOptions([pool.masset]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [flowState, setValue, resetField, pool]);
+  }, [flowState, setValue, resetField, pool, isSupportedChain]);
 
   useEffect(() => {
+    if (!isSupportedChain) return;
+
     if (flowState === 'deposit' && startingChain) {
       resetField(AggregatorInputs.StartingToken);
       setStartingTokenOptions(
@@ -84,7 +91,21 @@ export const useAggregatorDropdowns = (
           []
       );
     }
-  }, [flowState, startingChain, destinationChain, resetField, pool]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startingChain, destinationChain, resetField, pool]);
+
+  useEffect(() => {
+    if (!isSupportedChain) {
+      resetField(AggregatorInputs.StartingChain);
+      resetField(AggregatorInputs.StartingToken);
+      resetField(AggregatorInputs.DestinationChain);
+      resetField(AggregatorInputs.DestinationToken);
+      setDestinationChainOptions([]);
+      setDestinationTokenOptions([]);
+      setStartingChainOptions([]);
+      setStartingTokenOptions([]);
+    }
+  }, [isSupportedChain, resetField]);
 
   return {
     startingChainOptions,
@@ -116,7 +137,12 @@ export const useConnectedChain = (
   }, [startingChain]);
 
   useEffect(() => {
-    if (connectedChain && wrongChainConnectedError && setValue) {
+    if (
+      connectedChain &&
+      wrongChainConnectedError &&
+      setValue &&
+      SUPPORTED_CHAINS.includes(connectedChain)
+    ) {
       if (!poolHasChain({ pool, chain: connectedChain })) {
         resetField(AggregatorInputs.StartingChain);
         resetField(AggregatorInputs.StartingToken);

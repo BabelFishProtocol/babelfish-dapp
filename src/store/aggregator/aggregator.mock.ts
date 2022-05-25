@@ -14,6 +14,8 @@ export const mockTokenAddress = '0x110a13FC3efE6A245B50102D2d79B3E76125Ae83';
 export const mockTokenDecimals = 18;
 export const mockMassetAddress = '0x971b97c8cc82e7d27bc467c2dc3f219c6ee2e350';
 export const mockBassetAddress = '0x971b97c8cc82e7h25bc467c2dc3f219c6ee2e350';
+export const mockDestinationTokenAddress =
+  '0x110a13FC3efE6d2h5f50102D2d79B3E76125Ae83';
 export const mockAccount = '0x5250D37B096099678b0957bae32153915ca2C043';
 
 export const mockAmount = parseUnits('11', mockTokenDecimals);
@@ -43,4 +45,26 @@ export const depositMockValues = {
   [AggregatorInputs.DestinationToken]: TokenEnum.XUSD,
   [AggregatorInputs.ReceiveAmount]: '10.45',
   [AggregatorInputs.ReceiveAddress]: mockReceiver,
+};
+
+export const depositRSKMockValues = {
+  ...depositMockValues,
+  [AggregatorInputs.StartingChain]: ChainEnum.RSK_TESTNET,
+  [AggregatorInputs.StartingToken]: TokenEnum.RDOC,
+};
+
+export const withdrawMockValues = {
+  [AggregatorInputs.StartingChain]: ChainEnum.RSK_TESTNET,
+  [AggregatorInputs.StartingToken]: TokenEnum.XUSD,
+  [AggregatorInputs.SendAmount]: '11',
+  [AggregatorInputs.DestinationChain]: ChainEnum.ETH_TESTNET,
+  [AggregatorInputs.DestinationToken]: TokenEnum.USDT,
+  [AggregatorInputs.ReceiveAmount]: '10.45',
+  [AggregatorInputs.ReceiveAddress]: mockReceiver,
+};
+
+export const withdrawRSKMockValues = {
+  ...withdrawMockValues,
+  [AggregatorInputs.DestinationChain]: ChainEnum.RSK_TESTNET,
+  [AggregatorInputs.DestinationToken]: TokenEnum.RDOC,
 };

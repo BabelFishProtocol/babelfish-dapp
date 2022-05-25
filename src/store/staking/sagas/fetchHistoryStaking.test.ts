@@ -1,7 +1,5 @@
-import * as matchers from 'redux-saga-test-plan/matchers';
 import { DeepPartial } from '@reduxjs/toolkit';
 import { expectSaga } from 'redux-saga-test-plan';
-import { throwError } from 'redux-saga-test-plan/providers';
 import {
   combinedHistoryStakesList,
   dates,
@@ -14,13 +12,7 @@ import {
 import { RootState } from '../..';
 import { Reducers } from '../../../constants';
 import { fetchHistoryStaking } from './fetchHistoryStaking';
-import {
-  accountSelector,
-  subgraphClientSelector,
-} from '../../app/app.selectors';
-import { stakesAndVestsAddressesSelector } from '../../vesting/vesting.selectors';
-import { mockSubgraphClient } from '../../../testUtils';
-import { allUserStakesQuery } from '../../../queries/historyStakeListQuery';
+import { Stake, UserQueryResult } from '../../../queries/historyStakeListQuery';
 import { stakingActions } from '../staking.slice';
 
 afterEach(() => {
@@ -49,7 +41,7 @@ describe('fetchHistoryStaking', () => {
 
   const vestAddress = '0x94e907A6483b5ef';
 
-  const stakeEvents = [
+  const stakeEvents: Stake[] = [
     {
       id: 'stakeEvent-1',
       staker: testAccount,
@@ -79,32 +71,21 @@ describe('fetchHistoryStaking', () => {
     },
   ];
 
-  const user = {
-    allStakes: [stakeEvents[0], stakeEvents[2]],
+  const result: UserQueryResult = {
+    user: {
+      id: 'test',
+      allStakes: [stakeEvents[0], stakeEvents[2]],
+    },
   };
 
-  const getBasePath = () =>
-    expectSaga(fetchHistoryStaking)
+  it('happy path', async () => {
+    const runResult = await expectSaga(fetchHistoryStaking, {
+      data: result,
+      isError: false,
+    })
       .withReducer(stakingReducer)
       .withState(stakingInitialState)
-      .select(subgraphClientSelector)
-      .select(accountSelector);
-
-  it('happy path', async () => {
-    const runResult = await getBasePath()
-      .provide([
-        [matchers.select(subgraphClientSelector), mockSubgraphClient],
-        [matchers.select(accountSelector), testAccount],
-        [
-          matchers.call(allUserStakesQuery, mockSubgraphClient, {
-            contractAddress: testAccount,
-          }),
-          { user },
-        ],
-      ])
-      .call(allUserStakesQuery, mockSubgraphClient, {
-        contractAddress: testAccount,
-      })
+      .put(stakingActions.fetchHistoryStakesList())
       .put(stakingActions.setHistoryStakesList(combinedHistoryStakesList))
       .hasFinalState(successState)
       .run();
@@ -112,36 +93,18 @@ describe('fetchHistoryStaking', () => {
     expect(runResult.effects).toEqual({});
   });
 
-  it('when wallet is not connected', async () => {
-    const runResult = await getBasePath()
-      .provide([
-        [matchers.select(subgraphClientSelector), undefined],
-        [matchers.select(stakesAndVestsAddressesSelector), undefined],
-      ])
+  it('fetching error', async () => {
+    const runResult = await expectSaga(fetchHistoryStaking, {
+      error: new Error('query error'),
+      isError: true,
+    })
+      .withReducer(stakingReducer)
+      .withState(stakingInitialState)
+      .put(stakingActions.fetchHistoryStakesList())
       .put(stakingActions.fetchHistoryStakesListFailure())
       .hasFinalState(failureState)
       .run();
 
     expect(runResult.effects).toEqual({});
-  });
-
-  it('fetching error', async () => {
-    await getBasePath()
-      .provide([
-        [matchers.select(subgraphClientSelector), mockSubgraphClient],
-        [matchers.select(accountSelector), testAccount],
-        [
-          matchers.call(allUserStakesQuery, mockSubgraphClient, {
-            contractAddress: testAccount,
-          }),
-          throwError(),
-        ],
-      ])
-      .call(allUserStakesQuery, mockSubgraphClient, {
-        contractAddress: testAccount,
-      })
-      .put(stakingActions.fetchHistoryStakesListFailure())
-      .hasFinalState(failureState)
-      .run();
   });
 });

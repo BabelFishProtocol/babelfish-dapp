@@ -27,6 +27,7 @@ export const DashboardComponent = ({
         display: 'flex',
         maxWidth: 1400,
         flexDirection: { xs: 'column', md: 'row' },
+        mt: '72px',
       }}
     >
       <Container
