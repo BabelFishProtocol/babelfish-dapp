@@ -56,18 +56,19 @@ export const xusdBalanceSelector = createSelector(
   })
 );
 
-export const transactionsSelector = createSelector(
+export const fetchedTransactionsSelector = createSelector(
   dashboardState,
+  (state) => state.transactionList
+);
+
+export const transactionsSelector = createSelector(
+  fetchedTransactionsSelector,
   xusdLocalTransactionsSelector,
-  (state, xusdLocalTx) => {
-    const fetchedTransactions = state.transactionList.data;
-    const fetchingState = state.transactionList.state;
+  ({ data, state }, xusdLocalTransactions) => {
+    const transactions = xusdLocalTransactions
+      ? [...xusdLocalTransactions, ...data]
+      : data;
 
-    // TODO sort with real data -> 'pending' (w/o. date) first, then sort by date
-    const transactions = xusdLocalTx
-      ? [...xusdLocalTx, ...fetchedTransactions]
-      : fetchedTransactions;
-
-    return { data: transactions, state: fetchingState };
+    return { data: transactions, state };
   }
 );

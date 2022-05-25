@@ -75,7 +75,9 @@ export const appSlice = createSlice({
         return;
       }
 
-      state.xusdLocalTransactions[state.chainId][state.account].push(payload);
+      state.xusdLocalTransactions[state.chainId][state.account].unshift(
+        payload
+      );
     },
     updateLocalXusdTransactionStatus: (
       state,

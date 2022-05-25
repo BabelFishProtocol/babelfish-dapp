@@ -6,6 +6,7 @@ import {
 } from './sagas/fetchDashboardBalances';
 import {
   fetchTransactions,
+  setFailedTransactionStatus,
   watchTransactions,
 } from './sagas/fetchTransactions';
 
@@ -18,5 +19,7 @@ export function* dashboardSaga() {
     takeLatest(dashboardActions.fetchTransactions.type, fetchTransactions),
     takeLatest(dashboardActions.updateTransactions.type, fetchTransactions),
     takeLatest(dashboardActions.watchTransactions.type, watchTransactions),
+
+    takeLatest(dashboardActions.setTransactions.type, setFailedTransactionStatus),
   ]);
 }

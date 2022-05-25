@@ -2,7 +2,9 @@ import { put, call, select } from 'typed-redux-saga';
 import { createWatcherSaga } from '../../utils/utils.sagas';
 import {
   accountSelector,
+  providerSelector,
   subgraphClientSelector,
+  xusdLocalTransactionsSelector,
 } from '../../app/app.selectors';
 import { transactionsQuery } from '../../../queries/transactionsQuery';
 import { dashboardActions } from '../dashboard.slice';
@@ -32,6 +34,30 @@ export function* fetchTransactions() {
     yield* put(dashboardActions.setTransactions(txWithStatus));
   } catch (e) {
     yield* put(dashboardActions.fetchTransactionsFailure());
+  }
+}
+
+export function* setFailedTransactionStatus() {
+  const provider = yield* select(providerSelector);
+  if (!provider) return;
+
+  const localTx = yield* select(xusdLocalTransactionsSelector);
+  if (!localTx) return;
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const { txHash } of localTx) {
+    const txReceipt = yield* call(
+      [provider, provider.waitForTransaction],
+      txHash
+    );
+    if (txReceipt.status === 0) {
+      yield put(
+        appActions.updateLocalXusdTransactionStatus({
+          txHash,
+          newStatus: 'Failed',
+        })
+      );
+    }
   }
 }
 
