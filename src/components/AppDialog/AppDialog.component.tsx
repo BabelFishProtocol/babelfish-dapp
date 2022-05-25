@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -6,8 +7,12 @@ import Typography from '@mui/material/Typography';
 import crossIcon from '../../assets/icons/cross.svg';
 import { AppDialogProps, AppDialogTitleProps } from './AppDialog.types';
 
-export const AppDialogTitle = ({ title, onClose }: AppDialogTitleProps) => (
-  <DialogTitle>
+export const AppDialogTitle = ({
+  title,
+  titleSx,
+  onClose,
+}: AppDialogTitleProps) => (
+  <DialogTitle sx={{ ...titleSx }}>
     {title}
     {onClose && (
       <IconButton
@@ -27,7 +32,9 @@ export const AppDialogTitle = ({ title, onClose }: AppDialogTitleProps) => (
 export const AppDialog = ({
   isOpenDialog,
   icon,
+  iconSx,
   title,
+  titleSx,
   description,
   onClose,
   children,
@@ -42,15 +49,34 @@ export const AppDialog = ({
     PaperProps={dialogPaperProps}
     {...dialogProps}
   >
-    {title && <AppDialogTitle title={title} onClose={onClose} />}
+    {title && (
+      <AppDialogTitle title={title} titleSx={titleSx} onClose={onClose} />
+    )}
 
     <DialogContent {...dialogContentProps}>
       {topContent}
 
-      {icon && <img src={icon} height={100} width={100} alt="" />}
+      {icon && (
+        <Box
+          sx={{
+            ...iconSx,
+          }}
+        >
+          <img src={icon} height="100%" width="100%" alt="" />
+        </Box>
+      )}
 
       {description && (
-        <Typography component="div" sx={{ my: 5 }} variant="body2">
+        <Typography
+          component="div"
+          sx={{
+            my: 3,
+            '&::first-letter': {
+              textTransform: 'capitalize',
+            },
+          }}
+          variant="body2"
+        >
           {description}
         </Typography>
       )}

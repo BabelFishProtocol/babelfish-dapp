@@ -53,7 +53,7 @@ export const appSlice = createSlice({
       state,
       { payload }: PayloadAction<boolean>
     ) => {
-      state.walletNotConectedModal = payload;
+      state.walletNotConnectedModal = payload;
     },
     setLocalXusdTransactions: (
       state,

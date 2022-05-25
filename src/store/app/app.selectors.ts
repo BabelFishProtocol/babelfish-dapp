@@ -69,9 +69,9 @@ export const wrongNetworkModalSelector = createSelector(
   (state) => state.wrongNetworkModal
 );
 
-export const walletNotConectedModalSelector = createSelector(
+export const walletNotConnectedModalSelector = createSelector(
   appState,
-  (state) => state.walletNotConectedModal
+  (state) => state.walletNotConnectedModal
 );
 
 export const unsupportedNetworkSelector = createSelector(

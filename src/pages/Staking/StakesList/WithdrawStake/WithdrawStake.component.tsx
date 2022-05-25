@@ -148,7 +148,7 @@ export const WithdrawStakeConfirmationDialog = ({
     <AppDialog
       onClose={onClose}
       isOpenDialog={isOpenDialog}
-      title="Are You shure You want to unstake?"
+      title="Are You sure You want to unstake?"
       description={
         <>
           <Typography>This stake is not scheduled to unlock until:</Typography>
