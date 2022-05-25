@@ -11,6 +11,7 @@ export type ProposalListQueryItem = {
   startDate: string;
   endBlock: string;
   startBlock: string;
+  createdAt: string;
   contractAddress: string;
 };
 
@@ -21,6 +22,7 @@ export type ProposalListQueryResult = {
 const findProposalsQuery = gql`
   query getProposals($contractAddress: Bytes!) {
     proposals(where: { contractAddress: $contractAddress }) {
+      createdAt
       description
       startDate
       startBlock
@@ -33,7 +35,8 @@ const findProposalsQuery = gql`
 
 export const findAllProposalsSubscription = gql`
   subscription getProposals {
-    proposals {
+    proposals(orderBy: createdAt, orderDirection: desc) {
+      createdAt
       description
       startDate
       startBlock
