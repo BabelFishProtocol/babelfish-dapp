@@ -23,7 +23,7 @@ export type UpdateTxStatus = {
 
 export type TxDetails = Pick<
   TransactionsTableItem,
-  'user' | 'amount' | 'event' | 'status'
+  'user' | 'amount' | 'event' | 'status' | 'isCrossChain'
 >;
 
 export type FlowState = 'deposit' | 'withdraw';

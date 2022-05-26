@@ -131,6 +131,9 @@ export const idsOfTestNetworks = testnetChainsArr.map(({ id }) => id);
 
 export const SUPPORTED_CHAINS_RSK = [ChainEnum.RSK, ChainEnum.RSK_TESTNET];
 
+export const isOnRsk = (chainId: ChainEnum) =>
+  !SUPPORTED_CHAINS_RSK.includes(chainId);
+
 export const SUPPORTED_CHAINS = Object.values(ChainEnum).filter(
   (item) => typeof item === 'number'
 ) as ChainEnum[];

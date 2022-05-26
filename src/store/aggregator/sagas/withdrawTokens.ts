@@ -16,6 +16,7 @@ import {
 } from '../aggregator.selectors';
 import { AggregatorActions, aggregatorActions } from '../aggregator.slice';
 import { AggregatorCalls } from '../aggregator.state';
+import { checkIsCrossChain } from './utils';
 
 export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
   const tokenDecimals = yield* select(startingTokenDecimalsSelector);
@@ -39,12 +40,15 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
     return;
   }
 
+  const isCrossChain = checkIsCrossChain(destinationChain);
+
   yield* put(
     aggregatorActions.setTransactionDetails({
       amount: parseToWei(sendAmount),
       user: account,
       event: 'Withdraw',
       status: 'Pending',
+      isCrossChain,
     })
   );
 

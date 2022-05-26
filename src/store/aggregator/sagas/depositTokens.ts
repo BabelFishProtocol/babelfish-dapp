@@ -17,6 +17,7 @@ import {
 } from '../aggregator.selectors';
 import { AggregatorActions, aggregatorActions } from '../aggregator.slice';
 import { AggregatorCalls } from '../aggregator.state';
+import { checkIsCrossChain } from './utils';
 
 export function* depositTokens({ payload }: AggregatorActions['submit']) {
   const bridge = yield* select(bridgeContractSelector);
@@ -44,12 +45,15 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
     return;
   }
 
+  const isCrossChain = checkIsCrossChain(startingChain);
+
   yield* put(
     aggregatorActions.setTransactionDetails({
       amount: parseToWei(sendAmount),
       user: account,
       event: 'Deposit',
       status: 'Pending',
+      isCrossChain,
     })
   );
 
