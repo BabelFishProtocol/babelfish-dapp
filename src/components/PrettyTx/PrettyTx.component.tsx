@@ -84,7 +84,9 @@ export const PrettyTx = ({
         sx={{ textTransform: 'unset', p: 0 }}
         {...linkData}
       >
-        <Typography variant={variant}>{prettyTx(String(value))}</Typography>
+        <Typography component="span" variant={variant}>
+          {prettyTx(String(value))}
+        </Typography>
       </Button>
     </Tooltip>
   );
