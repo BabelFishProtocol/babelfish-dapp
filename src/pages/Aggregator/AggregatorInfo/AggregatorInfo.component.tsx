@@ -19,6 +19,7 @@ export const AggregatorInfoComponent = ({
       flexDirection: 'column',
       alignItems: 'center',
       mt: 24,
+      minWidth: 230,
     }}
   >
     <IconButton sx={{ width: 144, height: 144 }} onClick={onClick}>
