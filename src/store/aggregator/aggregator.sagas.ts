@@ -105,11 +105,35 @@ export function* fetchStartingTokenBalance() {
   }
 }
 
+export function* setLocalTx(tx: XusdLocalTransaction) {
+  yield* put(appActions.setLocalXusdTransactions(tx));
+}
+
 export function* addTransactionIntoLocalStorage({
   payload,
 }: AggregatorActions['setSubmitStepData']) {
   const currentOperation = yield* select(submitCallCurrentOperation);
   const txDetails = yield* select(submitTxDetails);
+
+  let txToSave: XusdLocalTransaction;
+  const now = getCurrentTimestamp().toString();
+
+  if (
+    currentOperation === 'deposit' &&
+    payload.txReceipt &&
+    txDetails?.isCrossChain
+  ) {
+    txToSave = {
+      ...txDetails,
+      txHash: payload.txReceipt.transactionHash,
+      asset: 'XUSD',
+      status: 'Confirmed',
+      date: now,
+    };
+
+    setLocalTx(txToSave);
+    return;
+  }
 
   if (
     (currentOperation !== 'deposit' && currentOperation !== 'withdraw') ||
@@ -119,16 +143,29 @@ export function* addTransactionIntoLocalStorage({
     return;
   }
 
-  const now = getCurrentTimestamp().toString(10);
-
-  const txToSave: XusdLocalTransaction = {
+  txToSave = {
     txHash: payload.tx.hash,
     asset: 'XUSD',
     date: now,
     ...txDetails,
   };
 
-  yield* put(appActions.setLocalXusdTransactions(txToSave));
+  setLocalTx(txToSave);
+}
+
+export function* setErrorOnDepositCrossChainTx() {
+  const currentOperation = yield* select(submitCallCurrentOperation);
+  const txDetails = yield* select(submitTxDetails);
+
+  if (currentOperation === 'deposit' && txDetails?.isCrossChain) {
+    setLocalTx({
+      ...txDetails,
+      status: 'Failed',
+      txHash: '0x0',
+      asset: 'XUSD',
+      date: getCurrentTimestamp().toString(),
+    });
+  }
 }
 
 export function* resetAggregator() {
@@ -142,6 +179,7 @@ export function* aggregatorSaga() {
       aggregatorActions.setSubmitStepData,
       addTransactionIntoLocalStorage
     ),
+    takeLatest(aggregatorActions.setSubmitError, setErrorOnDepositCrossChainTx),
 
     takeLatest(aggregatorActions.setStartingToken.type, fetchAllowTokenAddress),
     takeLatest(

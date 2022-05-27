@@ -45,15 +45,19 @@ export function* setFailedTransactionStatus() {
   if (!localTx) return;
 
   // eslint-disable-next-line no-restricted-syntax
-  for (const { txHash } of localTx) {
+  for (const tx of localTx) {
+    if (tx.event === 'Deposit' && tx.isCrossChain) {
+      return;
+    }
+
     const txReceipt = yield* call(
       [provider, provider.waitForTransaction],
-      txHash
+      tx.txHash
     );
     if (txReceipt.status === 0) {
       yield put(
         appActions.updateLocalXusdTransactionStatus({
-          txHash,
+          txHash: tx.txHash,
           newStatus: 'Failed',
         })
       );

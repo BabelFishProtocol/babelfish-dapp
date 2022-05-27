@@ -27,7 +27,7 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
   const massetAddress = yield* select(massetAddressSelector);
   const massetContract = yield* select(massetContractSelector);
   const account = yield* select(accountSelector);
-  const { startingChain, receiveAddress, sendAmount } = payload;
+  const { startingChain, receiveAddress, receiveAmount } = payload;
   const isRSK = SUPPORTED_CHAINS_RSK.includes(startingChain as ChainEnum);
 
   if (
@@ -49,7 +49,7 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
 
   yield* put(
     aggregatorActions.setTransactionDetails({
-      amount: parseToWei(sendAmount),
+      amount: parseToWei(receiveAmount),
       user: account,
       event: 'Deposit',
       status: 'Pending',
