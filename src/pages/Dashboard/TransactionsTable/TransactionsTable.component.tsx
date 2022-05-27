@@ -1,22 +1,11 @@
 import { DataTable } from '../../../components/DataTable/DataTable.component';
-import {
-  CustomColumn,
-  DataTableColumn,
-} from '../../../components/DataTable/DataTable.types';
-import { formatTimestamp, formatWeiAmount } from '../../../utils/helpers';
+import { DataTableColumn } from '../../../components/DataTable/DataTable.types';
+import { formatWeiAmount } from '../../../utils/helpers';
 import {
   TransactionsTableComponentProps,
   TransactionsTableItem,
 } from './TransactionsTable.types';
-
-const formatDate = (timestamp?: number | string) =>
-  timestamp ? formatTimestamp(timestamp) : '------';
-
-const ChainInfo: CustomColumn<TransactionsTableItem> = ({ value, rowData }) => (
-  <span>
-    {value} {rowData.isCrossChain ? 'cross chain' : 'not cross chain'}
-  </span>
-);
+import { formatDate, StatusInfo } from './TransactionsTable.utils';
 
 const transactionsTableColumns: DataTableColumn<TransactionsTableItem>[] = [
   { label: 'Event', name: 'event' },
@@ -27,7 +16,7 @@ const transactionsTableColumns: DataTableColumn<TransactionsTableItem>[] = [
     name: 'date',
     format: formatDate,
   },
-  { label: 'Status', name: 'status', component: ChainInfo },
+  { label: 'Status', name: 'status', component: StatusInfo },
 ];
 
 export const TransactionsTableComponent = ({
