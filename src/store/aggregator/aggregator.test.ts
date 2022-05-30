@@ -2,7 +2,7 @@ import { constants } from 'ethers';
 import { expectSaga } from 'redux-saga-test-plan';
 import { throwError } from 'redux-saga-test-plan/providers';
 import * as matchers from 'redux-saga-test-plan/matchers';
-import { combineReducers, DeepPartial } from '@reduxjs/toolkit';
+import { AnyAction, combineReducers, DeepPartial } from '@reduxjs/toolkit';
 
 import { pick } from '../../utils/helpers';
 import { Reducers } from '../../constants';
@@ -20,8 +20,8 @@ import {
   fetchBridgeFeesAndLimits,
   fetchStartingTokenBalance,
 } from './aggregator.sagas';
-import { aggregatorActions } from './aggregator.slice';
-import { AggregatorState } from './aggregator.state';
+import { aggregatorActions, aggregatorReducer } from './aggregator.slice';
+import { AggregatorState, TxDetails } from './aggregator.state';
 import {
   allowTokensContractSelector,
   bridgeContractSelector,
@@ -363,6 +363,38 @@ describe('aggregator store', () => {
         .run();
 
       expect(runResult.effects).toEqual({});
+    });
+  });
+
+  describe('local storage transactions', () => {
+    const checkReducerState = (
+      initial: AggregatorState,
+      expected: AggregatorState,
+      action: AnyAction
+    ) => {
+      expect(aggregatorReducer(initial, action)).toEqual(expected);
+    };
+
+    const initial: AggregatorState = {
+      ...new AggregatorState(),
+    };
+
+    it.only('sets proper txDetails', async () => {
+      const txDetails: TxDetails = {
+        amount: '71573896800000000000',
+        user: '0x6d66e98984e10D62A09983b6B1B26485979b4788',
+        event: 'Deposit',
+        status: 'Pending',
+      };
+
+      const action = aggregatorActions.setTransactionDetails(txDetails);
+
+      const successState: AggregatorState = {
+        ...initial,
+        txDetails,
+      };
+
+      checkReducerState(initial, successState, action);
     });
   });
 });

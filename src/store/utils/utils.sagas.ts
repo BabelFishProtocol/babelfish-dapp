@@ -27,7 +27,7 @@ import {
   SubscriptionResponse,
   SubscriptionSagaConfig,
 } from '../types';
-import { AdditionalInfo, ContractStepCallSagaParams } from './utils.types';
+import { ContractStepCallSagaParams } from './utils.types';
 
 export const convertForMulticall = <
   Contract extends BaseContract,
