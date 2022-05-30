@@ -115,7 +115,7 @@ describe('app store', () => {
     });
   });
 
-  describe('localXusdTransactions', () => {
+  describe('setting local xusd transaction', () => {
     const mockAccount = '0x0';
 
     const localXusdTransaction: XusdLocalTransaction = {
@@ -137,10 +137,11 @@ describe('app store', () => {
       },
     });
 
-    const action = appActions.setLocalXusdTransactions(localXusdTransaction);
+    const settingTxAction =
+      appActions.setLocalXusdTransactions(localXusdTransaction);
 
-    const checkReducerState = (initialState: AppState) => {
-      expect(appReducer(initialState, action)).toEqual(
+    const checkReducerAtSettingTx = (initialState: AppState) => {
+      expect(appReducer(initialState, settingTxAction)).toEqual(
         getSuccessState(initialState)
       );
     };
@@ -157,7 +158,7 @@ describe('app store', () => {
         },
       };
 
-      checkReducerState(initialWithChainIdAndAddress);
+      checkReducerAtSettingTx(initialWithChainIdAndAddress);
     });
 
     it('sets local tx without account declared', async () => {
@@ -170,7 +171,7 @@ describe('app store', () => {
         },
       };
 
-      checkReducerState(initialWithChainId);
+      checkReducerAtSettingTx(initialWithChainId);
     });
 
     it('sets local tx without account and chain declared', async () => {
@@ -181,7 +182,86 @@ describe('app store', () => {
         xusdLocalTransactions: {},
       };
 
-      checkReducerState(initialWithoutChainIdOrAddress);
+      checkReducerAtSettingTx(initialWithoutChainIdOrAddress);
+    });
+  });
+
+  describe('update or remove local xusd transaction', () => {
+    const localXusdTransaction1: XusdLocalTransaction = {
+      txHash: '0x4',
+      asset: 'XUSD',
+      date: '1653905641',
+      amount: '7534',
+      user: '0x6d66',
+      event: 'Withdraw',
+      status: 'Pending',
+    };
+
+    const localXusdTransaction2: XusdLocalTransaction = {
+      ...localXusdTransaction1,
+      txHash: '0x8',
+    };
+
+    const mockAccount = '0x0';
+
+    const initialState: AppState = {
+      ...new AppState(),
+      chainId: ChainEnum.ETH,
+      account: mockAccount,
+      xusdLocalTransactions: {
+        [ChainEnum.ETH]: {
+          [mockAccount]: [localXusdTransaction1, localXusdTransaction2],
+        },
+      },
+    };
+
+    it('update status of tx', async () => {
+      const updatingTxAction = appActions.updateLocalXusdTransactionStatus({
+        txHash: localXusdTransaction1.txHash,
+        newStatus: 'Confirmed',
+      });
+
+      const checkReducerAtUpdateTxStatus = (expected: AppState) => {
+        expect(appReducer(initialState, updatingTxAction)).toEqual(expected);
+      };
+
+      const stateWithNewStatus: AppState = {
+        ...initialState,
+        xusdLocalTransactions: {
+          [ChainEnum.ETH]: {
+            [mockAccount]: [
+              {
+                ...localXusdTransaction1,
+                status: 'Confirmed',
+              },
+              localXusdTransaction2,
+            ],
+          },
+        },
+      };
+
+      checkReducerAtUpdateTxStatus(stateWithNewStatus);
+    });
+
+    it('remove local tx', async () => {
+      const removingTxAction = appActions.removeLocalXusdTransactions([
+        localXusdTransaction1,
+      ]);
+
+      const checkReducerAtRemoveTx = (expected: AppState) => {
+        expect(appReducer(initialState, removingTxAction)).toEqual(expected);
+      };
+
+      const stateWithFilteredTx: AppState = {
+        ...initialState,
+        xusdLocalTransactions: {
+          [ChainEnum.ETH]: {
+            [mockAccount]: [localXusdTransaction2],
+          },
+        },
+      };
+
+      checkReducerAtRemoveTx(stateWithFilteredTx);
     });
   });
 });

@@ -115,13 +115,9 @@ export const appSlice = createSlice({
         return;
       }
 
-      const getTxHash = ({ txHash }: XusdLocalTransaction) => ({ txHash });
-
-      const txsToRemove = new Set(payload.map(getTxHash));
-
       const filteredTransactions = state.xusdLocalTransactions[state.chainId][
         state.account
-      ].filter((tx) => !txsToRemove.has(tx));
+      ].filter((tx) => !payload.find((ptx) => ptx.txHash === tx.txHash));
 
       state.xusdLocalTransactions[state.chainId][state.account] =
         filteredTransactions;
