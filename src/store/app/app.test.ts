@@ -2,7 +2,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { Store } from '@reduxjs/toolkit';
 
 import { getStore, RootState } from '..';
-import { appActions } from './app.slice';
+import { appActions, appReducer } from './app.slice';
 import {
   chainsInCurrentNetworkSelector,
   currentBlockSelector,
@@ -14,6 +14,7 @@ import {
   mainnetChainsArr,
   testnetChainsArr,
 } from '../../config/chains';
+import { XusdLocalTransaction } from '../aggregator/aggregator.state';
 
 class MockProvider {
   private callback?: (block: number) => void;
@@ -111,6 +112,76 @@ describe('app store', () => {
         testnetMainnetSelector.resultFunc(filledChainId);
 
       expect(filledTestnetDetect).toEqual('mainnet');
+    });
+  });
+
+  describe('localXusdTransactions', () => {
+    const mockAccount = '0x0';
+
+    const localXusdTransaction: XusdLocalTransaction = {
+      txHash: '0x4',
+      asset: 'XUSD',
+      date: '1653905641',
+      amount: '7534',
+      user: '0x6d66',
+      event: 'Withdraw',
+      status: 'Pending',
+    };
+
+    const getSuccessState = (state: AppState): AppState => ({
+      ...state,
+      xusdLocalTransactions: {
+        [ChainEnum.ETH]: {
+          [mockAccount]: [localXusdTransaction],
+        },
+      },
+    });
+
+    const action = appActions.setLocalXusdTransactions(localXusdTransaction);
+
+    const checkReducerState = (initialState: AppState) => {
+      expect(appReducer(initialState, action)).toEqual(
+        getSuccessState(initialState)
+      );
+    };
+
+    it('sets proper local tx with already declared chainId and account', async () => {
+      const initialWithChainIdAndAddress: AppState = {
+        ...new AppState(),
+        chainId: ChainEnum.ETH,
+        account: mockAccount,
+        xusdLocalTransactions: {
+          [ChainEnum.ETH]: {
+            [mockAccount]: [],
+          },
+        },
+      };
+
+      checkReducerState(initialWithChainIdAndAddress);
+    });
+
+    it('sets local tx without account declared', async () => {
+      const initialWithChainId: AppState = {
+        ...new AppState(),
+        chainId: ChainEnum.ETH,
+        account: mockAccount,
+        xusdLocalTransactions: {
+          [ChainEnum.ETH]: {},
+        },
+      };
+
+      checkReducerState(initialWithChainId);
+    });
+
+    it('sets local tx without account and chain declared', async () => {
+      const initialWithoutChainIdOrAddress: AppState = {
+        ...new AppState(),
+        chainId: ChainEnum.ETH,
+        account: mockAccount,
+        xusdLocalTransactions: {},
+      };
+
+      checkReducerState(initialWithoutChainIdOrAddress);
     });
   });
 });

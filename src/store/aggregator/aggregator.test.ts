@@ -367,19 +367,18 @@ describe('aggregator store', () => {
   });
 
   describe('local storage transactions', () => {
+    const initial: AggregatorState = {
+      ...new AggregatorState(),
+    };
+
     const checkReducerState = (
-      initial: AggregatorState,
       expected: AggregatorState,
       action: AnyAction
     ) => {
       expect(aggregatorReducer(initial, action)).toEqual(expected);
     };
 
-    const initial: AggregatorState = {
-      ...new AggregatorState(),
-    };
-
-    it.only('sets proper txDetails', async () => {
+    it('sets proper txDetails', async () => {
       const txDetails: TxDetails = {
         amount: '71573896800000000000',
         user: '0x6d66e98984e10D62A09983b6B1B26485979b4788',
@@ -394,7 +393,7 @@ describe('aggregator store', () => {
         txDetails,
       };
 
-      checkReducerState(initial, successState, action);
+      checkReducerState(successState, action);
     });
   });
 });
