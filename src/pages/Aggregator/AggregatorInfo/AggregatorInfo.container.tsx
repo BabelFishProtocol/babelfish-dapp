@@ -1,18 +1,19 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   feesAndLimitsSelector,
   feesAndLimitsStateSelector,
   startingTokenDecimalsSelector,
   startingTokenNameSelector,
 } from '../../../store/aggregator/aggregator.selectors';
-import { aggregatorActions } from '../../../store/aggregator/aggregator.slice';
 import { AggregatorInfoComponent } from './AggregatorInfo.component';
 
-export const AggregatorInfoContainer = () => {
-  const dispatch = useDispatch();
+type AggregatorInfoContainerProps = {
+  toggleFlow: VoidFunction;
+}
 
+export const AggregatorInfoContainer = ({ toggleFlow }: AggregatorInfoContainerProps) => {
   const onClick = () => {
-    dispatch(aggregatorActions.toggleFlowState());
+    toggleFlow()
   };
 
   const feesAndLimitsState = useSelector(feesAndLimitsStateSelector);

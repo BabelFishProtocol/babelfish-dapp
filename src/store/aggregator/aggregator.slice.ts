@@ -35,15 +35,6 @@ const aggregatorSlice = createSlice({
     ) => {
       state.destinationToken = payload;
     },
-    setFlowStateDeposit: (state) => {
-      state.flowState = 'deposit';
-    },
-    setFlowStateWithdraw: (state) => {
-      state.flowState = 'withdraw';
-    },
-    toggleFlowState: (state) => {
-      state.flowState = state.flowState === 'deposit' ? 'withdraw' : 'deposit';
-    },
     fetchAllowTokensAddressFailure: (state) => {
       state.allowTokensAddress.state = 'failure';
       state.allowTokensAddress.data = undefined;
