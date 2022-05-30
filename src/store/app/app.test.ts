@@ -1,5 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { Store } from '@reduxjs/toolkit';
+import { PersistPartial } from 'redux-persist/es/persistReducer';
 
 import { getStore, RootState } from '..';
 import { appActions, appReducer } from './app.slice';
@@ -7,6 +8,7 @@ import {
   chainsInCurrentNetworkSelector,
   currentBlockSelector,
   testnetMainnetSelector,
+  xusdLocalTransactionsSelector,
 } from './app.selectors';
 import { AppState } from './app.state';
 import {
@@ -202,6 +204,11 @@ describe('app store', () => {
       txHash: '0x8',
     };
 
+    const localXusdTransaction3: XusdLocalTransaction = {
+      ...localXusdTransaction1,
+      txHash: '0x12',
+    };
+
     const mockAccount = '0x0';
 
     const initialState: AppState = {
@@ -210,7 +217,11 @@ describe('app store', () => {
       account: mockAccount,
       xusdLocalTransactions: {
         [ChainEnum.ETH]: {
-          [mockAccount]: [localXusdTransaction1, localXusdTransaction2],
+          [mockAccount]: [
+            localXusdTransaction1,
+            localXusdTransaction2,
+            localXusdTransaction3,
+          ],
         },
       },
     };
@@ -221,8 +232,10 @@ describe('app store', () => {
         newStatus: 'Confirmed',
       });
 
-      const checkReducerAtUpdateTxStatus = (expected: AppState) => {
-        expect(appReducer(initialState, updatingTxAction)).toEqual(expected);
+      const checkReducerAtUpdateTxStatus = (expectedState: AppState) => {
+        expect(appReducer(initialState, updatingTxAction)).toEqual(
+          expectedState
+        );
       };
 
       const stateWithNewStatus: AppState = {
@@ -235,6 +248,7 @@ describe('app store', () => {
                 status: 'Confirmed',
               },
               localXusdTransaction2,
+              localXusdTransaction3,
             ],
           },
         },
@@ -256,12 +270,52 @@ describe('app store', () => {
         ...initialState,
         xusdLocalTransactions: {
           [ChainEnum.ETH]: {
-            [mockAccount]: [localXusdTransaction2],
+            [mockAccount]: [localXusdTransaction2, localXusdTransaction3],
           },
         },
       };
 
       checkReducerAtRemoveTx(stateWithFilteredTx);
+    });
+  });
+
+  describe('selector', () => {
+    it('xusdLocalTransactionsSelector', async () => {
+      const mockAccount = '0x0';
+
+      const localXusdTransaction: XusdLocalTransaction = {
+        txHash: '0x4',
+        asset: 'XUSD',
+        date: '1653905641',
+        amount: '7534',
+        user: '0x6d66',
+        event: 'Withdraw',
+        status: 'Pending',
+      };
+
+      const initialState: AppState & PersistPartial = {
+        ...new AppState(),
+        chainId: ChainEnum.ETH,
+        account: mockAccount,
+        xusdLocalTransactions: {
+          [ChainEnum.ETH]: {
+            [mockAccount]: [localXusdTransaction],
+          },
+        },
+
+        _persist: {
+          version: 1,
+          rehydrated: true,
+        },
+      };
+
+      const filledDataResult = xusdLocalTransactionsSelector.resultFunc(
+        initialState,
+        ChainEnum.ETH,
+        mockAccount
+      );
+
+      expect(filledDataResult).toEqual([localXusdTransaction]);
     });
   });
 });

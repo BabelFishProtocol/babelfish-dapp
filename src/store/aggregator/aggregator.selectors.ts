@@ -256,11 +256,13 @@ export const submitAggregatorStatusSelector = createSelector(
   (state) => selectCurrentCallStepData(state)
 );
 
+// TODO add selector tests
 export const submitCallCurrentOperation = createSelector(
   callSelector,
   (state) => state.currentOperation
 );
 
+// TODO add selector tests
 export const submitTxDetails = createSelector(
   aggregatorState,
   (state) => state.txDetails

@@ -2,7 +2,7 @@ import { constants } from 'ethers';
 import { expectSaga } from 'redux-saga-test-plan';
 import { throwError } from 'redux-saga-test-plan/providers';
 import * as matchers from 'redux-saga-test-plan/matchers';
-import { AnyAction, combineReducers, DeepPartial } from '@reduxjs/toolkit';
+import { combineReducers, DeepPartial } from '@reduxjs/toolkit';
 
 import { pick } from '../../utils/helpers';
 import { Reducers } from '../../constants';
@@ -371,13 +371,6 @@ describe('aggregator store', () => {
       ...new AggregatorState(),
     };
 
-    const checkReducerState = (
-      expected: AggregatorState,
-      action: AnyAction
-    ) => {
-      expect(aggregatorReducer(initial, action)).toEqual(expected);
-    };
-
     it('sets proper txDetails', async () => {
       const txDetails: TxDetails = {
         amount: '71573896800000000000',
@@ -393,7 +386,11 @@ describe('aggregator store', () => {
         txDetails,
       };
 
-      checkReducerState(successState, action);
+      const checkReducerState = (expected: AggregatorState) => {
+        expect(aggregatorReducer(initial, action)).toEqual(expected);
+      };
+
+      checkReducerState(successState);
     });
   });
 });
