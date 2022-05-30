@@ -24,6 +24,7 @@ const statusTooltip = {
 
 const QuestionMark = () => (
   <Typography
+    component="span"
     sx={{
       fontSize: '11px',
       mb: '3px',
@@ -38,8 +39,8 @@ const QuestionMark = () => (
 
 const TableToolip = ({ message, tip }: TableToolipProps) =>
   tip ? (
-    <Box sx={{ cursor: 'pointer' }}>
-      <Tooltip title={tip}>
+    <Box sx={{ cursor: 'pointer' }} display="inline-block">
+      <Tooltip arrow title={tip}>
         <Box display="flex" gap={1} alignItems="center">
           {message}
           <QuestionMark />
