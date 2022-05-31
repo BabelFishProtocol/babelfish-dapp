@@ -9,11 +9,13 @@ import { AggregatorInfoComponent } from './AggregatorInfo.component';
 
 type AggregatorInfoContainerProps = {
   toggleFlow: VoidFunction;
-}
+};
 
-export const AggregatorInfoContainer = ({ toggleFlow }: AggregatorInfoContainerProps) => {
+export const AggregatorInfoContainer = ({
+  toggleFlow,
+}: AggregatorInfoContainerProps) => {
   const onClick = () => {
-    toggleFlow()
+    toggleFlow();
   };
 
   const feesAndLimitsState = useSelector(feesAndLimitsStateSelector);

@@ -33,6 +33,7 @@ export const useAggregatorDropdowns = (
   setValue: UseFormSetValue<AggregatorFormValues>
 ) => {
   const pool = useSelector(poolSelector);
+  const provider = useSelector(providerSelector);
   const [startingChainOptions, setStartingChainOptions] = useState<ChainType[]>(
     []
   );
@@ -49,8 +50,7 @@ export const useAggregatorDropdowns = (
   useEffect(() => {
     setStartingChainOptions(pool.baseChains);
     setDestinationChainOptions(pool.baseChains);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pool]);
+  }, [pool.baseChains]);
 
   useEffect(() => {
     resetField(AggregatorInputs.StartingToken);
@@ -62,26 +62,36 @@ export const useAggregatorDropdowns = (
       setStartingTokenOptions([pool.masset, ...bassetTokens]);
 
       if (isRSK(destinationChain)) {
-        // Enable all chain options when RSK <-> RSK
+        // Enable all chain options when RSK -> RSK
         setDestinationTokenOptions([pool.masset, ...bassetTokens]);
-      } else if (isNotRSK(destinationChain)) {
-        // Force XUSD for RSK when RSK <-> NOT RSK
-        setStartingTokenOptions([pool.masset]);
+        return;
       }
-    } else if (startingChain) {
+
+      if (isNotRSK(destinationChain)) {
+        // Force XUSD for RSK when RSK -> NOT RSK
+        setStartingTokenOptions([pool.masset]);
+        return;
+      }
+    }
+
+    if (isNotRSK(startingChain)) {
       // Enable basset tokens when selected NOT RSK
       setStartingTokenOptions(bassetTokens);
 
       if (isRSK(destinationChain)) {
-        // Force XUSD for RSK when NOT RSK <-> RSK
+        // Force XUSD for RSK when NOT RSK -> RSK
         setDestinationTokenOptions([pool.masset]);
-      } else if (startingChain && destinationChain) {
-        // Reset destination chain when NOT RSK <-> NOT RSK
-        setValue(AggregatorInputs.DestinationChain, '');
+        return;
       }
-    } else {
-      setStartingTokenOptions([]);
+
+      if (startingChain && destinationChain) {
+        // Reset destination chain when NOT RSK -> NOT RSK
+        setValue(AggregatorInputs.DestinationChain, '');
+        return;
+      }
     }
+
+    setStartingTokenOptions([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startingChain, pool.baseChains, pool.masset, resetField, setValue]);
 
@@ -96,26 +106,36 @@ export const useAggregatorDropdowns = (
       setDestinationTokenOptions([pool.masset, ...bassetTokens]);
 
       if (isRSK(startingChain)) {
-        // Enable all chain options when RSK <-> RSK
+        // Enable all chain options when RSK -> RSK
         setStartingTokenOptions([pool.masset, ...bassetTokens]);
-      } else if (isNotRSK(startingChain)) {
-        // Force XUSD for RSK when NOT RSK <-> RSK
-        setDestinationTokenOptions([pool.masset]);
+        return;
       }
-    } else if (destinationChain) {
+
+      if (isNotRSK(startingChain)) {
+        // Force XUSD for RSK when NOT RSK -> RSK
+        setDestinationTokenOptions([pool.masset]);
+        return;
+      }
+    }
+
+    if (isNotRSK(destinationChain)) {
       // Enable basset tokens when selected NOT RSK
       setDestinationTokenOptions(bassetTokens);
 
       if (isRSK(startingChain)) {
-        // Force XUSD for RSK when RSK <-> NOT RSK
+        // Force XUSD for RSK when RSK -> NOT RSK
         setStartingTokenOptions([pool.masset]);
-      } else if (startingChain && destinationChain) {
-        // Reset starting chain when NOT RSK <-> NOT RSK
-        setValue(AggregatorInputs.StartingChain, '');
+        return;
       }
-    } else {
-      setDestinationTokenOptions([]);
+
+      if (startingChain && destinationChain) {
+        // Reset starting chain when NOT RSK -> NOT RSK
+        setValue(AggregatorInputs.StartingChain, '');
+        return;
+      }
     }
+
+    setDestinationTokenOptions([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [destinationChain, pool.baseChains, pool.masset, setValue, resetField]);
 
@@ -133,14 +153,18 @@ export const useAggregatorDropdowns = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [destinationToken, resetField]);
 
-  const toggleFlow = () => {
+  const toggleFlow = async () => {
     const tempChain = startingChain;
     const tempToken = startingToken;
 
-    setValue(AggregatorInputs.StartingChain, destinationChain);
-    setValue(AggregatorInputs.StartingToken, destinationToken);
+    if (destinationChain && destinationChain !== startingChain) {
+      await switchConnectedChain(destinationChain, provider);
+    }
+
     setValue(AggregatorInputs.DestinationChain, tempChain);
+    setValue(AggregatorInputs.StartingChain, destinationChain);
     setValue(AggregatorInputs.DestinationToken, tempToken);
+    setValue(AggregatorInputs.StartingToken, destinationToken);
   };
 
   return {
@@ -162,38 +186,34 @@ export const useConnectedChain = (
   const pool = useSelector(poolSelector);
   const provider = useSelector(providerSelector);
 
+  const isConnectedChainSupported =
+    connectedChain && SUPPORTED_CHAINS.includes(connectedChain);
   const wrongChainConnectedError = startingChain !== connectedChain;
 
   useEffect(() => {
     if (
       startingChain &&
-      connectedChain &&
-      SUPPORTED_CHAINS.includes(connectedChain) &&
+      isConnectedChainSupported &&
       wrongChainConnectedError
     ) {
-      resetField(AggregatorInputs.StartingChain);
-      resetField(AggregatorInputs.StartingToken);
       switchConnectedChain(startingChain, provider);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider, startingChain, connectedChain]);
+  }, [startingChain]);
 
   useEffect(() => {
-    if (
-      connectedChain &&
-      wrongChainConnectedError &&
-      SUPPORTED_CHAINS.includes(connectedChain)
-    ) {
+    if (isConnectedChainSupported && wrongChainConnectedError) {
       if (!poolHasChain({ pool, chain: connectedChain })) {
-        resetField(AggregatorInputs.StartingChain);
-        resetField(AggregatorInputs.StartingToken);
+        // toggle between testnet/mainnet
         resetField(AggregatorInputs.DestinationChain);
-        resetField(AggregatorInputs.DestinationToken);
-
         dispatch(aggregatorActions.togglePool());
       }
+
       setValue(AggregatorInputs.StartingChain, connectedChain);
-    } else if (connectedChain && !SUPPORTED_CHAINS.includes(connectedChain)) {
+      return;
+    }
+
+    if (connectedChain && !SUPPORTED_CHAINS.includes(connectedChain)) {
       resetField(AggregatorInputs.StartingChain);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

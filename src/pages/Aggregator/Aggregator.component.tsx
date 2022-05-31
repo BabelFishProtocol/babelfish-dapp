@@ -70,7 +70,7 @@ export const AggregatorComponent = ({
     startingTokenOptions,
     destinationChainOptions,
     destinationTokenOptions,
-    toggleFlow
+    toggleFlow,
   } = useAggregatorDropdowns(
     startingChain,
     destinationChain,
@@ -80,11 +80,7 @@ export const AggregatorComponent = ({
     setValue
   );
 
-  useConnectedChain(
-    startingChain,
-    resetField,
-    setValue
-  );
+  useConnectedChain(startingChain, resetField, setValue);
 
   useWalletAddress(setValue);
 
