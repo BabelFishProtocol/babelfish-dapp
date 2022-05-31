@@ -257,7 +257,7 @@ describe('app store', () => {
       checkReducerAtUpdateTxStatus(stateWithNewStatus);
     });
 
-    it('remove local tx', async () => {
+    it('remove one local tx', async () => {
       const removingTxAction = appActions.removeLocalXusdTransactions([
         localXusdTransaction1,
       ]);
@@ -271,6 +271,28 @@ describe('app store', () => {
         xusdLocalTransactions: {
           [ChainEnum.ETH]: {
             [mockAccount]: [localXusdTransaction2, localXusdTransaction3],
+          },
+        },
+      };
+
+      checkReducerAtRemoveTx(stateWithFilteredTx);
+    });
+
+    it('remove two local tx', async () => {
+      const removingTxAction = appActions.removeLocalXusdTransactions([
+        localXusdTransaction1,
+        localXusdTransaction2,
+      ]);
+
+      const checkReducerAtRemoveTx = (expected: AppState) => {
+        expect(appReducer(initialState, removingTxAction)).toEqual(expected);
+      };
+
+      const stateWithFilteredTx: AppState = {
+        ...initialState,
+        xusdLocalTransactions: {
+          [ChainEnum.ETH]: {
+            [mockAccount]: [localXusdTransaction3],
           },
         },
       };

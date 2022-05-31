@@ -227,7 +227,7 @@ export const xusdLocalTransactionsSelector = createSelector(
       !state.xusdLocalTransactions[chainId] ||
       !state.xusdLocalTransactions[chainId][account]
     ) {
-      return;
+      return undefined;
     }
 
     return state.xusdLocalTransactions[chainId][account];
