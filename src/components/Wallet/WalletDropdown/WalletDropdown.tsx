@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-
+import { ConnectorUpdate } from '@web3-react/types';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
@@ -28,15 +28,31 @@ export const WalletDropdown = ({
   }, []);
 
   const tryActivation = async (walletId: number) => {
-    const { name, connector, checkConnection } = wallets[walletId];
+    const { name, connector, icon, checkConnection } = wallets[walletId];
 
     checkConnection();
 
+    // const portis = new Portis('bcc11290-a380-4a00-96b2-ca2803da406e', '31');
+    // const web3 = new Web3(portis.provider);
     if (connector) {
+      // if (name === 'Portis') {
+      //   connector.;
+      // }
       try {
-        await activate(connector, undefined, true);
+        console.log(name, connector);
+
+        const test = await activate(
+          connector,
+          (e) => {
+            console.log('error?', e);
+          },
+          true
+        );
+        // const test = await activate(connector);
+        console.log('activate', test);
         setConnectedWallet(name);
       } catch (e) {
+        console.log('activate error', e);
         if (e instanceof UnsupportedChainIdError) {
           await activate(connector);
           setConnectedWallet(name);

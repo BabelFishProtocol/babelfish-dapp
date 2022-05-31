@@ -1,4 +1,4 @@
-import { injectedConnector } from '../../config/providers';
+import { injectedConnector, portisConnector } from '../../config/providers';
 import { WalletEnum } from '../../config/wallets';
 import { Web3Data } from '../../hooks/useActiveWeb3React';
 
@@ -18,8 +18,8 @@ export const getWalletName = (connector: Web3Data['connector']) => {
       return WalletEnum.Metamask;
     }
 
-    // if (ethereum.isPortis && connector === portisConnector) {
-    //   return WalletEnum.Portis;
-    // }
+    if (connector === portisConnector) {
+      return WalletEnum.Portis;
+    }
   }
 };

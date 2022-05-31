@@ -134,3 +134,12 @@ export const SUPPORTED_CHAINS_RSK = [ChainEnum.RSK, ChainEnum.RSK_TESTNET];
 export const SUPPORTED_CHAINS = Object.values(ChainEnum).filter(
   (item) => typeof item === 'number'
 ) as ChainEnum[];
+
+const UNSUPPORTED_PORTIS_CHAINS = [ChainEnum.BSC, ChainEnum.BSC_TESTNET];
+
+export const SUPPORTED_PORTIS_CHAINS = Object.values(ChainEnum).filter(
+  (item) =>
+    typeof item === 'number' &&
+    SUPPORTED_CHAINS.includes(item) &&
+    !UNSUPPORTED_PORTIS_CHAINS.includes(item)
+) as ChainEnum[];

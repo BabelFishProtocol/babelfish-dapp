@@ -1,4 +1,5 @@
 import { useWeb3React } from '@web3-react/core';
+// import { useWeb3React as useWeb3ReactPortis } from '@web3-react/portis-connector';
 import { Web3Provider } from '@ethersproject/providers';
 import { Web3ReactContextInterface } from '@web3-react/core/dist/types';
 import { useEffect, useState } from 'react';
@@ -68,7 +69,7 @@ export const useActiveWeb3React = (): ActiveWeb3Data | InActiveWeb3Data => {
   if (isActive(web3Data)) {
     return web3Data;
   }
-
+  console.log(web3Data);
   return web3Data as InActiveWeb3Data;
 };
 

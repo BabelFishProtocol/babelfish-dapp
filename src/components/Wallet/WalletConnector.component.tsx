@@ -12,6 +12,7 @@ import { WrongNetwork } from './WrongNetwork/WrongNetwork.component';
 export const WalletConnector = () => {
   const dispatch = useDispatch();
   const connectedWallet = useSelector(connectedWalletSelector);
+  console.log('connectedWallet', connectedWallet);
   const { active, account, deactivate, activate } = useActiveWeb3React();
   const unsupportedChainIdError = useUnsupportedChainIdError();
 
