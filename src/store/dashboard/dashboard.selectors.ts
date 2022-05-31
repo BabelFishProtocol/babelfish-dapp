@@ -61,7 +61,6 @@ export const fetchedTransactionsSelector = createSelector(
   (state) => state.transactionList
 );
 
-// TODO add selector test
 export const transactionsSelector = createSelector(
   fetchedTransactionsSelector,
   xusdLocalTransactionsSelector,

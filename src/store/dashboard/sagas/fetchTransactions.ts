@@ -29,6 +29,7 @@ export function* fetchTransactions() {
       ...tx,
     }));
 
+    // TODO test this
     yield* put(appActions.removeLocalXusdTransactions(txWithStatus));
 
     yield* put(dashboardActions.setTransactions(txWithStatus));
@@ -37,6 +38,7 @@ export function* fetchTransactions() {
   }
 }
 
+// TODO test this
 export function* setFailedTransactionStatus() {
   const provider = yield* select(providerSelector);
   if (!provider) return;

@@ -1,4 +1,4 @@
-import { constants } from 'ethers';
+import { constants, ContractTransaction } from 'ethers';
 import { expectSaga } from 'redux-saga-test-plan';
 import { throwError } from 'redux-saga-test-plan/providers';
 import * as matchers from 'redux-saga-test-plan/matchers';
@@ -16,12 +16,17 @@ import { rootReducer, RootState } from '..';
 import { createMockedContract, mockSigner } from '../../testUtils';
 
 import {
+  addTransactionIntoLocalStorage,
   fetchAllowTokenAddress,
   fetchBridgeFeesAndLimits,
   fetchStartingTokenBalance,
 } from './aggregator.sagas';
 import { aggregatorActions, aggregatorReducer } from './aggregator.slice';
-import { AggregatorState, TxDetails } from './aggregator.state';
+import {
+  AggregatorCalls,
+  AggregatorState,
+  TxDetails,
+} from './aggregator.state';
 import {
   allowTokensContractSelector,
   bridgeContractSelector,
@@ -32,6 +37,9 @@ import {
   tokenAddressSelector,
 } from './aggregator.selectors';
 import { accountSelector } from '../app/app.selectors';
+import { StepData } from '../types';
+import { AppState } from '../app/app.state';
+import { appActions, appReducer } from '../app/app.slice';
 
 const mockBridge = createMockedContract(
   Bridge__factory.connect(constants.AddressZero, mockSigner),
@@ -55,7 +63,7 @@ afterEach(() => {
 describe('aggregator store', () => {
   const reducer = combineReducers(pick(rootReducer, [Reducers.Aggregator]));
 
-  const initialState: DeepPartial<RootState> = {
+  let initialState: DeepPartial<RootState> = {
     [Reducers.Aggregator]: { ...new AggregatorState() },
   };
 
@@ -368,6 +376,93 @@ describe('aggregator store', () => {
     });
   });
 
+  describe('addTransactionIntoLocalStorage', () => {
+    const mockAddress = '0x6d';
+    const mockTxHash = '0x0';
+    const mockChainEnum = 31;
+
+    // TODO remove only
+    it.only('happy path', async () => {
+      const txDetails: TxDetails = {
+        amount: '666',
+        user: mockAddress,
+        event: 'Deposit',
+        status: 'Pending',
+      };
+
+      initialState = {
+        [Reducers.Aggregator]: { ...new AggregatorState(), txDetails },
+        [Reducers.App]: {
+          ...new AppState(),
+          xusdLocalTransactions: {
+            [mockChainEnum]: {
+              [mockAddress]: [],
+            },
+          },
+        },
+      };
+
+      const submitCallOperations = {
+        deposit: 'deposit',
+      };
+
+      const appAndAggrReducer = combineReducers({
+        appReducer,
+        aggregatorReducer,
+      });
+
+      const mockTx = {
+        tx: {
+          hash: mockTxHash,
+          wait: jest.fn() as ContractTransaction['wait'],
+        },
+      } as StepData<AggregatorCalls>;
+
+      const txToSave = {
+        txHash: mockTxHash,
+        asset: 'XUSD',
+        date: '16000000',
+        ...txDetails,
+      };
+
+      const successState: DeepPartial<RootState> = {
+        ...initialState,
+        [Reducers.App]: {
+          ...initialState[Reducers.App],
+          xusdLocalTransactions: {
+            [mockChainEnum]: {
+              [mockAddress]: [txToSave],
+            },
+          },
+        },
+      };
+
+      const getBasePath = () =>
+        expectSaga(
+          addTransactionIntoLocalStorage,
+          aggregatorActions.setSubmitStepData(mockTx)
+        )
+          .withReducer(appAndAggrReducer)
+          .withState(initialState)
+          .select(submitCallCurrentOperation)
+          .select(submitTxDetails);
+
+      const runResult = await getBasePath()
+        .provide([
+          [
+            matchers.select(submitCallCurrentOperation),
+            submitCallOperations.deposit,
+          ],
+          [matchers.select(submitTxDetails), txDetails],
+        ])
+        .put(appActions.setLocalXusdTransactions(txToSave))
+        .hasFinalState(successState)
+        .run();
+
+      expect(runResult.effects).toEqual({});
+    });
+  });
+
   describe('local storage transactions', () => {
     const initial: AggregatorState = {
       ...new AggregatorState(),
@@ -411,14 +506,14 @@ describe('aggregator store', () => {
       expect(filledDataResult).toEqual('approve');
     });
 
-    const txDetails: TxDetails = {
-      amount: '71573896800000000000',
-      user: '0x6d66e98984e10D62A09983b6B1B26485979b4788',
-      event: 'Deposit',
-      status: 'Pending',
-    };
-
     it('submitTxDetails', async () => {
+      const txDetails: TxDetails = {
+        amount: '71573896800000000000',
+        user: '0x6d66e98984e10D62A09983b6B1B26485979b4788',
+        event: 'Deposit',
+        status: 'Pending',
+      };
+
       const filledState: AggregatorState = {
         ...new AggregatorState(),
         txDetails,

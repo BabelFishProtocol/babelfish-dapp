@@ -109,6 +109,7 @@ export function* setLocalTx(tx: XusdLocalTransaction) {
   yield* put(appActions.setLocalXusdTransactions(tx));
 }
 
+// TODO test this
 export function* addTransactionIntoLocalStorage({
   payload,
 }: AggregatorActions['setSubmitStepData']) {
