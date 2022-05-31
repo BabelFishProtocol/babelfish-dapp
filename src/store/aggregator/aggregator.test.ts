@@ -27,6 +27,8 @@ import {
   bridgeContractSelector,
   startingTokenContractSelector,
   startingTokenSelector,
+  submitCallCurrentOperation,
+  submitTxDetails,
   tokenAddressSelector,
 } from './aggregator.selectors';
 import { accountSelector } from '../app/app.selectors';
@@ -391,6 +393,40 @@ describe('aggregator store', () => {
       };
 
       checkReducerState(successState);
+    });
+  });
+
+  describe('selectors', () => {
+    it('submitCallCurrentOperation', async () => {
+      const filledCurrentOperation: AggregatorState['submitCall'] = {
+        steps: [...new AggregatorState().submitCall.steps],
+        status: 'idle',
+        currentOperation: 'approve',
+      };
+
+      const filledDataResult = submitCallCurrentOperation.resultFunc(
+        filledCurrentOperation
+      );
+
+      expect(filledDataResult).toEqual('approve');
+    });
+
+    const txDetails: TxDetails = {
+      amount: '71573896800000000000',
+      user: '0x6d66e98984e10D62A09983b6B1B26485979b4788',
+      event: 'Deposit',
+      status: 'Pending',
+    };
+
+    it('submitTxDetails', async () => {
+      const filledState: AggregatorState = {
+        ...new AggregatorState(),
+        txDetails,
+      };
+
+      const filledDataResult = submitTxDetails.resultFunc(filledState);
+
+      expect(filledDataResult).toEqual(txDetails);
     });
   });
 });

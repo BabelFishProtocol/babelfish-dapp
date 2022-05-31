@@ -293,7 +293,18 @@ describe('app store', () => {
         status: 'Pending',
       };
 
-      const initialState: AppState & PersistPartial = {
+      // just for testing and TS propose
+      const attachPersistorIntoState = (
+        state: AppState
+      ): AppState & PersistPartial => ({
+        ...state,
+        _persist: {
+          version: 1,
+          rehydrated: true,
+        },
+      });
+
+      const initialState = attachPersistorIntoState({
         ...new AppState(),
         chainId: ChainEnum.ETH,
         account: mockAccount,
@@ -302,12 +313,7 @@ describe('app store', () => {
             [mockAccount]: [localXusdTransaction],
           },
         },
-
-        _persist: {
-          version: 1,
-          rehydrated: true,
-        },
-      };
+      });
 
       const filledDataResult = xusdLocalTransactionsSelector.resultFunc(
         initialState,

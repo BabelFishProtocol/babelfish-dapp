@@ -16,7 +16,6 @@ type TableToolipProps = {
   tip?: string;
 };
 
-// TODO add more statuses
 const statusTooltip = {
   crossChainDepoFail: 'cross chain depo copy fail',
   crossChainDepoSucces: 'cross chain depo copy succes',
@@ -56,12 +55,22 @@ export const StatusInfo: CustomColumn<TransactionsTableItem> = ({
   rowData,
 }) => {
   if (
-    rowData.isCrossChain === 'true' &&
-    rowData.status === 'Failed' &&
-    rowData.event === 'Deposit'
+    rowData.isCrossChain &&
+    rowData.event === 'Deposit' &&
+    rowData.status === 'Failed'
   ) {
     return (
       <TableToolip message={value} tip={statusTooltip.crossChainDepoFail} />
+    );
+  }
+
+  if (
+    rowData.isCrossChain &&
+    rowData.event === 'Deposit' &&
+    rowData.status === 'Confirmed'
+  ) {
+    return (
+      <TableToolip message={value} tip={statusTooltip.crossChainDepoSucces} />
     );
   }
 
@@ -71,12 +80,6 @@ export const StatusInfo: CustomColumn<TransactionsTableItem> = ({
   //     <TableToolip message={value}/>
   //   );
   // }
-
-  if (rowData.isCrossChain === 'true' && rowData.status === 'Confirmed') {
-    return (
-      <TableToolip message={value} tip={statusTooltip.crossChainDepoSucces} />
-    );
-  }
 
   return (
     <TableToolip message={value} tip={statusTooltip.crossChainDepoSucces} />

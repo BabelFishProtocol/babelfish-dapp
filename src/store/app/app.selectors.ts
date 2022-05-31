@@ -218,7 +218,6 @@ export const multicallProviderSelector = createSelector(
   }
 );
 
-// TODO add selector test
 export const xusdLocalTransactionsSelector = createSelector(
   [appState, chainIdSelector, accountSelector],
   (state, chainId, account) => {
