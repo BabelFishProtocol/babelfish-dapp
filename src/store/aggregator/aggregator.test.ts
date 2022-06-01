@@ -61,6 +61,12 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
+type GetTxDetailsProps = {
+  event: TxDetails['event'];
+  status: TxDetails['status'];
+  isCrossChain?: string | undefined;
+};
+
 describe('aggregator store', () => {
   const reducer = combineReducers(pick(rootReducer, [Reducers.Aggregator]));
 
@@ -385,13 +391,7 @@ describe('aggregator store', () => {
     const mockChainEnum = 31;
     const mockTimestamp = 1000;
     const mockTimestampString = mockTimestamp.toString();
-    const mockTx = {
-      tx: {
-        hash: mockTxHash,
-      },
-    } as StepData<AggregatorCalls>;
-
-    const appAndAggrReducer = combineReducers({
+    const mockReducer = combineReducers({
       app: appReducer,
       aggregator: aggregatorReducer,
     });
@@ -407,27 +407,32 @@ describe('aggregator store', () => {
     };
 
     const getSuccessState = (
-      txToSave: XusdLocalTransaction
+      txToSave: XusdLocalTransaction,
+      alreadyConfirmed = false
     ): DeepPartial<RootState> => ({
       ...initialState,
       [Reducers.App]: {
         ...initialState[Reducers.App],
         xusdLocalTransactions: {
           [mockChainEnum]: {
-            [mockAccount]: [txToSave],
+            [mockAccount]: alreadyConfirmed
+              ? [{ ...txToSave, status: 'Confirmed' }]
+              : [txToSave],
           },
         },
       },
     });
 
-    const getTxDetails = (
-      event: TxDetails['event'],
-      status: TxDetails['status']
-    ): TxDetails => ({
+    const getTxDetails = ({
+      event,
+      status,
+      isCrossChain = undefined,
+    }: GetTxDetailsProps): TxDetails => ({
       amount: mockAmount,
       user: mockAccount,
       event,
       status,
+      isCrossChain,
     });
 
     const getTxToSave = (txDetails: TxDetails): XusdLocalTransaction => ({
@@ -437,60 +442,198 @@ describe('aggregator store', () => {
       ...txDetails,
     });
 
-    const getBasePath = () =>
+    const getBasePath = (mockTx: StepData<AggregatorCalls>) =>
       expectSaga(
         addTransactionIntoLocalStorage,
         aggregatorActions.setSubmitStepData(mockTx)
       )
-        .withReducer(appAndAggrReducer)
+        .withReducer(mockReducer)
         .withState(initialState)
         .select(submitCallCurrentOperation)
         .select(submitTxDetails);
 
-    it('deposit - same chain', async () => {
-      const mockCurrOpperation: AggregatorCalls = 'deposit';
-      const txDetails = getTxDetails('Deposit', 'Pending');
+    describe('not cross chain transactions', () => {
+      const mockTx = {
+        tx: {
+          hash: mockTxHash,
+        },
+      } as StepData<AggregatorCalls>;
 
-      const txToSave = getTxToSave(txDetails);
-      const successState = getSuccessState(txToSave);
+      const basePath = () => getBasePath(mockTx);
 
-      const runResult = await getBasePath()
-        .provide([
-          [matchers.select(submitCallCurrentOperation), mockCurrOpperation],
-          [matchers.select(submitTxDetails), txDetails],
-          [matchers.call(getCurrentTimestamp), mockTimestamp],
-        ])
-        .call(getCurrentTimestamp)
-        .put(appActions.setLocalXusdTransactions(txToSave))
-        .hasFinalState(successState)
-        .run();
+      it('deposit - happy path', async () => {
+        const mockCurrOpperation: AggregatorCalls = 'deposit';
+        const txDetails = getTxDetails({
+          event: 'Deposit',
+          status: 'Pending',
+        });
 
-      expect(runResult.effects).toEqual({});
+        const txToSave = getTxToSave(txDetails);
+        const successState = getSuccessState(txToSave);
+
+        const runResult = await basePath()
+          .provide([
+            [matchers.select(submitCallCurrentOperation), mockCurrOpperation],
+            [matchers.select(submitTxDetails), txDetails],
+            [matchers.call(getCurrentTimestamp), mockTimestamp],
+          ])
+          .call(getCurrentTimestamp)
+          .put(appActions.setLocalXusdTransactions(txToSave))
+          .hasFinalState(successState)
+          .run();
+
+        expect(runResult.effects).toEqual({});
+      });
+
+      it('withdraw - happy path', async () => {
+        const mockCurrOpperation: AggregatorCalls = 'withdraw';
+        const txDetails = getTxDetails({
+          event: 'Withdraw',
+          status: 'Pending',
+        });
+
+        const txToSave = getTxToSave(txDetails);
+        const successState = getSuccessState(txToSave);
+
+        const runResult = await basePath()
+          .provide([
+            [matchers.select(submitCallCurrentOperation), mockCurrOpperation],
+            [matchers.select(submitTxDetails), txDetails],
+            [matchers.call(getCurrentTimestamp), mockTimestamp],
+          ])
+          .call(getCurrentTimestamp)
+          .put(appActions.setLocalXusdTransactions(txToSave))
+          .hasFinalState(successState)
+          .run();
+
+        expect(runResult.effects).toEqual({});
+      });
+
+      it('skipped on difference in event vs currentOperation', async () => {
+        const mockCurrOpperation: AggregatorCalls = 'withdraw';
+
+        const txDetails = getTxDetails({
+          event: 'Deposit', // not withdraw
+          status: 'Pending',
+        });
+
+        const runResult = await basePath()
+          .provide([
+            [matchers.select(submitCallCurrentOperation), mockCurrOpperation],
+            [matchers.select(submitTxDetails), txDetails],
+          ])
+          .hasFinalState(initialState)
+          .run();
+
+        expect(runResult.effects).toEqual({});
+      });
+
+      it('skipped on approve as currentOperation', async () => {
+        const mockCurrOpperation: AggregatorCalls = 'approve';
+        const txDetails = getTxDetails({
+          event: 'Deposit',
+          status: 'Pending',
+        });
+
+        const runResult = await basePath()
+          .provide([
+            [matchers.select(submitCallCurrentOperation), mockCurrOpperation],
+            [matchers.select(submitTxDetails), txDetails],
+          ])
+          .hasFinalState(initialState)
+          .run();
+
+        expect(runResult.effects).toEqual({});
+      });
+
+      it('skipped on reset allowance as currentOperation', async () => {
+        const mockCurrOpperation: AggregatorCalls = 'reset allowance';
+        const txDetails = getTxDetails({
+          event: 'Deposit',
+          status: 'Pending',
+        });
+
+        const runResult = await basePath()
+          .provide([
+            [matchers.select(submitCallCurrentOperation), mockCurrOpperation],
+            [matchers.select(submitTxDetails), txDetails],
+          ])
+          .hasFinalState(initialState)
+          .run();
+
+        expect(runResult.effects).toEqual({});
+      });
     });
 
-    it('withdraw - same chain', async () => {
-      const mockCurrOpperation: AggregatorCalls = 'withdraw';
-      const txDetails = getTxDetails('Withdraw', 'Pending');
+    describe('cross chain transactions', () => {
+      const mockTx = {
+        txReceipt: {
+          transactionHash: mockTxHash,
+        },
+      } as StepData<AggregatorCalls>;
 
-      const txToSave = getTxToSave(txDetails);
-      const successState = getSuccessState(txToSave);
+      const basePath = () => getBasePath(mockTx);
 
-      const runResult = await getBasePath()
-        .provide([
-          [matchers.select(submitCallCurrentOperation), mockCurrOpperation],
-          [matchers.select(submitTxDetails), txDetails],
-          [matchers.call(getCurrentTimestamp), mockTimestamp],
-        ])
-        .call(getCurrentTimestamp)
-        .put(appActions.setLocalXusdTransactions(txToSave))
-        .hasFinalState(successState)
-        .run();
+      it('deposit - happy path', async () => {
+        const mockCurrOpperation: AggregatorCalls = 'deposit';
 
-      expect(runResult.effects).toEqual({});
+        const txDetails = getTxDetails({
+          event: 'Deposit',
+          status: 'Confirmed',
+          isCrossChain: 'true',
+        });
+
+        const txToSave = getTxToSave(txDetails);
+        const successState = getSuccessState(txToSave);
+
+        const runResult = await basePath()
+          .provide([
+            [matchers.select(submitCallCurrentOperation), mockCurrOpperation],
+            [matchers.select(submitTxDetails), txDetails],
+            [matchers.call(getCurrentTimestamp), mockTimestamp],
+          ])
+          .call(getCurrentTimestamp)
+          .put(appActions.setLocalXusdTransactions(txToSave))
+          .hasFinalState(successState)
+          .run();
+
+        expect(runResult.effects).toEqual({});
+      });
+
+      it('deposit - happy path, with proper status changing', async () => {
+        const mockCurrOpperation: AggregatorCalls = 'deposit';
+
+        const txDetails = getTxDetails({
+          event: 'Deposit',
+          status: 'Pending',
+          isCrossChain: 'true',
+        });
+
+        const txToSave = getTxToSave(txDetails);
+        const successState = getSuccessState(txToSave, true);
+
+        const runResult = await basePath()
+          .provide([
+            [matchers.select(submitCallCurrentOperation), mockCurrOpperation],
+            [matchers.select(submitTxDetails), txDetails],
+            [matchers.call(getCurrentTimestamp), mockTimestamp],
+          ])
+          .call(getCurrentTimestamp)
+          .put(
+            appActions.setLocalXusdTransactions({
+              ...txToSave,
+              status: 'Confirmed',
+            })
+          )
+          .hasFinalState(successState)
+          .run();
+
+        expect(runResult.effects).toEqual({});
+      });
     });
   });
 
-  describe('local storage transactions', () => {
+  describe('local storage transactions - reducerTest', () => {
     const initial: AggregatorState = {
       ...new AggregatorState(),
     };

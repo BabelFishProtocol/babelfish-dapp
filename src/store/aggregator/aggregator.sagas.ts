@@ -109,7 +109,6 @@ export function* setLocalTx(tx: XusdLocalTransaction) {
   yield* put(appActions.setLocalXusdTransactions(tx));
 }
 
-// TODO test this
 export function* addTransactionIntoLocalStorage({
   payload,
 }: AggregatorActions['setSubmitStepData']) {
@@ -117,27 +116,25 @@ export function* addTransactionIntoLocalStorage({
   const txDetails = yield* select(submitTxDetails);
 
   let txToSave: XusdLocalTransaction;
-  const timestamp = yield* call(getCurrentTimestamp);
-  const now = timestamp.toString();
+  let date: string;
 
-  // TODO implement this?
-  if (txDetails?.status !== 'Pending') {
-    return;
-  }
+  if (!txDetails) return;
 
   if (
-    currentOperation === 'deposit' &&
-    payload.txReceipt &&
-    txDetails &&
     txDetails.isCrossChain &&
+    payload.txReceipt &&
+    currentOperation === 'deposit' &&
     txDetails.event === 'Deposit'
   ) {
+    const timestamp = yield* call(getCurrentTimestamp);
+    date = timestamp.toString();
+
     txToSave = {
       ...txDetails,
       txHash: payload.txReceipt.transactionHash,
       asset: 'XUSD',
       status: 'Confirmed',
-      date: now,
+      date,
     };
 
     yield* setLocalTx(txToSave);
@@ -147,22 +144,25 @@ export function* addTransactionIntoLocalStorage({
   if (
     (currentOperation !== 'deposit' && currentOperation !== 'withdraw') ||
     !payload.tx ||
-    !txDetails ||
     currentOperation !== txDetails.event.toLowerCase()
   ) {
     return;
   }
 
+  const timestamp = yield* call(getCurrentTimestamp);
+  date = timestamp.toString();
+
   txToSave = {
     txHash: payload.tx.hash,
     asset: 'XUSD',
-    date: now,
+    date,
     ...txDetails,
   };
 
   yield* setLocalTx(txToSave);
 }
 
+// TODO test this
 export function* setErrorOnDepositCrossChainTx() {
   const currentOperation = yield* select(submitCallCurrentOperation);
   const txDetails = yield* select(submitTxDetails);
