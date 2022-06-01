@@ -6,10 +6,7 @@ import {
   startingTokenNameSelector,
 } from '../../../store/aggregator/aggregator.selectors';
 import { AggregatorInfoComponent } from './AggregatorInfo.component';
-
-type AggregatorInfoContainerProps = {
-  toggleFlow: VoidFunction;
-};
+import { AggregatorInfoContainerProps } from './AggregatorInfo.types';
 
 export const AggregatorInfoContainer = ({
   toggleFlow,

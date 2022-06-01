@@ -282,7 +282,7 @@ describe('Aggregator hooks', () => {
 
       jest
         .spyOn(appSelectors, 'providerSelector')
-        .mockReturnValueOnce({} as Web3Provider);
+        .mockReturnValueOnce(provider);
       jest
         .spyOn(appSelectors, 'chainIdSelector')
         .mockReturnValueOnce(connectedChain);
