@@ -454,6 +454,9 @@ describe('aggregator store', () => {
 
     describe('not cross chain transactions', () => {
       const mockTx = {
+        txReceipt: {
+          transactionHash: mockTxHash,
+        },
         tx: {
           hash: mockTxHash,
         },
@@ -570,6 +573,9 @@ describe('aggregator store', () => {
         txReceipt: {
           transactionHash: mockTxHash,
         },
+        tx: {
+          hash: mockTxHash,
+        },
       } as StepData<AggregatorCalls>;
 
       const basePath = () => getBasePath(mockTx);
@@ -625,6 +631,32 @@ describe('aggregator store', () => {
               status: 'Confirmed',
             })
           )
+          .hasFinalState(successState)
+          .run();
+
+        expect(runResult.effects).toEqual({});
+      });
+
+      it('withdraw - happy path', async () => {
+        const mockCurrOpperation: AggregatorCalls = 'withdraw';
+
+        const txDetails = getTxDetails({
+          event: 'Withdraw',
+          status: 'Pending',
+          isCrossChain: 'true',
+        });
+
+        const txToSave = getTxToSave(txDetails);
+        const successState = getSuccessState(txToSave);
+
+        const runResult = await basePath()
+          .provide([
+            [matchers.select(submitCallCurrentOperation), mockCurrOpperation],
+            [matchers.select(submitTxDetails), txDetails],
+            [matchers.call(getCurrentTimestamp), mockTimestamp],
+          ])
+          .call(getCurrentTimestamp)
+          .put(appActions.setLocalXusdTransactions(txToSave))
           .hasFinalState(successState)
           .run();
 
