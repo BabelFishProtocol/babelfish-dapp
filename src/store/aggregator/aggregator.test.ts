@@ -1,10 +1,10 @@
-import { constants, ContractTransaction } from 'ethers';
+import { constants } from 'ethers';
 import { expectSaga } from 'redux-saga-test-plan';
 import { throwError } from 'redux-saga-test-plan/providers';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import { combineReducers, DeepPartial } from '@reduxjs/toolkit';
 
-import { pick } from '../../utils/helpers';
+import { getCurrentTimestamp, pick } from '../../utils/helpers';
 import { Reducers } from '../../constants';
 import {
   AllowTokens__factory,
@@ -26,6 +26,7 @@ import {
   AggregatorCalls,
   AggregatorState,
   TxDetails,
+  XusdLocalTransaction,
 } from './aggregator.state';
 import {
   allowTokensContractSelector,
@@ -376,85 +377,111 @@ describe('aggregator store', () => {
     });
   });
 
-  describe('addTransactionIntoLocalStorage', () => {
-    const mockAddress = '0x6d';
+  // TODO remove only
+  describe.only('adding transactions into local storage', () => {
+    const mockAccount = '0x6d';
     const mockTxHash = '0x0';
+    const mockAmount = '2000000';
     const mockChainEnum = 31;
+    const mockTimestamp = 1000;
+    const mockTimestampString = mockTimestamp.toString();
+    const mockTx = {
+      tx: {
+        hash: mockTxHash,
+      },
+    } as StepData<AggregatorCalls>;
 
-    // TODO remove only
-    it.only('happy path', async () => {
-      const txDetails: TxDetails = {
-        amount: '666',
-        user: mockAddress,
-        event: 'Deposit',
-        status: 'Pending',
-      };
+    const appAndAggrReducer = combineReducers({
+      app: appReducer,
+      aggregator: aggregatorReducer,
+    });
 
-      initialState = {
-        [Reducers.Aggregator]: { ...new AggregatorState(), txDetails },
-        [Reducers.App]: {
-          ...new AppState(),
-          xusdLocalTransactions: {
-            [mockChainEnum]: {
-              [mockAddress]: [],
-            },
+    initialState = {
+      [Reducers.Aggregator]: { ...new AggregatorState() },
+      [Reducers.App]: {
+        ...new AppState(),
+        chainId: mockChainEnum,
+        account: mockAccount,
+        xusdLocalTransactions: {},
+      },
+    };
+
+    const getSuccessState = (
+      txToSave: XusdLocalTransaction
+    ): DeepPartial<RootState> => ({
+      ...initialState,
+      [Reducers.App]: {
+        ...initialState[Reducers.App],
+        xusdLocalTransactions: {
+          [mockChainEnum]: {
+            [mockAccount]: [txToSave],
           },
         },
-      };
+      },
+    });
 
-      const submitCallOperations = {
-        deposit: 'deposit',
-      };
+    const getTxDetails = (
+      event: TxDetails['event'],
+      status: TxDetails['status']
+    ): TxDetails => ({
+      amount: mockAmount,
+      user: mockAccount,
+      event,
+      status,
+    });
 
-      const appAndAggrReducer = combineReducers({
-        appReducer,
-        aggregatorReducer,
-      });
+    const getTxToSave = (txDetails: TxDetails): XusdLocalTransaction => ({
+      txHash: mockTxHash,
+      asset: 'XUSD',
+      date: mockTimestampString,
+      ...txDetails,
+    });
 
-      const mockTx = {
-        tx: {
-          hash: mockTxHash,
-          wait: jest.fn() as ContractTransaction['wait'],
-        },
-      } as StepData<AggregatorCalls>;
+    const getBasePath = () =>
+      expectSaga(
+        addTransactionIntoLocalStorage,
+        aggregatorActions.setSubmitStepData(mockTx)
+      )
+        .withReducer(appAndAggrReducer)
+        .withState(initialState)
+        .select(submitCallCurrentOperation)
+        .select(submitTxDetails);
 
-      const txToSave = {
-        txHash: mockTxHash,
-        asset: 'XUSD',
-        date: '16000000',
-        ...txDetails,
-      };
+    it('deposit - same chain', async () => {
+      const mockCurrOpperation: AggregatorCalls = 'deposit';
+      const txDetails = getTxDetails('Deposit', 'Pending');
 
-      const successState: DeepPartial<RootState> = {
-        ...initialState,
-        [Reducers.App]: {
-          ...initialState[Reducers.App],
-          xusdLocalTransactions: {
-            [mockChainEnum]: {
-              [mockAddress]: [txToSave],
-            },
-          },
-        },
-      };
-
-      const getBasePath = () =>
-        expectSaga(
-          addTransactionIntoLocalStorage,
-          aggregatorActions.setSubmitStepData(mockTx)
-        )
-          .withReducer(appAndAggrReducer)
-          .withState(initialState)
-          .select(submitCallCurrentOperation)
-          .select(submitTxDetails);
+      const txToSave = getTxToSave(txDetails);
+      const successState = getSuccessState(txToSave);
 
       const runResult = await getBasePath()
         .provide([
-          [
-            matchers.select(submitCallCurrentOperation),
-            submitCallOperations.deposit,
-          ],
+          [matchers.select(submitCallCurrentOperation), mockCurrOpperation],
           [matchers.select(submitTxDetails), txDetails],
+          [matchers.call(getCurrentTimestamp), mockTimestamp],
         ])
+        .call(getCurrentTimestamp)
+        .put(appActions.setLocalXusdTransactions(txToSave))
+        .hasFinalState(successState)
+        .run();
+
+      expect(runResult.effects).toEqual({});
+    });
+
+    it('withdraw - same chain', async () => {
+      const mockCurrOpperation: AggregatorCalls = 'withdraw';
+      const txDetails = getTxDetails('Withdraw', 'Pending');
+
+      const txToSave = getTxToSave(txDetails);
+      const successState = getSuccessState(txToSave);
+
+      const runResult = await getBasePath()
+        .provide([
+          [matchers.select(submitCallCurrentOperation), mockCurrOpperation],
+          [matchers.select(submitTxDetails), txDetails],
+          [matchers.call(getCurrentTimestamp), mockTimestamp],
+        ])
+        .call(getCurrentTimestamp)
         .put(appActions.setLocalXusdTransactions(txToSave))
         .hasFinalState(successState)
         .run();
