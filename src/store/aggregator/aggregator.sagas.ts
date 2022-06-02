@@ -115,10 +115,13 @@ export function* addTransactionIntoLocalStorage({
   const currentOperation = yield* select(submitCallCurrentOperation);
   const txDetails = yield* select(submitTxDetails);
 
-  let txToSave: XusdLocalTransaction;
-  let date: string;
+  if (
+    !txDetails ||
+    (currentOperation !== 'deposit' && currentOperation !== 'withdraw')
+  )
+    return;
 
-  if (!txDetails) return;
+  let txToSave: XusdLocalTransaction;
 
   if (
     txDetails.isCrossChain &&
@@ -127,35 +130,29 @@ export function* addTransactionIntoLocalStorage({
     txDetails.event === 'Deposit'
   ) {
     const timestamp = yield* call(getCurrentTimestamp);
-    date = timestamp.toString();
 
     txToSave = {
       ...txDetails,
       txHash: payload.txReceipt.transactionHash,
       asset: 'XUSD',
       status: 'Confirmed',
-      date,
+      date: timestamp.toString(),
     };
 
     yield* setLocalTx(txToSave);
     return;
   }
 
-  if (
-    (currentOperation !== 'deposit' && currentOperation !== 'withdraw') ||
-    !payload.tx ||
-    currentOperation !== txDetails.event.toLowerCase()
-  ) {
+  if (!payload.tx || currentOperation !== txDetails.event.toLowerCase()) {
     return;
   }
 
   const timestamp = yield* call(getCurrentTimestamp);
-  date = timestamp.toString();
 
   txToSave = {
     txHash: payload.tx.hash,
     asset: 'XUSD',
-    date,
+    date: timestamp.toString(),
     ...txDetails,
   };
 
@@ -168,12 +165,14 @@ export function* setErrorOnDepositCrossChainTx() {
   const txDetails = yield* select(submitTxDetails);
 
   if (currentOperation === 'deposit' && txDetails?.isCrossChain) {
+    const timestamp = yield* call(getCurrentTimestamp);
+
     yield* setLocalTx({
       ...txDetails,
       status: 'Failed',
       txHash: '0x0',
       asset: 'XUSD',
-      date: getCurrentTimestamp().toString(),
+      date: timestamp.toString(),
     });
   }
 }
