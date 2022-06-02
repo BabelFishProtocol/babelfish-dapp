@@ -25,11 +25,10 @@ export function* fetchTransactions() {
     );
 
     const txWithStatus: XusdLocalTransaction[] = xusdTransactions.map((tx) => ({
-      status: 'Confirmed',
       ...tx,
+      status: 'Confirmed',
     }));
 
-    // TODO test this
     yield* put(appActions.removeLocalXusdTransactions(txWithStatus));
 
     yield* put(dashboardActions.setTransactions(txWithStatus));

@@ -21,7 +21,10 @@ import {
   expectedTxWithStatus,
 } from './fetchTransactions.mock';
 import { fetchTransactions } from './fetchTransactions';
-import { transactionsQuery } from '../../../queries/transactionsQuery';
+import {
+  transactionsQuery,
+  TransactionsQueryItem,
+} from '../../../queries/transactionsQuery';
 import {
   AggregatorState,
   XusdLocalTransaction,
@@ -29,7 +32,7 @@ import {
 import { AppState } from '../../app/app.state';
 import { appActions } from '../../app/app.slice';
 
-// TODO add to 'global testing'a
+// TODO add to 'global testing'
 util.inspect.defaultOptions.depth = null;
 
 afterEach(() => {
@@ -42,19 +45,13 @@ describe('dashboard store', () => {
   );
 
   const mockAccount = '0x6d';
-  const mockChainEnum = 31;
-  const mockTxHash = '0x0';
-  const mockAmount = '2000000';
-  const mockTimestamp = 1000;
-  const mockTimestampString = mockTimestamp.toString();
-
-  const initialState: DeepPartial<RootState> = {
-    [Reducers.App]: { ...new AppState() },
-    [Reducers.Dashboard]: { ...new DashboardState() },
-    [Reducers.Aggregator]: { ...new AggregatorState() },
-  };
 
   describe('fetchTransactions without local ones', () => {
+    const initialState: DeepPartial<RootState> = {
+      [Reducers.App]: { ...new AppState() },
+      [Reducers.Dashboard]: { ...new DashboardState() },
+      [Reducers.Aggregator]: { ...new AggregatorState() },
+    };
     const successState: DeepPartial<RootState> = {
       ...initialState,
       [Reducers.Dashboard]: {
@@ -127,14 +124,40 @@ describe('dashboard store', () => {
   });
 
   describe('fetchTransactions with local ones', () => {
-    const txSaved: XusdLocalTransaction = {
+    const mockChainEnum = 31;
+    const mockTxHash = '0x0';
+    const mockAmount = '2000000';
+    const mockTimestamp = 1000;
+    const mockTimestampString = mockTimestamp.toString();
+
+    const fetchedTx: TransactionsQueryItem = {
+      id: 'gg',
       user: mockAccount,
       amount: mockAmount,
       txHash: mockTxHash,
       asset: 'XUSD',
       date: mockTimestampString,
       event: 'Deposit',
-      status: 'Pending',
+    };
+
+    const localSavedTx: XusdLocalTransaction = {
+      ...fetchedTx,
+      status: 'Confirmed',
+    };
+
+    const initialState: DeepPartial<RootState> = {
+      [Reducers.Dashboard]: { ...new DashboardState() },
+      [Reducers.Aggregator]: { ...new AggregatorState() },
+      [Reducers.App]: {
+        ...new AppState(),
+        chainId: mockChainEnum,
+        account: mockAccount,
+        xusdLocalTransactions: {
+          [mockChainEnum]: {
+            [mockAccount]: [localSavedTx],
+          },
+        },
+      },
     };
 
     const successState: DeepPartial<RootState> = {
@@ -143,7 +166,7 @@ describe('dashboard store', () => {
         ...initialState[Reducers.Dashboard],
         transactionList: {
           state: 'success',
-          data: [txSaved],
+          data: [{ ...fetchedTx, status: 'Confirmed' }],
         },
       },
       [Reducers.App]: {
@@ -170,17 +193,14 @@ describe('dashboard store', () => {
         .provide([
           [matchers.select(subgraphClientSelector), mockSubgraphClient],
           [matchers.select(accountSelector), mockAccount],
-          [matchers.call.fn(transactionsQuery), expectedTransactions],
+          [
+            matchers.call.fn(transactionsQuery),
+            { xusdTransactions: [fetchedTx] },
+          ],
         ])
         .call(transactionsQuery, mockSubgraphClient, { user: mockAccount })
-        .put(
-          dashboardActions.setTransactions(
-            expectedTransactions.xusdTransactions.map((tx) => ({
-              status: 'Confirmed',
-              ...tx,
-            }))
-          )
-        )
+        .put(appActions.removeLocalXusdTransactions([localSavedTx]))
+        .put(dashboardActions.setTransactions([localSavedTx]))
         .hasFinalState(successState)
         .run();
 
