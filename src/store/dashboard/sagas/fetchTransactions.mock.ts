@@ -1,3 +1,4 @@
+import { TransactionsTableItem } from '../../../pages/Dashboard/TransactionsTable/TransactionsTable.types';
 import { TransactionsQueryResult } from '../../../queries/transactionsQuery';
 
 export const expectedTransactions: TransactionsQueryResult = {
@@ -22,3 +23,9 @@ export const expectedTransactions: TransactionsQueryResult = {
     },
   ],
 };
+
+export const expectedTxWithStatus: TransactionsTableItem[] =
+  expectedTransactions.xusdTransactions.map((tx) => ({
+    ...tx,
+    status: 'Confirmed',
+  }));

@@ -38,7 +38,7 @@ import {
   tokenAddressSelector,
 } from './aggregator.selectors';
 import { accountSelector } from '../app/app.selectors';
-import { StepData } from '../types';
+import { GetSuccesState, GetTxDetails, StepData } from '../types';
 import { AppState } from '../app/app.state';
 import { appActions, appReducer } from '../app/app.slice';
 
@@ -60,12 +60,6 @@ const mockToken = createMockedContract(
 afterEach(() => {
   jest.clearAllMocks();
 });
-
-type GetTxDetailsProps = {
-  event: TxDetails['event'];
-  status: TxDetails['status'];
-  isCrossChain?: string | undefined;
-};
 
 describe('aggregator store', () => {
   const reducer = combineReducers(pick(rootReducer, [Reducers.Aggregator]));
@@ -383,7 +377,6 @@ describe('aggregator store', () => {
     });
   });
 
-  // TODO remove only
   describe('adding transactions into local storage', () => {
     const mockAccount = '0x6d';
     const mockTxHash = '0x0';
@@ -408,11 +401,8 @@ describe('aggregator store', () => {
 
     const getSuccessState = ({
       txToSave,
-      alreadyConfirmed,
-    }: {
-      txToSave: XusdLocalTransaction;
-      alreadyConfirmed?: boolean;
-    }): DeepPartial<RootState> => ({
+      alreadyConfirmed = false,
+    }: GetSuccesState): DeepPartial<RootState> => ({
       ...initialState,
       [Reducers.App]: {
         ...initialState[Reducers.App],
@@ -430,7 +420,7 @@ describe('aggregator store', () => {
       event,
       status,
       isCrossChain = undefined,
-    }: GetTxDetailsProps): TxDetails => ({
+    }: GetTxDetails): TxDetails => ({
       amount: mockAmount,
       user: mockAccount,
       event,
@@ -605,7 +595,7 @@ describe('aggregator store', () => {
         expect(runResult.effects).toEqual({});
       });
 
-      it.only('deposit - happy path, with proper status changing', async () => {
+      it('deposit - happy path, with proper status changing', async () => {
         const mockCurrOpperation: AggregatorCalls = 'deposit';
 
         const txDetails = getTxDetails({
@@ -639,7 +629,7 @@ describe('aggregator store', () => {
         expect(runResult.effects).toEqual({});
       });
 
-      it.only('withdraw - happy path', async () => {
+      it('withdraw - happy path', async () => {
         const mockCurrOpperation: AggregatorCalls = 'withdraw';
 
         const txDetails = getTxDetails({

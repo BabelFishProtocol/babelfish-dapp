@@ -117,7 +117,7 @@ describe('app store', () => {
     });
   });
 
-  describe('setting local xusd transaction', () => {
+  describe('setting local xusd transaction - reducerTest', () => {
     const mockAccount = '0x0';
 
     const localXusdTransaction: XusdLocalTransaction = {
@@ -188,7 +188,7 @@ describe('app store', () => {
     });
   });
 
-  describe('update or remove local xusd transaction', () => {
+  describe('update or remove local xusd transaction - reducerTest', () => {
     const localXusdTransaction1: XusdLocalTransaction = {
       txHash: '0x4',
       asset: 'XUSD',
