@@ -122,6 +122,12 @@ export const appSlice = createSlice({
           filteredTransactions;
       }
     },
+    setErrorMessage: (
+      state,
+      { payload }: PayloadAction<AppState['errorMessage']>
+    ) => {
+      state.errorMessage = payload;
+    },
   },
 });
 

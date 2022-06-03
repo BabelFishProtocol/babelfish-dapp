@@ -113,10 +113,7 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
   },
   MuiIconButton: {
     styleOverrides: {
-      root: {
-        borderRadius: '50%',
-        background: palette.grey[800],
-      },
+      root: { borderRadius: '50%' },
     },
   },
   MuiTable: {

@@ -7,6 +7,7 @@ import { Route, Routes, Navigate } from 'react-router-dom';
 // import successIcon from './assets/icons/success.svg';
 // import { AppDialog } from './components/AppDialog/AppDialog.component';
 import { BottomBanner } from './components/BottomBanner/BottomBanner.component';
+import { ErrorAlert } from './components/ErrorAlert/ErrorAlert.component';
 import { Header } from './components/Header/Header.component';
 // import { MintingInfo } from './components/MintingInfo/MintingInfo.component';
 // import { MintingProcessInfo } from './components/MintingInfo/MintingInfo.types';
@@ -153,7 +154,8 @@ export const App = () => (
       <Route path={Urls.Claim} element={<ClaimContainer />} />
       <Route path="*" element={<Navigate to={Urls.Dashboard} />} />
     </Routes>
-
+    
+    <ErrorAlert />
     <BottomBanner />
   </div>
 );
