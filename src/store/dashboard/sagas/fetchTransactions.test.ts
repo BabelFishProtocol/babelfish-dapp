@@ -17,20 +17,20 @@ import {
 import { dashboardActions } from '../dashboard.slice';
 import { DashboardState } from '../dashboard.state';
 import {
-  expectedTransactions,
-  expectedTxWithStatus,
+  transactionsResult,
+  changeTxStatus,
+  txWithDifferentHash,
+  getTxDifferentHash,
 } from './fetchTransactions.mock';
 import { fetchTransactions } from './fetchTransactions';
-import {
-  transactionsQuery,
-  TransactionsQueryItem,
-} from '../../../queries/transactionsQuery';
+import { transactionsQuery } from '../../../queries/transactionsQuery';
 import {
   AggregatorState,
   XusdLocalTransaction,
 } from '../../aggregator/aggregator.state';
 import { AppState } from '../../app/app.state';
 import { appActions } from '../../app/app.slice';
+import { TransactionsTableItem } from '../../../pages/Dashboard/TransactionsTable/TransactionsTable.types';
 
 // TODO add to 'global testing'
 util.inspect.defaultOptions.depth = null;
@@ -45,20 +45,24 @@ describe('dashboard store', () => {
   );
 
   const mockAccount = '0x6d';
+  const mockChainEnum = 31;
 
-  describe('fetchTransactions without local ones', () => {
+  describe('fetchTransactions w/o local tx', () => {
     const initialState: DeepPartial<RootState> = {
       [Reducers.App]: { ...new AppState() },
       [Reducers.Dashboard]: { ...new DashboardState() },
       [Reducers.Aggregator]: { ...new AggregatorState() },
     };
+
+    const expectedConfirmedTx = changeTxStatus('Confirmed');
+
     const successState: DeepPartial<RootState> = {
       ...initialState,
       [Reducers.Dashboard]: {
         ...initialState[Reducers.Dashboard],
         transactionList: {
           state: 'success',
-          data: expectedTxWithStatus,
+          data: expectedConfirmedTx,
         },
       },
     };
@@ -83,11 +87,11 @@ describe('dashboard store', () => {
         .provide([
           [matchers.select(subgraphClientSelector), mockSubgraphClient],
           [matchers.select(accountSelector), mockAccount],
-          [matchers.call.fn(transactionsQuery), expectedTransactions],
+          [matchers.call.fn(transactionsQuery), transactionsResult],
         ])
         .call(transactionsQuery, mockSubgraphClient, { user: mockAccount })
-        .put(appActions.removeLocalXusdTransactions(expectedTxWithStatus))
-        .put(dashboardActions.setTransactions(expectedTxWithStatus))
+        .put(appActions.removeLocalXusdTransactions(expectedConfirmedTx))
+        .put(dashboardActions.setTransactions(expectedConfirmedTx))
         .hasFinalState(successState)
         .run();
 
@@ -123,29 +127,12 @@ describe('dashboard store', () => {
     });
   });
 
-  describe('fetchTransactions with local ones', () => {
-    const mockChainEnum = 31;
-    const mockTxHash = '0x0';
-    const mockAmount = '2000000';
-    const mockTimestamp = 1000;
-    const mockTimestampString = mockTimestamp.toString();
-
-    const fetchedTx: TransactionsQueryItem = {
-      id: 'gg',
-      user: mockAccount,
-      amount: mockAmount,
-      txHash: mockTxHash,
-      asset: 'XUSD',
-      date: mockTimestampString,
-      event: 'Deposit',
-    };
-
-    const localSavedTx: XusdLocalTransaction = {
-      ...fetchedTx,
-      status: 'Confirmed',
-    };
-
-    const initialState: DeepPartial<RootState> = {
+  describe('fetchTransactions with swappng local tx', () => {
+    const getInitialState = ({
+      localTx,
+    }: {
+      localTx: XusdLocalTransaction[];
+    }): DeepPartial<RootState> => ({
       [Reducers.Dashboard]: { ...new DashboardState() },
       [Reducers.Aggregator]: { ...new AggregatorState() },
       [Reducers.App]: {
@@ -154,41 +141,58 @@ describe('dashboard store', () => {
         account: mockAccount,
         xusdLocalTransactions: {
           [mockChainEnum]: {
-            [mockAccount]: [localSavedTx],
+            [mockAccount]: localTx,
           },
         },
       },
-    };
+    });
 
-    const successState: DeepPartial<RootState> = {
+    const getSuccessState = ({
+      initialState,
+      fetchedTx,
+      localTx,
+    }: {
+      initialState: DeepPartial<RootState>;
+      fetchedTx?: TransactionsTableItem[];
+      localTx?: XusdLocalTransaction[] | [];
+    }): DeepPartial<RootState> => ({
       ...initialState,
+      [Reducers.App]: {
+        ...initialState[Reducers.App],
+        xusdLocalTransactions: {
+          [mockChainEnum]: {
+            [mockAccount]: localTx,
+          },
+        },
+      },
       [Reducers.Dashboard]: {
         ...initialState[Reducers.Dashboard],
         transactionList: {
           state: 'success',
-          data: [{ ...fetchedTx, status: 'Confirmed' }],
+          data: fetchedTx,
         },
       },
-      [Reducers.App]: {
-        ...new AppState(),
-        chainId: mockChainEnum,
-        account: mockAccount,
-        xusdLocalTransactions: {
-          [mockChainEnum]: {
-            [mockAccount]: [],
-          },
-        },
-      },
-    };
+    });
 
-    const getBasePath = () =>
-      expectSaga(fetchTransactions)
-        .withReducer(reducer)
-        .withState(initialState)
-        .select(subgraphClientSelector)
-        .select(accountSelector);
+    it('swap single transaction', async () => {
+      const fetchedTx = transactionsResult.xusdTransactions[0];
+      const localBeforeTx: XusdLocalTransaction = changeTxStatus('Pending')[0];
+      const localAfterTx: XusdLocalTransaction = changeTxStatus('Confirmed')[0];
 
-    it('happy path', async () => {
+      const initialState = getInitialState({ localTx: [localBeforeTx] });
+      const successState = getSuccessState({
+        fetchedTx: [localAfterTx],
+        localTx: [],
+        initialState,
+      });
+
+      const getBasePath = () =>
+        expectSaga(fetchTransactions)
+          .withReducer(reducer)
+          .withState(initialState)
+          .select(subgraphClientSelector)
+          .select(accountSelector);
+
       const runResult = await getBasePath()
         .provide([
           [matchers.select(subgraphClientSelector), mockSubgraphClient],
@@ -199,8 +203,84 @@ describe('dashboard store', () => {
           ],
         ])
         .call(transactionsQuery, mockSubgraphClient, { user: mockAccount })
-        .put(appActions.removeLocalXusdTransactions([localSavedTx]))
-        .put(dashboardActions.setTransactions([localSavedTx]))
+        .put(appActions.removeLocalXusdTransactions([localAfterTx]))
+        .put(dashboardActions.setTransactions([localAfterTx]))
+        .hasFinalState(successState)
+        .run();
+
+      expect(runResult.effects).toEqual({});
+    });
+
+    it('swap three transactions', async () => {
+      const fetchedTx = transactionsResult.xusdTransactions;
+      const localBeforeTx = changeTxStatus('Pending');
+      const localAfterTx = changeTxStatus('Confirmed');
+
+      const initialState = getInitialState({ localTx: localBeforeTx });
+      const successState = getSuccessState({
+        initialState,
+        fetchedTx: localAfterTx,
+        localTx: [],
+      });
+
+      const getBasePath = () =>
+        expectSaga(fetchTransactions)
+          .withReducer(reducer)
+          .withState(initialState)
+          .select(subgraphClientSelector)
+          .select(accountSelector);
+
+      const runResult = await getBasePath()
+        .provide([
+          [matchers.select(subgraphClientSelector), mockSubgraphClient],
+          [matchers.select(accountSelector), mockAccount],
+          [
+            matchers.call.fn(transactionsQuery),
+            { xusdTransactions: fetchedTx },
+          ],
+        ])
+        .call(transactionsQuery, mockSubgraphClient, { user: mockAccount })
+        .put(appActions.removeLocalXusdTransactions(localAfterTx))
+        .put(dashboardActions.setTransactions(localAfterTx))
+        .hasFinalState(successState)
+        .run();
+
+      expect(runResult.effects).toEqual({});
+    });
+
+    it('delete from local tx only with same txHash', async () => {
+      const fetchedTx = transactionsResult.xusdTransactions;
+      const fetchedAfterTx = changeTxStatus('Confirmed');
+
+      const localBeforeTx = changeTxStatus('Pending', txWithDifferentHash);
+      const localAfterTx = getTxDifferentHash(localBeforeTx, fetchedTx);
+
+      const initialState = getInitialState({ localTx: localBeforeTx });
+      const successState = getSuccessState({
+        initialState,
+        fetchedTx: fetchedAfterTx,
+        localTx: localAfterTx as TransactionsTableItem[],
+      });
+
+      const getBasePath = () =>
+        expectSaga(fetchTransactions)
+          .withReducer(reducer)
+          .withState(initialState)
+          .select(subgraphClientSelector)
+          .select(accountSelector);
+
+      const runResult = await getBasePath()
+        .provide([
+          [matchers.select(subgraphClientSelector), mockSubgraphClient],
+          [matchers.select(accountSelector), mockAccount],
+          [
+            matchers.call.fn(transactionsQuery),
+            { xusdTransactions: fetchedTx },
+          ],
+        ])
+        .call(transactionsQuery, mockSubgraphClient, { user: mockAccount })
+        .put(appActions.removeLocalXusdTransactions(fetchedAfterTx))
+        .put(dashboardActions.setTransactions(fetchedAfterTx))
         .hasFinalState(successState)
         .run();
 
