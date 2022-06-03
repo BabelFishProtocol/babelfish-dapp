@@ -33,8 +33,8 @@ export type ProposalDetailsQueryResult = {
   proposals: ProposalDetailsQueryItem[];
 };
 
-const findProposalDetailsQuery = gql`
-  query getProposals($contractAddress: Bytes!, $proposalId: BigInt!) {
+const proposalDetailsQueryFields = `
+  {
     proposals(
       where: { contractAddress: $contractAddress, proposalId: $proposalId }
     ) {
@@ -61,6 +61,14 @@ const findProposalDetailsQuery = gql`
       }
     }
   }
+`;
+
+const findProposalDetailsQuery = gql`
+  query getProposals($contractAddress: Bytes!, $proposalId: BigInt!) ${proposalDetailsQueryFields}
+`;
+
+export const proposalDetailsSubscription = gql`
+  subscription proposalDetails($contractAddress: Bytes!, $proposalId: BigInt!) ${proposalDetailsQueryFields}
 `;
 
 export const proposalDetailsQuery = (

@@ -1,8 +1,5 @@
 import { all, takeLatest } from 'typed-redux-saga';
-import {
-  fetchProposalDetails,
-  watchProposalDetails,
-} from './sagas/proposalDetails';
+import { watchProposalDetails } from './sagas/proposalDetails';
 import {
   addProposal,
   checkAddEligibility,
@@ -24,8 +21,6 @@ export function* proposalsSaga() {
     takeLatest(proposalsActions.cancelProposal.type, cancelProposal),
     takeLatest(proposalsActions.executeProposal.type, executeProposal),
 
-    takeLatest(proposalsActions.fetchDetails.type, fetchProposalDetails),
-    takeLatest(proposalsActions.updateDetails.type, fetchProposalDetails),
     takeLatest(proposalsActions.watchDetails.type, watchProposalDetails),
 
     takeLatest(proposalsActions.watchProposalsList.type, watchProposalsList),

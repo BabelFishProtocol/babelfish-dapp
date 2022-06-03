@@ -13,6 +13,7 @@ import {
 } from '../proposals.selectors';
 import { proposalsActions } from '../proposals.slice';
 import { ProposalDetailsCalls } from '../proposals.state';
+import { forceProposalReFetch } from './proposalDetails';
 
 export function* fetchProposalStates(
   proposals: ProposalListQueryItem[],
@@ -55,4 +56,6 @@ export function* proposalDetailsCall(getStep: CreateStepCallAction) {
     setStatusAction: proposalsActions.setProposalDetailsCallStatus,
     setStepDataAction: proposalsActions.setProposalDetailsCallStepData,
   });
+
+  yield* forceProposalReFetch();
 }

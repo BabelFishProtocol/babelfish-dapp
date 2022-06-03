@@ -35,6 +35,9 @@ export const ProposalDetailsContainer = () => {
     if (isProperGovernor(governorType) && id) {
       dispatch(proposalsActions.watchDetails({ id, governorType }));
     }
+    return () => {
+      dispatch(proposalsActions.stopWatchingDetails());
+    };
   }, [dispatch, governorType, id]);
 
   const handleQueue = () => dispatch(proposalsActions.queueProposal());
