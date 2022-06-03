@@ -408,6 +408,16 @@ describe('saga utils', () => {
         expect(unsubscribe).toHaveBeenCalled();
       });
 
+      it('stops listening to actions when saga is canceled', () => {
+        store.dispatch(mockActions.stopWatching());
+        unsubscribe.mockClear();
+
+        store.dispatch(mockActions.stopWatching());
+        store.dispatch(appActions.setAccount('0x01243'));
+        store.dispatch(appActions.setChainId(123));
+        expect(unsubscribe).not.toHaveBeenCalled();
+      });
+
       it('returns proper error in case of failure in query', () => {
         const error = new Error('query error');
         subgraphWsClient.triggerNext({
