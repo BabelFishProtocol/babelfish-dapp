@@ -11,31 +11,32 @@ import { rootReducer, RootState } from '../..';
 
 import {
   mockSigner,
-  mockProvider,
   createMockedContract,
   mockMulticallProvider,
-  mockSubgraphClient,
 } from '../../../testUtils';
 
 import {
   governorAdminSelector,
   governorOwnerSelector,
   multicallProviderSelector,
-  providerSelector,
-  subgraphClientSelector,
 } from '../../app/app.selectors';
 
 import {
+  ProposalListQueryItem,
   ProposalListQueryResult,
-  proposalsListQuery,
 } from '../../../queries/proposalListQuery';
+import { SubscriptionResponse } from '../../types';
 
 import { parseProposals } from '../proposals.utils';
 import { proposalsActions } from '../proposals.slice';
 import { Proposal, ProposalsState } from '../proposals.state';
 import { governorContractsSelector } from '../proposals.selectors';
 
-import { fetchProposalsForContract, fetchProposalsList } from './proposalList';
+import {
+  fetchProposalsForContract,
+  syncAllProposals,
+  triggerFetchProposalsList,
+} from './proposalList';
 
 jest.mock('../../utils/utils.sagas', () => ({
   ...jest.requireActual('../../utils/utils.sagas'),
@@ -56,6 +57,60 @@ const mockGovernorOwner = createMockedContract(
   true
 );
 
+const parsedAdminProposal: Proposal = {
+  endBlock: 1000,
+  endTime: 237961437,
+  id: '2',
+  startBlock: 900,
+  startTime: 237958437,
+  state: ProposalState.Active,
+  contractAddress: governorAdminAddress,
+  title: '002 • test admin proposal',
+  governorType: GovernorTypes.GovernorAdmin,
+};
+
+const parsedOwnerProposal: Proposal = {
+  endBlock: 1001,
+  endTime: 237961438,
+  id: '1',
+  startBlock: 800,
+  startTime: 237958438,
+  state: ProposalState.Pending,
+  contractAddress: '0x2',
+  title: '001 • test owner proposal',
+  governorType: GovernorTypes.GovernorOwner,
+};
+
+const adminProposal: ProposalListQueryItem = {
+  createdAt: '899',
+  description: 'test admin proposal',
+  endBlock: '1000',
+  proposalId: '2',
+  startBlock: '900',
+  startDate: '237958437',
+  contractAddress: governorAdminAddress,
+};
+
+const ownerProposal: ProposalListQueryItem = {
+  createdAt: '799',
+  description: 'test owner proposal',
+  endBlock: '1001',
+  proposalId: '1',
+  startBlock: '800',
+  startDate: '237958437',
+  contractAddress: governorOwnerAddress,
+};
+
+const mockAllProposals: ProposalListQueryItem[] = [
+  adminProposal,
+  ownerProposal,
+];
+
+const combinedProposals: Proposal[] = [
+  parsedAdminProposal,
+  parsedOwnerProposal,
+];
+
 afterEach(() => {
   jest.clearAllMocks();
 });
@@ -68,35 +123,6 @@ describe('proposals list sagas', () => {
   };
 
   describe('fetchProposalsList', () => {
-    const parsedAdminProposal: Proposal = {
-      endBlock: 1000,
-      endTime: 237961437,
-      id: '2',
-      startBlock: 900,
-      startTime: 237958437,
-      state: ProposalState.Active,
-      contractAddress: '0x1',
-      title: '002 • test admin proposal',
-      governorType: GovernorTypes.GovernorAdmin,
-    };
-
-    const parsedOwnerProposal: Proposal = {
-      endBlock: 1001,
-      endTime: 237961438,
-      id: '1',
-      startBlock: 901,
-      startTime: 237958438,
-      state: ProposalState.Pending,
-      contractAddress: '0x2',
-      title: '001 • test owner proposal',
-      governorType: GovernorTypes.GovernorOwner,
-    };
-
-    const combinedProposals: Proposal[] = [
-      parsedOwnerProposal,
-      parsedAdminProposal,
-    ];
-
     const successState: DeepPartial<RootState> = {
       ...initialState,
       [Reducers.Proposals]: {
@@ -113,29 +139,44 @@ describe('proposals list sagas', () => {
       },
     };
 
-    const getBasePath = () =>
-      expectSaga(fetchProposalsList)
+    it('both owner and admin proposals', async () => {
+      const payload: SubscriptionResponse<ProposalListQueryResult> = {
+        isError: false,
+        data: {
+          proposals: mockAllProposals,
+        },
+      };
+
+      const runResult = await expectSaga(triggerFetchProposalsList, payload)
         .withReducer(reducer)
         .withState(initialState)
         .select(governorAdminSelector)
-        .select(governorOwnerSelector);
-
-    it('happy path', async () => {
-      const runResult = await getBasePath()
+        .select(governorOwnerSelector)
         .provide([
           [matchers.select(governorAdminSelector), mockGovernorAdmin],
           [matchers.select(governorOwnerSelector), mockGovernorOwner],
           [
-            matchers.call(fetchProposalsForContract, mockGovernorAdmin),
+            matchers.call(
+              fetchProposalsForContract,
+              mockGovernorAdmin,
+              mockAllProposals
+            ),
             [parsedAdminProposal],
           ],
           [
-            matchers.call(fetchProposalsForContract, mockGovernorOwner),
+            matchers.call(
+              fetchProposalsForContract,
+              mockGovernorOwner,
+              mockAllProposals
+            ),
             [parsedOwnerProposal],
           ],
+          [matchers.call(syncAllProposals, mockAllProposals), undefined],
         ])
-        .call(fetchProposalsForContract, mockGovernorAdmin)
-        .call(fetchProposalsForContract, mockGovernorOwner)
+        .put(proposalsActions.updateProposalsList())
+        .call(syncAllProposals, mockAllProposals)
+        .call(fetchProposalsForContract, mockGovernorAdmin, mockAllProposals)
+        .call(fetchProposalsForContract, mockGovernorOwner, mockAllProposals)
         .put(proposalsActions.setProposalsList(combinedProposals))
         .hasFinalState(successState)
         .run();
@@ -143,7 +184,7 @@ describe('proposals list sagas', () => {
       expect(runResult.effects).toEqual({});
     });
 
-    it('does not try to get owner proposals when governorOwner is undefined or same as governorAdmin', async () => {
+    describe('with only governor admin', () => {
       const successStateOnlyAdmin: DeepPartial<RootState> = {
         ...successState,
         [Reducers.Proposals]: {
@@ -155,163 +196,167 @@ describe('proposals list sagas', () => {
         },
       };
 
-      const getOnlyAdminPath = () =>
-        getBasePath()
-          .call(fetchProposalsForContract, mockGovernorAdmin)
-          .put(proposalsActions.setProposalsList([parsedAdminProposal]))
-          .hasFinalState(successStateOnlyAdmin);
-
-      const { effects: undefinedOwnerEffects } = await getOnlyAdminPath()
-        .provide([
-          [matchers.select(governorAdminSelector), mockGovernorAdmin],
-          [matchers.select(governorOwnerSelector), undefined],
-          [
-            matchers.call(fetchProposalsForContract, mockGovernorAdmin),
-            [parsedAdminProposal],
-          ],
-        ])
-        .run();
-
-      expect(undefinedOwnerEffects).toEqual({});
-
-      const { effects: duplicatedGovernorsEffects } = await getOnlyAdminPath()
-        .provide([
-          [matchers.select(governorAdminSelector), mockGovernorAdmin],
-          [matchers.select(governorOwnerSelector), mockGovernorAdmin],
-          [
-            matchers.call(fetchProposalsForContract, mockGovernorAdmin),
-            [parsedAdminProposal],
-          ],
-        ])
-        .run();
-
-      expect(duplicatedGovernorsEffects).toEqual({});
-    });
-
-    it('when wallet is not connected', async () => {
-      const runResult = await getBasePath()
-        .provide([
-          [matchers.select(governorAdminSelector), undefined],
-          [matchers.select(governorOwnerSelector), undefined],
-        ])
-        .put(proposalsActions.fetchProposalsListFailure())
-        .hasFinalState(failureState)
-        .run();
-
-      expect(runResult.effects).toEqual({});
-    });
-
-    it('fetching error', async () => {
-      const runResult = await getBasePath()
-        .provide([
-          [matchers.select(governorAdminSelector), mockGovernorAdmin],
-          [matchers.select(governorOwnerSelector), mockGovernorOwner],
-          [
-            matchers.call(fetchProposalsForContract, mockGovernorAdmin),
-            throwError(),
-          ],
-          [
-            matchers.call(fetchProposalsForContract, mockGovernorOwner),
-            [parsedOwnerProposal],
-          ],
-        ])
-        .call(fetchProposalsForContract, mockGovernorAdmin)
-        .put(proposalsActions.fetchProposalsListFailure())
-        .hasFinalState(failureState)
-        .run();
-
-      expect(runResult.effects).toEqual({});
-    });
-  });
-
-  describe('fetchProposalsForContract', () => {
-    const mockAdminProposalAddress = '0x1';
-
-    const mockGovernorContracts = {
-      [GovernorTypes.GovernorOwner]: 'wrongGovernorAddress',
-      [GovernorTypes.GovernorAdmin]: mockAdminProposalAddress,
-    };
-
-    const mockAdminProposalsQueryResult: ProposalListQueryResult = {
-      proposals: [
-        {
-          description: 'test admin proposal',
-          endBlock: '1000',
-          proposalId: '2',
-          startBlock: '900',
-          startDate: '237958437',
-          contractAddress: mockAdminProposalAddress,
+      const onlyAdminPayload: SubscriptionResponse<ProposalListQueryResult> = {
+        isError: false,
+        data: {
+          proposals: [adminProposal],
         },
-      ],
-    };
-
-    const adminProposalStates = [ProposalState.Active];
-
-    const expectedParsedAdminProposal: Proposal = {
-      endBlock: 1000,
-      endTime: 237961437,
-      id: '2',
-      startBlock: 900,
-      startTime: 237958437,
-      state: adminProposalStates[0],
-      title: '002 • test admin proposal',
-      contractAddress: mockAdminProposalAddress,
-      governorType: GovernorTypes.GovernorAdmin,
-    };
-
-    it('happy path', async () => {
-      const multicallResultAdmin = {
-        name: 'mocked args for governor admin multicall',
       };
 
-      (convertForMulticall as jest.Mock).mockImplementationOnce(
-        () => multicallResultAdmin
-      );
+      const getOnlyAdminPath = () =>
+        expectSaga(triggerFetchProposalsList, onlyAdminPayload)
+          .withReducer(reducer)
+          .withState(initialState)
+          .select(governorAdminSelector)
+          .select(governorOwnerSelector)
+          .call(syncAllProposals, [adminProposal])
+          .call(fetchProposalsForContract, mockGovernorAdmin, [adminProposal])
+          .put(proposalsActions.setProposalsList([parsedAdminProposal]))
+          .put(proposalsActions.updateProposalsList())
+          .hasFinalState(successStateOnlyAdmin);
 
-      const runResult = await expectSaga(
-        fetchProposalsForContract,
-        mockGovernorAdmin
-      )
-        .provide([
-          [matchers.select(providerSelector), mockProvider],
-          [matchers.select(governorContractsSelector), mockGovernorContracts],
-          [matchers.select(multicallProviderSelector), mockMulticallProvider],
-          [matchers.select(subgraphClientSelector), mockSubgraphClient],
-          [
-            matchers.call(proposalsListQuery, mockSubgraphClient, {
-              contractAddress: mockGovernorAdmin.address,
-            }),
-            mockAdminProposalsQueryResult,
-          ],
-          [
-            matchers.call(
-              [mockMulticallProvider, mockMulticallProvider.all],
-              [multicallResultAdmin]
-            ),
+      it('when governorOwner is undefined', async () => {
+        const runResult = await getOnlyAdminPath()
+          .provide([
+            [matchers.select(governorAdminSelector), mockGovernorAdmin],
+            [matchers.select(governorOwnerSelector), undefined],
+            [matchers.call(syncAllProposals, [adminProposal]), undefined],
+            [
+              matchers.call(fetchProposalsForContract, mockGovernorAdmin, [
+                adminProposal,
+              ]),
+              [parsedAdminProposal],
+            ],
+          ])
+          .run();
+
+        expect(runResult.effects).toEqual({});
+      });
+
+      it('when governorOwner is same as governorAdmin', async () => {
+        const runResult = await getOnlyAdminPath()
+          .provide([
+            [matchers.select(governorAdminSelector), mockGovernorAdmin],
+            [matchers.select(governorOwnerSelector), mockGovernorAdmin],
+            [matchers.call(syncAllProposals, [adminProposal]), undefined],
+            [
+              matchers.call(fetchProposalsForContract, mockGovernorAdmin, [
+                adminProposal,
+              ]),
+              [parsedAdminProposal],
+            ],
+          ])
+          .run();
+
+        expect(runResult.effects).toEqual({});
+      });
+    });
+
+    describe('fetching error', () => {
+      it('queryError', async () => {
+        const errorPayload: SubscriptionResponse<ProposalListQueryResult> = {
+          isError: true,
+          error: new Error('error'),
+        };
+
+        const runResult = await expectSaga(
+          triggerFetchProposalsList,
+          errorPayload
+        )
+          .put(proposalsActions.updateProposalsList())
+          .put(proposalsActions.fetchProposalsListFailure())
+          .run();
+
+        expect(runResult.effects).toEqual({});
+      });
+
+      it('fetching status error', async () => {
+        const payload: SubscriptionResponse<ProposalListQueryResult> = {
+          isError: false,
+          data: {
+            proposals: mockAllProposals,
+          },
+        };
+
+        const runResult = await expectSaga(triggerFetchProposalsList, payload)
+          .withReducer(reducer)
+          .withState(initialState)
+          .select(governorAdminSelector)
+          .select(governorOwnerSelector)
+          .provide([
+            [matchers.select(governorAdminSelector), mockGovernorAdmin],
+            [matchers.select(governorOwnerSelector), mockGovernorOwner],
+            [
+              matchers.call(
+                fetchProposalsForContract,
+                mockGovernorAdmin,
+                mockAllProposals
+              ),
+              throwError(new Error('error')),
+            ],
+            [matchers.call(syncAllProposals, mockAllProposals), undefined],
+          ])
+          .put(proposalsActions.updateProposalsList())
+          .call(syncAllProposals, mockAllProposals)
+          .call(fetchProposalsForContract, mockGovernorAdmin, mockAllProposals)
+          .put(proposalsActions.fetchProposalsListFailure())
+          .hasFinalState(failureState)
+          .run();
+
+        expect(runResult.effects).toEqual({});
+      });
+    });
+
+    describe('fetchProposalsForContract', () => {
+      const mockGovernorContracts = {
+        [GovernorTypes.GovernorOwner]: 'wrongGovernorAddress',
+        [GovernorTypes.GovernorAdmin]: governorAdminAddress,
+      };
+
+      const adminProposalStates = [ProposalState.Active];
+
+      it('happy path', async () => {
+        const multicallResultAdmin = {
+          name: 'mocked args for governor admin multicall',
+        };
+
+        (convertForMulticall as jest.Mock).mockImplementationOnce(
+          () => multicallResultAdmin
+        );
+
+        const runResult = await expectSaga(
+          fetchProposalsForContract,
+          mockGovernorAdmin,
+          mockAllProposals
+        )
+          .provide([
+            [matchers.select(governorContractsSelector), mockGovernorContracts],
+            [matchers.select(multicallProviderSelector), mockMulticallProvider],
+            [
+              matchers.call(
+                [mockMulticallProvider, mockMulticallProvider.all],
+                [multicallResultAdmin]
+              ),
+              adminProposalStates,
+            ],
+          ])
+          .select(multicallProviderSelector)
+          .select(governorContractsSelector)
+          .call(
+            [mockMulticallProvider, mockMulticallProvider.all],
+            [multicallResultAdmin]
+          )
+          .call(
+            parseProposals,
+            [adminProposal],
             adminProposalStates,
-          ],
-        ])
-        .select(providerSelector)
-        .select(multicallProviderSelector)
-        .select(subgraphClientSelector)
-        .select(governorContractsSelector)
-        .call(proposalsListQuery, mockSubgraphClient, {
-          contractAddress: mockGovernorAdmin.address,
-        })
-        .call(
-          [mockMulticallProvider, mockMulticallProvider.all],
-          [multicallResultAdmin]
-        )
-        .call(
-          parseProposals,
-          mockAdminProposalsQueryResult.proposals,
-          adminProposalStates,
-          mockGovernorContracts
-        )
-        .run();
+            mockGovernorContracts
+          )
+          .run();
 
-      expect(runResult.effects).toEqual({});
-      expect(runResult.returnValue).toEqual([expectedParsedAdminProposal]);
+        expect(runResult.effects).toEqual({});
+        expect(runResult.returnValue).toEqual([parsedAdminProposal]);
+      });
     });
   });
 });

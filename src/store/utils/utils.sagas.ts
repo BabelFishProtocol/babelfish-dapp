@@ -173,7 +173,7 @@ export function* contractStepCallsSaga<Operations extends string>({
  *    - stopAction:       Action to stop the subscription
  *    - watchDataAction:  Action to start subscription(used for restarting subscriptions)
  */
-export function* subscriptionSaga<Result, Variables>({
+export function* subscriptionSaga<Result, Variables = unknown>({
   query,
   fetchSaga,
   stopAction,
