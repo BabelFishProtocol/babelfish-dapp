@@ -55,7 +55,7 @@ export const txWithChangedHash: TransactionsQueryItem[] =
   }));
 
 export const diffTxsWithHash = (
-  arr1: Array<any>,
-  arr2: Array<any>
+  arr1: Array<TransactionsTableItem>,
+  arr2: Array<TransactionsQueryItem>
 ): TransactionsTableItem[] =>
   arr1.filter((tx) => !arr2.find((ptx) => ptx.txHash === tx.txHash));

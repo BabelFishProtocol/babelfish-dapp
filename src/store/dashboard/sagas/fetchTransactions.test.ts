@@ -2,7 +2,6 @@ import { expectSaga } from 'redux-saga-test-plan';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import { throwError } from 'redux-saga-test-plan/providers';
 import { combineReducers, DeepPartial } from '@reduxjs/toolkit';
-import util from 'util';
 import { pick } from '../../../utils/helpers';
 import { Reducers } from '../../../constants';
 import { rootReducer, RootState } from '../..';
@@ -31,9 +30,6 @@ import {
 import { AppState } from '../../app/app.state';
 import { appActions } from '../../app/app.slice';
 import { GetInitialState, GetSuccesState } from './fetchTransactions.types';
-
-// TODO add to 'global testing'
-util.inspect.defaultOptions.depth = null;
 
 afterEach(() => {
   jest.clearAllMocks();

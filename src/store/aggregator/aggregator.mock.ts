@@ -47,6 +47,11 @@ export const depositMockValues = {
   [AggregatorInputs.ReceiveAddress]: mockReceiver,
 };
 
+export const mockReceiveAmount = parseUnits(
+  depositMockValues.receiveAmount,
+  mockTokenDecimals
+);
+
 export const depositRSKMockValues = {
   ...depositMockValues,
   [AggregatorInputs.StartingChain]: ChainEnum.RSK_TESTNET,
