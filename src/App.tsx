@@ -154,7 +154,7 @@ export const App = () => (
       <Route path={Urls.Claim} element={<ClaimContainer />} />
       <Route path="*" element={<Navigate to={Urls.Dashboard} />} />
     </Routes>
-    
+
     <ErrorAlert />
     <BottomBanner />
   </div>

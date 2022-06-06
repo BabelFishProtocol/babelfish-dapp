@@ -30,7 +30,7 @@ export const wallets: WalletConfig[] = [
     connector: injectedConnector,
     checkConnection: () => {
       if (!ethereum || !ethereum.isMetaMask) {
-        return '🦊 You must install Metamask into your browser and make sure it is set as the default wallet.'
+        return '🦊 You must install Metamask into your browser and make sure it is set as the default wallet.';
       }
     },
   },
@@ -40,7 +40,7 @@ export const wallets: WalletConfig[] = [
     connector: injectedConnector,
     checkConnection: () => {
       if (!ethereum || !ethereum.isNiftyWallet) {
-        return '👛 You must install Nifty into your browser and make sure it is set as the default wallet.'
+        return '👛 You must install Nifty into your browser and make sure it is set as the default wallet.';
       }
     },
   },
@@ -50,7 +50,7 @@ export const wallets: WalletConfig[] = [
     connector: injectedConnector,
     checkConnection: () => {
       if (!ethereum || !ethereum.isLiquality) {
-        return '🔵🟣 You must install Liquality into your browser and make sure it is set as the default wallet.'
+        return '🔵🟣 You must install Liquality into your browser and make sure it is set as the default wallet.';
       }
     },
   },
