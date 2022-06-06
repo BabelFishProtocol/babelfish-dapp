@@ -1,20 +1,15 @@
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import {
-  CellData,
-  CustomColumn,
-} from '../../../components/DataTable/DataTable.types';
+import { CustomColumn } from '../../../components/DataTable/DataTable.types';
 import { formatTimestamp } from '../../../utils/helpers';
-import { TransactionsTableItem } from './TransactionsTable.types';
+import {
+  TableToolipProps,
+  TransactionsTableItem,
+} from './TransactionsTable.types';
 
 export const formatDate = (timestamp?: number | string) =>
   timestamp ? formatTimestamp(timestamp) : '------';
-
-type TableToolipProps = {
-  message: CellData;
-  tip?: string;
-};
 
 const statusTooltip = {
   crossChainDepoFail: 'cross chain depo copy fail',
@@ -74,18 +69,12 @@ export const StatusInfo: CustomColumn<TransactionsTableItem> = ({
     );
   }
 
-  // TODO uncomment
-  // if (rowData.status === 'Failed') {
-  //   return (
-  //     <TableToolip message={value}/>
-  //   );
-  // }
-
+  // TODO remove this case
   return (
     <TableToolip message={value} tip={statusTooltip.crossChainDepoSucces} />
   );
 
-  // TODO uncomment
+  // TODO uncomment, this should be the default one
   // return (
   //   <TableToolip message={value}/>
   // );

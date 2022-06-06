@@ -376,7 +376,7 @@ describe('dashboard store', () => {
         txHash: '0x0',
         isCrossChain: 'true',
         status: 'Pending',
-      } as const;
+      };
 
       const mockTimestamp = localBeforeTx.date;
 

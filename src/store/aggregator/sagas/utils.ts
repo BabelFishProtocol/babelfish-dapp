@@ -1,12 +1,8 @@
 import { ChainEnum, isOnRsk } from '../../../config/chains';
-import { TransactionEvent } from '../../../queries/transactionsQuery';
 import { mockAccount, mockAmount, mockReceiveAmount } from '../aggregator.mock';
 import { AggregatorState, TxDetails } from '../aggregator.state';
 
-type GetTxDetails = {
-  isCrossChain: string | undefined;
-  event: TransactionEvent;
-};
+type GetTxDetails = Pick<TxDetails, 'event' | 'isCrossChain'>;
 
 export const checkIsCrossChain = (destinationChain: ChainEnum) =>
   isOnRsk(destinationChain) ? 'true' : undefined;

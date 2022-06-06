@@ -1,3 +1,4 @@
+import { CellData } from '../../../components/DataTable/DataTable.types';
 import { TransactionsQueryItem } from '../../../queries/transactionsQuery';
 import { FiniteStates } from '../../../utils/types';
 
@@ -12,4 +13,9 @@ export type TransactionsTableItem = Omit<TransactionsQueryItem, 'id'> &
 export type TransactionsTableComponentProps = {
   transactions: TransactionsTableItem[];
   state: FiniteStates;
+};
+
+export type TableToolipProps = {
+  message: CellData;
+  tip?: string;
 };
