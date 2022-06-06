@@ -1,4 +1,5 @@
 import { expectSaga } from 'redux-saga-test-plan';
+import util from 'util';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import { throwError } from 'redux-saga-test-plan/providers';
 import { combineReducers, DeepPartial } from '@reduxjs/toolkit';
@@ -10,7 +11,9 @@ import { mockSubgraphClient } from '../../../testUtils';
 
 import {
   accountSelector,
+  providerSelector,
   subgraphClientSelector,
+  xusdLocalTransactionsSelector,
 } from '../../app/app.selectors';
 
 import { dashboardActions } from '../dashboard.slice';
@@ -21,7 +24,10 @@ import {
   txWithChangedHash,
   diffTxsWithHash,
 } from './fetchTransactions.mock';
-import { fetchTransactions } from './fetchTransactions';
+import {
+  fetchTransactions,
+  setFailedTransactionStatus,
+} from './fetchTransactions';
 import { transactionsQuery } from '../../../queries/transactionsQuery';
 import {
   AggregatorState,
@@ -30,6 +36,8 @@ import {
 import { AppState } from '../../app/app.state';
 import { appActions } from '../../app/app.slice';
 import { GetInitialState, GetSuccesState } from './fetchTransactions.types';
+
+util.inspect.defaultOptions.depth = null;
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -155,10 +163,15 @@ describe('dashboard store', () => {
       },
       [Reducers.Dashboard]: {
         ...initialState[Reducers.Dashboard],
-        transactionList: {
-          state: 'success',
-          data: fetchedTx,
-        },
+        transactionList: fetchedTx
+          ? {
+            state: 'success',
+            data: fetchedTx,
+          }
+          : {
+            state: 'idle',
+            data: [],
+          },
       },
     });
 
@@ -269,6 +282,76 @@ describe('dashboard store', () => {
         .call(transactionsQuery, mockSubgraphClient, { user: mockAccount })
         .put(appActions.removeLocalXusdTransactions(fetchedAfterTx))
         .put(dashboardActions.setTransactions(fetchedAfterTx))
+        .hasFinalState(successState)
+        .run();
+
+      expect(runResult.effects).toEqual({});
+    });
+
+    it('check seting new status: Failed; not on deposit, crossChain', async () => {
+      class MockProvider {
+        public status: number = 0;
+        waitForTransaction(_: string) {
+          return {
+            txReceipt: this.status,
+          };
+        }
+      }
+
+      const mockProvider = new MockProvider();
+
+      const localBeforeTx = changeTxStatus('Pending');
+      const localAfterTx = changeTxStatus('Failed');
+
+      const initialState = getInitialState({ localTx: localBeforeTx });
+      const successState = getSuccessState({
+        initialState,
+        localTx: localAfterTx,
+      });
+
+      const getBasePath = () =>
+        expectSaga(setFailedTransactionStatus)
+          .withReducer(reducer)
+          .withState(initialState)
+          .select(providerSelector)
+          .select(xusdLocalTransactionsSelector);
+
+      const runResult = await getBasePath()
+        .provide([
+          [matchers.select(providerSelector), mockProvider],
+          [matchers.select(xusdLocalTransactionsSelector), localBeforeTx],
+          [matchers.call.fn(mockProvider.waitForTransaction), { status: 0 }],
+        ])
+        .put(
+          appActions.updateLocalXusdTransactionStatus({
+            txHash: localBeforeTx[0].txHash,
+            newStatus: 'Failed',
+          })
+        )
+        .put(
+          appActions.updateLocalXusdTransactionStatus({
+            txHash: localBeforeTx[1].txHash,
+            newStatus: 'Failed',
+          })
+        )
+        .put(
+          appActions.updateLocalXusdTransactionStatus({
+            txHash: localBeforeTx[2].txHash,
+            newStatus: 'Failed',
+          })
+        )
+        .call(
+          [mockProvider, mockProvider.waitForTransaction],
+          localBeforeTx[0].txHash
+        )
+        .call(
+          [mockProvider, mockProvider.waitForTransaction],
+          localBeforeTx[1].txHash
+        )
+        .call(
+          [mockProvider, mockProvider.waitForTransaction],
+          localBeforeTx[2].txHash
+        )
         .hasFinalState(successState)
         .run();
 

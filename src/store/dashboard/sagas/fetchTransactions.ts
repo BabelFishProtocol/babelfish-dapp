@@ -37,7 +37,6 @@ export function* fetchTransactions() {
   }
 }
 
-// TODO test this
 export function* setFailedTransactionStatus() {
   const provider = yield* select(providerSelector);
   if (!provider) return;
@@ -55,8 +54,9 @@ export function* setFailedTransactionStatus() {
       [provider, provider.waitForTransaction],
       tx.txHash
     );
+
     if (txReceipt.status === 0) {
-      yield put(
+      yield* put(
         appActions.updateLocalXusdTransactionStatus({
           txHash: tx.txHash,
           newStatus: 'Failed',
