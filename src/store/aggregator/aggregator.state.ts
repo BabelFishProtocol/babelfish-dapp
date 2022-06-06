@@ -35,7 +35,6 @@ export type AggregatorCalls =
   | 'reset allowance';
 
 export class AggregatorState {
-  flowState: FlowState = 'deposit';
   feesAndLimits: LoadableValue<FeesAndLimitsType> = {
     state: 'idle',
     data: {
