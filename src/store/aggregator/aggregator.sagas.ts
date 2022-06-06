@@ -159,7 +159,6 @@ export function* addTransactionIntoLocalStorage({
   yield* setLocalTx(txToSave);
 }
 
-// TODO test this
 export function* setErrorOnDepositCrossChainTx() {
   const currentOperation = yield* select(submitCallCurrentOperation);
   const txDetails = yield* select(submitTxDetails);

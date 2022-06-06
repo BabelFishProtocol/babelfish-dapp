@@ -3,7 +3,7 @@ import util from 'util';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import { throwError } from 'redux-saga-test-plan/providers';
 import { combineReducers, DeepPartial } from '@reduxjs/toolkit';
-import { pick } from '../../../utils/helpers';
+import { getCurrentTimestamp, pick } from '../../../utils/helpers';
 import { Reducers } from '../../../constants';
 import { rootReducer, RootState } from '../..';
 
@@ -30,12 +30,18 @@ import {
 } from './fetchTransactions';
 import { transactionsQuery } from '../../../queries/transactionsQuery';
 import {
+  AggregatorCalls,
   AggregatorState,
   XusdLocalTransaction,
 } from '../../aggregator/aggregator.state';
 import { AppState } from '../../app/app.state';
 import { appActions } from '../../app/app.slice';
 import { GetInitialState, GetSuccesState } from './fetchTransactions.types';
+import {
+  submitCallCurrentOperation,
+  submitTxDetails,
+} from '../../aggregator/aggregator.selectors';
+import { setErrorOnDepositCrossChainTx } from '../../aggregator/aggregator.sagas';
 
 util.inspect.defaultOptions.depth = null;
 
@@ -165,15 +171,26 @@ describe('dashboard store', () => {
         ...initialState[Reducers.Dashboard],
         transactionList: fetchedTx
           ? {
-            state: 'success',
-            data: fetchedTx,
-          }
+              state: 'success',
+              data: fetchedTx,
+            }
           : {
-            state: 'idle',
-            data: [],
-          },
+              state: 'idle',
+              data: [],
+            },
       },
     });
+
+    class MockProvider {
+      public status: number = 0;
+      waitForTransaction(_: string) {
+        return {
+          txReceipt: this.status,
+        };
+      }
+    }
+
+    const mockProvider = new MockProvider();
 
     it('swap single transaction', async () => {
       const fetchedTx = transactionsResult.xusdTransactions[0];
@@ -289,17 +306,6 @@ describe('dashboard store', () => {
     });
 
     it('check seting new status: Failed; not on deposit, crossChain', async () => {
-      class MockProvider {
-        public status: number = 0;
-        waitForTransaction(_: string) {
-          return {
-            txReceipt: this.status,
-          };
-        }
-      }
-
-      const mockProvider = new MockProvider();
-
       const localBeforeTx = changeTxStatus('Pending');
       const localAfterTx = changeTxStatus('Failed');
 
@@ -352,6 +358,54 @@ describe('dashboard store', () => {
           [mockProvider, mockProvider.waitForTransaction],
           localBeforeTx[2].txHash
         )
+        .hasFinalState(successState)
+        .run();
+
+      expect(runResult.effects).toEqual({});
+    });
+
+    it('check seting new status: Failed; on deposit, crossChain', async () => {
+      const mockCurrOpperation: AggregatorCalls = 'deposit';
+
+      const localBeforeTx: XusdLocalTransaction = {
+        event: 'Deposit',
+        asset: 'XUSD',
+        amount: '49500',
+        user: '0x0123',
+        date: '1636084223',
+        txHash: '0x0',
+        isCrossChain: 'true',
+        status: 'Pending',
+      } as const;
+
+      const mockTimestamp = localBeforeTx.date;
+
+      const localAfterTx: XusdLocalTransaction = {
+        ...localBeforeTx,
+        status: 'Failed',
+      };
+
+      const initialState = getInitialState({ localTx: [] });
+      const successState = getSuccessState({
+        initialState,
+        localTx: [localAfterTx],
+      });
+
+      const getBasePath = () =>
+        expectSaga(setErrorOnDepositCrossChainTx)
+          .withReducer(reducer)
+          .withState(initialState)
+          .select(submitCallCurrentOperation)
+          .select(submitTxDetails);
+
+      const runResult = await getBasePath()
+        .provide([
+          [matchers.select(submitCallCurrentOperation), mockCurrOpperation],
+          [matchers.select(submitTxDetails), localBeforeTx],
+          [matchers.call(getCurrentTimestamp), mockTimestamp],
+        ])
+        .call(getCurrentTimestamp)
+        .put(appActions.setLocalXusdTransactions(localAfterTx))
         .hasFinalState(successState)
         .run();
 
