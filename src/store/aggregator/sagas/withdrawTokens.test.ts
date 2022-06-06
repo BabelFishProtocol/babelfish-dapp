@@ -209,7 +209,7 @@ describe('withdrawTokens', () => {
   describe('on RSK only', () => {
     const txDetails = getTxDetails({
       isCrossChain: undefined,
-      event: 'Withdraw'
+      event: 'Withdraw',
     });
 
     const aggregatorInitialState = getAggregatorInitialState(txDetails);

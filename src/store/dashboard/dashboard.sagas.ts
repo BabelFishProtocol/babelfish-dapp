@@ -20,6 +20,9 @@ export function* dashboardSaga() {
     takeLatest(dashboardActions.updateTransactions.type, fetchTransactions),
     takeLatest(dashboardActions.watchTransactions.type, watchTransactions),
 
-    takeLatest(dashboardActions.setTransactions.type, setFailedTransactionStatus),
+    takeLatest(
+      dashboardActions.setTransactions.type,
+      setFailedTransactionStatus
+    ),
   ]);
 }
