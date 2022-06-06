@@ -19,8 +19,8 @@ import { DashboardState } from '../dashboard.state';
 import {
   transactionsResult,
   changeTxStatus,
-  txWithDifferentHash,
-  getTxDifferentHash,
+  txWithChangedHash,
+  diffTxsWithHash,
 } from './fetchTransactions.mock';
 import { fetchTransactions } from './fetchTransactions';
 import { transactionsQuery } from '../../../queries/transactionsQuery';
@@ -30,7 +30,7 @@ import {
 } from '../../aggregator/aggregator.state';
 import { AppState } from '../../app/app.state';
 import { appActions } from '../../app/app.slice';
-import { TransactionsTableItem } from '../../../pages/Dashboard/TransactionsTable/TransactionsTable.types';
+import { GetInitialState, GetSuccesState } from './fetchTransactions.types';
 
 // TODO add to 'global testing'
 util.inspect.defaultOptions.depth = null;
@@ -128,11 +128,7 @@ describe('dashboard store', () => {
   });
 
   describe('fetchTransactions with swappng local tx', () => {
-    const getInitialState = ({
-      localTx,
-    }: {
-      localTx: XusdLocalTransaction[];
-    }): DeepPartial<RootState> => ({
+    const getInitialState = ({ localTx }: GetInitialState) => ({
       [Reducers.Dashboard]: { ...new DashboardState() },
       [Reducers.Aggregator]: { ...new AggregatorState() },
       [Reducers.App]: {
@@ -151,11 +147,7 @@ describe('dashboard store', () => {
       initialState,
       fetchedTx,
       localTx,
-    }: {
-      initialState: DeepPartial<RootState>;
-      fetchedTx?: TransactionsTableItem[];
-      localTx?: XusdLocalTransaction[] | [];
-    }): DeepPartial<RootState> => ({
+    }: GetSuccesState) => ({
       ...initialState,
       [Reducers.App]: {
         ...initialState[Reducers.App],
@@ -248,18 +240,18 @@ describe('dashboard store', () => {
       expect(runResult.effects).toEqual({});
     });
 
-    it('delete from local tx only with same txHash', async () => {
+    it('delete from local transactions only with same txHash', async () => {
       const fetchedTx = transactionsResult.xusdTransactions;
       const fetchedAfterTx = changeTxStatus('Confirmed');
 
-      const localBeforeTx = changeTxStatus('Pending', txWithDifferentHash);
-      const localAfterTx = getTxDifferentHash(localBeforeTx, fetchedTx);
+      const localBeforeTx = changeTxStatus('Pending', txWithChangedHash);
+      const localAfterTx = diffTxsWithHash(localBeforeTx, fetchedTx);
 
       const initialState = getInitialState({ localTx: localBeforeTx });
       const successState = getSuccessState({
         initialState,
         fetchedTx: fetchedAfterTx,
-        localTx: localAfterTx as TransactionsTableItem[],
+        localTx: localAfterTx,
       });
 
       const getBasePath = () =>
@@ -286,5 +278,6 @@ describe('dashboard store', () => {
 
       expect(runResult.effects).toEqual({});
     });
+    // TODO add tx's with different event
   });
 });

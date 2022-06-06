@@ -48,14 +48,14 @@ export const changeTxStatus = (
     status,
   }));
 
-export const txWithDifferentHash: TransactionsQueryItem[] =
+export const txWithChangedHash: TransactionsQueryItem[] =
   transactionsResult.xusdTransactions.map((tx, index) => ({
     ...tx,
     txHash: index === 0 ? index.toString() : tx.txHash,
   }));
 
-export const getTxDifferentHash = (
+export const diffTxsWithHash = (
   arr1: Array<any>,
   arr2: Array<any>
-): TransactionsQueryItem[] =>
+): TransactionsTableItem[] =>
   arr1.filter((tx) => !arr2.find((ptx) => ptx.txHash === tx.txHash));

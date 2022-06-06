@@ -401,14 +401,14 @@ describe('aggregator store', () => {
 
     const getSuccessState = ({
       txToSave,
-      alreadyConfirmed = false,
+      addConfirmedTx = false,
     }: GetSuccesState): DeepPartial<RootState> => ({
       ...initialState,
       [Reducers.App]: {
         ...initialState[Reducers.App],
         xusdLocalTransactions: {
           [mockChainEnum]: {
-            [mockAccount]: alreadyConfirmed
+            [mockAccount]: addConfirmedTx
               ? [{ ...txToSave, status: 'Confirmed' }]
               : [txToSave],
           },
@@ -607,7 +607,7 @@ describe('aggregator store', () => {
         const txToSave = getTxToSave(txDetails);
         const successState = getSuccessState({
           txToSave,
-          alreadyConfirmed: true,
+          addConfirmedTx: true,
         });
 
         const txAlreadyConfirmed: XusdLocalTransaction = {

@@ -112,5 +112,5 @@ export type GetTxDetails = {
 
 export type GetSuccesState = {
   txToSave: XusdLocalTransaction;
-  alreadyConfirmed?: boolean;
+  addConfirmedTx?: boolean;
 };
