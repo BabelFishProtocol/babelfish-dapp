@@ -278,6 +278,5 @@ describe('dashboard store', () => {
 
       expect(runResult.effects).toEqual({});
     });
-    // TODO add tx's with different event
   });
 });
