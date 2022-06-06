@@ -4,7 +4,7 @@ import { BridgeDictionary } from '../../config/bridges';
 import { ChainEnum } from '../../config/chains';
 import { contractsAddresses } from '../../config/contracts';
 import { pools } from '../../config/pools';
-import { tokens } from '../../config/tokens';
+import { TokenEnum, tokens } from '../../config/tokens';
 import { Reducers } from '../../constants';
 import {
   AllowTokens__factory,
@@ -20,9 +20,8 @@ import { selectCurrentCallStepData } from '../utils/utils.selectors';
 
 const aggregatorState = (state: RootState) => state[Reducers.Aggregator];
 
-export const flowStateSelector = createSelector(
-  aggregatorState,
-  (state) => state.flowState
+export const flowStateSelector = createSelector(aggregatorState, (state) =>
+  state.startingToken === TokenEnum.XUSD ? 'withdraw' : 'deposit'
 );
 
 export const feesAndLimitsStateSelector = createSelector(

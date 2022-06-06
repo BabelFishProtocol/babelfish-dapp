@@ -17,7 +17,6 @@ export const ControlledDropdown = <
   name,
   rules,
   control,
-  hideField,
   options,
   setValue,
   ...dropdownProps
@@ -39,11 +38,7 @@ export const ControlledDropdown = <
   return (
     <Controller
       render={({ field: { onChange, value }, fieldState }) => (
-        <Box
-          sx={{
-            display: hideField ? 'none' : 'block',
-          }}
-        >
+        <Box>
           <DropdownOptions
             {...dropdownProps}
             options={options}
