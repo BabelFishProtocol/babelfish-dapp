@@ -1,0 +1,10 @@
+query getTransactions($user: Bytes!) {
+  xusdTransactions(orderBy: date, where: { user: $user }) {
+    id
+    event
+    date
+    asset
+    amount
+    user
+  }
+}

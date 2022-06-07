@@ -1,38 +1,26 @@
-import { gql, GraphQLClient } from 'graphql-request';
+import { GraphQLClient } from 'graphql-request';
+import {
+  getSdk,
+  IGetTransactionsQueryVariables,
+  IXusdTransaction,
+} from '../generated/graphql';
 
-type TransactionsQueryParams = { user: string };
+export type TransactionsQueryItem = IXusdTransaction;
 
-export type TransactionsQueryItem = {
-  asset: string;
-  id: string;
-  date: string;
-  event: 'Deposit' | 'Withdraw';
-  amount: string;
-  user: string;
-};
-
-export type TransactionsQueryResult = {
-  xusdTransactions: TransactionsQueryItem[];
-};
-
-const findTransactionsQuery = gql`
-  query getTransactions($user: Bytes!) {
-    xusdTransactions(orderBy: date, where: { user: $user }) {
-      id
-      event
-      date
-      asset
-      amount
-      user
-    }
-  }
-`;
-
-export const transactionsQuery = (
+export const transactionsQuery = async (
   client: GraphQLClient,
-  params: TransactionsQueryParams
-) =>
-  client.request<TransactionsQueryResult, TransactionsQueryParams>(
-    findTransactionsQuery,
-    params
-  );
+  params: IGetTransactionsQueryVariables
+) => {
+  const sdk = getSdk(client);
+  const transactions = await sdk.getTransactions({ user: params.user });
+  return transactions;
+};
+
+// export type TransactionsQueryItem = {
+//   asset: string;
+//   id: string;
+//   date: string;
+//   event: 'Deposit' | 'Withdraw';
+//   amount: string;
+//   user: string;
+// };
