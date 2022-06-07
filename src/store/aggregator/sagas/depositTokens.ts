@@ -1,6 +1,10 @@
 import { utils } from 'ethers';
 import { call, put, select } from 'typed-redux-saga';
-import { ChainEnum, SUPPORTED_CHAINS_RSK } from '../../../config/chains';
+import {
+  ChainEnum,
+  checkIsCrossChain,
+  SUPPORTED_CHAINS_RSK,
+} from '../../../config/chains';
 import { parseToWei } from '../../../utils/helpers';
 import {
   accountSelector,
@@ -17,7 +21,6 @@ import {
 } from '../aggregator.selectors';
 import { AggregatorActions, aggregatorActions } from '../aggregator.slice';
 import { AggregatorCalls } from '../aggregator.state';
-import { checkIsCrossChain } from './utils';
 
 export function* depositTokens({ payload }: AggregatorActions['submit']) {
   const bridge = yield* select(bridgeContractSelector);

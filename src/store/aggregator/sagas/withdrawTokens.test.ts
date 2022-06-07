@@ -17,6 +17,8 @@ import { aggregatorActions, aggregatorReducer } from '../aggregator.slice';
 
 import { AggregatorState } from '../aggregator.state';
 import {
+  getAggregatorInitialState,
+  getTxDetails,
   mockAccount,
   mockAmount,
   mockBassetAddress,
@@ -35,7 +37,6 @@ import {
   startingTokenDecimalsSelector,
 } from '../aggregator.selectors';
 import { withdrawTokens } from './withdrawTokens';
-import { getAggregatorInitialState, getTxDetails } from './utils';
 
 afterEach(() => {
   jest.clearAllMocks();

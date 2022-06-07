@@ -19,6 +19,8 @@ import { AggregatorState } from '../aggregator.state';
 import {
   depositMockValues,
   depositRSKMockValues,
+  getAggregatorInitialState,
+  getTxDetails,
   mockAccount,
   mockAmount,
   mockBridge,
@@ -37,7 +39,6 @@ import {
   startingTokenDecimalsSelector,
 } from '../aggregator.selectors';
 import { depositTokens } from './depositTokens';
-import { getAggregatorInitialState, getTxDetails } from './utils';
 
 afterEach(() => {
   jest.clearAllMocks();

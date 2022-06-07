@@ -1,6 +1,9 @@
 import { utils } from 'ethers';
 import { call, put, select } from 'typed-redux-saga';
-import { SUPPORTED_CHAINS_RSK } from '../../../config/chains';
+import {
+  checkIsCrossChain,
+  SUPPORTED_CHAINS_RSK,
+} from '../../../config/chains';
 import { parseToWei } from '../../../utils/helpers';
 import {
   accountSelector,
@@ -16,7 +19,6 @@ import {
 } from '../aggregator.selectors';
 import { AggregatorActions, aggregatorActions } from '../aggregator.slice';
 import { AggregatorCalls } from '../aggregator.state';
-import { checkIsCrossChain } from './utils';
 
 export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
   const tokenDecimals = yield* select(startingTokenDecimalsSelector);
