@@ -11,27 +11,31 @@ import {
 export const formatDate = (timestamp?: number | string) =>
   timestamp ? formatTimestamp(timestamp) : '------';
 
+// TODO update the copy
 const statusTooltip = {
-  crossChainDepoFail: 'cross chain depo copy fail',
-  crossChainDepoSucces: 'cross chain depo copy succes',
+  depositSucces: 'cross chain depo copy succes',
+  withdrawSucces: 'cross chain withdraw copy succes',
 };
 
 const QuestionMark = () => (
-  <Typography
-    component="span"
-    sx={{
-      fontSize: '11px',
-      mb: '3px',
-      p: '1px 3px 0px',
-      borderRadius: '24%',
-      backgroundColor: ({ palette }) => palette.background.default,
-    }}
-  >
-    ?
-  </Typography>
+  <div>
+    <Typography
+      component="span"
+      sx={{
+        fontSize: '11px',
+        mb: '3px',
+        p: '1px 3px 0px',
+        borderRadius: '24%',
+        color: ({ palette }) => palette.grey[900],
+        backgroundColor: ({ palette }) => palette.primary.main,
+      }}
+    >
+      ?
+    </Typography>
+  </div>
 );
 
-const TableToolip = ({ message, tip }: TableToolipProps) =>
+const StatusMessaga = ({ message, tip }: TableToolipProps) =>
   tip ? (
     <Box sx={{ cursor: 'pointer' }} display="inline-block">
       <Tooltip arrow title={tip}>
@@ -45,37 +49,25 @@ const TableToolip = ({ message, tip }: TableToolipProps) =>
     <span>{message}</span>
   );
 
-export const StatusInfo: CustomColumn<TransactionsTableItem> = ({
+export const StatusColumn: CustomColumn<TransactionsTableItem> = ({
   value,
   rowData,
 }) => {
   if (
-    rowData.isCrossChain &&
     rowData.event === 'Deposit' &&
-    rowData.status === 'Failed'
+    rowData.status === 'Confirmed' &&
+    rowData.isCrossChain
   ) {
-    return (
-      <TableToolip message={value} tip={statusTooltip.crossChainDepoFail} />
-    );
+    return <StatusMessaga message={value} tip={statusTooltip.withdrawSucces} />;
   }
 
   if (
-    rowData.isCrossChain &&
-    rowData.event === 'Deposit' &&
-    rowData.status === 'Confirmed'
+    rowData.event === 'Withdraw' &&
+    rowData.status === 'Confirmed' &&
+    rowData.isCrossChain
   ) {
-    return (
-      <TableToolip message={value} tip={statusTooltip.crossChainDepoSucces} />
-    );
+    return <StatusMessaga message={value} tip={statusTooltip.depositSucces} />;
   }
 
-  // TODO remove this case
-  return (
-    <TableToolip message={value} tip={statusTooltip.crossChainDepoSucces} />
-  );
-
-  // TODO uncomment, this should be the default one
-  // return (
-  //   <TableToolip message={value}/>
-  // );
+  return <StatusMessaga message={value} />;
 };

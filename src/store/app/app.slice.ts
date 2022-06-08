@@ -1,5 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { ChainEnum } from '../../config/chains';
 import { Reducers } from '../../constants';
 import {
   UpdateTxStatus,
@@ -9,6 +10,24 @@ import { ActionsType } from '../types';
 import { AppState } from './app.state';
 
 const initialState = { ...new AppState() };
+
+const isVali = (
+  state: AppState
+): state is AppState & {
+  chainId: ChainEnum;
+  account: string;
+} => {
+  if (
+    !state.chainId ||
+    !state.account ||
+    !state.xusdLocalTransactions[state.chainId] ||
+    !state.xusdLocalTransactions[state.chainId][state.account]
+  ) {
+    return false;
+  }
+
+  return true;
+};
 
 export const appSlice = createSlice({
   name: Reducers.App,
@@ -83,44 +102,30 @@ export const appSlice = createSlice({
       state,
       { payload }: PayloadAction<UpdateTxStatus>
     ) => {
-      if (
-        !state.chainId ||
-        !state.account ||
-        !state.xusdLocalTransactions[state.chainId] ||
-        !state.xusdLocalTransactions[state.chainId][state.account]
-      ) {
-        return;
+      if (isVali(state)) {
+        const txToUpdate = state.xusdLocalTransactions[state.chainId][
+          state.account
+        ].find(({ txHash }) => txHash === payload.txHash);
+
+        if (!txToUpdate || txToUpdate.status === payload.newStatus) {
+          return;
+        }
+
+        txToUpdate.status = payload.newStatus;
       }
-
-      const txToUpdate = state.xusdLocalTransactions[state.chainId][
-        state.account
-      ].find(({ txHash }) => txHash === payload.txHash);
-
-      if (!txToUpdate || txToUpdate.status === payload.newStatus) {
-        return;
-      }
-
-      txToUpdate.status = payload.newStatus;
     },
     removeLocalXusdTransactions: (
       state,
       { payload }: PayloadAction<XusdLocalTransaction[]>
     ) => {
-      if (
-        !state.chainId ||
-        !state.account ||
-        !state.xusdLocalTransactions[state.chainId] ||
-        !state.xusdLocalTransactions[state.chainId][state.account]
-      ) {
-        return;
+      if (isVali(state)) {
+        const filteredTransactions = state.xusdLocalTransactions[state.chainId][
+          state.account
+        ].filter((tx) => !payload.find((ptx) => ptx.txHash === tx.txHash));
+
+        state.xusdLocalTransactions[state.chainId][state.account] =
+          filteredTransactions;
       }
-
-      const filteredTransactions = state.xusdLocalTransactions[state.chainId][
-        state.account
-      ].filter((tx) => !payload.find((ptx) => ptx.txHash === tx.txHash));
-
-      state.xusdLocalTransactions[state.chainId][state.account] =
-        filteredTransactions;
     },
   },
 });

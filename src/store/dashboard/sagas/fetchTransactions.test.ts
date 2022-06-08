@@ -41,7 +41,7 @@ import {
   submitCallCurrentOperation,
   submitTxDetails,
 } from '../../aggregator/aggregator.selectors';
-import { setErrorOnDepositCrossChainTx } from '../../aggregator/aggregator.sagas';
+import { setErrorOnDepositCrossChainTx } from '../../aggregator/sagas/localTransactions';
 
 util.inspect.defaultOptions.depth = null;
 

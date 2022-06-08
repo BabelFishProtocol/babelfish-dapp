@@ -131,11 +131,13 @@ export const idsOfTestNetworks = testnetChainsArr.map(({ id }) => id);
 
 export const SUPPORTED_CHAINS_RSK = [ChainEnum.RSK, ChainEnum.RSK_TESTNET];
 
-export const isOnRsk = (chainId: ChainEnum) =>
-  !SUPPORTED_CHAINS_RSK.includes(chainId);
+export const isRSK = (chain: ChainEnum | '') =>
+  !!chain && SUPPORTED_CHAINS_RSK.includes(chain);
+export const isNotRSK = (chain: ChainEnum | '') =>
+  !!chain && !SUPPORTED_CHAINS_RSK.includes(chain);
 
-export const checkIsCrossChain = (destinationChain: ChainEnum) =>
-  isOnRsk(destinationChain) ? 'true' : undefined;
+export const checkIsCrossChain = (chain: ChainEnum) =>
+  isNotRSK(chain) ? 'true' : undefined;
 
 export const SUPPORTED_CHAINS = Object.values(ChainEnum).filter(
   (item) => typeof item === 'number'

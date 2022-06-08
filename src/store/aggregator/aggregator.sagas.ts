@@ -1,5 +1,4 @@
 import { select, call, put, all, takeLatest } from 'typed-redux-saga';
-import { getCurrentTimestamp } from '../../utils/helpers';
 import { accountSelector } from '../app/app.selectors';
 import { appActions } from '../app/app.slice';
 import {
@@ -8,13 +7,14 @@ import {
   flowStateSelector,
   startingTokenContractSelector,
   startingTokenSelector,
-  submitCallCurrentOperation,
-  submitTxDetails,
   tokenAddressSelector,
 } from './aggregator.selectors';
 import { AggregatorActions, aggregatorActions } from './aggregator.slice';
-import { XusdLocalTransaction } from './aggregator.state';
 import { depositTokens } from './sagas/depositTokens';
+import {
+  addTransactionIntoLocalStorage,
+  setErrorOnDepositCrossChainTx,
+} from './sagas/localTransactions';
 import { withdrawTokens } from './sagas/withdrawTokens';
 
 export function* transferTokens(action: AggregatorActions['submit']) {
@@ -102,77 +102,6 @@ export function* fetchStartingTokenBalance() {
     const msg =
       e instanceof Error ? e.message : 'Could not fetch starting token balance';
     yield* put(aggregatorActions.fetchStartingTokenBalanceFailure(msg));
-  }
-}
-
-export function* setLocalTx(tx: XusdLocalTransaction) {
-  yield* put(appActions.setLocalXusdTransactions(tx));
-}
-
-export function* addTransactionIntoLocalStorage({
-  payload,
-}: AggregatorActions['setSubmitStepData']) {
-  const currentOperation = yield* select(submitCallCurrentOperation);
-  const txDetails = yield* select(submitTxDetails);
-
-  if (
-    !txDetails ||
-    (currentOperation !== 'deposit' && currentOperation !== 'withdraw')
-  )
-    return;
-
-  let txToSave: XusdLocalTransaction;
-
-  if (
-    txDetails.isCrossChain &&
-    payload.txReceipt &&
-    currentOperation === 'deposit' &&
-    txDetails.event === 'Deposit'
-  ) {
-    const timestamp = yield* call(getCurrentTimestamp);
-
-    txToSave = {
-      ...txDetails,
-      txHash: payload.txReceipt.transactionHash,
-      asset: 'XUSD',
-      status: 'Confirmed',
-      date: timestamp.toString(),
-    };
-
-    yield* setLocalTx(txToSave);
-    return;
-  }
-
-  if (!payload.tx || currentOperation !== txDetails.event.toLowerCase()) {
-    return;
-  }
-
-  const timestamp = yield* call(getCurrentTimestamp);
-
-  txToSave = {
-    txHash: payload.tx.hash,
-    asset: 'XUSD',
-    date: timestamp.toString(),
-    ...txDetails,
-  };
-
-  yield* setLocalTx(txToSave);
-}
-
-export function* setErrorOnDepositCrossChainTx() {
-  const currentOperation = yield* select(submitCallCurrentOperation);
-  const txDetails = yield* select(submitTxDetails);
-
-  if (currentOperation === 'deposit' && txDetails?.isCrossChain) {
-    const timestamp = yield* call(getCurrentTimestamp);
-
-    yield* setLocalTx({
-      ...txDetails,
-      status: 'Failed',
-      txHash: '0x0',
-      asset: 'XUSD',
-      date: timestamp.toString(),
-    });
   }
 }
 

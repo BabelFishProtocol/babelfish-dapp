@@ -5,7 +5,7 @@ import {
   TransactionsTableComponentProps,
   TransactionsTableItem,
 } from './TransactionsTable.types';
-import { formatDate, StatusInfo } from './TransactionsTable.utils';
+import { formatDate, StatusColumn } from './TransactionsTable.utils';
 
 const transactionsTableColumns: DataTableColumn<TransactionsTableItem>[] = [
   { label: 'Event', name: 'event' },
@@ -16,7 +16,7 @@ const transactionsTableColumns: DataTableColumn<TransactionsTableItem>[] = [
     name: 'date',
     format: formatDate,
   },
-  { label: 'Status', name: 'status', component: StatusInfo },
+  { label: 'Status', name: 'status', component: StatusColumn },
 ];
 
 export const TransactionsTableComponent = ({

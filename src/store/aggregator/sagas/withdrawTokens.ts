@@ -42,8 +42,9 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
     return;
   }
 
+  // we have to attach some transaction details into state,
+  // it will be use to save this transaction in local storage
   const isCrossChain = checkIsCrossChain(destinationChain);
-
   yield* put(
     aggregatorActions.setTransactionDetails({
       amount: parseToWei(sendAmount),

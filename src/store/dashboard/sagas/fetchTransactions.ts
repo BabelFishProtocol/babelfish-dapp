@@ -10,6 +10,7 @@ import { transactionsQuery } from '../../../queries/transactionsQuery';
 import { dashboardActions } from '../dashboard.slice';
 import { appActions } from '../../app/app.slice';
 import { XusdLocalTransaction } from '../../aggregator/aggregator.state';
+import { TxReceiptStatus } from './fetchTransactions.types';
 
 export function* fetchTransactions() {
   try {
@@ -55,7 +56,7 @@ export function* setFailedTransactionStatus() {
       tx.txHash
     );
 
-    if (txReceipt.status === 0) {
+    if (txReceipt.status === TxReceiptStatus.Failed) {
       yield* put(
         appActions.updateLocalXusdTransactionStatus({
           txHash: tx.txHash,

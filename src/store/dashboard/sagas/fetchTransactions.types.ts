@@ -12,3 +12,8 @@ export type GetSuccesState = {
   fetchedTx?: TransactionsTableItem[];
   localTx?: XusdLocalTransaction[] | [];
 };
+
+export enum TxReceiptStatus {
+  Failed = 0,
+  Valid = 1,
+}
