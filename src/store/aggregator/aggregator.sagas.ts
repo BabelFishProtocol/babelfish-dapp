@@ -4,12 +4,24 @@ import { appActions } from '../app/app.slice';
 import {
   allowTokensContractSelector,
   bridgeContractSelector,
+  flowStateSelector,
   startingTokenContractSelector,
   startingTokenSelector,
   tokenAddressSelector,
 } from './aggregator.selectors';
-import { aggregatorActions } from './aggregator.slice';
-import { transferTokens } from './sagas/transferTokens';
+import { AggregatorActions, aggregatorActions } from './aggregator.slice';
+import { depositTokens } from './sagas/depositTokens';
+import { withdrawTokens } from './sagas/withdrawTokens';
+
+export function* transferTokens(action: AggregatorActions['submit']) {
+  const flowState = yield* select(flowStateSelector);
+
+  if (flowState === 'deposit') {
+    yield* depositTokens(action);
+  } else if (flowState === 'withdraw') {
+    yield* withdrawTokens(action);
+  }
+}
 
 export function* fetchAllowTokenAddress() {
   try {

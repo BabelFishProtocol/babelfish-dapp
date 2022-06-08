@@ -1,23 +1,24 @@
-import { put, call, select } from 'typed-redux-saga';
-import { allUserStakesQuery } from '../../../queries/historyStakeListQuery';
+import { put, select, take } from 'typed-redux-saga';
 import {
-  accountSelector,
-  subgraphClientSelector,
-} from '../../app/app.selectors';
+  findStakingHistorySubscription,
+  UserQueryParams,
+  UserQueryResult,
+} from '../../../queries/historyStakeListQuery';
+import { accountSelector } from '../../app/app.selectors';
+import { appActions } from '../../app/app.slice';
+import { SubscriptionResponse } from '../../types';
+import { subscriptionSaga } from '../../utils/utils.sagas';
 import { stakingActions } from '../staking.slice';
 
-export function* fetchHistoryStaking() {
+export function* fetchHistoryStaking(
+  queryResult: SubscriptionResponse<UserQueryResult>
+) {
   try {
-    const subgraphClient = yield* select(subgraphClientSelector);
-    const account = yield* select(accountSelector);
+    yield* put(stakingActions.fetchHistoryStakesList());
 
-    if (!subgraphClient || !account) throw new Error('Wallet not connected');
+    if (queryResult.isError) throw queryResult.error;
 
-    const { user } = yield* call(allUserStakesQuery, subgraphClient, {
-      contractAddress: account.toLowerCase(),
-    });
-
-    const stakesHistory = user.allStakes.map((stake) => ({
+    const stakesHistory = queryResult.data?.user?.allStakes?.map((stake) => ({
       asset: 'FISH',
       stakedAmount: stake.amount,
       unlockDate: stake.lockedUntil,
@@ -26,8 +27,25 @@ export function* fetchHistoryStaking() {
       blockTimestamp: stake.blockTimestamp,
     }));
 
-    yield* put(stakingActions.setHistoryStakesList(stakesHistory));
+    yield* put(stakingActions.setHistoryStakesList(stakesHistory || []));
   } catch (e) {
     yield* put(stakingActions.fetchHistoryStakesListFailure());
   }
+}
+
+export function* watchStakingHistory() {
+  let account = yield* select(accountSelector);
+
+  if (!account) {
+    yield* take(appActions.walletConnected.type);
+    account = (yield* select(accountSelector)) as string;
+  }
+
+  yield* subscriptionSaga<UserQueryResult, UserQueryParams>({
+    query: findStakingHistorySubscription,
+    variables: { contractAddress: account.toLowerCase() },
+    fetchSaga: fetchHistoryStaking,
+    stopAction: stakingActions.stopWatchingStakingData,
+    watchDataAction: stakingActions.watchHistoryStakesList,
+  });
 }

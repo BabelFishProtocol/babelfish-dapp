@@ -40,6 +40,23 @@ const findUserQuery = gql`
   }
 `;
 
+export const findStakingHistorySubscription = gql`
+  subscription stakingHistory($contractAddress: Bytes!) {
+    user(id: $contractAddress) {
+      id
+      allStakes(orderBy: blockTimestamp, orderDirection: desc) {
+        id
+        staker
+        amount
+        lockedUntil
+        totalStaked
+        transactionHash
+        blockTimestamp
+      }
+    }
+  }
+`;
+
 export const allUserStakesQuery = (
   client: GraphQLClient,
   params: UserQueryParams

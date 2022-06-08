@@ -90,6 +90,7 @@ export const stakingSlice = createSlice({
       state.combinedVotingPower.state = 'loading';
       state.stakesList.state = 'loading';
       state.stakesListHistory.state = 'loading';
+      state.stakesListHistory.data = [];
     },
     stopWatchingStakingData: (state) => {
       state.fishToken.state = 'idle';
@@ -102,17 +103,14 @@ export const stakingSlice = createSlice({
       state.fishToken.state = 'loading';
       state.combinedVotingPower.state = 'loading';
       state.stakesList.state = 'loading';
-      state.stakesListHistory.state = 'loading';
       state.fishToken.data = {};
       state.combinedVotingPower.data = undefined;
       state.stakesList.data = [];
-      state.stakesListHistory.data = [];
     },
     updateStakingData: (state) => {
       state.fishToken.state = 'loading';
       state.combinedVotingPower.state = 'loading';
       state.stakesList.state = 'loading';
-      state.stakesListHistory.state = 'loading';
     },
 
     fetchFishTokenDataFailure: (state) => {
@@ -162,16 +160,23 @@ export const stakingSlice = createSlice({
       state.selectedStake = undefined;
     },
 
+    watchHistoryStakesList: (state) => {
+      state.stakesListHistory = { data: [], state: 'loading' };
+    },
+    stopWatchingHistoryStakesList: (state) => {
+      state.stakesListHistory = { data: [], state: 'idle' };
+    },
+    fetchHistoryStakesList: (state) => {
+      state.stakesListHistory.state = 'loading';
+    },
     fetchHistoryStakesListFailure: (state) => {
-      state.stakesListHistory.data = [];
-      state.stakesListHistory.state = 'failure';
+      state.stakesListHistory = { data: [], state: 'failure' };
     },
     setHistoryStakesList: (
       state,
       { payload }: PayloadAction<StakingHistoryListItem[]>
     ) => {
-      state.stakesListHistory.data = payload;
-      state.stakesListHistory.state = 'success';
+      state.stakesListHistory = { data: payload, state: 'success' };
     },
   },
 });

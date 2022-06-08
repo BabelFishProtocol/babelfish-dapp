@@ -19,6 +19,9 @@ import { StakesListContainer } from './StakesList/StakesList.container';
 import { AddNewStakeContainer } from './AddNewStake/AddNewStake.container';
 import { StakingHistoryContainer } from './StakingHistory/StakingHistory.container';
 import { RewardBlockProps, StakingComponentProps } from './Staking.types';
+import wave1Icon from '../../assets/icons/wave1.svg';
+import wave2Icon from '../../assets/icons/wave2.svg';
+import wave3Icon from '../../assets/icons/wave3.svg';
 
 export const StakingComponent = ({
   rewards,
@@ -32,73 +35,81 @@ export const StakingComponent = ({
   const handleCloseDialog = () => setShowAddStakeDialog(false);
 
   return (
-    <PageAligner>
-      <Box
-        sx={{
-          gap: 2,
-          width: '90%',
-          display: 'flex',
-          maxWidth: 1400,
-          flexDirection: 'column',
-        }}
-      >
-        <Breadcrumbs links={[{ title: UrlNames.Staking }]} sx={{ pb: 1 }} />
-        <CenteredBox sx={{ width: '100%', gap: 2, alignItems: 'stretch' }}>
-          <BalanceBlock label="Total Staked Fish" {...fishStaked}>
-            <Button
-              variant="outlined"
-              onClick={handleOpenDialog}
-              sx={{ width: 'fit-content' }}
+    <>
+      <Breadcrumbs links={[{ title: UrlNames.Staking }]} />
+      <PageAligner>
+        <Box
+          sx={{
+            gap: 2,
+            width: '90%',
+            display: 'flex',
+            maxWidth: 1400,
+            flexDirection: 'column',
+          }}
+        >
+          <CenteredBox sx={{ width: '100%', gap: 2, alignItems: 'stretch' }}>
+            <BalanceBlock
+              label="Total Staked Fish"
+              {...fishStaked}
+              imgSrc={wave1Icon}
             >
-              Add New Stake
-            </Button>
-          </BalanceBlock>
+              <Button
+                variant="outlined"
+                onClick={handleOpenDialog}
+                sx={{ width: 'fit-content' }}
+              >
+                Add New Stake
+              </Button>
+            </BalanceBlock>
 
-          <BalanceBlock
-            aprox
-            asset="USD"
-            label="Total Earned Rewards Available"
-            state={totalRewards.state}
-            data={totalRewards.data}
-          >
-            <Box>
-              {rewards.map((reward, index) => (
-                <RewardBlock key={index} {...reward} />
-              ))}
-            </Box>
-          </BalanceBlock>
-
-          <BalanceBlock
-            asset=""
-            label="Combined Voting Power"
-            data={votingPower.data}
-            state={votingPower.state}
-          >
-            <Button
-              sx={{ width: 'fit-content' }}
-              variant="outlined"
-              component={Link}
-              to={Urls.Proposals}
+            <BalanceBlock
+              aprox
+              asset="USD"
+              label="Total Earned Rewards Available"
+              state={totalRewards.state}
+              data={totalRewards.data}
+              imgSrc={wave2Icon}
             >
-              View Governance
-            </Button>
-          </BalanceBlock>
-        </CenteredBox>
+              <Box>
+                {rewards.map((reward, index) => (
+                  <RewardBlock key={index} {...reward} />
+                ))}
+              </Box>
+            </BalanceBlock>
 
-        <StakesListContainer />
+            <BalanceBlock
+              asset=""
+              label="Combined Voting Power"
+              data={votingPower.data}
+              state={votingPower.state}
+              imgSrc={wave3Icon}
+            >
+              <Button
+                sx={{ width: 'fit-content' }}
+                variant="outlined"
+                component={Link}
+                to={Urls.Proposals}
+              >
+                View Governance
+              </Button>
+            </BalanceBlock>
+          </CenteredBox>
 
-        <VestsListContainer />
+          <StakesListContainer />
 
-        <StakingHistoryContainer />
+          <VestsListContainer />
 
-        {showAddStakeDialog && (
-          <AddNewStakeContainer
-            open={showAddStakeDialog}
-            onClose={handleCloseDialog}
-          />
-        )}
-      </Box>
-    </PageAligner>
+          <StakingHistoryContainer />
+
+          {showAddStakeDialog && (
+            <AddNewStakeContainer
+              open={showAddStakeDialog}
+              onClose={handleCloseDialog}
+            />
+          )}
+        </Box>
+      </PageAligner>
+    </>
   );
 };
 

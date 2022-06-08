@@ -11,21 +11,56 @@ import { expectSaga, testSaga } from 'redux-saga-test-plan';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import { call, takeLatest } from 'typed-redux-saga';
 
+import {
+  Observable,
+  OperationOptions,
+  SubscriptionClient,
+} from 'subscription-client';
+import { ExecutionResult } from 'graphql/execution/execute';
+import { ObjMap } from 'graphql/jsutils/ObjMap';
+import { GraphQLError } from 'graphql';
 import { getStore, rootReducer } from '..';
 import { Reducers } from '../../constants';
 import { mockProvider } from '../../testUtils';
 import { appActions, appReducer } from '../app/app.slice';
 import { indexSaga } from '../saga';
 import { SagaContractCallStep } from '../types';
-import { contractStepCallsSaga, createWatcherSaga } from './utils.sagas';
+import {
+  contractStepCallsSaga,
+  createWatcherSaga,
+  subscriptionSaga,
+} from './utils.sagas';
 import { StepCallsActions } from './utils.types';
+import * as appSelectors from '../app/app.selectors';
+
+const unsubscribe = jest.fn();
+
+class MockSubgraphWsClient extends SubscriptionClient {
+  private nextCallback?: (
+    value: ExecutionResult<ObjMap<unknown>, ObjMap<unknown>>
+  ) => void;
+
+  request(
+    _: OperationOptions
+  ): Observable<ExecutionResult<ObjMap<unknown>, ObjMap<unknown>>> {
+    return {
+      subscribe: ({ next }) => {
+        this.nextCallback = next;
+        return { unsubscribe };
+      },
+    };
+  }
+  triggerNext(data: ExecutionResult<ObjMap<unknown>, ObjMap<unknown>>) {
+    this.nextCallback?.(data);
+  }
+}
 
 const mockReducers = {
   watch: () => {},
   stopWatching: () => {},
 };
 
-const createMockStore = () => {
+const createMockSlice = () => {
   const mockSliceName = 'watchTest';
   const mockSlice = createSlice({
     name: 'watchTest',
@@ -39,6 +74,15 @@ const createMockStore = () => {
     [mockSliceName]: mockReducer,
     [Reducers.App]: appReducer,
   };
+
+  return {
+    mockActions,
+    mockRootReducer,
+  };
+};
+
+const createMockWatcherSagaStore = () => {
+  const { mockActions, mockRootReducer } = createMockSlice();
 
   const mockFetch = jest.fn();
   function* mockFetchSaga() {
@@ -75,6 +119,41 @@ const createMockStore = () => {
   };
 };
 
+const createMockSubscriptionsStore = () => {
+  const { mockActions, mockRootReducer } = createMockSlice();
+
+  const mockFetch = jest.fn();
+  function* mockFetchSaga(arg: unknown) {
+    yield* call(mockFetch, arg);
+  }
+
+  function* mockSubscriptionSaga() {
+    yield* subscriptionSaga({
+      fetchSaga: mockFetchSaga,
+      stopAction: mockActions.stopWatching,
+      watchDataAction: mockActions.watch,
+      query: '',
+    });
+  }
+
+  function* mockIndexSaga() {
+    yield* takeLatest(mockActions.watch.type, mockSubscriptionSaga);
+  }
+
+  const store = {
+    ...getStore(
+      mockIndexSaga as typeof indexSaga,
+      mockRootReducer as unknown as typeof rootReducer
+    ),
+  };
+
+  return {
+    store,
+    mockFetch,
+    mockActions,
+  };
+};
+
 afterEach(() => {
   jest.clearAllMocks();
 });
@@ -87,7 +166,7 @@ describe('saga utils', () => {
     let mockActions: CaseReducerActions<typeof mockReducers>;
 
     beforeEach(() => {
-      const created = createMockStore();
+      const created = createMockWatcherSagaStore();
 
       store = created.store;
       mockFetch = created.mockFetch;
@@ -283,6 +362,102 @@ describe('saga utils', () => {
         .run();
 
       expect(runResult.effects).toEqual({});
+    });
+  });
+
+  describe('subscriptionSaga', () => {
+    let store: Store;
+    let mockFetch: jest.Mock;
+    let mockActions: CaseReducerActions<typeof mockReducers>;
+    let subgraphWsClient: MockSubgraphWsClient;
+
+    describe('subscriptions', () => {
+      beforeEach(() => {
+        subgraphWsClient = new MockSubgraphWsClient('ws://testUrl');
+        jest
+          .spyOn(appSelectors, 'subgraphWsClientSelector')
+          .mockReturnValue(subgraphWsClient);
+
+        const created = createMockSubscriptionsStore();
+
+        store = created.store;
+        mockFetch = created.mockFetch;
+        mockActions = created.mockActions;
+
+        store.dispatch(mockActions.watch());
+      });
+
+      it('triggers fetchSaga on each event', () => {
+        subgraphWsClient.triggerNext({ data: { test: 'test' } });
+        expect(mockFetch).toBeCalledWith({
+          data: { test: 'test' },
+          isError: false,
+        });
+
+        subgraphWsClient.triggerNext({ data: { test: 'test2' } });
+        expect(mockFetch).toBeCalledWith({
+          data: { test: 'test2' },
+          isError: false,
+        });
+      });
+
+      it('stops subscribing when stopAction is dispatched', () => {
+        store.dispatch(mockActions.stopWatching());
+        expect(mockFetch).not.toHaveBeenCalled();
+
+        expect(unsubscribe).toHaveBeenCalled();
+      });
+
+      it('returns proper error in case of failure in query', () => {
+        const error = new Error('query error');
+        subgraphWsClient.triggerNext({
+          data: undefined,
+          errors: [error as GraphQLError],
+        });
+        expect(mockFetch).toBeCalledWith({ error, isError: true });
+      });
+
+      it('resets connection when chain is changed', () => {
+        jest.spyOn(subgraphWsClient, 'request');
+
+        store.dispatch(appActions.setChainId(31));
+        expect(unsubscribe).toHaveBeenCalled();
+        expect(subgraphWsClient.request).toHaveBeenCalled();
+      });
+
+      it('resets connection when account is changed', () => {
+        jest.spyOn(subgraphWsClient, 'request');
+
+        store.dispatch(appActions.setAccount('test'));
+        expect(unsubscribe).toHaveBeenCalled();
+        expect(subgraphWsClient.request).toHaveBeenCalled();
+      });
+    });
+
+    it('waits for wallet to be connected before starting the subscription if client is undefined', () => {
+      subgraphWsClient = new MockSubgraphWsClient('ws://testUrl');
+      jest.spyOn(subgraphWsClient, 'request');
+
+      jest
+        .spyOn(appSelectors, 'subgraphWsClientSelector')
+        .mockReturnValue(undefined);
+
+      const created = createMockSubscriptionsStore();
+      store = created.store;
+      mockFetch = created.mockFetch;
+      mockActions = created.mockActions;
+
+      store.dispatch(mockActions.watch());
+
+      expect(subgraphWsClient.request).not.toHaveBeenCalled();
+
+      jest
+        .spyOn(appSelectors, 'subgraphWsClientSelector')
+        .mockReturnValue(subgraphWsClient);
+
+      store.dispatch(appActions.walletConnected(mockProvider));
+
+      expect(subgraphWsClient.request).toHaveBeenCalled();
     });
   });
 });

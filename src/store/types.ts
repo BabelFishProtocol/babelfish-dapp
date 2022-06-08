@@ -1,7 +1,12 @@
 import { TransactionReceipt } from '@ethersproject/providers';
-import { ActionCreatorsMapObject } from '@reduxjs/toolkit';
+import {
+  ActionCreatorsMapObject,
+  ActionCreatorWithoutPayload,
+  ActionCreatorWithPayload,
+} from '@reduxjs/toolkit';
 import { BaseContract, Contract, ContractTransaction, Signer } from 'ethers';
 import { ContractCall, Provider } from 'ethers-multicall';
+import { GraphQLError } from 'graphql';
 import { SagaIterator } from 'redux-saga';
 import { ActionPattern, CallEffect } from 'redux-saga/effects';
 import { SagaGenerator } from 'typed-redux-saga/dist';
@@ -64,7 +69,36 @@ export type CallState<Operations extends string> = {
   steps: StepData<Operations>[];
 };
 
+export type SagaContractEffect = SagaGenerator<
+  ContractTransaction,
+  CallEffect<ContractTransaction>
+>;
+
 export type SagaContractCallStep<Operations extends string> = {
   name: Operations;
-  effect: SagaGenerator<ContractTransaction, CallEffect<ContractTransaction>>;
+  effect: SagaContractEffect;
+};
+
+export type ContractStepCallSagaParams<Operations extends string> = {
+  steps: SagaContractCallStep<Operations>[];
+  setErrorAction: ActionCreatorWithPayload<string>;
+  setStatusAction: ActionCreatorWithPayload<
+    Pick<CallState<Operations>, 'status' | 'currentOperation'>
+  >;
+  setStepDataAction: ActionCreatorWithPayload<Partial<StepData<Operations>>>;
+};
+
+export type SubscriptionResponse<Result> =
+  | {
+      isError: true;
+      error: Error | GraphQLError;
+    }
+  | { isError: false; data: Result };
+
+export type SubscriptionSagaConfig<Result, Variables> = {
+  query: string;
+  stopAction: ActionCreatorWithoutPayload;
+  watchDataAction: ActionCreatorWithoutPayload;
+  fetchSaga: (data: SubscriptionResponse<Result>) => SagaIterator;
+  variables?: Variables;
 };

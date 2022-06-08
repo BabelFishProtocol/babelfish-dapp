@@ -70,26 +70,22 @@ export const AggregatorComponent = ({
     startingTokenOptions,
     destinationChainOptions,
     destinationTokenOptions,
+    toggleFlow,
   } = useAggregatorDropdowns(
     startingChain,
     destinationChain,
+    startingToken,
+    destinationToken,
     resetField,
     setValue
   );
 
-  const { hideDestinationTokenDropdown } = useConnectedChain(
-    startingChain,
-    destinationChain,
-    resetField,
-    setValue
-  );
+  useConnectedChain(startingChain, resetField, setValue);
 
   useWalletAddress(setValue);
 
   useEffect(() => {
-    if (startingToken) {
-      onStartingTokenChange(startingToken);
-    }
+    onStartingTokenChange(startingToken || undefined);
   }, [startingToken, onStartingTokenChange]);
 
   useEffect(() => {
@@ -99,9 +95,7 @@ export const AggregatorComponent = ({
   }, [destinationChain, onDestinationChainChange]);
 
   useEffect(() => {
-    if (destinationToken) {
-      onDestinationTokenChange(destinationToken);
-    }
+    onDestinationTokenChange(destinationToken || undefined);
   }, [destinationToken, onDestinationTokenChange]);
 
   useEffect(() => {
@@ -116,111 +110,120 @@ export const AggregatorComponent = ({
   }, [flowState, resetField]);
 
   return (
-    <Box
-      sx={{
-        maxWidth: 1120,
-        margin: '0 auto',
-      }}
-    >
-      <Breadcrumbs links={[{ title: UrlNames.Aggregator }]} sx={{ p: 3 }} />
-      <form
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          padding: 0,
+    <>
+      <Breadcrumbs links={[{ title: UrlNames.Aggregator }]} />
+      <Box
+        sx={{
+          maxWidth: 1400,
+          width: '90%',
+          margin: '0 auto',
         }}
-        onSubmit={handleSubmit(onSubmit)}
       >
-        <PageView
-          title={<PageViewTitle>Starting chain</PageViewTitle>}
-          sx={{
-            height: 'min-content',
+        <form
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            padding: 0,
           }}
+          onSubmit={handleSubmit(onSubmit)}
         >
-          <Box
+          <PageView
+            title={<PageViewTitle>Starting chain</PageViewTitle>}
             sx={{
-              maxWidth: 310,
-              mx: 'auto',
+              maxWidth: { xs: 400 },
+              height: 'min-content',
             }}
           >
-            <ControlledDropdown
-              autoFocus
-              name={AggregatorInputs.StartingChain}
-              title="Select Network"
-              placeholder="Select Chain"
-              control={control}
-              options={startingChainOptions}
-              sx={{ mb: 4 }}
-              setValue={setValue}
-            />
-            <ControlledDropdown
-              name={AggregatorInputs.StartingToken}
-              title="stablecoin"
-              placeholder="Select Coin"
-              control={control}
-              options={startingTokenOptions}
-              setValue={setValue}
-            />
-            <SendAmount
-              name={AggregatorInputs.SendAmount}
-              startingTokenName={startingToken}
-              control={control}
-              setValue={setValue}
-            />
-          </Box>
-        </PageView>
-        <AggregatorInfoContainer />
-        <PageView title={<PageViewTitle>Destination chain</PageViewTitle>}>
-          <Box
+            <Box
+              sx={{
+                maxWidth: 320,
+                mx: 'auto',
+              }}
+            >
+              <ControlledDropdown
+                autoFocus
+                name={AggregatorInputs.StartingChain}
+                title="Select Network"
+                placeholder="Select Chain"
+                control={control}
+                options={startingChainOptions}
+                sx={{ mb: 4 }}
+                setValue={setValue}
+              />
+              <ControlledDropdown
+                name={AggregatorInputs.StartingToken}
+                title="stablecoin"
+                placeholder="Select Coin"
+                control={control}
+                options={startingTokenOptions}
+                setValue={setValue}
+              />
+              <SendAmount
+                name={AggregatorInputs.SendAmount}
+                startingTokenName={startingToken}
+                control={control}
+                setValue={setValue}
+              />
+            </Box>
+          </PageView>
+          <AggregatorInfoContainer toggleFlow={toggleFlow} />
+          <PageView
+            title={<PageViewTitle>Destination chain</PageViewTitle>}
             sx={{
-              maxWidth: 310,
-              mx: 'auto',
+              maxWidth: { xs: 400 },
+              height: 'min-content',
             }}
           >
-            <ControlledDropdown
-              name={AggregatorInputs.DestinationChain}
-              title="Network"
-              placeholder="Select Chain"
-              control={control}
-              options={destinationChainOptions}
-              sx={{ mb: 4 }}
-              setValue={setValue}
-            />
+            <Box
+              sx={{
+                maxWidth: 320,
+                mx: 'auto',
+              }}
+            >
+              <ControlledDropdown
+                name={AggregatorInputs.DestinationChain}
+                title="Network"
+                placeholder="Select Chain"
+                control={control}
+                options={destinationChainOptions}
+                sx={{ mb: 4 }}
+                setValue={setValue}
+              />
 
-            <ControlledDropdown
-              name={AggregatorInputs.DestinationToken}
-              title="Stablecoin"
-              placeholder="Select Coin"
-              control={control}
-              options={destinationTokenOptions}
-              sx={{ mb: 4 }}
-              hideField={hideDestinationTokenDropdown}
-              setValue={setValue}
-            />
+              <ControlledDropdown
+                name={AggregatorInputs.DestinationToken}
+                title="Stablecoin"
+                placeholder="Select Coin"
+                control={control}
+                options={destinationTokenOptions}
+                sx={{ mb: 4 }}
+                setValue={setValue}
+              />
 
-            <ControlledCurrencyInput
-              disabled
-              title="Receive amount"
-              symbol={destinationToken}
-              placeholder="0.00"
-              name={AggregatorInputs.ReceiveAmount}
-              control={control}
-              sx={{ mb: 5 }}
-            />
-            <ControlledAddressInput
-              title="Receiving address"
-              placeholder="Enter or paste address"
-              name={AggregatorInputs.ReceiveAddress}
-              control={control}
-              sx={{ mb: 5 }}
-            />
-            <Button type="submit" fullWidth disabled={!isValid}>
-              Transfer
-            </Button>
-          </Box>
-        </PageView>
-      </form>
-    </Box>
+              <ControlledCurrencyInput
+                disabled
+                title="Receive amount"
+                symbol={destinationToken}
+                placeholder="0.00"
+                name={AggregatorInputs.ReceiveAmount}
+                control={control}
+                sx={{ mb: 5 }}
+              />
+              <ControlledAddressInput
+                title="Receiving address"
+                placeholder="Enter or paste address"
+                name={AggregatorInputs.ReceiveAddress}
+                control={control}
+                sx={{ mb: 5 }}
+              />
+              <Button type="submit" fullWidth disabled={!isValid}>
+                Transfer
+              </Button>
+            </Box>
+          </PageView>
+        </form>
+      </Box>
+    </>
   );
 };

@@ -69,9 +69,9 @@ export const wrongNetworkModalSelector = createSelector(
   (state) => state.wrongNetworkModal
 );
 
-export const walletNotConectedModalSelector = createSelector(
+export const walletNotConnectedModalSelector = createSelector(
   appState,
-  (state) => state.walletNotConectedModal
+  (state) => state.walletNotConnectedModal
 );
 
 export const unsupportedNetworkSelector = createSelector(
@@ -99,6 +99,18 @@ export const chainsInCurrentNetworkSelector = createSelector(
     if (testnetMainnet === undefined) return [];
 
     return testnetMainnet === 'testnet' ? testnetChainsArr : mainnetChainsArr;
+  }
+);
+
+export const supportedChainsInCurrentNetworkSelector = createSelector(
+  [supportedNetworksSelector, chainsInCurrentNetworkSelector],
+  (supportedNetworks, chainsInCurrentNetwork) => {
+    if (!supportedNetworks?.length || !chainsInCurrentNetwork?.length)
+      return [];
+
+    return chainsInCurrentNetwork.filter(({ id }) =>
+      supportedNetworks.includes(id)
+    );
   }
 );
 

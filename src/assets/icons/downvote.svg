@@ -1,3 +1,4 @@
-<svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
-    <path d="M30 14.897c0 8.227-6.67 14.896-14.897 14.896S.207 23.123.207 14.897C.207 6.669 6.877 0 15.103 0 23.331 0 30 6.67 30 14.897zm-11.334 3.057-.1-.092a1.096 1.096 0 0 0-1.503.096l-.928.976-.001-10.747C16.134 7.532 15.626 7 15 7l-.124.007c-.568.064-1.01.568-1.01 1.18v10.748l-.929-.977a1.098 1.098 0 0 0-1.603-.004 1.228 1.228 0 0 0-.004 1.679l2.88 3.03c.377.396.988.45 1.436.125l.15-.13 2.874-3.025a1.228 1.228 0 0 0-.004-1.68z" fill="#EF0512" fill-rule="evenodd"/>
+<svg width="24" height="30" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2.28571L12 28" stroke="#FF6363" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M22 18L12 28L2 18" stroke="#FF6363" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

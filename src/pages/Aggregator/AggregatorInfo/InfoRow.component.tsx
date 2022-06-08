@@ -1,4 +1,3 @@
-import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 import { FiniteStates } from '../../../utils/types';
@@ -22,20 +21,18 @@ export const InfoRow = ({ label, value, state }: InfoRowProps) => {
       >
         {label}:
       </Typography>
-      <Box sx={{ minWidth: '16ch' }}>
-        {isUpdate ? (
-          <Skeleton sx={{ height: '1em', width: '100%' }} />
-        ) : (
-          <Typography
-            sx={{
-              textAlign: 'left',
-              fontSize: 12,
-            }}
-          >
-            {value}
-          </Typography>
-        )}
-      </Box>
+      {isUpdate ? (
+        <Skeleton sx={{ height: '1em', width: '100%' }} />
+      ) : (
+        <Typography
+          sx={{
+            textAlign: 'left',
+            fontSize: 12,
+          }}
+        >
+          {value}
+        </Typography>
+      )}
     </>
   );
 };

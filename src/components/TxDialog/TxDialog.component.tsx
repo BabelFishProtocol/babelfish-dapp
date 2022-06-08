@@ -13,7 +13,7 @@ import { MintingProcessInfo } from '../MintingInfo/MintingInfo.types';
 
 import errorIcon from '../../assets/icons/error.svg';
 import loadingIcon from '../../assets/icons/loading.svg';
-import successIcon from '../../assets/icons/success.svg';
+import successIcon from '../../assets/icons/success-green.svg';
 
 import {
   CallStepperProps,
@@ -34,11 +34,12 @@ export const TxErrorDialog = ({
     isOpenDialog={isOpenDialog}
     icon={errorIcon}
     title={`${operationName} Error`}
+    titleSx={{ color: 'error.main' }}
     description={`We encountered an error in the ${operationName} process. Please try again`}
     onClose={onClose}
     topContent={stepper}
   >
-    <Button variant="outlined" onClick={onClose}>
+    <Button sx={{ minWidth: 125 }} variant="outlined" onClick={onClose}>
       OK
     </Button>
   </AppDialog>
@@ -73,7 +74,7 @@ export const TxSuccessDialog = ({
         {
           label: 'Transaction Hash',
           value: <PrettyTx value={txReceipt.transactionHash} variant="body1" />,
-          isProminant: true,
+          isProminent: true,
         },
       ]
     : [];
@@ -83,13 +84,16 @@ export const TxSuccessDialog = ({
       isOpenDialog={isOpenDialog}
       icon={successIcon}
       title={`${operationName} Complete`}
+      titleSx={{
+        color: 'success.main',
+      }}
       onClose={handleClose}
       topContent={stepper}
     >
       <Box sx={{ mt: 3 }}>
         <MintingInfo data={summary ?? txReceiptData} />
       </Box>
-      <Button sx={{ mt: 6 }} onClick={handleClose}>
+      <Button sx={{ mt: 6, minWidth: 125 }} onClick={handleClose}>
         OK
       </Button>
     </AppDialog>
@@ -112,7 +116,7 @@ export const TxPendingDialog = ({
         {
           label: 'Transaction Hash',
           value: <PrettyTx value={tx.hash} variant="body1" />,
-          isProminant: true,
+          isProminent: true,
         },
       ]
     : [];
@@ -121,7 +125,18 @@ export const TxPendingDialog = ({
     <AppDialog
       isOpenDialog={isOpenDialog}
       icon={loadingIcon}
+      iconSx={{
+        width: 80,
+        height: 80,
+        img: {
+          maxHeight: '100%',
+          maxWidth: '100%',
+        },
+      }}
       title={`${operationName} In Progress`}
+      titleSx={{
+        color: 'primary.main',
+      }}
       topContent={stepper}
       description={`${operationName} can take a couple minutes, please make sure to approve the transaction in your wallet when prompted, and wait for it to be complete`}
     >

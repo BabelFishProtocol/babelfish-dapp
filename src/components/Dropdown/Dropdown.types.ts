@@ -18,7 +18,6 @@ export type DropdownProps<OptionType, ValueType = unknown> = {
   sx?: FormControlProps['sx'];
   autoFocus?: boolean;
   error?: FieldError;
-  hideField?: boolean;
   onChange?: (e: SelectChangeEvent<ValueType>) => void;
   setValueWhenOneOption?: () => void;
 };

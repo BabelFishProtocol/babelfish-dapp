@@ -21,10 +21,12 @@ export const getPalette = () =>
       paper: '#798293',
     },
     success: {
-      main: '#32f05f',
+      main: '#6FCF97',
+      light: 'rgba(145, 255, 191, 0.39)',
     },
     error: {
-      main: '#ef0512',
+      main: '#EB5757',
+      light: 'rgba(235, 87, 87, 0.39)',
     },
     borderGrey: {
       main: colors.borderGrey,

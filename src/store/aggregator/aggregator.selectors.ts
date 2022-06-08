@@ -4,7 +4,7 @@ import { BridgeDictionary } from '../../config/bridges';
 import { ChainEnum } from '../../config/chains';
 import { contractsAddresses } from '../../config/contracts';
 import { pools } from '../../config/pools';
-import { tokens } from '../../config/tokens';
+import { TokenEnum, tokens } from '../../config/tokens';
 import { Reducers } from '../../constants';
 import {
   AllowTokens__factory,
@@ -20,9 +20,8 @@ import { selectCurrentCallStepData } from '../utils/utils.selectors';
 
 const aggregatorState = (state: RootState) => state[Reducers.Aggregator];
 
-export const flowStateSelector = createSelector(
-  aggregatorState,
-  (state) => state.flowState
+export const flowStateSelector = createSelector(aggregatorState, (state) =>
+  state.startingToken === TokenEnum.XUSD ? 'withdraw' : 'deposit'
 );
 
 export const feesAndLimitsStateSelector = createSelector(
@@ -205,6 +204,23 @@ export const startingTokenContractSelector = createSelector(
   }
 );
 
+/** Original destination token selector
+ ** for 'deposit' flowState: XUSD
+ ** for 'withdraw' flowState through bridge: DAI, USDT, ..
+ ** for 'withdraw' flowState on RSK: BDUS, RDOC, ...
+ */
+export const destinationTokenAddressSelector = createSelector(
+  [destinationChainSelector, destinationTokenSelector],
+  (destinationChain, destinationToken) => {
+    if (!destinationChain || !destinationToken) {
+      return undefined;
+    }
+    const address = tokens[destinationToken].addresses[destinationChain];
+
+    return address;
+  }
+);
+
 export const isEnoughTokensSelector = createSelector(
   [feesAndLimitsSelector, startingTokenBalanceSelector],
   (feesAndLimits, startingTokenBalance) => {
@@ -215,6 +231,10 @@ export const isEnoughTokensSelector = createSelector(
   }
 );
 
+/**
+ * Pool token selector e.g. DAIes, USDCbs
+ ** NOTE: Don't use for native rsk tokens e.g BDUS, ZUSD
+ */
 export const bassetAddressSelector = createSelector(
   [bridgeSelector, destinationTokenSelector],
   (bridge, destinationToken) => {

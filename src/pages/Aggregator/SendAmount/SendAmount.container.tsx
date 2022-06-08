@@ -40,6 +40,9 @@ export const SendAmount = <FormValues extends FieldValues>(
       ) {
         return fieldsErrors.amountLessThanMinLimit;
       }
+      if (utils.parseUnits(v, startingTokenDecimals).isZero()) {
+        return fieldsErrors.amountEqualZero;
+      }
     },
     [maxTransfer, minTransfer, startingTokenBalance, startingTokenDecimals]
   );
