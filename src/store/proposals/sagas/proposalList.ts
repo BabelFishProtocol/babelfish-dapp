@@ -1,45 +1,53 @@
-import { put, call, select } from 'typed-redux-saga';
+import { put, call, select, take } from 'typed-redux-saga';
 
 import { GovernorAlpha } from '../../../contracts/types';
-import { createWatcherSaga } from '../../utils/utils.sagas';
-import { proposalsListQuery } from '../../../queries/proposalListQuery';
+import { subscriptionSaga } from '../../utils/utils.sagas';
+import { compareAddresses } from '../../../utils/helpers';
+import {
+  findAllProposalsSubscription,
+  ProposalListQueryItem,
+  ProposalListQueryResult,
+} from '../../../queries/proposalListQuery';
 
 import {
-  providerSelector,
+  currentBlockSelector,
   governorAdminSelector,
   governorOwnerSelector,
-  subgraphClientSelector,
   multicallProviderSelector,
 } from '../../app/app.selectors';
+import { appActions } from '../../app/app.slice';
 
+import { governorContractsSelector } from '../proposals.selectors';
 import { Proposal } from '../proposals.state';
+
 import { parseProposals } from '../proposals.utils';
 import { proposalsActions } from '../proposals.slice';
-import { governorContractsSelector } from '../proposals.selectors';
 import { fetchProposalStates } from './utils';
+import { SubscriptionResponse } from '../../types';
 
-export function* fetchProposalsForContract(governor: GovernorAlpha) {
-  const provider = yield* select(providerSelector);
+export function* fetchProposalsForContract(
+  governor: GovernorAlpha,
+  proposals: ProposalListQueryItem[]
+) {
   const multicallProvider = yield* select(multicallProviderSelector);
-  const subgraphClient = yield* select(subgraphClientSelector);
   const governorsAddresses = yield* select(governorContractsSelector);
 
-  if (!provider || !subgraphClient || !multicallProvider || !governorsAddresses)
+  const governorProposals = proposals.filter(({ contractAddress }) =>
+    compareAddresses(contractAddress, governor.address)
+  );
+
+  if (!multicallProvider || !governorsAddresses)
     throw new Error('Wallet not connected!');
 
-  const { proposals } = yield* call(proposalsListQuery, subgraphClient, {
-    contractAddress: governor.address,
-  });
-
   const proposalsStates = yield* fetchProposalStates(
-    proposals,
+    governorProposals,
     governor,
     multicallProvider
   );
 
   const parsedProposals = yield* call(
     parseProposals,
-    proposals,
+    governorProposals,
     proposalsStates,
     governorsAddresses
   );
@@ -47,21 +55,52 @@ export function* fetchProposalsForContract(governor: GovernorAlpha) {
   return parsedProposals;
 }
 
-export function* fetchProposalsList() {
+/** Wait for the node to sync with the latest proposal creation block to prevent errors */
+export function* syncAllProposals([
+  latestProposal,
+]: ProposalListQueryResult['proposals']) {
+  const latestProposalBlock = Number(latestProposal.createdAt);
+
+  let currBlock = (yield* select(currentBlockSelector)) || 0;
+  while (!currBlock || latestProposalBlock > currBlock) {
+    yield* take(appActions.setBlockNumber.type);
+    currBlock = (yield* select(currentBlockSelector)) as number;
+  }
+}
+
+export function* triggerFetchProposalsList(
+  result: SubscriptionResponse<ProposalListQueryResult>
+) {
   try {
+    yield* put(proposalsActions.updateProposalsList());
+    if (result.isError) throw result.error;
+
     const governorAdmin = yield* select(governorAdminSelector);
     const governorOwner = yield* select(governorOwnerSelector);
 
-    if (!governorAdmin) {
-      throw new Error('Wallet not connected');
-    }
+    if (!governorAdmin) throw new Error('Wallet not connected');
 
-    const adminItems = yield* call(fetchProposalsForContract, governorAdmin);
+    const proposals = result.data?.proposals || [];
+
+    yield* call(syncAllProposals, proposals);
+
+    const adminItems = yield* call(
+      fetchProposalsForContract,
+      governorAdmin,
+      proposals
+    );
 
     let ownerItems: Proposal[] = [];
 
-    if (governorOwner && governorOwner.address !== governorAdmin.address) {
-      ownerItems = yield* call(fetchProposalsForContract, governorOwner);
+    if (
+      governorOwner &&
+      !compareAddresses(governorOwner.address, governorAdmin.address)
+    ) {
+      ownerItems = yield* call(
+        fetchProposalsForContract,
+        governorOwner,
+        proposals
+      );
     }
 
     const mergedProposals = [...adminItems, ...ownerItems].sort(
@@ -74,16 +113,11 @@ export function* fetchProposalsList() {
   }
 }
 
-function* triggerFetch() {
-  yield* put(proposalsActions.fetchProposalsList());
+export function* watchProposalsList() {
+  yield* subscriptionSaga<ProposalListQueryResult>({
+    fetchSaga: triggerFetchProposalsList,
+    query: findAllProposalsSubscription,
+    watchDataAction: proposalsActions.watchProposalsList,
+    stopAction: proposalsActions.stopWatchingProposalsList,
+  });
 }
-
-function* triggerUpdate() {
-  yield* put(proposalsActions.updateProposalsList());
-}
-
-export const watchProposalsList = createWatcherSaga({
-  fetchSaga: triggerFetch,
-  updateSaga: triggerUpdate,
-  stopAction: proposalsActions.stopWatchingProposalsList.type,
-});
