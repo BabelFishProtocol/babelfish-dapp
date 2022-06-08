@@ -11,23 +11,18 @@ import { AppState } from './app.state';
 
 const initialState = { ...new AppState() };
 
-const isVali = (
+const isLocalAccountCreated = (
   state: AppState
 ): state is AppState & {
   chainId: ChainEnum;
   account: string;
-} => {
-  if (
+} =>
+  !(
     !state.chainId ||
     !state.account ||
     !state.xusdLocalTransactions[state.chainId] ||
     !state.xusdLocalTransactions[state.chainId][state.account]
-  ) {
-    return false;
-  }
-
-  return true;
-};
+  );
 
 export const appSlice = createSlice({
   name: Reducers.App,
@@ -102,7 +97,7 @@ export const appSlice = createSlice({
       state,
       { payload }: PayloadAction<UpdateTxStatus>
     ) => {
-      if (isVali(state)) {
+      if (isLocalAccountCreated(state)) {
         const txToUpdate = state.xusdLocalTransactions[state.chainId][
           state.account
         ].find(({ txHash }) => txHash === payload.txHash);
@@ -118,7 +113,7 @@ export const appSlice = createSlice({
       state,
       { payload }: PayloadAction<XusdLocalTransaction[]>
     ) => {
-      if (isVali(state)) {
+      if (isLocalAccountCreated(state)) {
         const filteredTransactions = state.xusdLocalTransactions[state.chainId][
           state.account
         ].filter((tx) => !payload.find((ptx) => ptx.txHash === tx.txHash));

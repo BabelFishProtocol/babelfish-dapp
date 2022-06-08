@@ -21,10 +21,7 @@ import {
   fetchStartingTokenBalance,
 } from './aggregator.sagas';
 import { aggregatorActions } from './aggregator.slice';
-import {
-  AggregatorState,
-  TxDetails,
-} from './aggregator.state';
+import { AggregatorState, TxDetails } from './aggregator.state';
 import {
   allowTokensContractSelector,
   bridgeContractSelector,
