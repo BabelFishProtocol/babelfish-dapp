@@ -5,7 +5,7 @@ import { compareAddresses, getFutureTimestamp } from '../../utils/helpers';
 import { Proposal } from './proposals.state';
 
 export const parseProposal = (
-  proposal: ProposalListQueryItem,
+  proposal: Omit<ProposalListQueryItem, 'createdAt'>,
   proposalState: ProposalState,
   governorsAddresses: Record<GovernorTypes, string>
 ): Proposal => {
