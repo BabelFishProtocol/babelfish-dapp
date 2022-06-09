@@ -9,6 +9,7 @@
     "test": "jest --verbose",
     "preview": "vite preview",
     "check-types": "tsc --noEmit",
+    "check-all": "yarn test && yarn lint && yarn check-types && yarn prettier --config .prettierrc --check .",
     "generate-contracts-types": "typechain --target ethers-v5 --out-dir src/contracts/types './src/contracts/abi/*.json'",
     "postinstall": "yarn generate-contracts-types"
   },
