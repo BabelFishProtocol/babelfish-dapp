@@ -5,17 +5,33 @@ import { CustomColumn } from '../../../components/DataTable/DataTable.types';
 import { formatTimestamp } from '../../../utils/helpers';
 import {
   TableToolipProps,
+  TooltipCopyProps,
   TransactionsTableItem,
 } from './TransactionsTable.types';
 
 export const formatDate = (timestamp?: number | string) =>
   timestamp ? formatTimestamp(timestamp) : '------';
 
-// TODO update the copy
-const statusTooltip = {
-  depositSucces: 'cross chain depo copy succes',
-  withdrawSucces: 'cross chain withdraw copy succes',
-};
+const TooltipCopy = ({ firstLine, secondLine }: TooltipCopyProps) => (
+  <div style={{ textAlign: 'center' }}>
+    <p>{firstLine}</p>
+    <p>{secondLine}</p>
+  </div>
+);
+
+const DepositSucces = (
+  <TooltipCopy
+    firstLine="Your transaction has been transferred to the bridge,"
+    secondLine="you may have to wait a little bit before you receive tokens on RSK."
+  />
+);
+
+const WithdrawSucces = (
+  <TooltipCopy
+    firstLine="Your RSK transaction has been processed correctly,"
+    secondLine=" you may have to wait a little bit before you receive tokens on the destination blockchain."
+  />
+);
 
 const QuestionMark = () => (
   <div>
@@ -35,7 +51,7 @@ const QuestionMark = () => (
   </div>
 );
 
-const StatusMessaga = ({ message, tip }: TableToolipProps) =>
+const StatusMessage = ({ message, tip }: TableToolipProps) =>
   tip ? (
     <Box sx={{ cursor: 'pointer' }} display="inline-block">
       <Tooltip arrow title={tip}>
@@ -58,7 +74,7 @@ export const StatusColumn: CustomColumn<TransactionsTableItem> = ({
     rowData.status === 'Confirmed' &&
     rowData.isCrossChain
   ) {
-    return <StatusMessaga message={value} tip={statusTooltip.withdrawSucces} />;
+    return <StatusMessage message={value} tip={DepositSucces} />;
   }
 
   if (
@@ -66,8 +82,8 @@ export const StatusColumn: CustomColumn<TransactionsTableItem> = ({
     rowData.status === 'Confirmed' &&
     rowData.isCrossChain
   ) {
-    return <StatusMessaga message={value} tip={statusTooltip.depositSucces} />;
+    return <StatusMessage message={value} tip={WithdrawSucces} />;
   }
 
-  return <StatusMessaga message={value} />;
+  return <StatusMessage message={value} />;
 };

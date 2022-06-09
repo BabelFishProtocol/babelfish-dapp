@@ -17,5 +17,10 @@ export type TransactionsTableComponentProps = {
 
 export type TableToolipProps = {
   message: CellData;
-  tip?: string;
+  tip?: JSX.Element;
+};
+
+export type TooltipCopyProps = {
+  firstLine: string;
+  secondLine: string;
 };
