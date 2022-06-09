@@ -9,14 +9,16 @@
     "preview": "vite preview",
     "check-types": "tsc --noEmit",
     "generate-contracts-types": "typechain --target ethers-v5 --out-dir src/contracts/types './src/contracts/abi/*.json'",
-    "postinstall": "yarn generate-contracts-types",
-    "gql-codegen": "graphql-codegen --config codegen.yml"
+    "generate-gql-types": "graphql-codegen --config codegen.yml",
+    "postinstall": "yarn generate-contracts-types"
   },
   "dependencies": {
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@graphql-codegen/cli": "^2.6.2",
+    "@graphql-codegen/gql-tag-operations-preset": "^1.4.0",
     "@graphql-codegen/typescript-graphql-request": "^4.4.9",
+    "@graphql-typed-document-node/core": "^3.1.1",
     "@mui/material": "^5.4.0",
     "@portis/web3": "^4.0.7",
     "@reduxjs/toolkit": "^1.7.2",

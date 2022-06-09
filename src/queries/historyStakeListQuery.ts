@@ -24,7 +24,7 @@ export type UserQueryResult = {
 };
 
 const findUserQuery = gql`
-  query getUser($contractAddress: Bytes!) {
+  query getUser($contractAddress: ID!) {
     user(id: $contractAddress) {
       id
       allStakes(orderBy: blockTimestamp, orderDirection: desc) {
@@ -41,7 +41,7 @@ const findUserQuery = gql`
 `;
 
 export const findStakingHistorySubscription = gql`
-  subscription stakingHistory($contractAddress: Bytes!) {
+  subscription stakingHistory($contractAddress: ID!) {
     user(id: $contractAddress) {
       id
       allStakes(orderBy: blockTimestamp, orderDirection: desc) {

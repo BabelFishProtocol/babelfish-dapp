@@ -1,17 +1,15 @@
 overwrite: true
 schema: 'http://18.224.138.134:8000/subgraphs/name/babelfish/rskTestnet-graph'
-documents: 'src/**/*.graphql'
+documents:
+  - 'src/queries/*.ts'
+  - 'src/queries/*.graphql'
+  - '!src/gql/**/*'
 generates:
-  src/generated/graphql.ts:
-    plugins:
-      - 'typescript'
-      - 'typescript-operations'
-      - 'typescript-graphql-request'
-  ./graphql.schema.json:
-    plugins:
-      - 'introspection'
+  ./src/gql/:
+    preset: gql-tag-operations-preset
 config:
   typesPrefix: I
-# hooks:
-#   afterAllFileWrite:
-#     - eslint --fix
+  scalars:
+    BigDecimal: string
+    BigInt: string
+    Bytes: string

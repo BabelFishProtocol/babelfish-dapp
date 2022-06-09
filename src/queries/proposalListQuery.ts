@@ -41,7 +41,7 @@ export const proposalsListQuery = (
   );
 
 const findUserProposalsQuery = gql`
-  query getProposals($contractAddress: Bytes!, $proposerAddress: Bytes!) {
+  query getUserProposals($contractAddress: Bytes!, $proposerAddress: Bytes!) {
     proposals(
       where: { contractAddress: $contractAddress, proposer: $proposerAddress }
     ) {

@@ -34,7 +34,7 @@ export type ProposalDetailsQueryResult = {
 };
 
 const findProposalDetailsQuery = gql`
-  query getProposals($contractAddress: Bytes!, $proposalId: BigInt!) {
+  query getProposalsDetails($contractAddress: Bytes!, $proposalId: BigInt!) {
     proposals(
       where: { contractAddress: $contractAddress, proposalId: $proposalId }
     ) {
