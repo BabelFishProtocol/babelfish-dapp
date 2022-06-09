@@ -1,4 +1,5 @@
 import { all, takeLatest } from 'typed-redux-saga';
+import { setFailedTransactionStatus } from '../aggregator/sagas/localTransactions';
 import { dashboardActions } from './dashboard.slice';
 import {
   fetchDashboardBalances,
@@ -6,7 +7,6 @@ import {
 } from './sagas/fetchDashboardBalances';
 import {
   fetchTransactions,
-  setFailedTransactionStatus,
   watchTransactions,
 } from './sagas/fetchTransactions';
 

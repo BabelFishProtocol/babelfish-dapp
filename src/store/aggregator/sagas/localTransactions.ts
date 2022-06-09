@@ -1,6 +1,11 @@
 import { select, call, put } from 'typed-redux-saga';
 import { getCurrentTimestamp } from '../../../utils/helpers';
+import {
+  providerSelector,
+  xusdLocalTransactionsSelector,
+} from '../../app/app.selectors';
 import { appActions } from '../../app/app.slice';
+import { TxReceiptStatus } from '../../dashboard/sagas/fetchTransactions.types';
 import {
   submitCallCurrentOperation,
   submitTxDetails,
@@ -58,7 +63,37 @@ export function* addTransactionIntoLocalStorage({
   yield* setLocalTx(txToSave);
 }
 
-export function* setErrorOnDepositCrossChainTx() {
+export function* setFailedTransactionStatus() {
+  const provider = yield* select(providerSelector);
+  if (!provider) return;
+
+  const localTx = yield* select(xusdLocalTransactionsSelector);
+  if (!localTx) return;
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const tx of localTx) {
+    // we have to handle this case in setFailedOnDepositCrossChainTx
+    if (tx.event === 'Deposit' && tx.isCrossChain) {
+      return;
+    }
+
+    const txReceipt = yield* call(
+      [provider, provider.waitForTransaction],
+      tx.txHash
+    );
+
+    if (txReceipt.status === TxReceiptStatus.Failed) {
+      yield* put(
+        appActions.updateLocalXusdTransactionStatus({
+          txHash: tx.txHash,
+          newStatus: 'Failed',
+        })
+      );
+    }
+  }
+}
+
+export function* setFailedOnDepositCrossChainTx() {
   const currentOperation = yield* select(submitCallCurrentOperation);
   const txDetails = yield* select(submitTxDetails);
 

@@ -13,7 +13,7 @@ import { AggregatorActions, aggregatorActions } from './aggregator.slice';
 import { depositTokens } from './sagas/depositTokens';
 import {
   addTransactionIntoLocalStorage,
-  setErrorOnDepositCrossChainTx,
+  setFailedOnDepositCrossChainTx,
 } from './sagas/localTransactions';
 import { withdrawTokens } from './sagas/withdrawTokens';
 
@@ -116,7 +116,10 @@ export function* aggregatorSaga() {
       aggregatorActions.setSubmitStepData,
       addTransactionIntoLocalStorage
     ),
-    takeLatest(aggregatorActions.setSubmitError, setErrorOnDepositCrossChainTx),
+    takeLatest(
+      aggregatorActions.setSubmitError,
+      setFailedOnDepositCrossChainTx
+    ),
 
     takeLatest(aggregatorActions.setStartingToken.type, fetchAllowTokenAddress),
     takeLatest(

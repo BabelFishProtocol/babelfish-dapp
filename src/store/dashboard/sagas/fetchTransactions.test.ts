@@ -24,10 +24,7 @@ import {
   txWithChangedHash,
   diffTxsWithHash,
 } from './fetchTransactions.mock';
-import {
-  fetchTransactions,
-  setFailedTransactionStatus,
-} from './fetchTransactions';
+import { fetchTransactions } from './fetchTransactions';
 import { transactionsQuery } from '../../../queries/transactionsQuery';
 import {
   AggregatorCalls,
@@ -41,7 +38,10 @@ import {
   submitCallCurrentOperation,
   submitTxDetails,
 } from '../../aggregator/aggregator.selectors';
-import { setErrorOnDepositCrossChainTx } from '../../aggregator/sagas/localTransactions';
+import {
+  setFailedOnDepositCrossChainTx,
+  setFailedTransactionStatus,
+} from '../../aggregator/sagas/localTransactions';
 
 util.inspect.defaultOptions.depth = null;
 
@@ -392,7 +392,7 @@ describe('dashboard store', () => {
       });
 
       const getBasePath = () =>
-        expectSaga(setErrorOnDepositCrossChainTx)
+        expectSaga(setFailedOnDepositCrossChainTx)
           .withReducer(reducer)
           .withState(initialState)
           .select(submitCallCurrentOperation)
