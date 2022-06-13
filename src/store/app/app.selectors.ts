@@ -29,6 +29,7 @@ import {
   MassetV3__factory,
 } from '../../contracts/types';
 import { BaseContractFactory, MulticallProviderType } from '../types';
+import { hasLocalTransactions } from './app.slice';
 
 const appState = (state: RootState) => state[Reducers.App];
 
@@ -219,17 +220,9 @@ export const multicallProviderSelector = createSelector(
 );
 
 export const xusdLocalTransactionsSelector = createSelector(
-  [appState, chainIdSelector, accountSelector],
-  (state, chainId, account) => {
-    if (
-      !chainId ||
-      !account ||
-      !state.xusdLocalTransactions[chainId] ||
-      !state.xusdLocalTransactions[chainId][account]
-    ) {
-      return undefined;
-    }
-
-    return state.xusdLocalTransactions[chainId][account];
-  }
+  [appState],
+  (state) =>
+    hasLocalTransactions(state)
+      ? state.xusdLocalTransactions[state.chainId][state.account]
+      : undefined
 );

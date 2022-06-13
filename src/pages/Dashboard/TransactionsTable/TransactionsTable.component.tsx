@@ -5,7 +5,7 @@ import {
   TransactionsTableComponentProps,
   TransactionsTableItem,
 } from './TransactionsTable.types';
-import { formatDate, StatusColumn } from './TransactionsTable.utils';
+import { formatDate, StatusColumn } from './TransactionsTable.columns';
 
 const transactionsTableColumns: DataTableColumn<TransactionsTableItem>[] = [
   { label: 'Event', name: 'event' },

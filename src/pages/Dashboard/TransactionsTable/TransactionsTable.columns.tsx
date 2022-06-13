@@ -13,10 +13,10 @@ export const formatDate = (timestamp?: number | string) =>
   timestamp ? formatTimestamp(timestamp) : '------';
 
 const TooltipCopy = ({ firstLine, secondLine }: TooltipCopyProps) => (
-  <div style={{ textAlign: 'center' }}>
+  <Box textAlign="center">
     <p>{firstLine}</p>
     <p>{secondLine}</p>
-  </div>
+  </Box>
 );
 
 const DepositSucces = (

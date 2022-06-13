@@ -337,11 +337,8 @@ describe('app store', () => {
         },
       });
 
-      const filledDataResult = xusdLocalTransactionsSelector.resultFunc(
-        initialState,
-        ChainEnum.ETH,
-        mockAccount
-      );
+      const filledDataResult =
+        xusdLocalTransactionsSelector.resultFunc(initialState);
 
       expect(filledDataResult).toEqual([localXusdTransaction]);
     });
