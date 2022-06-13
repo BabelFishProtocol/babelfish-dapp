@@ -33,7 +33,11 @@ import {
 } from '../../aggregator/aggregator.state';
 import { AppState } from '../../app/app.state';
 import { appActions } from '../../app/app.slice';
-import { GetInitialState, GetSuccesState } from './fetchTransactions.types';
+import {
+  GetInitialState,
+  GetSuccesState,
+  TxReceiptStatus,
+} from './fetchTransactions.types';
 import {
   submitCallCurrentOperation,
   submitTxDetails,
@@ -182,7 +186,7 @@ describe('dashboard store', () => {
     });
 
     class MockProvider {
-      public status: number = 0;
+      public status: number = TxReceiptStatus.Failed;
       waitForTransaction(_: string) {
         return {
           txReceipt: this.status,
