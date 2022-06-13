@@ -1,8 +1,9 @@
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { injectedConnector } from './providers';
+import { PortisConnector } from '@web3-react/portis-connector';
+import { injectedConnector, portisConnector } from './providers';
 
 import metamaskIcon from '../assets/icons/metamask-icon.webp';
-// import portisIcon from '../assets/icons/portis.svg';
+import portisIcon from '../assets/icons/portis.svg';
 import niftyIcon from '../assets/icons/nifty.png';
 import liqualityIcon from '../assets/icons/liquality.png';
 import { WindowWithEthereum } from '../utils/types';
@@ -13,13 +14,14 @@ export enum WalletEnum {
   Metamask = 'Metamask',
   Nifty = 'Nifty',
   Liquality = 'Liquality',
-  // Portis = 'Portis',
+  Portis = 'Portis',
+  Ledger = 'Ledger',
 }
 
 export type WalletConfig = {
   name: WalletEnum;
   icon: string;
-  connector: AbstractConnector;
+  connector: AbstractConnector | PortisConnector;
   checkConnection: () => void;
 };
 
@@ -60,11 +62,10 @@ export const wallets: WalletConfig[] = [
       }
     },
   },
-  // {
-  //   name: WalletEnum.Portis,
-  //   icon: portisIcon,
-  //   connector: providerProvider, // TODO: fix portis errors
-  //   // connector: injectedConnector,
-  //   checkConnection: () => {},
-  // },
+  {
+    name: WalletEnum.Portis,
+    icon: portisIcon,
+    connector: portisConnector,
+    checkConnection: () => {},
+  },
 ];

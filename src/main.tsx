@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { Web3ReactProvider } from '@web3-react/core';
 import { ExternalProvider, Web3Provider } from '@ethersproject/providers';
+// import { inherits } from 'util';
 
 import { App } from './App';
 import { store } from './store';
@@ -23,6 +24,8 @@ const getLibrary = (provider: ExternalProvider) => {
 
   return library;
 };
+
+// window.Buffer = Buffer;
 
 ReactDOM.render(
   <React.StrictMode>

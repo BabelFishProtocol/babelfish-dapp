@@ -18,7 +18,6 @@ export function* createStakeSteps(stakeAmount: string, unlockDate: number) {
   const staking = yield* select(stakingContractSelector);
   const fishToken = yield* select(fishTokenSelector);
   const { allowanceForStaking } = yield* select(fishTokenDataSelector);
-
   const result: Result = {
     steps: [],
   };
@@ -30,11 +29,12 @@ export function* createStakeSteps(stakeAmount: string, unlockDate: number) {
   }
 
   const parsedStakeAmount = utils.parseEther(stakeAmount);
-
   if (BigNumber.from(allowanceForStaking).lt(parsedStakeAmount)) {
     result.steps.push({
       name: 'approve',
-      effect: call(fishToken.approve, staking.address, parsedStakeAmount),
+      effect: call(fishToken.approve, staking.address, parsedStakeAmount, {
+        // gasPrice: 4626304100, //add our custom gas price if needed as currently as we made 'add stake' transaction, min block gas price was to low - provider.getGasPrice()
+      }),
     });
   }
 

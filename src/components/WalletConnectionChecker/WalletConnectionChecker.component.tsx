@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import { ChainEnum } from '../../config/chains';
 
 import {
+  connectorSelector,
   supportedChainsInCurrentNetworkSelector,
   walletNotConnectedModalSelector,
   wrongNetworkModalSelector,
@@ -41,12 +42,13 @@ export const WalletNotConnectedModal = () => {
 export const WrongNetworkModal = () => {
   const dispatch = useDispatch();
   const wrongNetworkModal = useSelector(wrongNetworkModalSelector);
+  const connector = useSelector(connectorSelector);
   const supportedChainsInCurrentNetwork = useSelector(
     supportedChainsInCurrentNetworkSelector
   );
 
-  const onNetworkClick = (network: ChainEnum) => {
-    switchConnectedChain(network);
+  const onNetworkClick = async (network: ChainEnum) => {
+    switchConnectedChain({ chain: network, connector });
   };
 
   const onClose = () => {

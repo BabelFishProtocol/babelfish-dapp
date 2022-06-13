@@ -49,6 +49,10 @@ export const providerSelector = createSelector(
   appState,
   (state) => state.provider
 );
+export const connectorSelector = createSelector(
+  appState,
+  (state) => state.connector
+);
 export const currentBlockSelector = createSelector(
   appState,
   (state) => state.currentBlockNumber

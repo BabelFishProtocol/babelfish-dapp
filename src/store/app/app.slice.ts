@@ -19,6 +19,12 @@ export const appSlice = createSlice({
     setChainId: (state, { payload }: PayloadAction<AppState['chainId']>) => {
       state.chainId = payload;
     },
+    setConnector: (
+      state,
+      { payload }: PayloadAction<AppState['connector']>
+    ) => {
+      state.connector = payload;
+    },
     setAccount: (state, { payload }: PayloadAction<AppState['account']>) => {
       state.account = payload;
     },
@@ -40,6 +46,7 @@ export const appSlice = createSlice({
       state,
       { payload }: PayloadAction<AppState['supportedNetworks']>
     ) => {
+      console.log('setSupportedNetwoks');
       state.supportedNetworks = payload;
     },
     setWrongNetworkModal: (state, { payload }: PayloadAction<boolean>) => {
