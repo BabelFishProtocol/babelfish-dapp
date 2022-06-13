@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "deploy": "./start.sh",
     "lint": "eslint .",
     "test": "jest --verbose",
     "preview": "vite preview",

@@ -65,29 +65,7 @@ export const wallets: WalletConfig[] = [
   {
     name: WalletEnum.Portis,
     icon: portisIcon,
-    // connector: providerProvider, // TODO: fix portis errors
     connector: portisConnector,
-    checkConnection: () => {
-      // console.log(ethereum);
-      // if (!ethereum || !ethereum.isPortis) {
-      //   throw new Error(
-      //     '🔵🟣 You must install Portis into your browser: https://liquality.io/wallet.html and make sure it is set as the default wallet.'
-      //   );
-      // }
-    },
+    checkConnection: () => {},
   },
-  // {
-  //   name: WalletEnum.Ledger,
-  //   icon: portisIcon,
-  //   // connector: providerProvider, // TODO: fix portis errors
-  //   connector: ledgerConnector,
-  //   checkConnection: () => {
-  //     // console.log(ethereum);
-  //     // if (!ethereum || !ethereum.isPortis) {
-  //     //   throw new Error(
-  //     //     '🔵🟣 You must install Portis into your browser: https://liquality.io/wallet.html and make sure it is set as the default wallet.'
-  //     //   );
-  //     // }
-  //   },
-  // },
 ];

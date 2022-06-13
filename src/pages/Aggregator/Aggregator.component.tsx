@@ -70,19 +70,17 @@ export const AggregatorComponent = ({
     startingTokenOptions,
     destinationChainOptions,
     destinationTokenOptions,
+    toggleFlow,
   } = useAggregatorDropdowns(
     startingChain,
     destinationChain,
+    startingToken,
+    destinationToken,
     resetField,
     setValue
   );
 
-  const { hideDestinationTokenDropdown } = useConnectedChain(
-    startingChain,
-    destinationChain,
-    resetField,
-    setValue
-  );
+  useConnectedChain(startingChain, resetField, setValue);
 
   useWalletAddress(setValue);
 
@@ -169,7 +167,7 @@ export const AggregatorComponent = ({
               />
             </Box>
           </PageView>
-          <AggregatorInfoContainer />
+          <AggregatorInfoContainer toggleFlow={toggleFlow} />
           <PageView
             title={<PageViewTitle>Destination chain</PageViewTitle>}
             sx={{
@@ -200,7 +198,6 @@ export const AggregatorComponent = ({
                 control={control}
                 options={destinationTokenOptions}
                 sx={{ mb: 4 }}
-                hideField={hideDestinationTokenDropdown}
                 setValue={setValue}
               />
 
