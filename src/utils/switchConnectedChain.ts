@@ -1,7 +1,13 @@
 import { Web3Provider } from '@ethersproject/providers';
+import { PortisConnector } from '@web3-react/portis-connector';
 import { ChainEnum, chains } from '../config/chains';
 import { MetamaskErrorCodes } from '../constants';
-import { isErrorWithCode, WindowWithEthereum } from './types';
+import {
+  isErrorWithCode,
+  isPortis,
+  SwitchConnectedChainProps,
+  WindowWithEthereum,
+} from './types';
 
 export const switchConnectedChainUsingWindow = async (chain: ChainEnum) => {
   const ethereum = (window as WindowWithEthereum)?.ethereum;
@@ -90,10 +96,21 @@ export const switchConnectedChainUsingProvider = async (
   }
 };
 
-export const switchConnectedChain = (
+export const switchConnectedChainUsingPortis = async (
   chain: ChainEnum,
-  provider?: Web3Provider
+  connector: PortisConnector
 ) => {
+  await connector.changeNetwork(chain);
+};
+
+export const switchConnectedChain = async ({
+  chain,
+  provider,
+  connector,
+}: SwitchConnectedChainProps) => {
+  if (connector && isPortis(connector)) {
+    return switchConnectedChainUsingPortis(chain, connector);
+  }
   if (!provider) {
     return switchConnectedChainUsingWindow(chain);
   }

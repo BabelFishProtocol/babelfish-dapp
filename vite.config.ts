@@ -4,9 +4,6 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import nodePolyfills from 'rollup-plugin-polyfill-node';
 import path from 'path';
 
-// console.log('process: ', process.env.NODE_ENV);
-
-// const test = new RegExp('node_modules/.vite/.*js');
 /* eslint-disable */
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -30,9 +27,6 @@ export default defineConfig({
     rollupOptions: {
       plugins: [nodePolyfills(), nodeResolve({ preferBuiltins: false })],
     },
-    // commonjsOptions: {
-    //   transformMixedEsModules: true,
-    // },
   },
   define: {
     'process.env': process.env,

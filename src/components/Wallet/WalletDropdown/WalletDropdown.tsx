@@ -1,14 +1,14 @@
 import { useCallback, useState } from 'react';
-import { ConnectorUpdate } from '@web3-react/types';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
-import { alpha } from '@mui/material/styles';
 import { UnsupportedChainIdError } from '@web3-react/core';
 
+import { useDispatch } from 'react-redux';
 import { Button } from '../../Button/Button.component';
-import { WalletIcon } from '../WalletIcon/WalletIcon.component';
-import { WalletDropdownProps, WalletOptionProps } from './WalletDropdown.types';
+import { WalletDropdownProps } from './WalletDropdown.types';
+import { appActions } from '../../../store/app/app.slice';
+import { WalletOption } from '../WalletOption/WalletOption.component';
 
 export const WalletDropdown = ({
   wallets,
@@ -16,7 +16,7 @@ export const WalletDropdown = ({
   setConnectedWallet,
 }: WalletDropdownProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
+  const dispatch = useDispatch();
   const open = Boolean(anchorEl);
 
   const handleClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
@@ -27,32 +27,18 @@ export const WalletDropdown = ({
     setAnchorEl(null);
   }, []);
 
-  const tryActivation = async (walletId: number) => {
-    const { name, connector, icon, checkConnection } = wallets[walletId];
+  const tryActivation = async (id: number) => {
+    const { name, connector, checkConnection } = wallets[id];
 
     checkConnection();
 
-    // const portis = new Portis('bcc11290-a380-4a00-96b2-ca2803da406e', '31');
-    // const web3 = new Web3(portis.provider);
     if (connector) {
-      // if (name === 'Portis') {
-      //   connector.;
-      // }
       try {
-        console.log(name, connector);
+        await activate(connector);
 
-        const test = await activate(
-          connector,
-          (e) => {
-            console.log('error?', e);
-          },
-          true
-        );
-        // const test = await activate(connector);
-        console.log('activate', test);
         setConnectedWallet(name);
+        dispatch(appActions.setConnector(connector));
       } catch (e) {
-        console.log('activate error', e);
         if (e instanceof UnsupportedChainIdError) {
           await activate(connector);
           setConnectedWallet(name);
@@ -97,10 +83,10 @@ export const WalletDropdown = ({
         {wallets.map((wallet, index) => (
           <WalletOption
             key={index}
-            walletIndex={index}
+            index={index}
             name={wallet.name}
             icon={wallet.icon}
-            tryActivation={tryActivation}
+            handleClick={tryActivation}
           />
         ))}
         <MenuItem
@@ -123,36 +109,3 @@ export const WalletDropdown = ({
     </>
   );
 };
-
-const WalletOption = ({
-  name,
-  icon,
-  walletIndex,
-  tryActivation,
-}: WalletOptionProps) => (
-  <MenuItem
-    autoFocus={walletIndex === 0}
-    onClick={() => {
-      tryActivation(walletIndex);
-    }}
-    sx={{
-      width: 300,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: 2,
-      px: 2,
-      py: 1,
-      borderRadius: '6px',
-      border: 'solid 2px rgba(0, 0, 0, 0.4)',
-      backgroundColor: ({ palette }) => alpha(palette.common.white, 0.08),
-    }}
-  >
-    <Typography>{name}</Typography>
-    <WalletIcon
-      icon={icon}
-      name={name}
-      sx={{ backgroundColor: 'common.white' }}
-    />
-  </MenuItem>
-);

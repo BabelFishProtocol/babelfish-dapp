@@ -1,20 +1,26 @@
 import { useWeb3React } from '@web3-react/core';
-// import { useWeb3React as useWeb3ReactPortis } from '@web3-react/portis-connector';
 import { Web3Provider } from '@ethersproject/providers';
 import { Web3ReactContextInterface } from '@web3-react/core/dist/types';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { AbstractConnector } from '@web3-react/abstract-connector';
+import { PortisConnector } from '@web3-react/portis-connector';
 import { injectedConnector } from '../config/providers';
 import { appActions } from '../store/app/app.slice';
 
 export type Web3Data = Web3ReactContextInterface<Web3Provider>;
+export type Web3DataWithPortis = Web3Data & {
+  connector?: AbstractConnector | PortisConnector;
+};
 
-type ActiveWeb3Data = Required<Web3Data> & {
+type ActiveWeb3Data = Required<Web3Data | Web3DataWithPortis> & {
   active: true;
 };
-type InActiveWeb3Data = Web3Data & {
-  active: false;
-};
+type InActiveWeb3Data =
+  | Web3Data
+  | (Web3DataWithPortis & {
+      active: false;
+    });
 
 const isActive = (web3Data: Web3Data): web3Data is ActiveWeb3Data =>
   web3Data.active;
@@ -25,7 +31,7 @@ export const useEagerConnect = () => {
 
   useEffect(() => {
     (async () => {
-      const isAuthorized = await injectedConnector.isAuthorized();
+      const isAuthorized = await injectedConnector.isAuthorized(); // TODO: also check for another wallets
       if (isAuthorized) {
         try {
           await activate(injectedConnector, undefined, true);
@@ -69,7 +75,7 @@ export const useActiveWeb3React = (): ActiveWeb3Data | InActiveWeb3Data => {
   if (isActive(web3Data)) {
     return web3Data;
   }
-  console.log(web3Data);
+
   return web3Data as InActiveWeb3Data;
 };
 

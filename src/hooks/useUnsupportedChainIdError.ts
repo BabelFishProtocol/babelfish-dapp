@@ -14,6 +14,12 @@ export const useUnsupportedChainIdError = (): boolean => {
 
   useEffect(() => {
     dispatch(appActions.setWrongNetworkModal(isUnsupportedChainIdError));
+    // console.log(
+    //   'error: ',
+    //   error,
+    //   isUnsupportedChainIdError,
+    //   unsupportedNetwork
+    // );
   }, [isUnsupportedChainIdError, dispatch]);
 
   return isUnsupportedChainIdError;

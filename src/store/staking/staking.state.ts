@@ -28,6 +28,7 @@ export type StakeConstants = {
 
 export class StakingState {
   selectedStake?: StakeListItem;
+  estimatedFee?: string;
 
   addNewStakeCall: CallState<AddNewStakeCalls> = {
     status: 'idle',
