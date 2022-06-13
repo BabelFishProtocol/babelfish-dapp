@@ -107,7 +107,7 @@ export type SubscriptionSagaConfig<Result, Variables> = {
 export type GetTxDetails = {
   event: TxDetails['event'];
   status: TxDetails['status'];
-  isCrossChain?: string | undefined;
+  isCrossChain?: string;
 };
 
 export type GetSuccesState = {
