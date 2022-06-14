@@ -12,8 +12,9 @@ import {
 import { RootState } from '../..';
 import { Reducers } from '../../../constants';
 import { fetchHistoryStaking } from './fetchHistoryStaking';
-import { Stake, UserQueryResult } from '../../../queries/historyStakeListQuery';
+import { UserQueryResult } from '../../../queries/historyStakeListQuery';
 import { stakingActions } from '../staking.slice';
+import { IStakeEvent } from '../../../gql/graphql';
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -41,7 +42,7 @@ describe('fetchHistoryStaking', () => {
 
   const vestAddress = '0x94e907A6483b5ef';
 
-  const stakeEvents: Stake[] = [
+  const stakeEvents: IStakeEvent[] = [
     {
       id: 'stakeEvent-1',
       staker: testAccount,

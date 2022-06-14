@@ -1,12 +1,5 @@
 import { gql, GraphQLClient } from 'graphql-request';
-import {
-  IGetUserQuery,
-  IGetUserQueryVariables,
-  IStakeEvent,
-  IUser,
-} from '../gql/graphql';
-
-export type Stake = IStakeEvent;
+import { IGetUserQuery, IGetUserQueryVariables, IUser } from '../gql/graphql';
 
 type UserData = Pick<IUser, 'id' | 'allStakes'>;
 
