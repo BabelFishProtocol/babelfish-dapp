@@ -3294,6 +3294,7 @@ __metadata:
     react-redux: ^7.2.6
     react-router-dom: ^6.2.1
     redux-mock-store: ^1.5.4
+    redux-persist: ^6.0.0
     redux-saga: ^1.1.3
     redux-saga-test-plan: ^4.0.4
     subscription-client: ^0.9.15
@@ -8561,6 +8562,15 @@ __metadata:
   dependencies:
     lodash.isplainobject: ^4.0.6
   checksum: 571eab2cca3e46321969025af865ddd780804c811be9db277fddf772d86e3ea67b4ef1b19ea3866417d41eb1b73605103020321f68cf68f379a52679a6823d12
+  languageName: node
+  linkType: hard
+
+"redux-persist@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "redux-persist@npm:6.0.0"
+  peerDependencies:
+    redux: ">4.0.0"
+  checksum: edaf10dbf17351ce8058d0802357adae8665b3a1ff39371834e37838ddbe1a79cccbc717b8ba54acb5307651ccf51d0f7dc1cbc8dbae0726ff952d11ef61c6b8
   languageName: node
   linkType: hard
 

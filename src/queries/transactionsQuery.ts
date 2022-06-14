@@ -2,13 +2,16 @@ import { gql, GraphQLClient } from 'graphql-request';
 
 type TransactionsQueryParams = { user: string };
 
+export type TransactionEvent = 'Deposit' | 'Withdraw';
+
 export type TransactionsQueryItem = {
   asset: string;
   id: string;
   date: string;
-  event: 'Deposit' | 'Withdraw';
+  event: TransactionEvent;
   amount: string;
   user: string;
+  txHash: string;
 };
 
 export type TransactionsQueryResult = {

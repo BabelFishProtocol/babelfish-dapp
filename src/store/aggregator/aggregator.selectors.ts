@@ -254,3 +254,13 @@ export const submitAggregatorStatusSelector = createSelector(
   callSelector,
   (state) => selectCurrentCallStepData(state)
 );
+
+export const submitCallCurrentOperation = createSelector(
+  callSelector,
+  (state) => state.currentOperation
+);
+
+export const submitTxDetails = createSelector(
+  aggregatorState,
+  (state) => state.txDetails
+);

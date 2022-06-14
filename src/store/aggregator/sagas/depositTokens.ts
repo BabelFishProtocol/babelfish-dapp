@@ -1,6 +1,11 @@
 import { utils } from 'ethers';
 import { call, put, select } from 'typed-redux-saga';
-import { ChainEnum, SUPPORTED_CHAINS_RSK } from '../../../config/chains';
+import {
+  ChainEnum,
+  checkIsCrossChain,
+  SUPPORTED_CHAINS_RSK,
+} from '../../../config/chains';
+import { parseToWei } from '../../../utils/helpers';
 import {
   accountSelector,
   massetContractSelector,
@@ -25,7 +30,7 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
   const massetAddress = yield* select(massetAddressSelector);
   const massetContract = yield* select(massetContractSelector);
   const account = yield* select(accountSelector);
-  const { startingChain, receiveAddress } = payload;
+  const { startingChain, receiveAddress, receiveAmount } = payload;
   const isRSK = SUPPORTED_CHAINS_RSK.includes(startingChain as ChainEnum);
 
   if (
@@ -42,6 +47,19 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
     yield* put(aggregatorActions.setSubmitError('Could not find addresses'));
     return;
   }
+
+  // we have to attach some transaction details into state,
+  // it will be use to save this transaction in local storage
+  const isCrossChain = checkIsCrossChain(startingChain);
+  yield* put(
+    aggregatorActions.setTransactionDetails({
+      amount: parseToWei(receiveAmount),
+      user: account,
+      event: 'Deposit',
+      status: 'Pending',
+      isCrossChain,
+    })
+  );
 
   const amount = utils.parseUnits(payload.sendAmount, tokenDecimals);
   const spender = isRSK ? massetAddress : bridge!.address.toLowerCase();
