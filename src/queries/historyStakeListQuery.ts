@@ -1,23 +1,16 @@
 import { gql, GraphQLClient } from 'graphql-request';
+import {
+  IGetUserQuery,
+  IGetUserQueryVariables,
+  IStakeEvent,
+  IUser,
+} from '../gql/graphql';
 
-export type Stake = {
-  id: string;
-  staker: string;
-  amount: string;
-  lockedUntil: string;
-  totalStaked: string;
-  transactionHash: string;
-  blockTimestamp: string;
-};
+export type Stake = IStakeEvent;
 
-type UserData = {
-  id: string;
-  allStakes: Stake[];
-};
+type UserData = Pick<IUser, 'id' | 'allStakes'>;
 
-export type UserQueryParams = {
-  contractAddress: string;
-};
+export type UserQueryParams = IGetUserQueryVariables;
 
 export type UserQueryResult = {
   user: UserData;
@@ -40,6 +33,12 @@ const findUserQuery = gql`
   }
 `;
 
+export const allUserStakesQuery = (
+  client: GraphQLClient,
+  params: IGetUserQueryVariables
+) =>
+  client.request<IGetUserQuery, IGetUserQueryVariables>(findUserQuery, params);
+
 export const findStakingHistorySubscription = gql`
   subscription stakingHistory($contractAddress: ID!) {
     user(id: $contractAddress) {
@@ -56,8 +55,3 @@ export const findStakingHistorySubscription = gql`
     }
   }
 `;
-
-export const allUserStakesQuery = (
-  client: GraphQLClient,
-  params: UserQueryParams
-) => client.request<UserQueryResult, UserQueryParams>(findUserQuery, params);

@@ -14,10 +14,7 @@ export type FeesAndLimitsType = {
   dailyLimit?: string;
 };
 
-export type XusdLocalTransaction = Omit<
-  TransactionsTableItem,
-  'id' | 'receiver'
->;
+export type XusdLocalTransaction = Omit<TransactionsTableItem, 'id'>;
 
 export type UpdateTxStatus = {
   txHash: TransactionsTableItem['txHash'];

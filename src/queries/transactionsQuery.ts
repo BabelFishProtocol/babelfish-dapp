@@ -5,7 +5,7 @@ import {
   IXusdTransaction,
 } from '../gql/graphql';
 
-export type TransactionsQueryItem = IXusdTransaction;
+export type TransactionsQueryItem = Omit<IXusdTransaction, 'receiver'>;
 
 export const getTransactionsDocument = gql`
   query getTransactions($user: Bytes!) {

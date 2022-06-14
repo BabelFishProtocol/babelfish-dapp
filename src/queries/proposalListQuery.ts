@@ -1,26 +1,31 @@
 import { gql, GraphQLClient } from 'graphql-request';
+import {
+  IGetProposalsQuery,
+  IGetProposalsQueryVariables,
+  IGetUserProposalsQuery,
+  IGetUserProposalsQueryVariables,
+  IProposal,
+} from '../gql/graphql';
 
-export type ProposalListQueryParams = { contractAddress: string };
-type UserProposalListQueryParams = ProposalListQueryParams & {
-  proposerAddress: string;
-};
+export type ProposalListQueryParams = IGetProposalsQueryVariables;
 
-export type ProposalListQueryItem = {
-  proposalId: string;
-  description: string;
-  startDate: string;
-  endBlock: string;
-  startBlock: string;
-  createdAt: string;
-  contractAddress: string;
-};
+export type ProposalListQueryItem = Pick<
+  IProposal,
+  | 'proposalId'
+  | 'description'
+  | 'startDate'
+  | 'endBlock'
+  | 'startBlock'
+  | 'createdAt'
+  | 'contractAddress'
+>;
 
 export type ProposalListQueryResult = {
   proposals: ProposalListQueryItem[];
 };
 
-const findProposalsQuery = gql`
-  query getProposalsQuery($contractAddress: Bytes!) {
+const getProposalsQuery = gql`
+  query getProposals($contractAddress: Bytes!) {
     proposals(where: { contractAddress: $contractAddress }) {
       createdAt
       description
@@ -33,9 +38,11 @@ const findProposalsQuery = gql`
   }
 `;
 
-export const findAllProposalsSubscription = gql`
-  subscription getProposals {
-    proposals(orderBy: createdAt, orderDirection: desc) {
+const findUserProposalsQuery = gql`
+  query getUserProposals($contractAddress: Bytes!, $proposerAddress: Bytes!) {
+    proposals(
+      where: { contractAddress: $contractAddress, proposer: $proposerAddress }
+    ) {
       createdAt
       description
       startDate
@@ -51,16 +58,24 @@ export const proposalsListQuery = (
   client: GraphQLClient,
   params: ProposalListQueryParams
 ) =>
-  client.request<ProposalListQueryResult, ProposalListQueryParams>(
-    findProposalsQuery,
+  client.request<IGetProposalsQuery, ProposalListQueryParams>(
+    getProposalsQuery,
     params
   );
 
-const findUserProposalsQuery = gql`
-  query getUserProposals($contractAddress: Bytes!, $proposerAddress: Bytes!) {
-    proposals(
-      where: { contractAddress: $contractAddress, proposer: $proposerAddress }
-    ) {
+export const userProposalsListQuery = (
+  client: GraphQLClient,
+  params: IGetUserProposalsQueryVariables
+) =>
+  client.request<IGetUserProposalsQuery, IGetUserProposalsQueryVariables>(
+    findUserProposalsQuery,
+    params
+  );
+
+export const findAllProposalsSubscription = gql`
+  subscription getAllProposals {
+    proposals(orderBy: createdAt, orderDirection: desc) {
+      createdAt
       description
       startDate
       startBlock
@@ -70,12 +85,3 @@ const findUserProposalsQuery = gql`
     }
   }
 `;
-
-export const userProposalsListQuery = (
-  client: GraphQLClient,
-  params: UserProposalListQueryParams
-) =>
-  client.request<ProposalListQueryResult, UserProposalListQueryParams>(
-    findUserProposalsQuery,
-    params
-  );
