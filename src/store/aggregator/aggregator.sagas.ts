@@ -11,6 +11,10 @@ import {
 } from './aggregator.selectors';
 import { AggregatorActions, aggregatorActions } from './aggregator.slice';
 import { depositTokens } from './sagas/depositTokens';
+import {
+  addTransactionIntoLocalStorage,
+  setFailedOnDepositCrossChainTx,
+} from './sagas/localTransactions';
 import { withdrawTokens } from './sagas/withdrawTokens';
 
 export function* transferTokens(action: AggregatorActions['submit']) {
@@ -108,6 +112,14 @@ export function* resetAggregator() {
 export function* aggregatorSaga() {
   yield* all([
     takeLatest(appActions.walletConnected, resetAggregator),
+    takeLatest(
+      aggregatorActions.setSubmitStepData,
+      addTransactionIntoLocalStorage
+    ),
+    takeLatest(
+      aggregatorActions.setSubmitError,
+      setFailedOnDepositCrossChainTx
+    ),
 
     takeLatest(aggregatorActions.setStartingToken.type, fetchAllowTokenAddress),
     takeLatest(

@@ -1,4 +1,8 @@
-DATE=$(date +%F__%H-%M-%S)
+git pull
+yarn install
+yarn build
+docker-compose up -d --build --force-recreate --renew-anon-volumes --always-recreate-deps 
 
-docker build -t babelfish-frontend_$DATE .
-docker run -d -p  80:80 babelfish-frontend_$DATE
+# just for health check
+docker image ls 
+docker container ls

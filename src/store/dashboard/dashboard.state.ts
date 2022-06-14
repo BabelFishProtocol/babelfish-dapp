@@ -1,4 +1,4 @@
-import { TransactionsQueryItem } from '../../queries/transactionsQuery';
+import { TransactionsTableItem } from '../../pages/Dashboard/TransactionsTable/TransactionsTable.types';
 import { LoadableValue } from '../types';
 
 export type DashboardBalances = {
@@ -13,7 +13,7 @@ export class DashboardState {
     data: undefined,
   };
 
-  transactionList: LoadableValue<TransactionsQueryItem[]> = {
+  transactionList: LoadableValue<TransactionsTableItem[]> = {
     state: 'idle',
     data: [],
   };

@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   ChainEnum,
   ChainType,
+  isNotRSK,
+  isRSK,
   SUPPORTED_CHAINS,
-  SUPPORTED_CHAINS_RSK,
 } from '../../config/chains';
 import { poolHasChain } from '../../config/pools';
 import { TokenEnum, TokenTypeBase } from '../../config/tokens';
@@ -18,11 +19,6 @@ import {
 } from '../../store/app/app.selectors';
 import { switchConnectedChain } from '../../utils/switchConnectedChain';
 import { AggregatorInputs, AggregatorFormValues } from './Aggregator.fields';
-
-const isRSK = (chain: ChainEnum | '') =>
-  !!chain && SUPPORTED_CHAINS_RSK.includes(chain);
-const isNotRSK = (chain: ChainEnum | '') =>
-  !!chain && !SUPPORTED_CHAINS_RSK.includes(chain);
 
 export const useAggregatorDropdowns = (
   startingChain: ChainEnum | '',

@@ -5,9 +5,10 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { Web3ReactProvider } from '@web3-react/core';
 import { ExternalProvider, Web3Provider } from '@ethersproject/providers';
+import { PersistGate } from 'redux-persist/integration/react';
 
 import { App } from './App';
-import { store } from './store';
+import { persistor, store } from './store';
 import { ThemeProvider } from './theme';
 import { AppUpdater } from './store/app/app.updaters';
 import { WalletConnectionChecker } from './components/WalletConnectionChecker/WalletConnectionChecker.component';
@@ -27,16 +28,18 @@ const getLibrary = (provider: ExternalProvider) => {
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ThemeProvider>
-        <BrowserRouter>
-          <Web3ReactProvider getLibrary={getLibrary}>
-            <WalletConnectionChecker>
-              <AppUpdater />
-              <App />
-            </WalletConnectionChecker>
-          </Web3ReactProvider>
-        </BrowserRouter>
-      </ThemeProvider>
+      <PersistGate persistor={persistor}>
+        <ThemeProvider>
+          <BrowserRouter>
+            <Web3ReactProvider getLibrary={getLibrary}>
+              <WalletConnectionChecker>
+                <AppUpdater />
+                <App />
+              </WalletConnectionChecker>
+            </Web3ReactProvider>
+          </BrowserRouter>
+        </ThemeProvider>
+      </PersistGate>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

@@ -5,9 +5,9 @@ import { dashboardActions } from '../../../store/dashboard/dashboard.slice';
 import { transactionsSelector } from '../../../store/dashboard/dashboard.selectors';
 
 export const TransactionsTableContainer = () => {
+  const dispatch = useDispatch();
   const { data, state } = useSelector(transactionsSelector);
 
-  const dispatch = useDispatch();
   useEffect(() => {
     dispatch(dashboardActions.watchTransactions());
 

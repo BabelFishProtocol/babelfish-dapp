@@ -2,7 +2,11 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
 import { ActionsType } from '../types';
 import { PoolEnum } from '../../config/pools';
-import { AggregatorState, FeesAndLimitsType } from './aggregator.state';
+import {
+  AggregatorState,
+  FeesAndLimitsType,
+  TxDetails,
+} from './aggregator.state';
 import { createStepCallsActions } from '../utils/utils.reducers';
 import { AggregatorFormValues } from '../../pages/Aggregator/Aggregator.fields';
 
@@ -84,6 +88,9 @@ const aggregatorSlice = createSlice({
     setSubmitSteps: submitStepCallActions.setSteps,
     setSubmitStepData: submitStepCallActions.updateStep,
     setSubmitError: submitStepCallActions.setStepError,
+    setTransactionDetails: (state, { payload }: PayloadAction<TxDetails>) => {
+      state.txDetails = payload;
+    },
     resetAggregator: (state) => {
       state.allowTokensAddress.state = 'idle';
       state.allowTokensAddress.data = undefined;
@@ -92,6 +99,7 @@ const aggregatorSlice = createSlice({
       state.fetchFeesAndLimitsErrorReason = undefined;
       state.startingTokenBalance.state = 'idle';
       state.startingTokenBalance.data = undefined;
+      state.txDetails = undefined;
     },
   },
 });

@@ -4,7 +4,11 @@ import { RootState } from '..';
 import { LoadableAmount } from '../types';
 import { ERC20__factory } from '../../contracts/types';
 import { TokenEnum, tokens } from '../../config/tokens';
-import { currentChainSelector, providerSelector } from '../app/app.selectors';
+import {
+  currentChainSelector,
+  providerSelector,
+  xusdLocalTransactionsSelector,
+} from '../app/app.selectors';
 
 const dashboardState = (state: RootState) => state[Reducers.Dashboard];
 
@@ -52,7 +56,23 @@ export const xusdBalanceSelector = createSelector(
   })
 );
 
-export const transactionsSelector = createSelector(
+export const fetchedTransactionsSelector = createSelector(
   dashboardState,
   (state) => state.transactionList
+);
+
+export const transactionsSelector = createSelector(
+  fetchedTransactionsSelector,
+  xusdLocalTransactionsSelector,
+  ({ data, state }, xusdLocalTransactions) => {
+    const transactions = xusdLocalTransactions
+      ? [...xusdLocalTransactions, ...data]
+      : data;
+
+    const sortedByDate = transactions.sort(
+      (a, b) => Number(b.date) - Number(a.date)
+    );
+
+    return { data: sortedByDate, state };
+  }
 );

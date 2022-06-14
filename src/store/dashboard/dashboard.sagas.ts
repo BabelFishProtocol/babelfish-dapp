@@ -1,4 +1,5 @@
 import { all, takeLatest } from 'typed-redux-saga';
+import { setFailedTransactionStatus } from '../aggregator/sagas/localTransactions';
 import { dashboardActions } from './dashboard.slice';
 import {
   fetchDashboardBalances,
@@ -18,5 +19,10 @@ export function* dashboardSaga() {
     takeLatest(dashboardActions.fetchTransactions.type, fetchTransactions),
     takeLatest(dashboardActions.updateTransactions.type, fetchTransactions),
     takeLatest(dashboardActions.watchTransactions.type, watchTransactions),
+
+    takeLatest(
+      dashboardActions.setTransactions.type,
+      setFailedTransactionStatus
+    ),
   ]);
 }

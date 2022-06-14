@@ -9,6 +9,8 @@ import {
 } from '../../contracts/types';
 import { AggregatorInputs } from '../../pages/Aggregator/Aggregator.fields';
 import { createMockedContract, mockSigner } from '../../testUtils';
+import { GetTxDetails } from '../types';
+import { AggregatorState, TxDetails } from './aggregator.state';
 
 export const mockTokenAddress = '0x110a13FC3efE6A245B50102D2d79B3E76125Ae83';
 export const mockTokenDecimals = 18;
@@ -47,6 +49,11 @@ export const depositMockValues = {
   [AggregatorInputs.ReceiveAddress]: mockReceiver,
 };
 
+export const mockReceiveAmount = parseUnits(
+  depositMockValues.receiveAmount,
+  mockTokenDecimals
+);
+
 export const depositRSKMockValues = {
   ...depositMockValues,
   [AggregatorInputs.StartingChain]: ChainEnum.RSK_TESTNET,
@@ -68,3 +75,22 @@ export const withdrawRSKMockValues = {
   [AggregatorInputs.DestinationChain]: ChainEnum.RSK_TESTNET,
   [AggregatorInputs.DestinationToken]: TokenEnum.RDOC,
 };
+
+export const getAggregatorInitialState = (
+  txDetails: TxDetails
+): AggregatorState => ({
+  ...new AggregatorState(),
+  txDetails,
+});
+
+export const getTxDetails = ({
+  isCrossChain,
+  event,
+}: Omit<GetTxDetails, 'status'>): TxDetails => ({
+  amount:
+    event === 'Withdraw' ? mockAmount.toString() : mockReceiveAmount.toString(),
+  user: mockAccount,
+  event,
+  status: 'Pending',
+  isCrossChain,
+});

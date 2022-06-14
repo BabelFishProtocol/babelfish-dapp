@@ -94,6 +94,9 @@ export const isValidCalldata = (val: string) => val.match(calldataRegex);
 export const formatWeiAmount = (weiAmount: BigNumberish, decimalDigits = 4) =>
   truncate(utils.commify(utils.formatEther(weiAmount)), decimalDigits);
 
+export const parseToWei = (amount: string) =>
+  utils.parseEther(amount).toString();
+
 export const formatUnitAmount = (
   weiAmount: BigNumberish,
   tokenDecimals: number,
