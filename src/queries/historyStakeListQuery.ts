@@ -10,8 +10,6 @@ export type Stake = IStakeEvent;
 
 type UserData = Pick<IUser, 'id' | 'allStakes'>;
 
-export type UserQueryParams = IGetUserQueryVariables;
-
 export type UserQueryResult = {
   user: UserData;
 };

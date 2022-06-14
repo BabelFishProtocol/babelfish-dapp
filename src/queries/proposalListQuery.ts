@@ -7,8 +7,6 @@ import {
   IProposal,
 } from '../gql/graphql';
 
-export type ProposalListQueryParams = IGetProposalsQueryVariables;
-
 export type ProposalListQueryItem = Pick<
   IProposal,
   | 'proposalId'
@@ -56,9 +54,9 @@ const findUserProposalsQuery = gql`
 
 export const proposalsListQuery = (
   client: GraphQLClient,
-  params: ProposalListQueryParams
+  params: IGetProposalsQueryVariables
 ) =>
-  client.request<IGetProposalsQuery, ProposalListQueryParams>(
+  client.request<IGetProposalsQuery, IGetProposalsQueryVariables>(
     getProposalsQuery,
     params
   );
