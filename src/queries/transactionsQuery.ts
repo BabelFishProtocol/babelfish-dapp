@@ -17,7 +17,6 @@ export const getTransactionsDocument = gql`
       asset
       amount
       user
-      receiver
     }
   }
 `;

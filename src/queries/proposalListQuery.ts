@@ -20,7 +20,7 @@ export type ProposalListQueryResult = {
 };
 
 const findProposalsQuery = gql`
-  query getProposals($contractAddress: Bytes!) {
+  query getProposalsQuery($contractAddress: Bytes!) {
     proposals(where: { contractAddress: $contractAddress }) {
       createdAt
       description

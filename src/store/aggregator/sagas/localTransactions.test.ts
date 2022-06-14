@@ -20,6 +20,7 @@ import {
   XusdLocalTransaction,
 } from '../aggregator.state';
 import { addTransactionIntoLocalStorage } from './localTransactions';
+import { IEvent } from '../../../gql/graphql';
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -109,7 +110,7 @@ describe('aggregator store', () => {
       it('deposit - happy path', async () => {
         const mockCurrOpperation: AggregatorCalls = 'deposit';
         const txDetails = getTxDetails({
-          event: 'Deposit',
+          event: IEvent.Deposit,
           status: 'Pending',
         });
 
@@ -133,7 +134,7 @@ describe('aggregator store', () => {
       it('withdraw - happy path', async () => {
         const mockCurrOpperation: AggregatorCalls = 'withdraw';
         const txDetails = getTxDetails({
-          event: 'Withdraw',
+          event: IEvent.Withdraw,
           status: 'Pending',
         });
 
@@ -158,7 +159,7 @@ describe('aggregator store', () => {
         const mockCurrOpperation: AggregatorCalls = 'withdraw';
 
         const txDetails = getTxDetails({
-          event: 'Deposit', // not withdraw
+          event: IEvent.Deposit, // not withdraw
           status: 'Pending',
         });
 
@@ -176,7 +177,7 @@ describe('aggregator store', () => {
       it('return on approve as currentOperation', async () => {
         const mockCurrOpperation: AggregatorCalls = 'approve';
         const txDetails = getTxDetails({
-          event: 'Deposit',
+          event: IEvent.Deposit,
           status: 'Pending',
         });
 
@@ -194,7 +195,7 @@ describe('aggregator store', () => {
       it('return on reset allowance as currentOperation', async () => {
         const mockCurrOpperation: AggregatorCalls = 'reset allowance';
         const txDetails = getTxDetails({
-          event: 'Deposit',
+          event: IEvent.Deposit,
           status: 'Pending',
         });
 
@@ -225,7 +226,7 @@ describe('aggregator store', () => {
         const mockCurrOpperation: AggregatorCalls = 'deposit';
 
         const txDetails = getTxDetails({
-          event: 'Deposit',
+          event: IEvent.Deposit,
           status: 'Confirmed',
           isCrossChain: 'true',
         });
@@ -251,7 +252,7 @@ describe('aggregator store', () => {
         const mockCurrOpperation: AggregatorCalls = 'deposit';
 
         const txDetails = getTxDetails({
-          event: 'Deposit',
+          event: IEvent.Deposit,
           status: 'Pending',
           isCrossChain: 'true',
         });
@@ -285,7 +286,7 @@ describe('aggregator store', () => {
         const mockCurrOpperation: AggregatorCalls = 'withdraw';
 
         const txDetails = getTxDetails({
-          event: 'Withdraw',
+          event: IEvent.Withdraw,
           status: 'Pending',
           isCrossChain: 'true',
         });
@@ -311,7 +312,7 @@ describe('aggregator store', () => {
         const mockCurrOpperation: AggregatorCalls = 'withdraw';
 
         const txDetails = getTxDetails({
-          event: 'Deposit',
+          event: IEvent.Deposit,
           status: 'Pending',
           isCrossChain: 'true',
         });
@@ -338,7 +339,7 @@ describe('aggregator store', () => {
       const txDetails: TxDetails = {
         amount: '71573896800000000000',
         user: '0x6d66e98984e10D62A09983b6B1B26485979b4788',
-        event: 'Deposit',
+        event: IEvent.Deposit,
         status: 'Pending',
       };
 
