@@ -12,9 +12,8 @@ import {
 import { RootState } from '../..';
 import { Reducers } from '../../../constants';
 import { fetchHistoryStaking } from './fetchHistoryStaking';
-import { UserQueryResult } from '../../../queries/historyStakeListQuery';
 import { stakingActions } from '../staking.slice';
-import { IStakeEvent } from '../../../gql/graphql';
+import { IGetUserQuery, IStakeEvent } from '../../../gql/graphql';
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -72,7 +71,7 @@ describe('fetchHistoryStaking', () => {
     },
   ];
 
-  const result: UserQueryResult = {
+  const result: IGetUserQuery = {
     user: {
       id: 'test',
       allStakes: [stakeEvents[0], stakeEvents[2]],

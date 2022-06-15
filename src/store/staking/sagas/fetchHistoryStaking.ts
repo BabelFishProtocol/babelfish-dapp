@@ -1,9 +1,6 @@
 import { put, select, take } from 'typed-redux-saga';
-import { IGetUserQueryVariables } from '../../../gql/graphql';
-import {
-  findStakingHistorySubscription,
-  UserQueryResult,
-} from '../../../queries/historyStakeListQuery';
+import { IGetUserQuery, IGetUserQueryVariables } from '../../../gql/graphql';
+import { findStakingHistorySubscription } from '../../../queries/historyStakeListQuery';
 import { accountSelector } from '../../app/app.selectors';
 import { appActions } from '../../app/app.slice';
 import { SubscriptionResponse } from '../../types';
@@ -11,7 +8,7 @@ import { subscriptionSaga } from '../../utils/utils.sagas';
 import { stakingActions } from '../staking.slice';
 
 export function* fetchHistoryStaking(
-  queryResult: SubscriptionResponse<UserQueryResult>
+  queryResult: SubscriptionResponse<IGetUserQuery>
 ) {
   try {
     yield* put(stakingActions.fetchHistoryStakesList());
@@ -41,7 +38,7 @@ export function* watchStakingHistory() {
     account = (yield* select(accountSelector)) as string;
   }
 
-  yield* subscriptionSaga<UserQueryResult, IGetUserQueryVariables>({
+  yield* subscriptionSaga<IGetUserQuery, IGetUserQueryVariables>({
     query: findStakingHistorySubscription,
     variables: { contractAddress: account.toLowerCase() },
     fetchSaga: fetchHistoryStaking,

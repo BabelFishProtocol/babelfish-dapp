@@ -4,23 +4,10 @@ import {
   IGetProposalsQueryVariables,
   IGetUserProposalsQuery,
   IGetUserProposalsQueryVariables,
-  IProposal,
 } from '../gql/graphql';
 
-export type ProposalListQueryItem = Pick<
-  IProposal,
-  | 'proposalId'
-  | 'description'
-  | 'startDate'
-  | 'endBlock'
-  | 'startBlock'
-  | 'createdAt'
-  | 'contractAddress'
->;
-
-export type ProposalListQueryResult = {
-  proposals: ProposalListQueryItem[];
-};
+export type ProposalListQueryItem = IGetProposalsQuery['proposals'][number];
+export type ProposalListQueryResult = IGetProposalsQuery;
 
 const getProposalsQuery = gql`
   query getProposals($contractAddress: Bytes!) {

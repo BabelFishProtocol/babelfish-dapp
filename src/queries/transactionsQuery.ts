@@ -2,10 +2,10 @@ import { gql, GraphQLClient } from 'graphql-request';
 import {
   IGetTransactionsQuery,
   IGetTransactionsQueryVariables,
-  IXusdTransaction,
 } from '../gql/graphql';
 
-export type TransactionsQueryItem = Omit<IXusdTransaction, 'receiver'>;
+export type TransactionsQueryItem =
+  IGetTransactionsQuery['xusdTransactions'][number];
 
 export const getTransactionsDocument = gql`
   query getTransactions($user: Bytes!) {

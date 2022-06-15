@@ -1,11 +1,5 @@
 import { gql, GraphQLClient } from 'graphql-request';
-import { IGetUserQuery, IGetUserQueryVariables, IUser } from '../gql/graphql';
-
-type UserData = Pick<IUser, 'id' | 'allStakes'>;
-
-export type UserQueryResult = {
-  user: UserData;
-};
+import { IGetUserQuery, IGetUserQueryVariables } from '../gql/graphql';
 
 const findUserQuery = gql`
   query getUser($contractAddress: ID!) {
