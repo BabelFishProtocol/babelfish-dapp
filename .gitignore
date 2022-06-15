@@ -10,4 +10,6 @@ yarn-error.log
 .yarn/install-state.gz
 src/contracts/types
 
-src/gql
+src/gql/index.ts
+src/gql/graphql.ts
+src/gql/gql.ts
