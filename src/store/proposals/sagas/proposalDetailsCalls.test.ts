@@ -11,6 +11,7 @@ import { GovernorAlpha__factory } from '../../../contracts/types';
 import { createMockedContract, mockSigner } from '../../../testUtils';
 
 import {
+  proposalDetailsCallSelector,
   selectedProposalGovernor,
   selectedProposalIdSelector,
 } from '../proposals.selectors';
@@ -75,6 +76,10 @@ describe('castVote', () => {
             },
           ],
         },
+        proposalDetails: {
+          ...initialState.proposalDetails,
+          state: 'loading', // successful proposal queueing should trigger refetch of proposal data to reflect new changes
+        },
       };
 
       await getBasePath()
@@ -82,6 +87,7 @@ describe('castVote', () => {
           ...mockSelectors,
           [matchers.call(mockGovernorContract.queue, proposalId), mockTx],
           [matchers.call(mockTx.wait), mockReceipt],
+          [matchers.select(proposalDetailsCallSelector), { status: 'success' }],
         ])
         .call(mockGovernorContract.queue, proposalId)
         .hasFinalState(expectedState)
@@ -112,6 +118,7 @@ describe('castVote', () => {
             matchers.call(mockGovernorContract.queue, proposalId),
             throwError(new Error(errorMsg)),
           ],
+          [matchers.select(proposalDetailsCallSelector), { status: 'failure' }],
           [matchers.call(mockTx.wait), mockReceipt],
         ])
         .call(mockGovernorContract.queue, proposalId)
@@ -142,6 +149,10 @@ describe('castVote', () => {
             },
           ],
         },
+        proposalDetails: {
+          ...initialState.proposalDetails,
+          state: 'loading', // successful proposal executing should trigger refetch of proposal data to reflect new changes
+        },
       };
 
       await getBasePath()
@@ -149,6 +160,7 @@ describe('castVote', () => {
           ...mockSelectors,
           [matchers.call(mockGovernorContract.execute, proposalId), mockTx],
           [matchers.call(mockTx.wait), mockReceipt],
+          [matchers.select(proposalDetailsCallSelector), { status: 'success' }],
         ])
         .call(mockGovernorContract.execute, proposalId)
         .hasFinalState(expectedState)
@@ -179,6 +191,7 @@ describe('castVote', () => {
             matchers.call(mockGovernorContract.execute, proposalId),
             throwError(new Error(errorMsg)),
           ],
+          [matchers.select(proposalDetailsCallSelector), { status: 'failure' }],
           [matchers.call(mockTx.wait), mockReceipt],
         ])
         .call(mockGovernorContract.execute, proposalId)
@@ -209,12 +222,17 @@ describe('castVote', () => {
             },
           ],
         },
+        proposalDetails: {
+          ...initialState.proposalDetails,
+          state: 'loading', // successful proposal canceling should trigger refetch of proposal data to reflect new changes
+        },
       };
 
       await getBasePath()
         .provide([
           ...mockSelectors,
           [matchers.call(mockGovernorContract.cancel, proposalId), mockTx],
+          [matchers.select(proposalDetailsCallSelector), { status: 'success' }],
           [matchers.call(mockTx.wait), mockReceipt],
         ])
         .call(mockGovernorContract.cancel, proposalId)
@@ -246,6 +264,7 @@ describe('castVote', () => {
             matchers.call(mockGovernorContract.cancel, proposalId),
             throwError(new Error(errorMsg)),
           ],
+          [matchers.select(proposalDetailsCallSelector), { status: 'failure' }],
           [matchers.call(mockTx.wait), mockReceipt],
         ])
         .call(mockGovernorContract.cancel, proposalId)
