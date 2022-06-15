@@ -6,13 +6,14 @@
     "build": "tsc && vite build",
     "deploy": "./start.sh",
     "lint": "eslint .",
+    "prettier": "prettier --config .prettierrc --check .",
     "test": "jest --verbose",
     "preview": "vite preview",
     "check-types": "tsc --noEmit",
-    "check-all": "yarn test && yarn lint && yarn check-types && yarn prettier --config .prettierrc --check .",
+    "check-all": "yarn test && yarn lint && yarn check-types && yarn prettier",
     "generate-contracts-types": "typechain --target ethers-v5 --out-dir src/contracts/types './src/contracts/abi/*.json'",
     "generate-gql-types": "graphql-codegen --config codegen.yml",
-    "postinstall": "yarn generate-contracts-types"
+    "postinstall": "yarn generate-contracts-types && yarn generate-gql-types"
   },
   "dependencies": {
     "@emotion/react": "^11.7.1",
