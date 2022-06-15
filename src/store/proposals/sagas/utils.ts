@@ -8,6 +8,7 @@ import {
   contractStepCallsSaga,
 } from '../../utils/utils.sagas';
 import {
+  proposalDetailsCallSelector,
   selectedProposalGovernor,
   selectedProposalIdSelector,
 } from '../proposals.selectors';
@@ -57,5 +58,6 @@ export function* proposalDetailsCall(getStep: CreateStepCallAction) {
     setStepDataAction: proposalsActions.setProposalDetailsCallStepData,
   });
 
-  yield* forceProposalReFetch();
+  const operationResult = yield* select(proposalDetailsCallSelector);
+  if (operationResult.status === 'success') yield* forceProposalReFetch();
 }
