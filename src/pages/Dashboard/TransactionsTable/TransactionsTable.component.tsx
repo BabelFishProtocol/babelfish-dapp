@@ -1,10 +1,11 @@
 import { DataTable } from '../../../components/DataTable/DataTable.component';
 import { DataTableColumn } from '../../../components/DataTable/DataTable.types';
-import { formatTimestamp, formatWeiAmount } from '../../../utils/helpers';
+import { formatWeiAmount } from '../../../utils/helpers';
 import {
   TransactionsTableComponentProps,
   TransactionsTableItem,
 } from './TransactionsTable.types';
+import { formatDate, StatusColumn } from './TransactionsTable.columns';
 
 const transactionsTableColumns: DataTableColumn<TransactionsTableItem>[] = [
   { label: 'Event', name: 'event' },
@@ -13,10 +14,9 @@ const transactionsTableColumns: DataTableColumn<TransactionsTableItem>[] = [
   {
     label: 'Date',
     name: 'date',
-    format: formatTimestamp,
+    format: formatDate,
   },
-  // TODO add status using localStorage
-  // { label: 'Status', name: 'status' },
+  { label: 'Status', name: 'status', component: StatusColumn },
 ];
 
 export const TransactionsTableComponent = ({

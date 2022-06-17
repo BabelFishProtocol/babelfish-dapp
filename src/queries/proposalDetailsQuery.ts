@@ -1,37 +1,15 @@
 import { gql } from 'graphql-request';
+import {
+  IGetProposalsDetailsQuery,
+  IGetProposalsDetailsQueryVariables,
+} from '../gql/graphql';
 
-export type ProposalDetailsQueryParams = {
-  contractAddress: string;
-  proposalId: string;
-};
+export type ProposalDetailsQueryParams = IGetProposalsDetailsQueryVariables;
 
-export type ProposalDetailsQueryItem = {
-  proposalId: string;
-  description: string;
-  startDate: string;
-  eta: string;
-  endBlock: string;
-  startBlock: string;
-  contractAddress: string;
-  forVotesAmount: string;
-  againstVotesAmount: string;
-  proposer: string;
-  votes: {
-    isPro: boolean;
-    votes: string;
-    txHash: string;
-    voter: string;
-  }[];
-  actions: {
-    calldata: string;
-    contract: string;
-    signature: string;
-  }[];
-};
+export type ProposalDetailsQueryItem =
+  IGetProposalsDetailsQuery['proposals'][number];
 
-export type ProposalDetailsQueryResult = {
-  proposals: ProposalDetailsQueryItem[];
-};
+export type ProposalDetailsQueryResult = IGetProposalsDetailsQuery;
 
 export const proposalDetailsSubscription = gql`
   subscription proposalDetails($contractAddress: Bytes!, $proposalId: BigInt!) {

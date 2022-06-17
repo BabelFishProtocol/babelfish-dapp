@@ -1,0 +1,15 @@
+overwrite: true
+schema: 'http://18.224.138.134:8000/subgraphs/name/babelfish/rskTestnet-graph'
+documents:
+  - 'src/queries/*.ts'
+  - 'src/queries/*.graphql'
+  - '!src/gql/**/*'
+generates:
+  ./src/gql/:
+    preset: gql-tag-operations-preset
+config:
+  typesPrefix: I
+  scalars:
+    BigDecimal: string
+    BigInt: string
+    Bytes: string

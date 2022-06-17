@@ -1,47 +1,8 @@
 import { gql, GraphQLClient } from 'graphql-request';
-
-export type Stake = {
-  id: string;
-  staker: string;
-  amount: string;
-  lockedUntil: string;
-  totalStaked: string;
-  transactionHash: string;
-  blockTimestamp: string;
-};
-
-type UserData = {
-  id: string;
-  allStakes: Stake[];
-};
-
-export type UserQueryParams = {
-  contractAddress: string;
-};
-
-export type UserQueryResult = {
-  user: UserData;
-};
+import { IGetUserQuery, IGetUserQueryVariables } from '../gql/graphql';
 
 const findUserQuery = gql`
-  query getUser($contractAddress: Bytes!) {
-    user(id: $contractAddress) {
-      id
-      allStakes(orderBy: blockTimestamp, orderDirection: desc) {
-        id
-        staker
-        amount
-        lockedUntil
-        totalStaked
-        transactionHash
-        blockTimestamp
-      }
-    }
-  }
-`;
-
-export const findStakingHistorySubscription = gql`
-  subscription stakingHistory($contractAddress: Bytes!) {
+  query getUser($contractAddress: ID!) {
     user(id: $contractAddress) {
       id
       allStakes(orderBy: blockTimestamp, orderDirection: desc) {
@@ -59,5 +20,23 @@ export const findStakingHistorySubscription = gql`
 
 export const allUserStakesQuery = (
   client: GraphQLClient,
-  params: UserQueryParams
-) => client.request<UserQueryResult, UserQueryParams>(findUserQuery, params);
+  params: IGetUserQueryVariables
+) =>
+  client.request<IGetUserQuery, IGetUserQueryVariables>(findUserQuery, params);
+
+export const findStakingHistorySubscription = gql`
+  subscription stakingHistory($contractAddress: ID!) {
+    user(id: $contractAddress) {
+      id
+      allStakes(orderBy: blockTimestamp, orderDirection: desc) {
+        id
+        staker
+        amount
+        lockedUntil
+        totalStaked
+        transactionHash
+        blockTimestamp
+      }
+    }
+  }
+`;

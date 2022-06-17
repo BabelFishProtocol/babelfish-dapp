@@ -1,6 +1,11 @@
 import { utils } from 'ethers';
 import { call, put, select } from 'typed-redux-saga';
-import { SUPPORTED_CHAINS_RSK } from '../../../config/chains';
+import {
+  checkIsCrossChain,
+  SUPPORTED_CHAINS_RSK,
+} from '../../../config/chains';
+import { IEvent } from '../../../gql/graphql';
+import { parseToWei } from '../../../utils/helpers';
 import {
   accountSelector,
   massetContractSelector,
@@ -25,7 +30,7 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
   const bassetAddress = yield* select(bassetAddressSelector);
   const massetContract = yield* select(massetContractSelector);
   const account = yield* select(accountSelector);
-  const { destinationChain, receiveAddress } = payload;
+  const { destinationChain, receiveAddress, sendAmount } = payload;
 
   if (!massetContract || !tokenContract || !destinationChain) {
     yield* put(aggregatorActions.setSubmitError('Could not find contracts'));
@@ -37,6 +42,19 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
     yield* put(aggregatorActions.setSubmitError('Could not find addresses'));
     return;
   }
+
+  // we have to attach some transaction details into state,
+  // it will be use to save this transaction in local storage
+  const isCrossChain = checkIsCrossChain(destinationChain);
+  yield* put(
+    aggregatorActions.setTransactionDetails({
+      amount: parseToWei(sendAmount),
+      user: account,
+      event: IEvent.Withdraw,
+      status: 'Pending',
+      isCrossChain,
+    })
+  );
 
   const amount = utils.parseUnits(payload.sendAmount, tokenDecimals);
   const allowanceMasset = yield* call(

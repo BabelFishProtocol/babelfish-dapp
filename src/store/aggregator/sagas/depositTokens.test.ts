@@ -19,6 +19,8 @@ import { AggregatorState } from '../aggregator.state';
 import {
   depositMockValues,
   depositRSKMockValues,
+  getAggregatorInitialState,
+  getTxDetails,
   mockAccount,
   mockAmount,
   mockBridge,
@@ -37,10 +39,7 @@ import {
   startingTokenDecimalsSelector,
 } from '../aggregator.selectors';
 import { depositTokens } from './depositTokens';
-
-const aggregatorInitialState: AggregatorState = {
-  ...new AggregatorState(),
-};
+import { IEvent } from '../../../gql/graphql';
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -56,9 +55,15 @@ describe('depositTokens', () => {
     transactionHash: '0x01',
   } as TransactionReceipt;
 
-  const initialSteps = aggregatorInitialState?.submitCall?.steps;
-
   describe('through bridge', () => {
+    const txDetails = getTxDetails({
+      isCrossChain: 'true',
+      event: IEvent.Deposit,
+    });
+
+    const aggregatorInitialState = getAggregatorInitialState(txDetails);
+    const initialSteps = aggregatorInitialState.submitCall?.steps;
+
     const extraData = utils.defaultAbiCoder.encode(['address'], [mockReceiver]);
     const mockSelectors: (EffectProviders | StaticProvider)[] = [
       [matchers.select(bridgeContractSelector), mockBridge],
@@ -263,6 +268,13 @@ describe('depositTokens', () => {
       [matchers.select(massetAddressSelector), mockMassetAddress],
       [matchers.select(accountSelector), mockAccount],
     ];
+
+    const txDetails = getTxDetails({
+      isCrossChain: undefined,
+      event: IEvent.Deposit,
+    });
+    const aggregatorInitialState = getAggregatorInitialState(txDetails);
+    const initialSteps = aggregatorInitialState.submitCall?.steps;
 
     it('when sufficient allowance', async () => {
       const expectedState: AggregatorState = {

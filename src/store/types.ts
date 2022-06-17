@@ -12,6 +12,7 @@ import { SagaIterator } from 'redux-saga';
 import { ActionPattern, CallEffect } from 'redux-saga/effects';
 import { SagaGenerator } from 'typed-redux-saga/dist';
 import { ContractCallResult, FiniteStates } from '../utils/types';
+import { TxDetails, XusdLocalTransaction } from './aggregator/aggregator.state';
 
 export type LoadableValue<Data> = {
   data: Data;
@@ -105,4 +106,15 @@ export type SubscriptionSagaConfig<Result, Variables> = {
     | ActionCreatorWithOptionalPayload<any>;
   fetchSaga: (data: SubscriptionResponse<Result>) => SagaIterator;
   variables?: Variables;
+};
+
+export type GetTxDetails = {
+  event: TxDetails['event'];
+  status: TxDetails['status'];
+  isCrossChain?: string;
+};
+
+export type GetSuccesState = {
+  txToSave: XusdLocalTransaction;
+  addConfirmedTx?: boolean;
 };

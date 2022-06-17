@@ -17,6 +17,8 @@ import { aggregatorActions, aggregatorReducer } from '../aggregator.slice';
 
 import { AggregatorState } from '../aggregator.state';
 import {
+  getAggregatorInitialState,
+  getTxDetails,
   mockAccount,
   mockAmount,
   mockBassetAddress,
@@ -35,10 +37,7 @@ import {
   startingTokenDecimalsSelector,
 } from '../aggregator.selectors';
 import { withdrawTokens } from './withdrawTokens';
-
-const aggregatorInitialState: AggregatorState = {
-  ...new AggregatorState(),
-};
+import { IEvent } from '../../../gql/graphql';
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -54,9 +53,15 @@ describe('withdrawTokens', () => {
     transactionHash: '0x01',
   } as TransactionReceipt;
 
-  const initialSteps = aggregatorInitialState?.submitCall?.steps;
-
   describe('through bridge', () => {
+    const txDetails = getTxDetails({
+      isCrossChain: 'true',
+      event: IEvent.Withdraw,
+    });
+
+    const aggregatorInitialState = getAggregatorInitialState(txDetails);
+    const initialSteps = aggregatorInitialState.submitCall?.steps;
+
     const mockSelectors: (EffectProviders | StaticProvider)[] = [
       [matchers.select(startingTokenDecimalsSelector), mockTokenDecimals],
       [matchers.select(startingTokenContractSelector), mockToken],
@@ -204,6 +209,14 @@ describe('withdrawTokens', () => {
   });
 
   describe('on RSK only', () => {
+    const txDetails = getTxDetails({
+      isCrossChain: undefined,
+      event: IEvent.Withdraw,
+    });
+
+    const aggregatorInitialState = getAggregatorInitialState(txDetails);
+    const initialSteps = aggregatorInitialState.submitCall?.steps;
+
     const mockSelectors: (EffectProviders | StaticProvider)[] = [
       [matchers.select(startingTokenDecimalsSelector), mockTokenDecimals],
       [matchers.select(startingTokenContractSelector), mockToken],

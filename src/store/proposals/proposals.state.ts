@@ -3,6 +3,7 @@ import {
   GovernorTypes,
   ProposalState,
 } from '../../constants';
+import { IProposal } from '../../gql/graphql';
 import { CallState, LoadableValue } from '../types';
 
 export type AddProposalCalls = 'propose';
@@ -35,16 +36,15 @@ export type ProposalAction = {
   calldata: string;
 };
 
-export type ProposalDetails = Proposal & {
-  forVotesAmount: string;
-  againstVotesAmount: string;
-  votes: Vote[];
-  eta: string;
-  proposer: string;
-  description: string;
-  actions: ProposalAction[];
-  guardian: string;
-};
+export type ProposalDetails = Proposal &
+  Pick<IProposal, 'eta' | 'proposer'> & {
+    forVotesAmount: string;
+    againstVotesAmount: string;
+    votes: Vote[];
+    description: string;
+    actions: ProposalAction[];
+    guardian: string;
+  };
 
 export class ProposalsState {
   reasonToBlockProposal?: string;

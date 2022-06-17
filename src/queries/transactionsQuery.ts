@@ -1,25 +1,18 @@
 import { gql, GraphQLClient } from 'graphql-request';
+import {
+  IGetTransactionsQuery,
+  IGetTransactionsQueryVariables,
+} from '../gql/graphql';
 
-type TransactionsQueryParams = { user: string };
+export type TransactionsQueryItem =
+  IGetTransactionsQuery['xusdTransactions'][number];
 
-export type TransactionsQueryItem = {
-  asset: string;
-  id: string;
-  date: string;
-  event: 'Deposit' | 'Withdraw';
-  amount: string;
-  user: string;
-};
-
-export type TransactionsQueryResult = {
-  xusdTransactions: TransactionsQueryItem[];
-};
-
-const findTransactionsQuery = gql`
+export const getTransactionsDocument = gql`
   query getTransactions($user: Bytes!) {
     xusdTransactions(orderBy: date, where: { user: $user }) {
       id
       event
+      txHash
       date
       asset
       amount
@@ -28,11 +21,11 @@ const findTransactionsQuery = gql`
   }
 `;
 
-export const transactionsQuery = (
+export const transactionsQuery = async (
   client: GraphQLClient,
-  params: TransactionsQueryParams
+  params: IGetTransactionsQueryVariables
 ) =>
-  client.request<TransactionsQueryResult, TransactionsQueryParams>(
-    findTransactionsQuery,
+  client.request<IGetTransactionsQuery, IGetTransactionsQueryVariables>(
+    getTransactionsDocument,
     params
   );

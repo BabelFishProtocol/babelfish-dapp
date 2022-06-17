@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Reducers } from '../../constants';
-import { TransactionsQueryItem } from '../../queries/transactionsQuery';
+import { TransactionsTableItem } from '../../pages/Dashboard/TransactionsTable/TransactionsTable.types';
 import { ActionsType } from '../types';
 import { DashboardBalances, DashboardState } from './dashboard.state';
 
@@ -51,7 +51,7 @@ export const dashboardSlice = createSlice({
     },
     setTransactions: (
       state,
-      { payload }: PayloadAction<TransactionsQueryItem[]>
+      { payload }: PayloadAction<TransactionsTableItem[]>
     ) => {
       state.transactionList.data = payload;
       state.transactionList.state = 'success';
