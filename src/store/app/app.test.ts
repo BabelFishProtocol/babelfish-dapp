@@ -17,6 +17,7 @@ import {
   testnetChainsArr,
 } from '../../config/chains';
 import { XusdLocalTransaction } from '../aggregator/aggregator.state';
+import { IEvent } from '../../gql/graphql';
 
 class MockProvider {
   private callback?: (block: number) => void;
@@ -126,7 +127,7 @@ describe('app store', () => {
       date: '1653905641',
       amount: '7534',
       user: '0x6d66',
-      event: 'Withdraw',
+      event: IEvent.Withdraw,
       status: 'Pending',
     };
 
@@ -195,7 +196,7 @@ describe('app store', () => {
       date: '1653905641',
       amount: '7534',
       user: '0x6d66',
-      event: 'Withdraw',
+      event: IEvent.Withdraw,
       status: 'Pending',
     };
 
@@ -311,7 +312,7 @@ describe('app store', () => {
         date: '1653905641',
         amount: '7534',
         user: '0x6d66',
-        event: 'Withdraw',
+        event: IEvent.Withdraw,
         status: 'Pending',
       };
 

@@ -37,6 +37,7 @@ import {
   startingTokenDecimalsSelector,
 } from '../aggregator.selectors';
 import { withdrawTokens } from './withdrawTokens';
+import { IEvent } from '../../../gql/graphql';
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -55,7 +56,7 @@ describe('withdrawTokens', () => {
   describe('through bridge', () => {
     const txDetails = getTxDetails({
       isCrossChain: 'true',
-      event: 'Withdraw',
+      event: IEvent.Withdraw,
     });
 
     const aggregatorInitialState = getAggregatorInitialState(txDetails);
@@ -210,7 +211,7 @@ describe('withdrawTokens', () => {
   describe('on RSK only', () => {
     const txDetails = getTxDetails({
       isCrossChain: undefined,
-      event: 'Withdraw',
+      event: IEvent.Withdraw,
     });
 
     const aggregatorInitialState = getAggregatorInitialState(txDetails);

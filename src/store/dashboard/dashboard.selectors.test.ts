@@ -8,6 +8,7 @@ import {
 } from './dashboard.selectors';
 import { TransactionsTableItem } from '../../pages/Dashboard/TransactionsTable/TransactionsTable.types';
 import { XusdLocalTransaction } from '../aggregator/aggregator.state';
+import { IEvent } from '../../gql/graphql';
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -100,8 +101,8 @@ describe('dashboard selectors', () => {
       date: '1653905641',
       amount: '7534',
       user: '0x6d66',
-      event: 'Withdraw',
       status: 'Pending',
+      event: IEvent.Withdraw,
     };
 
     const transactionList: DashboardState['transactionList'] = {
@@ -127,8 +128,8 @@ describe('dashboard selectors', () => {
       date: '1653905641',
       amount: '7534',
       user: '0x6d66',
-      event: 'Withdraw',
       status: 'Confirmed',
+      event: IEvent.Withdraw,
     };
 
     const localXusdTransaction1: XusdLocalTransaction = {
@@ -137,7 +138,7 @@ describe('dashboard selectors', () => {
       date: '1653905641',
       amount: '7534',
       user: '0x6d662222222',
-      event: 'Withdraw',
+      event: IEvent.Withdraw,
       status: 'Pending',
     };
 
@@ -169,7 +170,7 @@ describe('dashboard selectors', () => {
       date: '1653905641',
       amount: '7534',
       user: '0x6d66',
-      event: 'Withdraw',
+      event: IEvent.Withdraw,
       status: 'Confirmed',
     };
 

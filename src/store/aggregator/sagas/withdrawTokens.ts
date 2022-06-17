@@ -4,6 +4,7 @@ import {
   checkIsCrossChain,
   SUPPORTED_CHAINS_RSK,
 } from '../../../config/chains';
+import { IEvent } from '../../../gql/graphql';
 import { parseToWei } from '../../../utils/helpers';
 import {
   accountSelector,
@@ -49,7 +50,7 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
     aggregatorActions.setTransactionDetails({
       amount: parseToWei(sendAmount),
       user: account,
-      event: 'Withdraw',
+      event: IEvent.Withdraw,
       status: 'Pending',
       isCrossChain,
     })

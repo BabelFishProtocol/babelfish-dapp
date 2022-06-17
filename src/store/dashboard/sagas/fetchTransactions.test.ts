@@ -19,10 +19,10 @@ import {
 import { dashboardActions } from '../dashboard.slice';
 import { DashboardState } from '../dashboard.state';
 import {
-  transactionsResult,
   changeTxStatus,
   txWithChangedHash,
   diffTxsWithHash,
+  expectedTransactions,
 } from './fetchTransactions.mock';
 import { fetchTransactions } from './fetchTransactions';
 import { transactionsQuery } from '../../../queries/transactionsQuery';
@@ -46,6 +46,7 @@ import {
   setFailedOnDepositCrossChainTx,
   setFailedTransactionStatus,
 } from '../../aggregator/sagas/localTransactions';
+import { IEvent } from '../../../gql/graphql';
 
 util.inspect.defaultOptions.depth = null;
 
@@ -101,7 +102,7 @@ describe('dashboard store', () => {
         .provide([
           [matchers.select(subgraphClientSelector), mockSubgraphClient],
           [matchers.select(accountSelector), mockAccount],
-          [matchers.call.fn(transactionsQuery), transactionsResult],
+          [matchers.call.fn(transactionsQuery), expectedTransactions],
         ])
         .call(transactionsQuery, mockSubgraphClient, { user: mockAccount })
         .put(appActions.removeLocalXusdTransactions(expectedConfirmedTx))
@@ -197,7 +198,7 @@ describe('dashboard store', () => {
     const mockProvider = new MockProvider();
 
     it('swap single transaction', async () => {
-      const fetchedTx = transactionsResult.xusdTransactions[0];
+      const fetchedTx = expectedTransactions.xusdTransactions[0];
       const localBeforeTx: XusdLocalTransaction = changeTxStatus('Pending')[0];
       const localAfterTx: XusdLocalTransaction = changeTxStatus('Confirmed')[0];
 
@@ -234,7 +235,7 @@ describe('dashboard store', () => {
     });
 
     it('swap three transactions', async () => {
-      const fetchedTx = transactionsResult.xusdTransactions;
+      const fetchedTx = expectedTransactions.xusdTransactions;
       const localBeforeTx = changeTxStatus('Pending');
       const localAfterTx = changeTxStatus('Confirmed');
 
@@ -271,7 +272,7 @@ describe('dashboard store', () => {
     });
 
     it('delete from local transactions only with same txHash', async () => {
-      const fetchedTx = transactionsResult.xusdTransactions;
+      const fetchedTx = expectedTransactions.xusdTransactions;
       const fetchedAfterTx = changeTxStatus('Confirmed');
 
       const localBeforeTx = changeTxStatus('Pending', txWithChangedHash);
@@ -372,7 +373,7 @@ describe('dashboard store', () => {
       const mockCurrOpperation: AggregatorCalls = 'deposit';
 
       const localBeforeTx: XusdLocalTransaction = {
-        event: 'Deposit',
+        event: IEvent.Deposit,
         asset: 'XUSD',
         amount: '49500',
         user: '0x0123',

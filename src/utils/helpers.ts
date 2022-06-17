@@ -48,7 +48,7 @@ export const formatDateUTC = (date: Date) =>
 export const formatDate = (date: Date) =>
   dayjs(date).format('MMMM D, YYYY h:mm a');
 
-export const formatTimestamp = (timestamp?: number | string) =>
+export const formatTimestamp = (timestamp?: number | string | null) =>
   timestamp ? formatDate(timestampToDate(Number(timestamp))) : '';
 
 export const formatTimestampToUTC: CellParser = (timestamp) =>

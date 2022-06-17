@@ -32,6 +32,7 @@ import {
   tokenAddressSelector,
 } from './aggregator.selectors';
 import { accountSelector } from '../app/app.selectors';
+import { IEvent } from '../../gql/graphql';
 
 const mockBridge = createMockedContract(
   Bridge__factory.connect(constants.AddressZero, mockSigner),
@@ -387,7 +388,7 @@ describe('aggregator store', () => {
       const txDetails: TxDetails = {
         amount: '71573896800000000000',
         user: '0x6d66e98984e10D62A09983b6B1B26485979b4788',
-        event: 'Deposit',
+        event: IEvent.Deposit,
         status: 'Pending',
       };
 

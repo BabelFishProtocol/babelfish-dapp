@@ -39,6 +39,7 @@ import {
   startingTokenDecimalsSelector,
 } from '../aggregator.selectors';
 import { depositTokens } from './depositTokens';
+import { IEvent } from '../../../gql/graphql';
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -57,7 +58,7 @@ describe('depositTokens', () => {
   describe('through bridge', () => {
     const txDetails = getTxDetails({
       isCrossChain: 'true',
-      event: 'Deposit',
+      event: IEvent.Deposit,
     });
 
     const aggregatorInitialState = getAggregatorInitialState(txDetails);
@@ -270,7 +271,7 @@ describe('depositTokens', () => {
 
     const txDetails = getTxDetails({
       isCrossChain: undefined,
-      event: 'Deposit',
+      event: IEvent.Deposit,
     });
     const aggregatorInitialState = getAggregatorInitialState(txDetails);
     const initialSteps = aggregatorInitialState.submitCall?.steps;

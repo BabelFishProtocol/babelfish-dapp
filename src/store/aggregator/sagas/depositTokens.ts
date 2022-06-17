@@ -5,6 +5,7 @@ import {
   checkIsCrossChain,
   SUPPORTED_CHAINS_RSK,
 } from '../../../config/chains';
+import { IEvent } from '../../../gql/graphql';
 import { parseToWei } from '../../../utils/helpers';
 import {
   accountSelector,
@@ -55,7 +56,7 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
     aggregatorActions.setTransactionDetails({
       amount: parseToWei(receiveAmount),
       user: account,
-      event: 'Deposit',
+      event: IEvent.Deposit,
       status: 'Pending',
       isCrossChain,
     })
