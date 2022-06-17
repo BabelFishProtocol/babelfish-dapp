@@ -1,15 +1,15 @@
 import { gql } from 'graphql-request';
 import {
-  IGetProposalsDetailsQuery,
-  IGetProposalsDetailsQueryVariables,
+  IProposalDetailsSubscription,
+  IProposalDetailsSubscriptionVariables,
 } from '../gql/graphql';
 
-export type ProposalDetailsQueryParams = IGetProposalsDetailsQueryVariables;
+export type ProposalDetailsQueryParams = IProposalDetailsSubscriptionVariables;
 
 export type ProposalDetailsQueryItem =
-  IGetProposalsDetailsQuery['proposals'][number];
+  IProposalDetailsSubscription['proposals'][number];
 
-export type ProposalDetailsQueryResult = IGetProposalsDetailsQuery;
+export type ProposalDetailsQueryResult = IProposalDetailsSubscription;
 
 export const proposalDetailsSubscription = gql`
   subscription proposalDetails($contractAddress: Bytes!, $proposalId: BigInt!) {
