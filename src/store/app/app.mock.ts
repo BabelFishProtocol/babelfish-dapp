@@ -12,4 +12,5 @@ export const appState: AppState = {
   wrongNetworkModal: false,
   walletNotConnectedModal: false,
   errorMessage: undefined,
+  xusdLocalTransactions: {},
 };
