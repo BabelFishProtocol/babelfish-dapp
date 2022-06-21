@@ -6,9 +6,10 @@ import {
   cancel,
   select,
   takeLatest,
+  all,
 } from 'typed-redux-saga';
 import { SubscriptionClient } from 'subscription-client';
-import { END, eventChannel } from 'redux-saga';
+import { END, eventChannel, Task } from 'redux-saga';
 import { ContractCall } from 'ethers-multicall';
 import { BaseContract } from 'ethers';
 import { ParamType } from 'ethers/lib/utils';
@@ -180,8 +181,8 @@ export function* subscriptionSaga<Result, Variables = unknown>({
   variables,
   watchDataAction,
 }: SubscriptionSagaConfig<Result, Variables>) {
-  function createPoolChanel(client: SubscriptionClient) {
-    return eventChannel<SubscriptionResponse<Result>>((emit) => {
+  const createPoolChanel = (client: SubscriptionClient) =>
+    eventChannel<SubscriptionResponse<Result>>((emit) => {
       const subscription = client
         .request({
           query,
@@ -205,7 +206,6 @@ export function* subscriptionSaga<Result, Variables = unknown>({
         emit(END);
       };
     });
-  }
 
   let subgraphWsClient = yield* select(subgraphWsClientSelector);
 
@@ -219,18 +219,35 @@ export function* subscriptionSaga<Result, Variables = unknown>({
 
   const channel = yield* call(createPoolChanel, subgraphWsClient);
 
+  const stopListener = (yield* takeLatest(
+    stopAction.type,
+    closeChannel
+  )) as Task;
+
+  const chainIdListener = (yield* takeLatest(
+    appActions.setChainId.type,
+    restartConnection
+  )) as Task;
+
+  const accountListener = (yield* takeLatest(
+    appActions.setAccount.type,
+    restartConnection
+  )) as Task;
+
   function* closeChannel() {
     yield* call(channel.close);
+
+    yield* all([
+      cancel(stopListener),
+      cancel(chainIdListener),
+      cancel(accountListener),
+    ]);
   }
 
   function* restartConnection() {
     yield* closeChannel();
     yield* put(watchDataAction());
   }
-
-  yield* takeLatest(stopAction.type, closeChannel);
-  yield* takeLatest(appActions.setChainId.type, restartConnection);
-  yield* takeLatest(appActions.setAccount.type, restartConnection);
 
   try {
     while (true) {

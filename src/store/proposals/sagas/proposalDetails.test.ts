@@ -1,25 +1,15 @@
 import { expectSaga } from 'redux-saga-test-plan';
 import * as matchers from 'redux-saga-test-plan/matchers';
-import { throwError } from 'redux-saga-test-plan/providers';
 import { combineReducers, DeepPartial } from '@reduxjs/toolkit';
 
+import { throwError } from 'redux-saga-test-plan/providers';
 import { pick } from '../../../utils/helpers';
 import { GovernorTypes, ProposalState, Reducers } from '../../../constants';
 import { GovernorAlpha__factory } from '../../../contracts/types';
 import { rootReducer, RootState } from '../..';
 
-import {
-  mockSigner,
-  createMockedContract,
-  mockSubgraphClient,
-} from '../../../testUtils';
-import {
-  proposalDetailsQuery,
-  ProposalDetailsQueryParams,
-  ProposalDetailsQueryResult,
-} from '../../../queries/proposalDetailsQuery';
-
-import { subgraphClientSelector } from '../../app/app.selectors';
+import { mockSigner, createMockedContract } from '../../../testUtils';
+import { ProposalDetailsQueryResult } from '../../../queries/proposalDetailsQuery';
 
 import {
   governorContractsSelector,
@@ -66,7 +56,7 @@ describe('proposals details sagas', () => {
       },
     };
 
-    const mockQueryResult: DeepPartial<ProposalDetailsQueryResult> = {
+    const mockQueryResult = {
       proposals: [
         {
           actions: [
@@ -102,7 +92,7 @@ describe('proposals details sagas', () => {
           ],
         },
       ],
-    };
+    } as ProposalDetailsQueryResult;
 
     const mockProposalState = ProposalState.Expired;
 
@@ -145,11 +135,6 @@ describe('proposals details sagas', () => {
       governorType: mockProposalType,
     };
 
-    const expectedQueryParams: ProposalDetailsQueryParams = {
-      proposalId: mockSelectedProposal.id,
-      contractAddress: mockGovernorAddress,
-    };
-
     const successState: DeepPartial<RootState> = {
       ...initialState,
       [Reducers.Proposals]: {
@@ -170,36 +155,27 @@ describe('proposals details sagas', () => {
     };
 
     const getBasePath = () =>
-      expectSaga(fetchProposalDetails)
+      expectSaga(fetchProposalDetails, {
+        isError: false,
+        data: mockQueryResult,
+      })
         .withReducer(reducer)
         .withState(initialState)
-        .select(selectedProposalSelector)
-        .select(subgraphClientSelector)
         .select(governorContractsSelector)
         .select(selectedProposalGovernor);
 
     it('happy path', async () => {
       const runResult = await getBasePath()
         .provide([
-          [matchers.select(selectedProposalSelector), mockSelectedProposal],
-          [matchers.select(subgraphClientSelector), mockSubgraphClient],
           [matchers.select(selectedProposalGovernor), mockGovernorContract],
           [matchers.select(governorContractsSelector), mockGovernorContracts],
-          [
-            matchers.call(
-              proposalDetailsQuery,
-              mockSubgraphClient,
-              expectedQueryParams
-            ),
-            mockQueryResult,
-          ],
           [
             matchers.call(mockGovernorContract.state, mockSelectedProposal.id),
             mockProposalState,
           ],
           [matchers.call(mockGovernorContract.guardian), mockProposalGuardian],
         ])
-        .call(proposalDetailsQuery, mockSubgraphClient, expectedQueryParams)
+        .put(proposalsActions.fetchDetails())
         .call(mockGovernorContract.guardian)
         .call(mockGovernorContract.state, mockSelectedProposal.id)
         .put(proposalsActions.setDetails(parsedProposal))
@@ -209,27 +185,18 @@ describe('proposals details sagas', () => {
       expect(runResult.effects).toEqual({});
     });
 
-    it('when wallet is not connected', async () => {
+    it('when data is not present', async () => {
       const runResult = await getBasePath()
         .provide([
-          [matchers.select(subgraphClientSelector), mockSubgraphClient],
           [matchers.select(governorContractsSelector), mockGovernorContracts],
           [matchers.select(selectedProposalGovernor), undefined],
-          [matchers.select(selectedProposalSelector), mockSelectedProposal],
-          [
-            matchers.call(
-              proposalDetailsQuery,
-              mockSubgraphClient,
-              expectedQueryParams
-            ),
-            mockQueryResult,
-          ],
           [
             matchers.call(mockGovernorContract.state, mockSelectedProposal.id),
             mockProposalState,
           ],
           [matchers.call(mockGovernorContract.guardian), mockProposalGuardian],
         ])
+        .put(proposalsActions.fetchDetails())
         .put(proposalsActions.fetchDetailsFailure())
         .hasFinalState(failureState)
         .run();
@@ -237,28 +204,34 @@ describe('proposals details sagas', () => {
       expect(runResult.effects).toEqual({});
     });
 
-    it('fetching error', async () => {
+    it('fetching state error', async () => {
       const runResult = await getBasePath()
         .provide([
-          [matchers.select(subgraphClientSelector), mockSubgraphClient],
-          [matchers.select(governorContractsSelector), mockGovernorContracts],
           [matchers.select(selectedProposalGovernor), mockGovernorContract],
-          [matchers.select(selectedProposalSelector), mockSelectedProposal],
-          [
-            matchers.call(
-              proposalDetailsQuery,
-              mockSubgraphClient,
-              expectedQueryParams
-            ),
-            throwError(),
-          ],
+          [matchers.select(governorContractsSelector), mockGovernorContracts],
           [
             matchers.call(mockGovernorContract.state, mockSelectedProposal.id),
-            mockProposalState,
+            throwError(),
           ],
           [matchers.call(mockGovernorContract.guardian), mockProposalGuardian],
         ])
-        .call(proposalDetailsQuery, mockSubgraphClient, expectedQueryParams)
+        .put(proposalsActions.fetchDetails())
+        .call(mockGovernorContract.state, mockSelectedProposal.id)
+        .put(proposalsActions.fetchDetailsFailure())
+        .hasFinalState(failureState)
+        .run();
+
+      expect(runResult.effects).toEqual({});
+    });
+
+    it('subscription error', async () => {
+      const runResult = await expectSaga(fetchProposalDetails, {
+        isError: true,
+        error: new Error('not working'),
+      })
+        .withReducer(reducer)
+        .withState(initialState)
+        .put(proposalsActions.fetchDetails())
         .put(proposalsActions.fetchDetailsFailure())
         .hasFinalState(failureState)
         .run();

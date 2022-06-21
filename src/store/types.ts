@@ -1,6 +1,7 @@
 import { TransactionReceipt } from '@ethersproject/providers';
 import {
   ActionCreatorsMapObject,
+  ActionCreatorWithOptionalPayload,
   ActionCreatorWithoutPayload,
   ActionCreatorWithPayload,
 } from '@reduxjs/toolkit';
@@ -99,7 +100,10 @@ export type SubscriptionResponse<Result> =
 export type SubscriptionSagaConfig<Result, Variables> = {
   query: string;
   stopAction: ActionCreatorWithoutPayload;
-  watchDataAction: ActionCreatorWithoutPayload;
+  watchDataAction:
+    | ActionCreatorWithoutPayload
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    | ActionCreatorWithOptionalPayload<any>;
   fetchSaga: (data: SubscriptionResponse<Result>) => SagaIterator;
   variables?: Variables;
 };

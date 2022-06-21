@@ -1,9 +1,12 @@
-import { put, select, call } from 'typed-redux-saga';
+import { put, select, call, take } from 'typed-redux-saga';
 
 import { ProposalState } from '../../../constants';
-import { createWatcherSaga } from '../../utils/utils.sagas';
-import { proposalDetailsQuery } from '../../../queries/proposalDetailsQuery';
-import { subgraphClientSelector } from '../../app/app.selectors';
+import { subscriptionSaga } from '../../utils/utils.sagas';
+import {
+  ProposalDetailsQueryParams,
+  ProposalDetailsQueryResult,
+  proposalDetailsSubscription,
+} from '../../../queries/proposalDetailsQuery';
 
 import {
   governorContractsSelector,
@@ -13,33 +16,30 @@ import {
 import { parseProposal } from '../proposals.utils';
 import { ProposalDetails } from '../proposals.state';
 import { proposalsActions } from '../proposals.slice';
+import { SubscriptionResponse } from '../../types';
+import { appActions } from '../../app/app.slice';
 
-export function* fetchProposalDetails() {
+export function* fetchProposalDetails(
+  queryResult: SubscriptionResponse<ProposalDetailsQueryResult>
+) {
   try {
-    const selectedProposal = yield* select(selectedProposalSelector);
-    const subgraphClient = yield* select(subgraphClientSelector);
+    yield* put(proposalsActions.fetchDetails());
+
+    if (queryResult.isError) throw queryResult.error;
+
     const governorContract = yield* select(selectedProposalGovernor);
     const governorAddresses = yield* select(governorContractsSelector);
 
-    if (
-      !selectedProposal ||
-      !governorContract ||
-      !subgraphClient ||
-      !governorAddresses
-    ) {
+    if (!governorContract || !governorAddresses) {
       throw new Error('Missing proposal data');
     }
 
-    const { id: proposalId, contractAddress } = selectedProposal;
+    const [proposalDetails] = queryResult.data.proposals || [];
 
-    const { proposals } = yield* call(proposalDetailsQuery, subgraphClient, {
-      proposalId,
-      contractAddress,
-    });
-
-    const [proposalDetails] = proposals;
-
-    const proposalState = yield* call(governorContract.state, proposalId);
+    const proposalState = yield* call(
+      governorContract.state,
+      proposalDetails.proposalId
+    );
     const guardian = yield* call(governorContract.guardian);
 
     const baseProposal = parseProposal(
@@ -76,16 +76,36 @@ export function* fetchProposalDetails() {
   }
 }
 
-function* triggerFetch() {
-  yield* put(proposalsActions.fetchDetails());
+/** Needed because update of proposal state will not trigger event in the subscription(proposal state is not tracked in our subgraph) */
+export function* forceProposalReFetch() {
+  yield* put(proposalsActions.stopWatchingDetails());
+  yield* put(proposalsActions.watchDetails());
 }
 
-function* triggerUpdate() {
-  yield* put(proposalsActions.updateDetails());
-}
+export function* watchProposalDetails() {
+  let selectedProposal = yield* select(selectedProposalSelector);
 
-export const watchProposalDetails = createWatcherSaga({
-  fetchSaga: triggerFetch,
-  updateSaga: triggerUpdate,
-  stopAction: proposalsActions.stopWatchingDetails.type,
-});
+  /** when proposal data is not settled wait for the wallet to be connected and try once again */
+  if (!selectedProposal) {
+    yield* take(appActions.walletConnected.type);
+    selectedProposal = yield* select(selectedProposalSelector);
+
+    if (!selectedProposal) {
+      yield* put(proposalsActions.fetchDetailsFailure());
+      return;
+    }
+  }
+
+  const { id: proposalId, contractAddress } = selectedProposal;
+
+  yield* subscriptionSaga<
+    ProposalDetailsQueryResult,
+    ProposalDetailsQueryParams
+  >({
+    query: proposalDetailsSubscription,
+    variables: { contractAddress, proposalId },
+    stopAction: proposalsActions.stopWatchingDetails,
+    fetchSaga: fetchProposalDetails,
+    watchDataAction: proposalsActions.watchDetails,
+  });
+}

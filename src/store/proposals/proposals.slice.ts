@@ -75,20 +75,21 @@ export const proposalSlice = createSlice({
       state.proposalsList.state = 'success';
     },
 
-    watchDetails: (state, { payload }: PayloadAction<ProposalUrlParams>) => {
-      state.selectedProposal = payload;
+    watchDetails: (
+      state,
+      { payload }: PayloadAction<ProposalUrlParams | undefined>
+    ) => {
+      state.proposalDetails.state = 'loading';
+
+      if (payload) {
+        state.proposalDetails.data = undefined;
+        state.selectedProposal = payload;
+      }
     },
     stopWatchingDetails: (state) => {
       state.proposalDetails.state = 'idle';
-      state.selectedProposal = undefined;
     },
     fetchDetails: (state) => {
-      state.proposalDetails = {
-        data: undefined,
-        state: 'loading',
-      };
-    },
-    updateDetails: (state) => {
       state.proposalDetails.state = 'loading';
     },
     fetchDetailsFailure: (state) => {

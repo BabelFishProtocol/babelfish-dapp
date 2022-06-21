@@ -8,11 +8,13 @@ import {
   contractStepCallsSaga,
 } from '../../utils/utils.sagas';
 import {
+  proposalDetailsCallSelector,
   selectedProposalGovernor,
   selectedProposalIdSelector,
 } from '../proposals.selectors';
 import { proposalsActions } from '../proposals.slice';
 import { ProposalDetailsCalls } from '../proposals.state';
+import { forceProposalReFetch } from './proposalDetails';
 
 export function* fetchProposalStates(
   proposals: ProposalListQueryItem[],
@@ -55,4 +57,7 @@ export function* proposalDetailsCall(getStep: CreateStepCallAction) {
     setStatusAction: proposalsActions.setProposalDetailsCallStatus,
     setStepDataAction: proposalsActions.setProposalDetailsCallStepData,
   });
+
+  const operationResult = yield* select(proposalDetailsCallSelector);
+  if (operationResult.status === 'success') yield* forceProposalReFetch();
 }

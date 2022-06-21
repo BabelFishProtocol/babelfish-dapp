@@ -1,18 +1,18 @@
-import { gql, GraphQLClient } from 'graphql-request';
+import { gql } from 'graphql-request';
 import {
-  IGetProposalsDetailsQuery,
-  IGetProposalsDetailsQueryVariables,
+  IProposalDetailsSubscription,
+  IProposalDetailsSubscriptionVariables,
 } from '../gql/graphql';
 
-export type ProposalDetailsQueryParams = IGetProposalsDetailsQueryVariables;
+export type ProposalDetailsQueryParams = IProposalDetailsSubscriptionVariables;
 
 export type ProposalDetailsQueryItem =
-  IGetProposalsDetailsQuery['proposals'][number];
+  IProposalDetailsSubscription['proposals'][number];
 
-export type ProposalDetailsQueryResult = IGetProposalsDetailsQuery;
+export type ProposalDetailsQueryResult = IProposalDetailsSubscription;
 
-const findProposalDetailsQuery = gql`
-  query getProposalsDetails($contractAddress: Bytes!, $proposalId: BigInt!) {
+export const proposalDetailsSubscription = gql`
+  subscription proposalDetails($contractAddress: Bytes!, $proposalId: BigInt!) {
     proposals(
       where: { contractAddress: $contractAddress, proposalId: $proposalId }
     ) {
@@ -40,12 +40,3 @@ const findProposalDetailsQuery = gql`
     }
   }
 `;
-
-export const proposalDetailsQuery = (
-  client: GraphQLClient,
-  params: ProposalDetailsQueryParams
-) =>
-  client.request<IGetProposalsDetailsQuery, IGetProposalsDetailsQueryVariables>(
-    findProposalDetailsQuery,
-    params
-  );
