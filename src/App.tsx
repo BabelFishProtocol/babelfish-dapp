@@ -1,6 +1,7 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
 
 import { BottomBanner } from './components/BottomBanner/BottomBanner.component';
+import { ErrorAlert } from './components/ErrorAlert/ErrorAlert.component';
 import { Header } from './components/Header/Header.component';
 import { Urls } from './constants';
 import { AggregatorContainer } from './pages/Aggregator/Aggregator.container';
@@ -29,6 +30,7 @@ export const App = () => (
       <Route path="*" element={<Navigate to={Urls.Dashboard} />} />
     </Routes>
 
+    <ErrorAlert />
     <BottomBanner />
   </div>
 );

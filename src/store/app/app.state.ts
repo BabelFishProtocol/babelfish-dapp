@@ -20,4 +20,5 @@ export class AppState {
   wrongNetworkModal: boolean = false;
   walletNotConnectedModal: boolean = false;
   xusdLocalTransactions: XusdLocalTransactions = {};
+  errorMessage: string | undefined = undefined;
 }

@@ -60,6 +60,11 @@ export const supportedNetworksSelector = createSelector(
   (state) => state.supportedNetworks
 );
 
+export const errorMessageSelector = createSelector(
+  appState,
+  (state) => state.errorMessage
+);
+
 export const supportedNetworksNamesSelector = createSelector(
   supportedNetworksSelector,
   (supportedNetworks) => supportedNetworks.map((item) => chains[item].name)

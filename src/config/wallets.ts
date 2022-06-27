@@ -20,7 +20,7 @@ export type WalletConfig = {
   name: WalletEnum;
   icon: string;
   connector: AbstractConnector;
-  checkConnection: () => void;
+  checkConnection: () => string | undefined;
 };
 
 export const wallets: WalletConfig[] = [
@@ -30,9 +30,7 @@ export const wallets: WalletConfig[] = [
     connector: injectedConnector,
     checkConnection: () => {
       if (!ethereum || !ethereum.isMetaMask) {
-        throw new Error(
-          '🦊 You must install Metamask into your browser: https://metamask.io/download.html and make sure it is set as the default wallet.'
-        );
+        return '🦊 You must install Metamask into your browser and make sure it is set as the default wallet.';
       }
     },
   },
@@ -42,9 +40,7 @@ export const wallets: WalletConfig[] = [
     connector: injectedConnector,
     checkConnection: () => {
       if (!ethereum || !ethereum.isNiftyWallet) {
-        throw new Error(
-          '👛 You must install Nifty into your browser: https://bit.ly/3k1lBqP and make sure it is set as the default wallet.'
-        );
+        return '👛 You must install Nifty into your browser and make sure it is set as the default wallet.';
       }
     },
   },
@@ -54,9 +50,7 @@ export const wallets: WalletConfig[] = [
     connector: injectedConnector,
     checkConnection: () => {
       if (!ethereum || !ethereum.isLiquality) {
-        throw new Error(
-          '🔵🟣 You must install Liquality into your browser: https://liquality.io/wallet.html and make sure it is set as the default wallet.'
-        );
+        return '🔵🟣 You must install Liquality into your browser and make sure it is set as the default wallet.';
       }
     },
   },

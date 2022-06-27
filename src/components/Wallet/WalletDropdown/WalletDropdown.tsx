@@ -6,15 +6,18 @@ import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
 import { UnsupportedChainIdError } from '@web3-react/core';
 
+import { useDispatch } from 'react-redux';
 import { Button } from '../../Button/Button.component';
 import { WalletIcon } from '../WalletIcon/WalletIcon.component';
 import { WalletDropdownProps, WalletOptionProps } from './WalletDropdown.types';
+import { appActions } from '../../../store/app/app.slice';
 
 export const WalletDropdown = ({
   wallets,
   activate,
   setConnectedWallet,
 }: WalletDropdownProps) => {
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const open = Boolean(anchorEl);
@@ -30,7 +33,11 @@ export const WalletDropdown = ({
   const tryActivation = async (walletId: number) => {
     const { name, connector, checkConnection } = wallets[walletId];
 
-    checkConnection();
+    const errorMessage = checkConnection();
+
+    if (errorMessage) {
+      dispatch(appActions.setErrorMessage(errorMessage));
+    }
 
     if (connector) {
       try {

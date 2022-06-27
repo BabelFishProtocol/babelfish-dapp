@@ -22,7 +22,14 @@ export const AggregatorInfoComponent = ({
       minWidth: 230,
     }}
   >
-    <IconButton sx={{ width: 144, height: 144 }} onClick={onClick}>
+    <IconButton
+      sx={{
+        width: 144,
+        height: 144,
+        background: ({ palette }) => palette.grey[800],
+      }}
+      onClick={onClick}
+    >
       <img alt="exchange icon" src={exchangeIcon} />
     </IconButton>
     <Box
