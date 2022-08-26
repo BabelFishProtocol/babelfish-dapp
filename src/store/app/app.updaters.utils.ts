@@ -12,9 +12,6 @@ export const getWalletName = (connector: Web3Data['connector']) => {
       if (ethereum.isLiquality) {
         return WalletEnum.Liquality;
       }
-      if (ethereum.isNiftyWallet) {
-        return WalletEnum.Nifty;
-      }
       return WalletEnum.Metamask;
     }
 
