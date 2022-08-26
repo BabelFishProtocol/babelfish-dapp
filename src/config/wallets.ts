@@ -3,7 +3,6 @@ import { injectedConnector } from './providers';
 
 import metamaskIcon from '../assets/icons/metamask-icon.webp';
 // import portisIcon from '../assets/icons/portis.svg';
-import niftyIcon from '../assets/icons/nifty.png';
 import liqualityIcon from '../assets/icons/liquality.png';
 import { WindowWithEthereum } from '../utils/types';
 
@@ -11,7 +10,6 @@ const ethereum = (window as WindowWithEthereum)?.ethereum;
 
 export enum WalletEnum {
   Metamask = 'Metamask',
-  Nifty = 'Nifty',
   Liquality = 'Liquality',
   // Portis = 'Portis',
 }
@@ -31,16 +29,6 @@ export const wallets: WalletConfig[] = [
     checkConnection: () => {
       if (!ethereum || !ethereum.isMetaMask) {
         return '🦊 You must install Metamask into your browser and make sure it is set as the default wallet.';
-      }
-    },
-  },
-  {
-    name: WalletEnum.Nifty,
-    icon: niftyIcon,
-    connector: injectedConnector,
-    checkConnection: () => {
-      if (!ethereum || !ethereum.isNiftyWallet) {
-        return '👛 You must install Nifty into your browser and make sure it is set as the default wallet.';
       }
     },
   },
