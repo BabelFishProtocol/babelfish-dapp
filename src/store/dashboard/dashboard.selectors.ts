@@ -69,7 +69,7 @@ export const transactionsSelector = createSelector(
       ? [...xusdLocalTransactions, ...data]
       : data;
 
-    const sortedByDate = transactions.sort(
+    const sortedByDate = [...transactions].sort(
       (a, b) => Number(b.date) - Number(a.date)
     );
 
