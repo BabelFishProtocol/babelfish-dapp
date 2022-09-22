@@ -18,7 +18,7 @@ import {
 } from '../app/app.selectors';
 import { selectCurrentCallStepData } from '../utils/utils.selectors';
 
-const aggregatorState = (state: RootState) => state[Reducers.Aggregator];
+const aggregatorState = (state: RootState) => state[Reducers.Convert];
 
 export const flowStateSelector = createSelector(aggregatorState, (state) =>
   state.startingToken === TokenEnum.XUSD ? 'withdraw' : 'deposit'

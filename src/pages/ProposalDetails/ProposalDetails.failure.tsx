@@ -11,7 +11,7 @@ export const ProposalDetailsFailure = () => (
     <Typography color="error">Unable to find the proposal</Typography>
     <Button
       component={Link}
-      to={Urls.Proposals}
+      to={Urls.Bitocracy}
       variant="outlined"
       sx={{ mt: 2 }}
     >

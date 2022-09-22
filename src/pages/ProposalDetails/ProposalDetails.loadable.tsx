@@ -11,7 +11,7 @@ export const ProposalDetailsLoadable = () => (
   <>
     <Breadcrumbs
       links={[
-        { title: UrlNames.Proposals, href: Urls.Proposals },
+        { title: UrlNames.Bitocracy, href: Urls.Bitocracy },
         { title: UrlNames.ProposalDetails },
       ]}
     />

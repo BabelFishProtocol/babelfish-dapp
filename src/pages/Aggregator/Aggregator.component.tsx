@@ -111,7 +111,7 @@ export const AggregatorComponent = ({
 
   return (
     <>
-      <Breadcrumbs links={[{ title: UrlNames.Aggregator }]} />
+      <Breadcrumbs links={[{ title: UrlNames.Convert }]} />
       <Box
         sx={{
           maxWidth: 1400,

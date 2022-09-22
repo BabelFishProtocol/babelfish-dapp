@@ -48,7 +48,7 @@ export const ProposalDetailsComponent = ({
     <>
       <Breadcrumbs
         links={[
-          { title: UrlNames.Proposals, href: Urls.Proposals },
+          { title: UrlNames.Bitocracy, href: Urls.Bitocracy },
           { title: UrlNames.ProposalDetails },
         ]}
       />
@@ -75,7 +75,7 @@ export const ProposalDetailsComponent = ({
               <IconButton
                 sx={{ width: '2rem', height: '2rem', mr: 1 }}
                 component={Link}
-                to={Urls.Proposals}
+                to={Urls.Bitocracy}
               >
                 {'<'}
               </IconButton>

@@ -56,7 +56,7 @@ afterEach(() => {
 
 describe('dashboard store', () => {
   const reducer = combineReducers(
-    pick(rootReducer, [Reducers.Dashboard, Reducers.App, Reducers.Aggregator])
+    pick(rootReducer, [Reducers.Dashboard, Reducers.App, Reducers.Convert])
   );
 
   const mockAccount = '0x6d';
@@ -66,7 +66,7 @@ describe('dashboard store', () => {
     const initialState: DeepPartial<RootState> = {
       [Reducers.App]: { ...new AppState() },
       [Reducers.Dashboard]: { ...new DashboardState() },
-      [Reducers.Aggregator]: { ...new AggregatorState() },
+      [Reducers.Convert]: { ...new AggregatorState() },
     };
 
     const expectedConfirmedTx = changeTxStatus('Confirmed');
@@ -145,7 +145,7 @@ describe('dashboard store', () => {
   describe('fetchTransactions with swappng local tx', () => {
     const getInitialState = ({ localTx }: GetInitialState) => ({
       [Reducers.Dashboard]: { ...new DashboardState() },
-      [Reducers.Aggregator]: { ...new AggregatorState() },
+      [Reducers.Convert]: { ...new AggregatorState() },
       [Reducers.App]: {
         ...new AppState(),
         chainId: mockChainEnum,
