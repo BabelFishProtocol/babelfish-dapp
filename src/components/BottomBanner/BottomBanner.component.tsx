@@ -35,9 +35,6 @@ export const BottomBanner = () => {
           Discord
         </Link>{' '}
         for more information.
-        <br />
-        WARNING: This is an early experiment and there is risk of loss of funds.
-        DON&apos;T PANIC!.
       </Typography>
 
       <Box
@@ -45,7 +42,7 @@ export const BottomBanner = () => {
         sx={{
           position: 'absolute',
           right: '30px',
-          top: '30px',
+          top: '19px',
           cursor: 'pointer',
           background: 'transparent',
           border: 'none',
