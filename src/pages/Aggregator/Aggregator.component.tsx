@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 
 import { useForm } from 'react-hook-form';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { PageView } from '../../components/PageView/PageView.component';
 import { ControlledCurrencyInput } from '../../components/CurrencyInput/CurrencyInput.controlled';
@@ -21,6 +21,7 @@ import { AggregatorComponentProps } from './Aggregator.types';
 import {
   useAggregatorDropdowns,
   useConnectedChain,
+  useFocusActiveFields,
   useWalletAddress,
 } from './Aggregator.hooks';
 import { AggregatorInfoContainer } from './AggregatorInfo/AggregatorInfo.container';
@@ -83,6 +84,22 @@ export const AggregatorComponent = ({
   useConnectedChain(startingChain, resetField, setValue);
 
   useWalletAddress(setValue);
+
+  const destinationNetworkRef = useRef<HTMLDivElement>(null);
+  const destinationTokenRef = useRef<HTMLDivElement>(null);
+
+  useFocusActiveFields([
+    {
+      isPreviousFieldEmpty: !startingChain,
+      isCurrentFieldEmpty: !destinationChain,
+      currentFieldRef: destinationNetworkRef,
+    },
+    {
+      isPreviousFieldEmpty: !destinationChain,
+      isCurrentFieldEmpty: !destinationToken,
+      currentFieldRef: destinationTokenRef,
+    },
+  ]);
 
   useEffect(() => {
     onStartingTokenChange(startingToken || undefined);
@@ -150,6 +167,7 @@ export const AggregatorComponent = ({
                 options={startingChainOptions}
                 sx={{ mb: 4 }}
                 setValue={setValue}
+                blurOnSelect
               />
               <ControlledDropdown
                 name={AggregatorInputs.StartingToken}
@@ -189,6 +207,7 @@ export const AggregatorComponent = ({
                 options={destinationChainOptions}
                 sx={{ mb: 4 }}
                 setValue={setValue}
+                ref={destinationNetworkRef}
               />
 
               <ControlledDropdown
@@ -199,6 +218,7 @@ export const AggregatorComponent = ({
                 options={destinationTokenOptions}
                 sx={{ mb: 4 }}
                 setValue={setValue}
+                ref={destinationTokenRef}
               />
 
               <ControlledCurrencyInput
@@ -218,7 +238,7 @@ export const AggregatorComponent = ({
                 sx={{ mb: 5 }}
               />
               <Button type="submit" fullWidth disabled={!isValid}>
-                Transfer
+                Convert
               </Button>
             </Box>
           </PageView>
