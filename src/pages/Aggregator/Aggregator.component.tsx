@@ -167,7 +167,6 @@ export const AggregatorComponent = ({
                 options={startingChainOptions}
                 sx={{ mb: 4 }}
                 setValue={setValue}
-                blurOnSelect
               />
               <ControlledDropdown
                 name={AggregatorInputs.StartingToken}
@@ -207,7 +206,7 @@ export const AggregatorComponent = ({
                 options={destinationChainOptions}
                 sx={{ mb: 4 }}
                 setValue={setValue}
-                ref={destinationNetworkRef}
+                dropdownRef={destinationNetworkRef}
               />
 
               <ControlledDropdown
@@ -218,7 +217,7 @@ export const AggregatorComponent = ({
                 options={destinationTokenOptions}
                 sx={{ mb: 4 }}
                 setValue={setValue}
-                ref={destinationTokenRef}
+                dropdownRef={destinationTokenRef}
               />
 
               <ControlledCurrencyInput
