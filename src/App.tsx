@@ -1,6 +1,5 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
 
-import { BottomBanner } from './components/BottomBanner/BottomBanner.component';
 import { ErrorAlert } from './components/ErrorAlert/ErrorAlert.component';
 import { Header } from './components/Header/Header.component';
 import { Urls } from './constants';
@@ -31,6 +30,5 @@ export const App = () => (
     </Routes>
 
     <ErrorAlert />
-    <BottomBanner />
   </div>
 );
