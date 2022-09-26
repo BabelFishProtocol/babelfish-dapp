@@ -1,10 +1,10 @@
-import Box from '@mui/material/Box';
+import { Checkbox, Box, FormControlLabel, Link } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
 import { useForm } from 'react-hook-form';
 
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { PageView } from '../../components/PageView/PageView.component';
 import { ControlledCurrencyInput } from '../../components/CurrencyInput/CurrencyInput.controlled';
@@ -65,6 +65,7 @@ export const AggregatorComponent = ({
   const destinationChain = watch(AggregatorInputs.DestinationChain);
   const destinationToken = watch(AggregatorInputs.DestinationToken);
   const amount = watch(AggregatorInputs.SendAmount);
+  const receivingAddress = watch(AggregatorInputs.ReceiveAddress);
 
   const {
     startingChainOptions,
@@ -87,6 +88,9 @@ export const AggregatorComponent = ({
 
   const destinationNetworkRef = useRef<HTMLDivElement>(null);
   const destinationTokenRef = useRef<HTMLDivElement>(null);
+
+  const [isAddressDisclaimerChecked, setIsAddressDisclaimerChecked] =
+    useState(false);
 
   useFocusActiveFields([
     {
@@ -122,9 +126,20 @@ export const AggregatorComponent = ({
   }, [amount, getReceiveAmount, setValue]);
 
   useEffect(() => {
+    if (isAddressDisclaimerChecked && !receivingAddress) {
+      setIsAddressDisclaimerChecked(false);
+    }
+  }, [isAddressDisclaimerChecked, receivingAddress]);
+
+  useEffect(() => {
     resetField(AggregatorInputs.SendAmount);
     resetField(AggregatorInputs.ReceiveAmount);
   }, [flowState, resetField]);
+
+  const handleAddressDisclaimerClick = useCallback(
+    () => setIsAddressDisclaimerChecked((previousValue) => !previousValue),
+    []
+  );
 
   return (
     <>
@@ -234,9 +249,47 @@ export const AggregatorComponent = ({
                 placeholder="Enter or paste address"
                 name={AggregatorInputs.ReceiveAddress}
                 control={control}
-                sx={{ mb: 5 }}
+                sx={{ mb: 0.5 }}
               />
-              <Button type="submit" fullWidth disabled={!isValid}>
+              <Box
+                sx={{
+                  mt: 1,
+                  mb: 5,
+                }}
+              >
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={isAddressDisclaimerChecked}
+                      onClick={handleAddressDisclaimerClick}
+                    />
+                  }
+                  label={
+                    <Typography
+                      sx={{
+                        fontSize: '0.875rem',
+                        opacity: receivingAddress ? 1 : 0.5,
+                      }}
+                    >
+                      I confirm the funds will be accessible at the receiving
+                      address{' '}
+                      <Link
+                        href="https://wiki.sovryn.app/en/sovryn-dapp/bridge#beware-when-sending-to-exchange-addresses"
+                        target="_blank"
+                        color="primary"
+                      >
+                        (Learn more)
+                      </Link>
+                    </Typography>
+                  }
+                  disabled={!receivingAddress}
+                />
+              </Box>
+              <Button
+                type="submit"
+                fullWidth
+                disabled={!isValid || !isAddressDisclaimerChecked}
+              >
                 Convert
               </Button>
             </Box>
