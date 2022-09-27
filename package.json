@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && cp ./_redirects ./dist",
     "deploy": "./start.sh",
     "lint": "eslint .",
     "prettier": "prettier --config .prettierrc --check .",
