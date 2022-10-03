@@ -51,8 +51,8 @@ export const tokenOnChain = {
     [ChainEnum.ETH_TESTNET]: '0x4C68058992b8aD1243eE23A5923023C0e15Cf43F',
   },
   [TokenEnum.XUSD]: {
-    [ChainEnum.RSK]: '0xb5999795BE0eBb5BAb23144Aa5fD6a02d080299f',
-    [ChainEnum.RSK_TESTNET]: '0xA9262cC3fb54Ea55b1b0AF00EFcA9416B8D59570',
+    [ChainEnum.RSK]: '0xb5999795be0ebb5bab23144aa5fd6a02d080299f',
+    [ChainEnum.RSK_TESTNET]: '0xa9262cc3fb54ea55b1b0af00efca9416b8d59570',
   },
 } as const;
 
