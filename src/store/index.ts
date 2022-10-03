@@ -20,7 +20,7 @@ const persistConfig = {
 const persistedAppReducer = persistReducer(persistConfig, appReducer);
 
 export const rootReducer = {
-  [Reducers.Aggregator]: aggregatorReducer,
+  [Reducers.Convert]: aggregatorReducer,
   [Reducers.App]: persistedAppReducer,
   [Reducers.Dashboard]: dashboardReducer,
   [Reducers.Staking]: stakingReducer,

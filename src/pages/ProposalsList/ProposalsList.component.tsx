@@ -65,7 +65,7 @@ export const ProposalsListComponent = ({
 
   return (
     <>
-      <Breadcrumbs links={[{ title: UrlNames.Proposals }]} />
+      <Breadcrumbs links={[{ title: UrlNames.Bitocracy }]} />
       <PageView
         title={
           <Typography variant="h2" padding={1}>

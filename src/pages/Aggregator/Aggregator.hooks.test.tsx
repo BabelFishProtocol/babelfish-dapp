@@ -26,7 +26,7 @@ type TestStoreProviderProps = {
 
 const createMockStore = () => {
   const mockRootReducer = {
-    [Reducers.Aggregator]: aggregatorReducer,
+    [Reducers.Convert]: aggregatorReducer,
     [Reducers.App]: appReducer,
   };
 

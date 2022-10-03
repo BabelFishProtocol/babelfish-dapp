@@ -51,8 +51,8 @@ export const tokenOnChain = {
     [ChainEnum.ETH_TESTNET]: '0x4C68058992b8aD1243eE23A5923023C0e15Cf43F',
   },
   [TokenEnum.XUSD]: {
-    [ChainEnum.RSK]: '0xb5999795BE0eBb5BAb23144Aa5fD6a02d080299f',
-    [ChainEnum.RSK_TESTNET]: '0x74858FE37d391f81F89472e1D8BC8Ef9CF67B3b1',
+    [ChainEnum.RSK]: '0xb5999795be0ebb5bab23144aa5fd6a02d080299f',
+    [ChainEnum.RSK_TESTNET]: '0xa9262cc3fb54ea55b1b0af00efca9416b8d59570',
   },
 } as const;
 
@@ -87,10 +87,7 @@ export const tokens: TokensType = {
     id: TokenEnum.XUSD,
     name: TokenEnum.XUSD,
     icon: xusdIcon,
-    addresses: {
-      [ChainEnum.RSK]: '0xb5999795BE0EbB5bAb23144AA5FD6A02D080299F',
-      [ChainEnum.RSK_TESTNET]: '0x152123ec3D9fe2Cf57aBc09917C1ba51324EA8dE', // not sure which one is right for our setup. Need to test when we have access to test tokens
-    },
+    addresses: tokenOnChain.XUSD,
   },
   [TokenEnum.RDOC]: {
     id: TokenEnum.RDOC,

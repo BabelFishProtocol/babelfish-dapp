@@ -7,6 +7,7 @@ import { alpha } from '@mui/material/styles';
 import { UnsupportedChainIdError } from '@web3-react/core';
 
 import { useDispatch } from 'react-redux';
+import { Link } from '@mui/material';
 import { Button } from '../../Button/Button.component';
 import { WalletIcon } from '../WalletIcon/WalletIcon.component';
 import { WalletDropdownProps, WalletOptionProps } from './WalletDropdown.types';
@@ -102,13 +103,15 @@ export const WalletDropdown = ({
             ':hover': { backgroundColor: 'inherit' },
           }}
         >
-          <Button
-            size="small"
-            variant="text"
-            sx={{ textTransform: 'unset', p: 0, textAlign: 'center' }}
-          >
-            <Typography>What Is a wallet?</Typography>
-          </Button>
+          <Typography>
+            <Link
+              target="_blank"
+              href="https://wiki.sovryn.app/en/getting-started/wallet-setup"
+              color="primary"
+            >
+              What is a wallet?
+            </Link>
+          </Typography>
         </MenuItem>
       </Menu>
     </>

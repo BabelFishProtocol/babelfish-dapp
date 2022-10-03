@@ -88,7 +88,7 @@ export const StakingComponent = ({
                 sx={{ width: 'fit-content' }}
                 variant="outlined"
                 component={Link}
-                to={Urls.Proposals}
+                to={Urls.Bitocracy}
               >
                 View Governance
               </Button>

@@ -18,7 +18,7 @@ const submitStepCallActions = createStepCallsActions(
 );
 
 const aggregatorSlice = createSlice({
-  name: Reducers.Aggregator,
+  name: Reducers.Convert,
   initialState,
   reducers: {
     setStartingToken: (

@@ -11,9 +11,9 @@ const StyledNav = styled('nav')`
 
 export const Navigation = () => (
   <StyledNav>
-    <NavLink to={Urls.Aggregator}>{UrlNames.Aggregator}</NavLink>
+    <NavLink to={Urls.Convert}>{UrlNames.Convert}</NavLink>
     <NavLink to={Urls.Staking}>{UrlNames.Staking}</NavLink>
-    <NavLink to={Urls.Proposals}>{UrlNames.Proposals}</NavLink>
+    <NavLink to={Urls.Bitocracy}>{UrlNames.Bitocracy}</NavLink>
     <NavLink to={Urls.Claim}>{UrlNames.Claim}</NavLink>
   </StyledNav>
 );

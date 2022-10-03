@@ -19,6 +19,11 @@ import {
 } from '../../store/app/app.selectors';
 import { switchConnectedChain } from '../../utils/switchConnectedChain';
 import { AggregatorInputs, AggregatorFormValues } from './Aggregator.fields';
+import { FocusActiveFieldParameters } from './Aggregator.types';
+import {
+  focusCurrentFieldIfEmpty,
+  removeFocusFromCurrentField,
+} from './Aggregator.utils';
 
 export const useAggregatorDropdowns = (
   startingChain: ChainEnum | '',
@@ -228,4 +233,24 @@ export const useWalletAddress = (
       setValue(AggregatorInputs.ReceiveAddress, walletAddress);
     }
   }, [walletAddress, setValue]);
+};
+
+export const useFocusActiveFields = (
+  parameters: FocusActiveFieldParameters[]
+) => {
+  useEffect(() => {
+    focusCurrentFieldIfEmpty(parameters[0]);
+  }, [parameters]);
+
+  useEffect(() => {
+    removeFocusFromCurrentField(parameters[0]);
+  }, [parameters]);
+
+  useEffect(() => {
+    focusCurrentFieldIfEmpty(parameters[1]);
+  }, [parameters]);
+
+  useEffect(() => {
+    removeFocusFromCurrentField(parameters[1]);
+  }, [parameters]);
 };
