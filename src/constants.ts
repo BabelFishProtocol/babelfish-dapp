@@ -4,7 +4,6 @@ export enum Urls {
   Staking = '/stake',
   Convert = '/convert',
   Improbability = '/improbability',
-  Claim = '/claim',
 }
 
 export enum UrlNames {
@@ -13,7 +12,6 @@ export enum UrlNames {
   Dashboard = 'Home',
   Staking = 'Stake',
   Convert = 'Convert',
-  Claim = 'Claim',
 }
 
 export enum ProposalState {
