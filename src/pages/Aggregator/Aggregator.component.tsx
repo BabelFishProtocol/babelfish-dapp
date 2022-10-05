@@ -41,7 +41,6 @@ const PageViewTitle: React.FC = ({ children }) => (
 );
 
 export const AggregatorComponent = ({
-  getReceiveAmount,
   onSubmit,
   onDestinationChainChange,
   onStartingTokenChange,
@@ -121,9 +120,9 @@ export const AggregatorComponent = ({
 
   useEffect(() => {
     if (amount) {
-      setValue(AggregatorInputs.ReceiveAmount, getReceiveAmount(amount));
+      setValue(AggregatorInputs.ReceiveAmount, amount); // TODO: This will change in the future once we have an incentive curve algorithm
     }
-  }, [amount, getReceiveAmount, setValue]);
+  }, [amount, setValue]);
 
   useEffect(() => {
     if (isAddressDisclaimerChecked && !receivingAddress) {
