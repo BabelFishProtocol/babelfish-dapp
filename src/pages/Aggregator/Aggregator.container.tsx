@@ -1,4 +1,3 @@
-import { BigNumber, utils } from 'ethers';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { SubmitStepsDialog } from '../../components/TxDialog/TxDialog.component';
@@ -36,15 +35,6 @@ export const AggregatorContainer = () => {
     };
   }, [dispatch]);
 
-  const getReceiveAmount = (sendAmount: string) =>
-    // todo: implement
-    utils.formatUnits(
-      utils
-        .parseUnits(sendAmount)
-        .mul(BigNumber.from(95))
-        .div(BigNumber.from(100))
-    );
-
   const onSubmit = (data: AggregatorFormValues) => {
     dispatch(aggregatorActions.submit(data));
   };
@@ -56,7 +46,6 @@ export const AggregatorContainer = () => {
   return (
     <>
       <AggregatorComponent
-        getReceiveAmount={getReceiveAmount}
         onSubmit={onSubmit}
         onDestinationChainChange={onDestinationChainChange}
         onStartingTokenChange={onStartingTokenChange}
