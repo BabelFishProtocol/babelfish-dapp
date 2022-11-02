@@ -13,7 +13,6 @@ import { StakingContainer } from './pages/Staking/Staking.container';
 export const App = () => (
   <div className="App">
     <Header />
-
     <Routes>
       <Route path={Urls.Bitocracy} element={<ProposalsListContainer />} />
       <Route path={Urls.Staking} element={<StakingContainer />} />
