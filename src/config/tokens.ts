@@ -16,6 +16,7 @@ export enum TokenEnum {
   // USDP = 'USDP',
   XUSD = 'XUSD',
   RDOC = 'RDOC',
+  SEPUSD = 'SEPUSD',
   // BDUS = 'BDUS',
   // ZUSD = 'ZUSD',
 }
@@ -49,6 +50,9 @@ export const tokenOnChain = {
   [TokenEnum.XUSD]: {
     [ChainEnum.RSK]: '0xb5999795be0ebb5bab23144aa5fd6a02d080299f',
     [ChainEnum.RSK_TESTNET]: '0xa9262cc3fb54ea55b1b0af00efca9416b8d59570',
+  },
+  [TokenEnum.SEPUSD]: {
+    [ChainEnum.ETH_TESTNET]: '0x7f357b8D3293CD631907d33a500f2C9Ce7f9B90D',
   },
 } as const;
 
@@ -93,6 +97,12 @@ export const tokens: TokensType = {
       [ChainEnum.RSK]: '0x2d919f19d4892381d58edebeca66d5642cef1a1f',
       [ChainEnum.RSK_TESTNET]: '0xC3De9f38581F83e281F260D0ddBAac0E102Ff9F8',
     },
+  },
+  [TokenEnum.SEPUSD]: {
+    id: TokenEnum.SEPUSD,
+    name: TokenEnum.SEPUSD,
+    icon: usdtIcon,
+    addresses: tokenOnChain.SEPUSD,
   },
   // [TokenEnum.BDUS]: {
   //   id: TokenEnum.BDUS,

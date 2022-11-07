@@ -106,25 +106,14 @@ export class BridgeDictionary {
     new Bridge(
       ChainEnum.ETH_TESTNET,
       ChainEnum.RSK_TESTNET,
-      '0x2b456e230225C4670FBF10b9dA506C019a24cAC7',
-      '0xc0e7a7fff4aba5e7286d5d67dd016b719dcc9156',
+      '0xe7d8ed038deb475b3705c67934d0bcfc2d462ba3',
+      '0xfbd57ab1dce7b4fe191ff947ddbb5118e4318207',
       [
         {
-          ...tokens.DAI,
-          originalAddress: tokenOnChain[TokenEnum.DAI][ChainEnum.ETH_TESTNET],
-          rskSovrynAddress: '0xcb92c8d49ec01b92f2a766c7c3c9c501c45271e0',
-        },
-        {
-          ...tokens.USDT,
-          originalDecimals: 6,
-          originalAddress: tokenOnChain[TokenEnum.USDT][ChainEnum.ETH_TESTNET],
-          rskSovrynAddress: '0x10c5a7930fc417e728574e334b1488b7895c4b81',
-        },
-        {
-          ...tokens.USDC,
-          originalDecimals: 6,
-          originalAddress: tokenOnChain[TokenEnum.USDC][ChainEnum.ETH_TESTNET],
-          rskSovrynAddress: '0xcc8eec21ae75f1a2de4ac7b32a7de888a45cf859',
+          ...tokens.SEPUSD,
+          originalAddress:
+            tokenOnChain[TokenEnum.SEPUSD][ChainEnum.ETH_TESTNET],
+          rskSovrynAddress: '0x30199fc1322b89bbe8B575BA4f695632961fC8f3',
         },
       ]
     ),

@@ -5,7 +5,7 @@ import rskIcon from '../assets/icons/chains/rsk.svg';
 
 export enum ChainEnum {
   ETH = 1,
-  ETH_TESTNET = 3,
+  ETH_TESTNET = 11155111,
   BSC = 56,
   RSK = 30,
   RSK_TESTNET = 31,
@@ -32,15 +32,15 @@ export type ChainType = {
 
 export const testnetChains: Record<TestnetChains, ChainType> = {
   [ChainEnum.ETH_TESTNET]: {
-    name: 'Ropsten',
+    name: 'Sepolia',
     icon: ethIcon,
     id: ChainEnum.ETH_TESTNET,
     chainId: utils.hexlify(ChainEnum.ETH_TESTNET),
-    rpcUrls: ['https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
-    blockExplorerUrls: ['https://ropsten.etherscan.io'],
+    rpcUrls: ['https://rpc.sepolia.dev'],
+    blockExplorerUrls: ['https://sepolia.etherscan.io/'],
     nativeCurrency: {
       name: 'Ether',
-      symbol: 'ETH',
+      symbol: 'SepoliaETH',
       decimals: 18,
     },
   },
