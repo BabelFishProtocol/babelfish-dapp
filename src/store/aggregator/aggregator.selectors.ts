@@ -10,6 +10,7 @@ import {
   AllowTokens__factory,
   Bridge__factory,
   ERC20__factory,
+  MassetV3__factory,
 } from '../../contracts/types';
 import {
   chainIdSelector,
@@ -135,6 +136,22 @@ export const massetAddressSelector = createSelector(
     }
 
     return undefined;
+  }
+);
+
+export const massetContractSelector = createSelector(
+  [massetAddressSelector, providerSelector],
+  (massetAddress, provider) => {
+    if (!massetAddress || !provider) {
+      return undefined;
+    }
+
+    const contract = MassetV3__factory.connect(
+      massetAddress,
+      provider?.getSigner()
+    );
+
+    return contract;
   }
 );
 
