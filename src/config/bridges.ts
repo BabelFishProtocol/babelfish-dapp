@@ -76,34 +76,6 @@ export class BridgeDictionary {
         },
       ]
     ),
-    new Bridge(
-      ChainEnum.BSC_TESTNET,
-      ChainEnum.RSK_TESTNET,
-      '0x862e8aff917319594cc7faaae5350d21196c086f',
-      '0x2b2bcad081fa773dc655361d1bb30577caa556f8',
-      [
-        {
-          ...tokens.DAI,
-          originalAddress: tokenOnChain[TokenEnum.DAI][ChainEnum.BSC_TESTNET],
-          rskSovrynAddress: '0x407ff7d4760D3a81B4740d268eb04490C7dfe7f2',
-        },
-        {
-          ...tokens.USDC,
-          originalAddress: tokenOnChain[TokenEnum.USDC][ChainEnum.BSC_TESTNET],
-          rskSovrynAddress: '0x3E2CF87e7fF4048A57f9cDdE9368c9F4BFB43ADF',
-        },
-        {
-          ...tokens.BUSD,
-          originalAddress: tokenOnChain[TokenEnum.BUSD][ChainEnum.BSC_TESTNET],
-          rskSovrynAddress: '0x8C9abb6C9D8D15ddb7aDA2e50086E1050AB32688',
-        },
-        {
-          ...tokens.USDT,
-          originalAddress: tokenOnChain[TokenEnum.USDT][ChainEnum.BSC_TESTNET],
-          rskSovrynAddress: '0x43bC3F0FFFF6c9BBf3C2EAFE464c314d43f561De',
-        },
-      ]
-    ),
 
     new Bridge(
       ChainEnum.ETH,

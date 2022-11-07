@@ -95,9 +95,9 @@ describe('Aggregator hooks', () => {
       expect(result.current.destinationTokenOptions).toEqual(bassetTokens);
     });
 
-    it('BNB -> RSK', () => {
-      const startingChain = ChainEnum.BSC_TESTNET;
-      const startingToken = TokenEnum.BUSD;
+    it('ETH -> RSK', () => {
+      const startingChain = ChainEnum.ETH_TESTNET;
+      const startingToken = TokenEnum.DAI;
       const destinationChain = ChainEnum.RSK_TESTNET;
       const destinationToken = ''; // not selected - always XUSD
 
@@ -276,7 +276,7 @@ describe('Aggregator hooks', () => {
 
   describe('useConnectedChain', () => {
     it('connects to the startingChain', async () => {
-      const connectedChain = ChainEnum.BSC_TESTNET;
+      const connectedChain = ChainEnum.RSK_TESTNET;
       const startingChain = ChainEnum.ETH_TESTNET;
       const provider = {} as Web3Provider;
 
@@ -352,7 +352,7 @@ describe('Aggregator hooks', () => {
     });
 
     it('toggles flow state when connected to the wrong chain in wrong pool', async () => {
-      const connectedChain = ChainEnum.BSC_TESTNET;
+      const connectedChain = ChainEnum.RSK_TESTNET;
       const startingChain = ChainEnum.ETH;
 
       jest

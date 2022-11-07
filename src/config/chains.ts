@@ -7,15 +7,11 @@ export enum ChainEnum {
   ETH = 1,
   ETH_TESTNET = 3,
   BSC = 56,
-  BSC_TESTNET = 97,
   RSK = 30,
   RSK_TESTNET = 31,
 }
 
-type TestnetChains =
-  | ChainEnum.BSC_TESTNET
-  | ChainEnum.ETH_TESTNET
-  | ChainEnum.RSK_TESTNET;
+type TestnetChains = ChainEnum.ETH_TESTNET | ChainEnum.RSK_TESTNET;
 
 type MainnetChains = ChainEnum.BSC | ChainEnum.ETH | ChainEnum.RSK;
 
@@ -45,19 +41,6 @@ export const testnetChains: Record<TestnetChains, ChainType> = {
     nativeCurrency: {
       name: 'Ether',
       symbol: 'ETH',
-      decimals: 18,
-    },
-  },
-  [ChainEnum.BSC_TESTNET]: {
-    name: 'BNB Chain Testnet',
-    icon: bscIcon,
-    id: ChainEnum.BSC_TESTNET,
-    chainId: utils.hexlify(ChainEnum.BSC_TESTNET),
-    rpcUrls: ['https://data-seed-prebsc-2-s3.binance.org:8545'],
-    blockExplorerUrls: ['https://testnet.bscscan.com'],
-    nativeCurrency: {
-      name: 'Binance Coin',
-      symbol: 'BNB',
       decimals: 18,
     },
   },
