@@ -14,9 +14,5 @@ export const getWalletName = (connector: Web3Data['connector']) => {
       }
       return WalletEnum.Metamask;
     }
-
-    // if (ethereum.isPortis && connector === portisConnector) {
-    //   return WalletEnum.Portis;
-    // }
   }
 };
