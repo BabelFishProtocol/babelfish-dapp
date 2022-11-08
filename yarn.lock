@@ -3081,7 +3081,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@portis/web3@npm:^4.0.5, @portis/web3@npm:^4.0.7":
+"@portis/web3@npm:^4.0.5":
   version: 4.1.0
   resolution: "@portis/web3@npm:4.1.0"
   dependencies:
@@ -4556,7 +4556,6 @@ __metadata:
     "@graphql-codegen/typescript-operations": 2.4.1
     "@graphql-typed-document-node/core": ^3.1.1
     "@mui/material": ^5.4.0
-    "@portis/web3": ^4.0.7
     "@reduxjs/toolkit": ^1.7.2
     "@testing-library/jest-dom": ^5.16.2
     "@testing-library/react": ^12.1.2
