@@ -7,15 +7,13 @@ import {
 } from '../../../config/chains';
 import { IEvent } from '../../../gql/graphql';
 import { parseToWei } from '../../../utils/helpers';
-import {
-  accountSelector,
-  massetContractSelector,
-} from '../../app/app.selectors';
+import { accountSelector } from '../../app/app.selectors';
 import { SagaContractEffect, SagaContractCallStep } from '../../types';
 import { contractStepCallsSaga } from '../../utils/utils.sagas';
 import {
   bridgeContractSelector,
   massetAddressSelector,
+  massetContractSelector,
   startingTokenAddressSelector,
   startingTokenContractSelector,
   startingTokenDecimalsSelector,

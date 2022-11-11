@@ -41,6 +41,6 @@ export const contractsAddresses: ContractsAddresses = {
     governorOwner: '0x82dF1C8d73235128A5176Af4Bdac7dDb7e049e5E',
     feeSharingProxy: '0xBF56E401e3CbE1ddF3d8fEee770d9A3a19076751',
     vestingRegistry: '0x64e0C4bBe361B3efbbcE35870FaFc9DC1A049AC6',
-    XUSDMassetProxy: '0xca8b437d9d586b938CE000e765476A0594856b51',
+    XUSDMassetProxy: '0x1572D7E4a78A8AD14AE722E6fE5f5600a2c7A149',
   },
 };
