@@ -4677,7 +4677,7 @@ __metadata:
     prettier: 2.5.1
     react: 17.0.2
     react-dom: 17.0.2
-    react-hook-form: 7.39.4
+    react-hook-form: 7.27.0
     react-redux: 7.2.6
     react-router-dom: 6.2.1
     redux-mock-store: 1.5.4
@@ -10003,12 +10003,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:7.39.4":
-  version: 7.39.4
-  resolution: "react-hook-form@npm:7.39.4"
+"react-hook-form@npm:7.27.0":
+  version: 7.27.0
+  resolution: "react-hook-form@npm:7.27.0"
   peerDependencies:
-    react: ^16.8.0 || ^17 || ^18
-  checksum: 767337330a9ce305296adb435e05380fb138308931a0ca20f7a681604acf16a978f14f48d52279fb2eccc690f808622fa4db019835fd0e4fd6a768d2c13b83d0
+    react: ^16.8.0 || ^17
+  checksum: 643c643e6d52b2427e73853abe0255e39f4c323c87862b1651e7153adaf1f3db27b843dda9ea32306db102d1e9e1e00e49c2ded13705ede0706235b53ef69e24
   languageName: node
   linkType: hard
 
