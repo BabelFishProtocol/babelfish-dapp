@@ -88,11 +88,9 @@ export const useAggregatorDropdowns = (
       if (startingChain && destinationChain) {
         // Reset destination chain when NOT RSK -> NOT RSK
         setValue(AggregatorInputs.DestinationChain, '');
-        return;
       }
     }
 
-    setStartingTokenOptions([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startingChain, pool.baseChains, pool.masset, resetField, setValue]);
 
@@ -156,7 +154,6 @@ export const useAggregatorDropdowns = (
 
   const toggleFlow = async () => {
     const tempChain = startingChain;
-    const tempToken = startingToken;
 
     if (destinationChain && destinationChain !== startingChain) {
       await switchConnectedChain(destinationChain, provider);
@@ -164,8 +161,8 @@ export const useAggregatorDropdowns = (
 
     setValue(AggregatorInputs.DestinationChain, tempChain);
     setValue(AggregatorInputs.StartingChain, destinationChain);
-    setValue(AggregatorInputs.DestinationToken, tempToken);
-    setValue(AggregatorInputs.StartingToken, destinationToken);
+    setValue(AggregatorInputs.DestinationToken, '');
+    setValue(AggregatorInputs.StartingToken, '');
   };
 
   return {

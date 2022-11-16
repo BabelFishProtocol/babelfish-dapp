@@ -18,7 +18,7 @@ if ('ethereum' in window) {
 }
 
 const getLibrary = (provider: ExternalProvider) => {
-  const library = new Web3Provider(provider);
+  const library = new Web3Provider(provider, 'any');
   library.pollingInterval = 15000;
 
   return library;
