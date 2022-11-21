@@ -38,7 +38,7 @@ export const contractsAddresses: ContractsAddresses = {
     fishToken: '0x5250D37B096099678b0957bae32153915ca2C043',
     swapNetwork: '0x61172B53423E205a399640e5283e51FE60EC2256',
     governorAdmin: '0x82dF1C8d73235128A5176Af4Bdac7dDb7e049e5E',
-    governorOwner: '0x82dF1C8d73235128A5176Af4Bdac7dDb7e049e5E',
+    governorOwner: '0x1547510c48eb322a2199dcf2EA837e4E2870Ebd6',
     feeSharingProxy: '0xBF56E401e3CbE1ddF3d8fEee770d9A3a19076751',
     vestingRegistry: '0x64e0C4bBe361B3efbbcE35870FaFc9DC1A049AC6',
     XUSDMassetProxy: '0x1572D7E4a78A8AD14AE722E6fE5f5600a2c7A149',
