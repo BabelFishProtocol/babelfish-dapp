@@ -37,7 +37,7 @@ export const contractsAddresses: ContractsAddresses = {
     multicall: '0x9e469e1fc7fb4c5d17897b68eaf1afc9df39f103',
     fishToken: '0xc759D23222791108872De8eb033D132f08692BfE',
     swapNetwork: '0x61172B53423E205a399640e5283e51FE60EC2256',
-    governorAdmin: '0x94e907f6b903a393e14fe549113137ca6483b5ef',
+    governorAdmin: '0x748564bEE62fC471226f6b6213A48BcF3A93945C',
     governorOwner: '0x1547510c48eb322a2199dcf2EA837e4E2870Ebd6',
     feeSharingProxy: '0xBF56E401e3CbE1ddF3d8fEee770d9A3a19076751',
     vestingRegistry: '0xEB0AAD069b452563628CE539df0Da531E2313148',
