@@ -82,14 +82,14 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
   if (isRSK) {
     submitEffect = call(
       massetContract.redeemTo,
-      destinationTokenAddress,
+      destinationTokenAddress.toLowerCase(),
       amount,
       receiveAddress.toLowerCase()
     );
   } else {
     submitEffect = call(
       massetContract['redeemToBridge(address,uint256,address)'],
-      bassetAddress as string,
+      (bassetAddress as string).toLowerCase(),
       amount,
       receiveAddress.toLowerCase()
     );

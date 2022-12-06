@@ -26,7 +26,7 @@ import { AggregatorCalls } from '../aggregator.state';
 export function* depositTokens({ payload }: AggregatorActions['submit']) {
   const bridge = yield* select(bridgeContractSelector);
   const tokenAddress = yield* select(startingTokenAddressSelector);
-  const tokenDecimals = yield* select(startingTokenDecimalsSelector);
+  const tokenDecimals = (yield* select(startingTokenDecimalsSelector)) ?? 18;
   const tokenContract = yield* select(startingTokenContractSelector);
   const massetAddress = yield* select(massetAddressSelector);
   const massetContract = yield* select(massetContractSelector);
