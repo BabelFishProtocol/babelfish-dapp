@@ -9,10 +9,7 @@ import { TransactionReceipt } from '@ethersproject/providers';
 
 import { parseUnits } from 'ethers/lib/utils';
 
-import {
-  accountSelector,
-  massetContractSelector,
-} from '../../app/app.selectors';
+import { accountSelector } from '../../app/app.selectors';
 import { aggregatorActions, aggregatorReducer } from '../aggregator.slice';
 
 import { AggregatorState } from '../aggregator.state';
@@ -34,6 +31,7 @@ import {
 import {
   bridgeContractSelector,
   massetAddressSelector,
+  massetContractSelector,
   startingTokenAddressSelector,
   startingTokenContractSelector,
   startingTokenDecimalsSelector,

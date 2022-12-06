@@ -19,6 +19,11 @@ import {
 } from '../../store/app/app.selectors';
 import { switchConnectedChain } from '../../utils/switchConnectedChain';
 import { AggregatorInputs, AggregatorFormValues } from './Aggregator.fields';
+import { FocusActiveFieldParameters } from './Aggregator.types';
+import {
+  focusCurrentFieldIfEmpty,
+  removeFocusFromCurrentField,
+} from './Aggregator.utils';
 
 export const useAggregatorDropdowns = (
   startingChain: ChainEnum | '',
@@ -83,11 +88,9 @@ export const useAggregatorDropdowns = (
       if (startingChain && destinationChain) {
         // Reset destination chain when NOT RSK -> NOT RSK
         setValue(AggregatorInputs.DestinationChain, '');
-        return;
       }
     }
 
-    setStartingTokenOptions([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startingChain, pool.baseChains, pool.masset, resetField, setValue]);
 
@@ -151,7 +154,6 @@ export const useAggregatorDropdowns = (
 
   const toggleFlow = async () => {
     const tempChain = startingChain;
-    const tempToken = startingToken;
 
     if (destinationChain && destinationChain !== startingChain) {
       await switchConnectedChain(destinationChain, provider);
@@ -159,8 +161,8 @@ export const useAggregatorDropdowns = (
 
     setValue(AggregatorInputs.DestinationChain, tempChain);
     setValue(AggregatorInputs.StartingChain, destinationChain);
-    setValue(AggregatorInputs.DestinationToken, tempToken);
-    setValue(AggregatorInputs.StartingToken, destinationToken);
+    setValue(AggregatorInputs.DestinationToken, '');
+    setValue(AggregatorInputs.StartingToken, '');
   };
 
   return {
@@ -228,4 +230,24 @@ export const useWalletAddress = (
       setValue(AggregatorInputs.ReceiveAddress, walletAddress);
     }
   }, [walletAddress, setValue]);
+};
+
+export const useFocusActiveFields = (
+  parameters: FocusActiveFieldParameters[]
+) => {
+  useEffect(() => {
+    focusCurrentFieldIfEmpty(parameters[0]);
+  }, [parameters]);
+
+  useEffect(() => {
+    removeFocusFromCurrentField(parameters[0]);
+  }, [parameters]);
+
+  useEffect(() => {
+    focusCurrentFieldIfEmpty(parameters[1]);
+  }, [parameters]);
+
+  useEffect(() => {
+    removeFocusFromCurrentField(parameters[1]);
+  }, [parameters]);
 };

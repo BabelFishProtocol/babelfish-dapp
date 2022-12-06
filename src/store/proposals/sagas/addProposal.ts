@@ -122,7 +122,7 @@ export function* checkAddEligibility() {
     );
 
     const isCurrentProposal = proposalsStates.some(
-      (s) => s === ProposalState.Pending || s === ProposalState.Active
+      (s: number) => s === ProposalState.Pending || s === ProposalState.Active
     );
 
     if (isCurrentProposal) {

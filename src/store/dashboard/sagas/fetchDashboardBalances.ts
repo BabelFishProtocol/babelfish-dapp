@@ -81,7 +81,7 @@ export function* fetchDashboardBalances() {
     );
 
     /** Combined amount of liquid, staked and vested fish tokens */
-    const fishTokensTotal = fishBalance
+    const fishTokensTotal = BigNumber.from(fishBalance || 0)
       .add(fishStaked)
       .add(vestBalance)
       .add(teamVestBalance);

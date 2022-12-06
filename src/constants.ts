@@ -1,19 +1,17 @@
 export enum Urls {
-  Proposals = '/proposals',
+  Bitocracy = '/bitocracy',
   Dashboard = '/dashboard',
   Staking = '/stake',
-  Aggregator = '/aggregator',
+  Convert = '/convert',
   Improbability = '/improbability',
-  Claim = '/claim',
 }
 
 export enum UrlNames {
-  Proposals = 'DAO/GOVERN WITH FISH',
-  ProposalDetails = 'VIEW PROPOSAL',
-  Dashboard = 'HOME',
-  Staking = 'STAKE YOUR FISH',
-  Aggregator = 'DEPOSIT/WITHDRAW XUSD',
-  Claim = 'CLAIM',
+  Bitocracy = 'Bitocracy',
+  ProposalDetails = 'View proposal',
+  Dashboard = 'Home',
+  Staking = 'Stake',
+  Convert = 'Convert',
 }
 
 export enum ProposalState {
@@ -39,7 +37,7 @@ export const proposalStateNames = {
 };
 
 export enum Reducers {
-  Aggregator = 'aggregator',
+  Convert = 'convert',
   App = 'app',
   Dashboard = 'dashboard',
   Staking = 'staking',

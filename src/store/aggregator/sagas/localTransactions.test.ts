@@ -28,7 +28,7 @@ afterEach(() => {
 
 describe('aggregator store', () => {
   let initialState: DeepPartial<RootState> = {
-    [Reducers.Aggregator]: { ...new AggregatorState() },
+    [Reducers.Convert]: { ...new AggregatorState() },
   };
 
   describe('adding transactions into local storage', () => {
@@ -44,7 +44,7 @@ describe('aggregator store', () => {
     });
 
     initialState = {
-      [Reducers.Aggregator]: { ...new AggregatorState() },
+      [Reducers.Convert]: { ...new AggregatorState() },
       [Reducers.App]: {
         ...new AppState(),
         chainId: mockChainEnum,

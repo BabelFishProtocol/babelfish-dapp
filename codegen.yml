@@ -1,5 +1,5 @@
 overwrite: true
-schema: 'http://18.224.138.134:8000/subgraphs/name/babelfish/rskTestnet-graph'
+schema: 'https://babelfish-subgraph.test.sovryn.app/subgraphs/name/babelfish/rskTestnet-graph'
 documents:
   - 'src/queries/*.ts'
   - 'src/queries/*.graphql'

@@ -16,6 +16,7 @@ export enum TokenEnum {
   // USDP = 'USDP',
   XUSD = 'XUSD',
   RDOC = 'RDOC',
+  SEPUSD = 'SEPUSD',
   // BDUS = 'BDUS',
   // ZUSD = 'ZUSD',
 }
@@ -30,29 +31,28 @@ export interface TokenTypeBase {
 export const tokenOnChain = {
   [TokenEnum.USDT]: {
     [ChainEnum.BSC]: '0x55d398326f99059ff775485246999027b3197955',
-    [ChainEnum.BSC_TESTNET]: '0x268e3bF855CbcDf8FE31bA3557a554aB2283351F',
     [ChainEnum.ETH]: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
     [ChainEnum.ETH_TESTNET]: '0xff364ffa4962cb172203a5be01d17cf3fef02419',
   },
   [TokenEnum.BUSD]: {
     [ChainEnum.BSC]: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
-    [ChainEnum.BSC_TESTNET]: '0x137BEc8c83740920ebc4f29f51C7B65b75Beec83',
   },
   [TokenEnum.DAI]: {
     [ChainEnum.BSC]: '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3',
-    [ChainEnum.BSC_TESTNET]: '0x83241490517384cB28382Bdd4D1534eE54d9350F',
     [ChainEnum.ETH]: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
     [ChainEnum.ETH_TESTNET]: '0x974cf21396D4D29F8e63Ac07eCfcbaB51a739bc9',
   },
   [TokenEnum.USDC]: {
     [ChainEnum.BSC]: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-    [ChainEnum.BSC_TESTNET]: '0x0b654C687dC8b828139406c070E0A34486e5072b',
     [ChainEnum.ETH]: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
     [ChainEnum.ETH_TESTNET]: '0x4C68058992b8aD1243eE23A5923023C0e15Cf43F',
   },
   [TokenEnum.XUSD]: {
-    [ChainEnum.RSK]: '0xb5999795BE0eBb5BAb23144Aa5fD6a02d080299f',
-    [ChainEnum.RSK_TESTNET]: '0x74858FE37d391f81F89472e1D8BC8Ef9CF67B3b1',
+    [ChainEnum.RSK]: '0xb5999795be0ebb5bab23144aa5fd6a02d080299f',
+    [ChainEnum.RSK_TESTNET]: '0xa9262cc3fb54ea55b1b0af00efca9416b8d59570',
+  },
+  [TokenEnum.SEPUSD]: {
+    [ChainEnum.ETH_TESTNET]: '0x7f357b8D3293CD631907d33a500f2C9Ce7f9B90D',
   },
 } as const;
 
@@ -87,10 +87,7 @@ export const tokens: TokensType = {
     id: TokenEnum.XUSD,
     name: TokenEnum.XUSD,
     icon: xusdIcon,
-    addresses: {
-      [ChainEnum.RSK]: '0xb5999795BE0EbB5bAb23144AA5FD6A02D080299F',
-      [ChainEnum.RSK_TESTNET]: '0x152123ec3D9fe2Cf57aBc09917C1ba51324EA8dE', // not sure which one is right for our setup. Need to test when we have access to test tokens
-    },
+    addresses: tokenOnChain.XUSD,
   },
   [TokenEnum.RDOC]: {
     id: TokenEnum.RDOC,
@@ -100,6 +97,12 @@ export const tokens: TokensType = {
       [ChainEnum.RSK]: '0x2d919f19d4892381d58edebeca66d5642cef1a1f',
       [ChainEnum.RSK_TESTNET]: '0xC3De9f38581F83e281F260D0ddBAac0E102Ff9F8',
     },
+  },
+  [TokenEnum.SEPUSD]: {
+    id: TokenEnum.SEPUSD,
+    name: TokenEnum.SEPUSD,
+    icon: usdtIcon,
+    addresses: tokenOnChain.SEPUSD,
   },
   // [TokenEnum.BDUS]: {
   //   id: TokenEnum.BDUS,

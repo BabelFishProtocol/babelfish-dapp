@@ -10,6 +10,7 @@ import {
   AllowTokens__factory,
   Bridge__factory,
   ERC20__factory,
+  MassetV3__factory,
 } from '../../contracts/types';
 import {
   chainIdSelector,
@@ -18,7 +19,7 @@ import {
 } from '../app/app.selectors';
 import { selectCurrentCallStepData } from '../utils/utils.selectors';
 
-const aggregatorState = (state: RootState) => state[Reducers.Aggregator];
+const aggregatorState = (state: RootState) => state[Reducers.Convert];
 
 export const flowStateSelector = createSelector(aggregatorState, (state) =>
   state.startingToken === TokenEnum.XUSD ? 'withdraw' : 'deposit'
@@ -135,6 +136,22 @@ export const massetAddressSelector = createSelector(
     }
 
     return undefined;
+  }
+);
+
+export const massetContractSelector = createSelector(
+  [massetAddressSelector, providerSelector],
+  (massetAddress, provider) => {
+    if (!massetAddress || !provider) {
+      return undefined;
+    }
+
+    const contract = MassetV3__factory.connect(
+      massetAddress,
+      provider?.getSigner()
+    );
+
+    return contract;
   }
 );
 

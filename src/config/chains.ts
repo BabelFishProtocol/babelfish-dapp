@@ -5,17 +5,13 @@ import rskIcon from '../assets/icons/chains/rsk.svg';
 
 export enum ChainEnum {
   ETH = 1,
-  ETH_TESTNET = 3,
+  ETH_TESTNET = 11155111,
   BSC = 56,
-  BSC_TESTNET = 97,
   RSK = 30,
   RSK_TESTNET = 31,
 }
 
-type TestnetChains =
-  | ChainEnum.BSC_TESTNET
-  | ChainEnum.ETH_TESTNET
-  | ChainEnum.RSK_TESTNET;
+type TestnetChains = ChainEnum.ETH_TESTNET | ChainEnum.RSK_TESTNET;
 
 type MainnetChains = ChainEnum.BSC | ChainEnum.ETH | ChainEnum.RSK;
 
@@ -36,28 +32,15 @@ export type ChainType = {
 
 export const testnetChains: Record<TestnetChains, ChainType> = {
   [ChainEnum.ETH_TESTNET]: {
-    name: 'Ropsten',
+    name: 'Sepolia',
     icon: ethIcon,
     id: ChainEnum.ETH_TESTNET,
     chainId: utils.hexlify(ChainEnum.ETH_TESTNET),
-    rpcUrls: ['https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
-    blockExplorerUrls: ['https://ropsten.etherscan.io'],
+    rpcUrls: ['https://rpc.sepolia.dev'],
+    blockExplorerUrls: ['https://sepolia.etherscan.io/'],
     nativeCurrency: {
       name: 'Ether',
-      symbol: 'ETH',
-      decimals: 18,
-    },
-  },
-  [ChainEnum.BSC_TESTNET]: {
-    name: 'BNB Chain Testnet',
-    icon: bscIcon,
-    id: ChainEnum.BSC_TESTNET,
-    chainId: utils.hexlify(ChainEnum.BSC_TESTNET),
-    rpcUrls: ['https://data-seed-prebsc-2-s3.binance.org:8545'],
-    blockExplorerUrls: ['https://testnet.bscscan.com'],
-    nativeCurrency: {
-      name: 'Binance Coin',
-      symbol: 'BNB',
+      symbol: 'SepoliaETH',
       decimals: 18,
     },
   },

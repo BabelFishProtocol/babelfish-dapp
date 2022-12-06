@@ -26,7 +26,6 @@ import {
   Multicall__factory,
   VestingRegistry__factory,
   GovernorAlpha__factory,
-  MassetV3__factory,
 } from '../../contracts/types';
 import { BaseContractFactory, MulticallProviderType } from '../types';
 import { hasLocalTransactions } from './app.slice';
@@ -205,11 +204,6 @@ export const multicallContractSelector = createContractSelector(
 export const vestingRegistrySelector = createContractSelector(
   VestingRegistry__factory,
   'vestingRegistry'
-);
-
-export const massetContractSelector = createContractSelector(
-  MassetV3__factory,
-  'XUSDMassetProxy'
 );
 
 export const multicallProviderSelector = createSelector(

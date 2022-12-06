@@ -76,34 +76,6 @@ export class BridgeDictionary {
         },
       ]
     ),
-    new Bridge(
-      ChainEnum.BSC_TESTNET,
-      ChainEnum.RSK_TESTNET,
-      '0x862e8aff917319594cc7faaae5350d21196c086f',
-      '0x2b2bcad081fa773dc655361d1bb30577caa556f8',
-      [
-        {
-          ...tokens.DAI,
-          originalAddress: tokenOnChain[TokenEnum.DAI][ChainEnum.BSC_TESTNET],
-          rskSovrynAddress: '0x407ff7d4760D3a81B4740d268eb04490C7dfe7f2',
-        },
-        {
-          ...tokens.USDC,
-          originalAddress: tokenOnChain[TokenEnum.USDC][ChainEnum.BSC_TESTNET],
-          rskSovrynAddress: '0x3E2CF87e7fF4048A57f9cDdE9368c9F4BFB43ADF',
-        },
-        {
-          ...tokens.BUSD,
-          originalAddress: tokenOnChain[TokenEnum.BUSD][ChainEnum.BSC_TESTNET],
-          rskSovrynAddress: '0x8C9abb6C9D8D15ddb7aDA2e50086E1050AB32688',
-        },
-        {
-          ...tokens.USDT,
-          originalAddress: tokenOnChain[TokenEnum.USDT][ChainEnum.BSC_TESTNET],
-          rskSovrynAddress: '0x43bC3F0FFFF6c9BBf3C2EAFE464c314d43f561De',
-        },
-      ]
-    ),
 
     new Bridge(
       ChainEnum.ETH,
@@ -134,25 +106,14 @@ export class BridgeDictionary {
     new Bridge(
       ChainEnum.ETH_TESTNET,
       ChainEnum.RSK_TESTNET,
-      '0x2b456e230225C4670FBF10b9dA506C019a24cAC7',
-      '0xc0e7a7fff4aba5e7286d5d67dd016b719dcc9156',
+      '0xe7d8ed038deb475b3705c67934d0bcfc2d462ba3',
+      '0xfbd57ab1dce7b4fe191ff947ddbb5118e4318207',
       [
         {
-          ...tokens.DAI,
-          originalAddress: tokenOnChain[TokenEnum.DAI][ChainEnum.ETH_TESTNET],
-          rskSovrynAddress: '0xcb92c8d49ec01b92f2a766c7c3c9c501c45271e0',
-        },
-        {
-          ...tokens.USDT,
-          originalDecimals: 6,
-          originalAddress: tokenOnChain[TokenEnum.USDT][ChainEnum.ETH_TESTNET],
-          rskSovrynAddress: '0x10c5a7930fc417e728574e334b1488b7895c4b81',
-        },
-        {
-          ...tokens.USDC,
-          originalDecimals: 6,
-          originalAddress: tokenOnChain[TokenEnum.USDC][ChainEnum.ETH_TESTNET],
-          rskSovrynAddress: '0xcc8eec21ae75f1a2de4ac7b32a7de888a45cf859',
+          ...tokens.SEPUSD,
+          originalAddress:
+            tokenOnChain[TokenEnum.SEPUSD][ChainEnum.ETH_TESTNET],
+          rskSovrynAddress: '0x30199fc1322b89bbe8B575BA4f695632961fC8f3',
         },
       ]
     ),
