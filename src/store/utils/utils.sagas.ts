@@ -156,7 +156,6 @@ export function* contractStepCallsSaga<Operations extends string>({
 
     yield* put(setStatusAction({ status: 'success' }));
   } catch (e) {
-    console.error(e);
     const msg =
       e instanceof Error
         ? e.message

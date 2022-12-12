@@ -24,7 +24,7 @@ import { AggregatorCalls } from '../aggregator.state';
 export function* depositTokens({ payload }: AggregatorActions['submit']) {
   const bridge = yield* select(bridgeContractSelector);
   const tokenAddress = yield* select(startingTokenAddressSelector);
-  const tokenDecimals = (yield* select(startingTokenDecimalsSelector)) ?? 18;
+  const tokenDecimals = yield* select(startingTokenDecimalsSelector);
   const tokenContract = yield* select(startingTokenContractSelector);
   const massetAddress = yield* select(massetAddressSelector);
   const massetContract = yield* select(massetContractSelector);
@@ -91,7 +91,7 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
   if (isRSK) {
     submitEffect = call(
       massetContract.mintTo,
-      tokenAddress,
+      tokenAddress.toLowerCase(),
       amount,
       receiveAddress.toLowerCase()
     );
@@ -102,9 +102,9 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
     );
     submitEffect = call(
       bridge!.receiveTokensAt,
-      tokenAddress,
+      tokenAddress.toLowerCase(),
       amount,
-      massetAddress,
+      massetAddress.toLowerCase(),
       extraData
     );
   }

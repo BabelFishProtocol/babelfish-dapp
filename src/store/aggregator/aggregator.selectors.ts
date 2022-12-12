@@ -5,7 +5,7 @@ import { ChainEnum } from '../../config/chains';
 import { contractsAddresses } from '../../config/contracts';
 import { pools } from '../../config/pools';
 import { TokenEnum, tokens } from '../../config/tokens';
-import { Reducers } from '../../constants';
+import { DEFAULT_ASSET_DECIMALS, Reducers } from '../../constants';
 import {
   AllowTokens__factory,
   Bridge__factory,
@@ -91,7 +91,7 @@ export const startingTokenDecimalsSelector = createSelector(
   [startingTokenSelector, bridgeSelector, flowStateSelector],
   (startingToken, bridge, flowState) => {
     if (!startingToken || !bridge) {
-      return undefined;
+      return DEFAULT_ASSET_DECIMALS;
     }
 
     return bridge.getTokenDecimals(startingToken, flowState);
