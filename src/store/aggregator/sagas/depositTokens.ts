@@ -91,7 +91,7 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
   if (isRSK) {
     submitEffect = call(
       massetContract.mintTo,
-      tokenAddress,
+      tokenAddress.toLowerCase(),
       amount,
       receiveAddress.toLowerCase()
     );
@@ -102,9 +102,9 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
     );
     submitEffect = call(
       bridge!.receiveTokensAt,
-      tokenAddress,
+      tokenAddress.toLowerCase(),
       amount,
-      massetAddress,
+      massetAddress.toLowerCase(),
       extraData
     );
   }

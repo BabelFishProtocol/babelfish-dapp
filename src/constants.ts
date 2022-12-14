@@ -105,3 +105,5 @@ export const calldataRegex = /^(0x)(..)*$/g;
 export enum MetamaskErrorCodes {
   chainNotAdded = 4902,
 }
+
+export const DEFAULT_ASSET_DECIMALS = 18;
