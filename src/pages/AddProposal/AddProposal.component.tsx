@@ -17,10 +17,7 @@ import {
 } from './AddProposal.fields';
 import { AddProposalFields, AddProposalProps } from './AddProposal.types';
 
-const AP_DD_OPTIONS = [
-  GOVERNANCE_OPTIONS.GOVERNOR_ADMIN,
-  GOVERNANCE_OPTIONS.GOVERNOR_OWNER,
-];
+const AP_DD_OPTIONS = [GOVERNANCE_OPTIONS.GOVERNOR_ADMIN];
 
 export const AddProposal = ({
   isOpenDialog,
