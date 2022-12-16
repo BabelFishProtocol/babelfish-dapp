@@ -1,10 +1,11 @@
 import { select, call, put, all, takeLatest } from 'typed-redux-saga';
-import { accountSelector } from '../app/app.selectors';
+import { accountSelector, pauseManagerSelector } from '../app/app.selectors';
 import { appActions } from '../app/app.slice';
 import {
   allowTokensContractSelector,
   bridgeContractSelector,
   flowStateSelector,
+  startingTokenAddressSelector,
   startingTokenContractSelector,
   startingTokenSelector,
   tokenAddressSelector,
@@ -105,6 +106,32 @@ export function* fetchStartingTokenBalance() {
   }
 }
 
+export function* fetchDepositPauseInfo() {
+  try {
+    yield* put(aggregatorActions.setIsStartingTokenPaused(false));
+
+    const token = yield* select(startingTokenAddressSelector);
+    const pauseManager = yield* select(pauseManagerSelector);
+
+    if (!token) {
+      throw new Error('Could not find starting token contract');
+    }
+
+    if (!pauseManager) {
+      throw new Error('Could not find PauseManager contract');
+    }
+
+    const isTokenPaused = yield* call(
+      pauseManager.isPaused,
+      token.toLowerCase()
+    );
+
+    yield* put(aggregatorActions.setIsStartingTokenPaused(isTokenPaused));
+  } catch {
+    yield* put(aggregatorActions.setIsStartingTokenPaused(false));
+  }
+}
+
 export function* resetAggregator() {
   yield* put(aggregatorActions.resetAggregator());
 }
@@ -134,6 +161,8 @@ export function* aggregatorSaga() {
 
     takeLatest(aggregatorActions.setDestinationChain, fetchAllowTokenAddress),
     takeLatest(aggregatorActions.setDestinationToken, fetchAllowTokenAddress),
+    takeLatest(aggregatorActions.setStartingToken, fetchDepositPauseInfo),
+    takeLatest(aggregatorActions.setStartingToken.type, fetchDepositPauseInfo),
     takeLatest(aggregatorActions.setStartingToken, fetchStartingTokenBalance),
 
     takeLatest(aggregatorActions.submit, transferTokens),

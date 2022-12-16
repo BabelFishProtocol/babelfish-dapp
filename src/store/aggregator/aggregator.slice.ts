@@ -78,6 +78,9 @@ const aggregatorSlice = createSlice({
       state.startingTokenBalance.state = 'success';
       state.startingTokenBalance.data = payload;
     },
+    setIsStartingTokenPaused: (state, { payload }: PayloadAction<boolean>) => {
+      state.isStartingTokenPaused = payload;
+    },
     togglePool: (state) => {
       state.pool =
         state.pool === PoolEnum.testnet ? PoolEnum.mainnet : PoolEnum.testnet;
@@ -100,6 +103,7 @@ const aggregatorSlice = createSlice({
       state.startingTokenBalance.state = 'idle';
       state.startingTokenBalance.data = undefined;
       state.txDetails = undefined;
+      state.isStartingTokenPaused = false;
     },
   },
 });

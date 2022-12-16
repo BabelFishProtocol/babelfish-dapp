@@ -26,8 +26,11 @@ import {
 } from './Aggregator.hooks';
 import { AggregatorInfoContainer } from './AggregatorInfo/AggregatorInfo.container';
 import { SendAmount } from './SendAmount/SendAmount.container';
-import { flowStateSelector } from '../../store/aggregator/aggregator.selectors';
-import { UrlNames } from '../../constants';
+import {
+  flowStateSelector,
+  isStartingTokenPausedSelector,
+} from '../../store/aggregator/aggregator.selectors';
+import { fieldsErrors, UrlNames } from '../../constants';
 
 const PageViewTitle: React.FC = ({ children }) => (
   <Box
@@ -47,6 +50,8 @@ export const AggregatorComponent = ({
   onDestinationTokenChange,
 }: AggregatorComponentProps) => {
   const flowState = useSelector(flowStateSelector);
+  const isStartingTokenPaused = useSelector(isStartingTokenPausedSelector);
+
   const {
     handleSubmit,
     watch,
@@ -140,6 +145,12 @@ export const AggregatorComponent = ({
     []
   );
 
+  const validateStartingToken = useCallback(() => {
+    if (isStartingTokenPaused) {
+      return fieldsErrors.depositsDisabled;
+    }
+  }, [isStartingTokenPaused]);
+
   return (
     <>
       <Breadcrumbs links={[{ title: UrlNames.Convert }]} />
@@ -189,6 +200,9 @@ export const AggregatorComponent = ({
                 control={control}
                 options={startingTokenOptions}
                 setValue={setValue}
+                rules={{
+                  validate: validateStartingToken,
+                }}
               />
               <SendAmount
                 name={AggregatorInputs.SendAmount}
