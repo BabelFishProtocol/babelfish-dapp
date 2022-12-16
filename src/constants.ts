@@ -71,10 +71,6 @@ export enum GovernorTypes {
 }
 
 export const GOVERNANCE_OPTIONS = {
-  GOVERNOR_OWNER: {
-    name: 'Governor Owner',
-    id: GovernorTypes.GovernorOwner,
-  },
   GOVERNOR_ADMIN: {
     name: 'Governor Admin',
     id: GovernorTypes.GovernorAdmin,

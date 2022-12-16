@@ -20,7 +20,6 @@ import { ProposalDetailsComponent } from './ProposalDetails.component';
 const isProperGovernor = (
   governorType: string | GovernorTypes | undefined
 ): governorType is GovernorTypes =>
-  governorType === GovernorTypes.GovernorOwner ||
   governorType === GovernorTypes.GovernorAdmin;
 
 export const ProposalDetailsContainer = () => {
