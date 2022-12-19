@@ -5,7 +5,6 @@ import {
   allowTokensContractSelector,
   bridgeContractSelector,
   flowStateSelector,
-  startingTokenAddressSelector,
   startingTokenContractSelector,
   startingTokenSelector,
   tokenAddressSelector,
@@ -106,29 +105,19 @@ export function* fetchStartingTokenBalance() {
   }
 }
 
-export function* fetchDepositPauseInfo() {
+export function* fetchPausedTokens() {
   try {
-    yield* put(aggregatorActions.setIsStartingTokenPaused(false));
-
-    const token = yield* select(startingTokenAddressSelector);
     const pauseManager = yield* select(pauseManagerSelector);
-
-    if (!token) {
-      throw new Error('Could not find starting token contract');
-    }
 
     if (!pauseManager) {
       throw new Error('Could not find PauseManager contract');
     }
 
-    const isTokenPaused = yield* call(
-      pauseManager.isPaused,
-      token.toLowerCase()
-    );
+    const pausedTokens = yield* call(pauseManager.getTokens);
 
-    yield* put(aggregatorActions.setIsStartingTokenPaused(isTokenPaused));
-  } catch {
-    yield* put(aggregatorActions.setIsStartingTokenPaused(false));
+    yield* put(aggregatorActions.setIsStartingTokenPaused(pausedTokens));
+  } catch (e) {
+    // console.error(e);
   }
 }
 
@@ -139,6 +128,7 @@ export function* resetAggregator() {
 export function* aggregatorSaga() {
   yield* all([
     takeLatest(appActions.walletConnected, resetAggregator),
+    takeLatest(appActions.walletConnected, fetchPausedTokens),
     takeLatest(
       aggregatorActions.setSubmitStepData,
       addTransactionIntoLocalStorage
@@ -158,11 +148,8 @@ export function* aggregatorSaga() {
       fetchBridgeFeesAndLimits
     ),
     takeLatest(aggregatorActions.setDestinationToken, fetchBridgeFeesAndLimits),
-
     takeLatest(aggregatorActions.setDestinationChain, fetchAllowTokenAddress),
     takeLatest(aggregatorActions.setDestinationToken, fetchAllowTokenAddress),
-    takeLatest(aggregatorActions.setStartingToken, fetchDepositPauseInfo),
-    takeLatest(aggregatorActions.setStartingToken.type, fetchDepositPauseInfo),
     takeLatest(aggregatorActions.setStartingToken, fetchStartingTokenBalance),
 
     takeLatest(aggregatorActions.submit, transferTokens),

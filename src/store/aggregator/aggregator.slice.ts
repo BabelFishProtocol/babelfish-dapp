@@ -78,8 +78,8 @@ const aggregatorSlice = createSlice({
       state.startingTokenBalance.state = 'success';
       state.startingTokenBalance.data = payload;
     },
-    setIsStartingTokenPaused: (state, { payload }: PayloadAction<boolean>) => {
-      state.isStartingTokenPaused = payload;
+    setIsStartingTokenPaused: (state, { payload }: PayloadAction<string[]>) => {
+      state.pausedTokens = payload;
     },
     togglePool: (state) => {
       state.pool =
@@ -103,7 +103,6 @@ const aggregatorSlice = createSlice({
       state.startingTokenBalance.state = 'idle';
       state.startingTokenBalance.data = undefined;
       state.txDetails = undefined;
-      state.isStartingTokenPaused = false;
     },
   },
 });

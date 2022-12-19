@@ -26,10 +26,7 @@ import {
 } from './Aggregator.hooks';
 import { AggregatorInfoContainer } from './AggregatorInfo/AggregatorInfo.container';
 import { SendAmount } from './SendAmount/SendAmount.container';
-import {
-  flowStateSelector,
-  isStartingTokenPausedSelector,
-} from '../../store/aggregator/aggregator.selectors';
+import { flowStateSelector } from '../../store/aggregator/aggregator.selectors';
 import { fieldsErrors, UrlNames } from '../../constants';
 
 const PageViewTitle: React.FC = ({ children }) => (
@@ -48,15 +45,17 @@ export const AggregatorComponent = ({
   onDestinationChainChange,
   onStartingTokenChange,
   onDestinationTokenChange,
+  isStartingTokenPaused,
 }: AggregatorComponentProps) => {
   const flowState = useSelector(flowStateSelector);
-  const isStartingTokenPaused = useSelector(isStartingTokenPausedSelector);
 
   const {
     handleSubmit,
     watch,
     resetField,
     setValue,
+    setError,
+    clearErrors,
     control,
     formState: { isValid },
   } = useForm<AggregatorFormValues>({
@@ -145,11 +144,16 @@ export const AggregatorComponent = ({
     []
   );
 
-  const validateStartingToken = useCallback(() => {
-    if (isStartingTokenPaused) {
-      return fieldsErrors.depositsDisabled;
+  useEffect(() => {
+    if (!isStartingTokenPaused) {
+      clearErrors(AggregatorInputs.StartingToken);
+    } else {
+      setError(AggregatorInputs.StartingToken, {
+        type: 'validate',
+        message: fieldsErrors.depositsDisabled,
+      });
     }
-  }, [isStartingTokenPaused]);
+  }, [clearErrors, isStartingTokenPaused, setError]);
 
   return (
     <>
@@ -200,9 +204,6 @@ export const AggregatorComponent = ({
                 control={control}
                 options={startingTokenOptions}
                 setValue={setValue}
-                rules={{
-                  validate: validateStartingToken,
-                }}
               />
               <SendAmount
                 name={AggregatorInputs.SendAmount}
@@ -301,7 +302,11 @@ export const AggregatorComponent = ({
               <Button
                 type="submit"
                 fullWidth
-                disabled={!isValid || !isAddressDisclaimerChecked}
+                disabled={
+                  !isValid ||
+                  !isAddressDisclaimerChecked ||
+                  isStartingTokenPaused
+                }
               >
                 Convert
               </Button>
