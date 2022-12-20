@@ -45,6 +45,11 @@ export const startingTokenSelector = createSelector(
   (state) => state.startingToken
 );
 
+export const pausedTokensSelector = createSelector(
+  aggregatorState,
+  (state) => state.pausedTokens
+);
+
 export const destinationChainSelector = createSelector(
   aggregatorState,
   (state) => state.destinationChain

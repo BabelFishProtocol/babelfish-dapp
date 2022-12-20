@@ -53,6 +53,7 @@ export class AggregatorState {
     state: 'idle',
     data: undefined,
   };
+  pausedTokens: string[] = [];
   txDetails?: TxDetails;
   fetchStartingTokenBalanceErrorReason?: string;
   allowTokensAddress: LoadableAmount = {

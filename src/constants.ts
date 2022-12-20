@@ -87,6 +87,7 @@ export const fieldsErrors = {
     'Value cannot be greater than the transaction max limit',
   amountLessThanMinLimit: 'Value cannot be less than the transaction min limit',
   amountEqualZero: 'Value cannot be equal zero',
+  depositsDisabled: 'Deposits for this asset are currently disabled',
 };
 
 export const selectorsErrors = {

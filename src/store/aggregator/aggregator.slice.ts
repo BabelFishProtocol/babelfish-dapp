@@ -78,6 +78,9 @@ const aggregatorSlice = createSlice({
       state.startingTokenBalance.state = 'success';
       state.startingTokenBalance.data = payload;
     },
+    setIsStartingTokenPaused: (state, { payload }: PayloadAction<string[]>) => {
+      state.pausedTokens = payload;
+    },
     togglePool: (state) => {
       state.pool =
         state.pool === PoolEnum.testnet ? PoolEnum.mainnet : PoolEnum.testnet;

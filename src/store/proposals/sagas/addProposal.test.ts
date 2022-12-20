@@ -44,7 +44,10 @@ jest.mock('../../utils/utils.sagas', () => ({
 }));
 
 const mockGovernorContract = createMockedContract(
-  GovernorAlpha__factory.connect('0x123', mockSigner),
+  GovernorAlpha__factory.connect(
+    '0x0000000000000000000000000000000000000123',
+    mockSigner
+  ),
   true
 );
 
@@ -70,9 +73,9 @@ describe('add proposal sagas', () => {
     Description: 'test description of proposal',
     Values: [
       {
-        Target: '0x03f4',
+        Target: '0x00000000000000000000000000000000000003f4',
         Value: '1000000000',
-        Signature: 'Signature',
+        Signature: '0x00000011',
         Calldata: '0x616263640000',
       },
     ],

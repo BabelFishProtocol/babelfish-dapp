@@ -26,6 +26,7 @@ import {
   Multicall__factory,
   VestingRegistry__factory,
   GovernorAlpha__factory,
+  PauseManager__factory,
 } from '../../contracts/types';
 import { BaseContractFactory, MulticallProviderType } from '../types';
 import { hasLocalTransactions } from './app.slice';
@@ -204,6 +205,10 @@ export const multicallContractSelector = createContractSelector(
 export const vestingRegistrySelector = createContractSelector(
   VestingRegistry__factory,
   'vestingRegistry'
+);
+export const pauseManagerSelector = createContractSelector(
+  PauseManager__factory,
+  'pauseManager'
 );
 
 export const multicallProviderSelector = createSelector(

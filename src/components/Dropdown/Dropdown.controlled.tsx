@@ -6,6 +6,7 @@ import {
   PathValue,
   UnpackNestedValue,
 } from 'react-hook-form';
+import { FieldErrorMessage } from '../FieldErrorMessage/FieldErrorMessage.component';
 
 import { DropdownOptions } from './Dropdown.component';
 import { DropdownOptionType, ControlledDropdownProps } from './Dropdown.types';
@@ -51,6 +52,7 @@ export const ControlledDropdown = <
             setValueWhenOneOption={setValueWhenOneOption}
             dropdownRef={dropdownRef}
           />
+          <FieldErrorMessage error={fieldState.error} />
         </Box>
       )}
       name={name}

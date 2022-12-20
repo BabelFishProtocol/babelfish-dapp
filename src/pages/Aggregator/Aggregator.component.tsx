@@ -27,7 +27,7 @@ import {
 import { AggregatorInfoContainer } from './AggregatorInfo/AggregatorInfo.container';
 import { SendAmount } from './SendAmount/SendAmount.container';
 import { flowStateSelector } from '../../store/aggregator/aggregator.selectors';
-import { UrlNames } from '../../constants';
+import { fieldsErrors, UrlNames } from '../../constants';
 
 const PageViewTitle: React.FC = ({ children }) => (
   <Box
@@ -45,13 +45,17 @@ export const AggregatorComponent = ({
   onDestinationChainChange,
   onStartingTokenChange,
   onDestinationTokenChange,
+  isStartingTokenPaused,
 }: AggregatorComponentProps) => {
   const flowState = useSelector(flowStateSelector);
+
   const {
     handleSubmit,
     watch,
     resetField,
     setValue,
+    setError,
+    clearErrors,
     control,
     formState: { isValid },
   } = useForm<AggregatorFormValues>({
@@ -139,6 +143,17 @@ export const AggregatorComponent = ({
     () => setIsAddressDisclaimerChecked((previousValue) => !previousValue),
     []
   );
+
+  useEffect(() => {
+    if (!isStartingTokenPaused) {
+      clearErrors(AggregatorInputs.StartingToken);
+    } else {
+      setError(AggregatorInputs.StartingToken, {
+        type: 'validate',
+        message: fieldsErrors.depositsDisabled,
+      });
+    }
+  }, [clearErrors, isStartingTokenPaused, setError]);
 
   return (
     <>
@@ -287,7 +302,11 @@ export const AggregatorComponent = ({
               <Button
                 type="submit"
                 fullWidth
-                disabled={!isValid || !isAddressDisclaimerChecked}
+                disabled={
+                  !isValid ||
+                  !isAddressDisclaimerChecked ||
+                  isStartingTokenPaused
+                }
               >
                 Convert
               </Button>

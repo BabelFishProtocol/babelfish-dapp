@@ -5,7 +5,6 @@ import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
 import { DropdownOptionType, DropdownProps } from './Dropdown.types';
 import { NameWithIcon } from '../NameWithIcon/NameWithIcon.component';
-import { FieldErrorMessage } from '../FieldErrorMessage/FieldErrorMessage.component';
 
 export const DropdownOptions = <
   ItemSelected extends DropdownOptionType,
@@ -70,7 +69,6 @@ export const DropdownOptions = <
             </>
           </MenuItem>
         ))}
-        <FieldErrorMessage error={error} />
       </Select>
     </FormControl>
   );
