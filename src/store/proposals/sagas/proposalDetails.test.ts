@@ -22,7 +22,10 @@ import { ProposalDetails, ProposalsState } from '../proposals.state';
 import { fetchProposalDetails } from './proposalDetails';
 
 const mockGovernorContract = createMockedContract(
-  GovernorAlpha__factory.connect('0x123', mockSigner),
+  GovernorAlpha__factory.connect(
+    '0x0000000000000000000000000000000000000123',
+    mockSigner
+  ),
   true
 );
 
@@ -34,8 +37,8 @@ describe('proposals details sagas', () => {
   const reducer = combineReducers(pick(rootReducer, [Reducers.Proposals]));
 
   describe('fetchProposalDetails', () => {
-    const mockGovernorAddress = '0x0';
-    const mockProposalGuardian = '0x12';
+    const mockGovernorAddress = '0x0000000000000000000000000000000000000000';
+    const mockProposalGuardian = '0x0000000000000000000000000000000000000012';
     const mockProposalType = GovernorTypes.GovernorAdmin;
 
     const mockGovernorContracts = {

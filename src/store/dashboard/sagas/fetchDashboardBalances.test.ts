@@ -38,19 +38,19 @@ jest.mock('../../utils/utils.sagas', () => ({
   convertForMulticall: jest.fn(),
 }));
 
-const stakingAddress = '0x123';
+const stakingAddress = '0x0000000000000000000000000000000000000123';
 const mockStaking = createMockedContract(
   Staking__factory.connect(stakingAddress, mockSigner),
   true
 );
 
-const fishTokenAddress = '0x1234';
+const fishTokenAddress = '0x0000000000000000000000000000000000001234';
 const mockFishToken = createMockedContract(
   ERC20__factory.connect(fishTokenAddress, mockSigner),
   true
 );
 
-const xusdTokenAddress = '0x1234';
+const xusdTokenAddress = '0x0000000000000000000000000000000000001234';
 const mockXUSDToken = createMockedContract(
   ERC20__factory.connect(xusdTokenAddress, mockSigner),
   true
@@ -79,7 +79,7 @@ describe('dashboard store', () => {
     const fishBalanceCall = mockConvertForMulticall(mockFishToken, 'balanceOf');
     const xusdBalanceCall = mockConvertForMulticall(mockFishToken, 'balanceOf');
 
-    const userAccount = '0x01';
+    const userAccount = '0x0000000000000000000000000000000000000001';
 
     const fishBalance = '100000000';
     const fishStaked = '100000000';

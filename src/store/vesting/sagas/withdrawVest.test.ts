@@ -11,7 +11,9 @@ import { selectedVestContractSelector } from '../vesting.selectors';
 
 import { withdrawVest } from './withdrawVest';
 
-const mockVesting = createMockVestingContract('0x0');
+const mockVesting = createMockVestingContract(
+  '0x0000000000000000000000000000000000000000'
+);
 const initialState = { ...new VestingState() };
 
 afterEach(() => {
