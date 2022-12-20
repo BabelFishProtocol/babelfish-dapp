@@ -43,14 +43,14 @@ jest.mock('../../utils/utils.sagas', () => ({
   convertForMulticall: jest.fn(),
 }));
 
-const governorAdminAddress = '0x123';
+const governorAdminAddress = '0x0000000000000000000000000000000000000123';
 
 const mockGovernorAdmin = createMockedContract(
   GovernorAlpha__factory.connect(governorAdminAddress, mockSigner),
   true
 );
 
-const governorOwnerAddress = '0x222';
+const governorOwnerAddress = '0x0000000000000000000000000000000000000222';
 
 const mockGovernorOwner = createMockedContract(
   GovernorAlpha__factory.connect(governorOwnerAddress, mockSigner),
