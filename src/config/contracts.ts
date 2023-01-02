@@ -12,6 +12,7 @@ export type ContractsForNetwork = {
   multicall: string;
   XUSDMassetProxy: string;
   pauseManager: string;
+  rewardManager: string;
 };
 
 export type ContractsAddresses = Record<
@@ -32,6 +33,7 @@ export const contractsAddresses: ContractsAddresses = {
     vestingRegistry: '0x036ab2DB0a3d1574469a4a7E09887Ed76fB56C41',
     XUSDMassetProxy: '0x1440d19436bEeaF8517896bffB957a88EC95a00F',
     pauseManager: '0x3e96B99993B39a01e620Be71eFB5bF8AC6F7fb0E',
+    rewardManager: '',
   },
   [ChainEnum.RSK_TESTNET]: {
     staking: '0x34a01F53432e2105B7361Aee031F3De629eb7211',
@@ -45,5 +47,6 @@ export const contractsAddresses: ContractsAddresses = {
     vestingRegistry: '0xEB0AAD069b452563628CE539df0Da531E2313148',
     XUSDMassetProxy: '0x1572D7E4a78A8AD14AE722E6fE5f5600a2c7A149',
     pauseManager: '0x08830e91423f393F082C03Ede0a94d828Af6629d',
+    rewardManager: '0x734a6bc77A0Ef739a5ff545c5123185CD9Ec555E'
   },
 };

@@ -69,6 +69,21 @@ export const startingTokenBalanceStateSelector = createSelector(
   (state) => state.startingTokenBalance.state
 );
 
+export const sendAmountSelector = createSelector(
+  aggregatorState,
+  (state) => state.sendAmount
+);
+
+export const depositRewardSelector = createSelector(
+  aggregatorState,
+  (state) => state.depositReward
+);
+
+export const withdrawalPenaltySelector = createSelector(
+  aggregatorState,
+  (state) => state.withdrawalPenalty
+);
+
 export const bridgeSelector = createSelector(
   [chainIdSelector, destinationChainSelector, flowStateSelector],
   (startingChain, destinationChain, flowState) => {

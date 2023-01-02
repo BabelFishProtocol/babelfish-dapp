@@ -43,6 +43,35 @@ export const AggregatorInfoComponent = ({
       }}
     >
       <InfoRow
+        label="Withdrawal penalty"
+          value={`${formatUnitAmount(
+            feesAndLimits.minTransfer || 0,
+            tokenDecimals || 18,
+            2
+          )} ${tokenName || ''}`}
+          state={state}
+        />
+      <InfoRow
+        label="Deposit reward"
+          value={`${formatUnitAmount(
+            feesAndLimits.minTransfer || 0,
+            tokenDecimals || 18,
+            2
+          )} ${tokenName || ''}`}
+          state={state}
+        />
+    </Box>
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+        gap: '10px 8px',
+        mt: 8,
+        whiteSpace: 'nowrap',
+        color: ({ palette }) => palette.grey[600],
+      }}
+    >
+      <InfoRow
         label="Min Transfer"
         value={`${formatUnitAmount(
           feesAndLimits.minTransfer || 0,

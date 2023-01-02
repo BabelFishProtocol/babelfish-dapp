@@ -45,6 +45,10 @@ export const AggregatorContainer = () => {
     dispatch(aggregatorActions.setDestinationToken(token));
   };
 
+  const onSendAmountChange = (amount: string) => {
+    dispatch(aggregatorActions.setSendAmount(amount));
+  };
+
   useEffect(() => {
     dispatch(appActions.setSupportedNetworks(SUPPORTED_CHAINS));
     return () => {
@@ -68,6 +72,7 @@ export const AggregatorContainer = () => {
         onStartingTokenChange={onStartingTokenChange}
         onDestinationTokenChange={onDestinationTokenChange}
         isStartingTokenPaused={isStartingTokenPaused}
+        onSendAmountChange={onSendAmountChange}
       />
       {submitStatus.status !== 'idle' && (
         <SubmitStepsDialog

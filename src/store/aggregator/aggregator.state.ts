@@ -60,6 +60,9 @@ export class AggregatorState {
     state: 'idle',
     data: undefined,
   };
+  sendAmount: string = '';
+  depositReward: string = '';
+  withdrawalPenalty: string = '';
   submitCall: CallState<AggregatorCalls> = {
     status: 'idle',
     steps: [

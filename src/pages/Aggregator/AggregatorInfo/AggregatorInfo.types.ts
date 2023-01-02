@@ -11,4 +11,6 @@ export type AggregatorInfoComponentProps = {
   feesAndLimits: FeesAndLimitsType;
   tokenName?: string;
   tokenDecimals?: number;
+  depositReward?: string;
+  withdrawalPenalty?: string;
 };

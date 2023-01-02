@@ -33,6 +33,12 @@ const aggregatorSlice = createSlice({
     ) => {
       state.destinationChain = payload;
     },
+    setSendAmount: (
+      state,
+      { payload }: PayloadAction<AggregatorState['sendAmount']>
+    ) => {
+      state.sendAmount = payload;
+    },
     setDestinationToken: (
       state,
       { payload }: PayloadAction<AggregatorState['destinationToken']>
@@ -81,6 +87,12 @@ const aggregatorSlice = createSlice({
     setIsStartingTokenPaused: (state, { payload }: PayloadAction<string[]>) => {
       state.pausedTokens = payload;
     },
+    setDepositReward: (state, { payload }: PayloadAction<string>) => {
+      state.depositReward = payload;
+    },
+    setWithdrawalPenalty: (state, { payload }: PayloadAction<string>) => {
+      state.withdrawalPenalty = payload;
+    },
     togglePool: (state) => {
       state.pool =
         state.pool === PoolEnum.testnet ? PoolEnum.mainnet : PoolEnum.testnet;
@@ -103,6 +115,8 @@ const aggregatorSlice = createSlice({
       state.startingTokenBalance.state = 'idle';
       state.startingTokenBalance.data = undefined;
       state.txDetails = undefined;
+      state.depositReward = '';
+      state.withdrawalPenalty = '';
     },
   },
 });

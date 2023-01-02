@@ -1,11 +1,15 @@
 import { select, call, put, all, takeLatest } from 'typed-redux-saga';
-import { accountSelector, pauseManagerSelector } from '../app/app.selectors';
+import { accountSelector, pauseManagerSelector, rewardManagerSelector } from '../app/app.selectors';
 import { appActions } from '../app/app.slice';
 import {
   allowTokensContractSelector,
   bridgeContractSelector,
+  destinationTokenAddressSelector,
   flowStateSelector,
+  sendAmountSelector,
+  startingTokenAddressSelector,
   startingTokenContractSelector,
+  startingTokenDecimalsSelector,
   startingTokenSelector,
   tokenAddressSelector,
 } from './aggregator.selectors';
@@ -16,6 +20,8 @@ import {
   setFailedOnDepositCrossChainTx,
 } from './sagas/localTransactions';
 import { withdrawTokens } from './sagas/withdrawTokens';
+import { utils } from 'ethers';
+import { DEFAULT_ASSET_DECIMALS } from '../../constants';
 
 export function* transferTokens(action: AggregatorActions['submit']) {
   const flowState = yield* select(flowStateSelector);
@@ -121,6 +127,43 @@ export function* fetchPausedTokens() {
   }
 }
 
+export function* fetchIncentive() {
+  try {
+    const rewardManager = yield* select(rewardManagerSelector);
+    const sendAmount = yield* select(sendAmountSelector);
+    const flowState = yield* select(flowStateSelector);
+
+    if (!rewardManager) {
+      throw new Error('Could not find RewardManager contract');
+    }
+
+    if(flowState == 'deposit') {
+      const startingTokenAddress = (yield* select(startingTokenAddressSelector)) ?? '';
+      const tokenDecimals = yield* select(startingTokenDecimalsSelector);
+      const amount = utils.parseUnits(sendAmount, tokenDecimals);
+        const reward = yield* call(rewardManager.getRewardForDeposit,
+        startingTokenAddress.toLowerCase(), amount);
+      console.log('reward: ', reward);
+      yield* put(aggregatorActions.setDepositReward(reward.toString()));
+    } else if (flowState == 'withdraw') {
+      const destinationTokenAddress = (yield* select(destinationTokenAddressSelector)) ?? '';
+      const tokenDecimals = DEFAULT_ASSET_DECIMALS;
+      const amount = utils.parseUnits(sendAmount, tokenDecimals);
+      if(destinationTokenAddress) {
+        const penalty = yield* call(rewardManager.getPenaltyForWithdrawal,
+          destinationTokenAddress.toLowerCase(), amount);
+        yield* put(aggregatorActions.setWithdrawalPenalty(penalty.toString()));
+        console.log('penalty: ', penalty);
+      } else {
+        yield* put(aggregatorActions.setWithdrawalPenalty('0'));
+      }
+    }
+
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 export function* resetAggregator() {
   yield* put(aggregatorActions.resetAggregator());
 }
@@ -151,6 +194,9 @@ export function* aggregatorSaga() {
     takeLatest(aggregatorActions.setDestinationChain, fetchAllowTokenAddress),
     takeLatest(aggregatorActions.setDestinationToken, fetchAllowTokenAddress),
     takeLatest(aggregatorActions.setStartingToken, fetchStartingTokenBalance),
+
+    takeLatest(aggregatorActions.setSendAmount, fetchIncentive),
+    takeLatest(aggregatorActions.setDestinationToken, fetchIncentive),
 
     takeLatest(aggregatorActions.submit, transferTokens),
   ]);

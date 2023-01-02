@@ -46,6 +46,7 @@ export const AggregatorComponent = ({
   onStartingTokenChange,
   onDestinationTokenChange,
   isStartingTokenPaused,
+  onSendAmountChange,
 }: AggregatorComponentProps) => {
   const flowState = useSelector(flowStateSelector);
 
@@ -124,7 +125,9 @@ export const AggregatorComponent = ({
 
   useEffect(() => {
     if (amount) {
-      setValue(AggregatorInputs.ReceiveAmount, amount); // TODO: This will change in the future once we have an incentive curve algorithm
+      onSendAmountChange(amount);
+      setValue(AggregatorInputs.ReceiveAmount, amount);
+      //setValue(AggregatorInputs.ReceiveAmount, amount); // TODO: This will change in the future once we have an incentive curve algorithm
     }
   }, [amount, setValue]);
 
