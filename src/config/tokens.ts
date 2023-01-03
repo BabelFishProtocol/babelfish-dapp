@@ -4,6 +4,8 @@ import usdcIcon from '../assets/icons/tokens/usdc.svg';
 import busdIcon from '../assets/icons/tokens/busd.svg';
 import xusdIcon from '../assets/icons/tokens/xusd.svg';
 import rdocIcon from '../assets/icons/tokens/rdoc.svg';
+import docIcon from '../assets/icons/tokens/doc.svg';
+import zusdIcon from '../assets/icons/tokens/zusd.svg';
 import { ChainEnum } from './chains';
 
 export enum TokenEnum {
@@ -118,19 +120,19 @@ export const tokens: TokensType = {
   [TokenEnum.DOC]: {
     id: TokenEnum.DOC,
     name: TokenEnum.DOC,
-    icon: rdocIcon, // TODO: Change to the correct icon
+    icon: docIcon,
     addresses: tokenOnChain.DOC,
   },
   [TokenEnum.RUSDT]: {
     id: TokenEnum.RUSDT,
     name: TokenEnum.RUSDT,
-    icon: rdocIcon, // TODO: Change to the correct icon
+    icon: usdtIcon,
     addresses: tokenOnChain.RUSDT,
   },
   [TokenEnum.ZUSD]: {
     id: TokenEnum.ZUSD,
     name: TokenEnum.ZUSD,
-    icon: rdocIcon, // TODO: Change to the correct icon
+    icon: zusdIcon,
     addresses: tokenOnChain.ZUSD,
   },
 } as const;
