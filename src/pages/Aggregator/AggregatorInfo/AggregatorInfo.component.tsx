@@ -7,10 +7,12 @@ import { InfoRow } from './InfoRow.component';
 
 export const AggregatorInfoComponent = ({
   onClick,
-  state,
+  feesAndLimitsState,
   feesAndLimits,
   tokenName,
   tokenDecimals,
+  incentivesState,
+  incentives
 }: AggregatorInfoComponentProps) => (
   <Box
     sx={{
@@ -43,22 +45,9 @@ export const AggregatorInfoComponent = ({
       }}
     >
       <InfoRow
-        label="Withdrawal penalty"
-          value={`${formatUnitAmount(
-            feesAndLimits.minTransfer || 0,
-            tokenDecimals || 18,
-            2
-          )} ${tokenName || ''}`}
-          state={state}
-        />
-      <InfoRow
-        label="Deposit reward"
-          value={`${formatUnitAmount(
-            feesAndLimits.minTransfer || 0,
-            tokenDecimals || 18,
-            2
-          )} ${tokenName || ''}`}
-          state={state}
+          label="Incentive"
+          value={incentives?.amount ? `${incentives?.amount} XUSD` : 'n/a'}
+          state={incentivesState || 'idle'}
         />
     </Box>
     <Box
@@ -78,14 +67,14 @@ export const AggregatorInfoComponent = ({
           tokenDecimals || 18,
           2
         )} ${tokenName || ''}`}
-        state={state}
+        state={feesAndLimitsState}
       />
       <InfoRow
         label="Max Transfer"
         value={`${formatUnitAmount(feesAndLimits.maxTransfer || 0, 18, 2)} ${
           tokenName || ''
         }`}
-        state={state}
+        state={feesAndLimitsState}
       />
       <InfoRow
         label="Bridge Fee"
@@ -94,14 +83,14 @@ export const AggregatorInfoComponent = ({
           tokenDecimals || 18,
           2
         )} ${tokenName || ''}`}
-        state={state}
+        state={feesAndLimitsState}
       />
       <InfoRow
         label="Day Limit"
         value={`${formatUnitAmount(feesAndLimits.dailyLimit || 0, 18, 2)} ${
           tokenName || ''
         }`}
-        state={state}
+        state={feesAndLimitsState}
       />
     </Box>
   </Box>

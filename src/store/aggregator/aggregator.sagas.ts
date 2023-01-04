@@ -20,7 +20,7 @@ import {
   setFailedOnDepositCrossChainTx,
 } from './sagas/localTransactions';
 import { withdrawTokens } from './sagas/withdrawTokens';
-import { utils } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { DEFAULT_ASSET_DECIMALS } from '../../constants';
 
 export function* transferTokens(action: AggregatorActions['submit']) {
@@ -129,6 +129,9 @@ export function* fetchPausedTokens() {
 
 export function* fetchIncentive() {
   try {
+
+    yield* put(aggregatorActions.fetchIncentivesLoading());
+
     const rewardManager = yield* select(rewardManagerSelector);
     const sendAmount = yield* select(sendAmountSelector);
     const flowState = yield* select(flowStateSelector);
@@ -137,30 +140,40 @@ export function* fetchIncentive() {
       throw new Error('Could not find RewardManager contract');
     }
 
-    if(flowState == 'deposit') {
-      const startingTokenAddress = (yield* select(startingTokenAddressSelector)) ?? '';
+    const startingTokenAddress = (yield* select(startingTokenAddressSelector)) ?? '';
+    const destinationTokenAddress = (yield* select(destinationTokenAddressSelector)) ?? '';
+
+    let incentive = BigNumber.from(0);
+    let receiveAmount = BigNumber.from(0);
+
+    if(flowState == 'deposit' && startingTokenAddress) {
       const tokenDecimals = yield* select(startingTokenDecimalsSelector);
       const amount = utils.parseUnits(sendAmount, tokenDecimals);
-        const reward = yield* call(rewardManager.getRewardForDeposit,
+      incentive = yield* call(rewardManager.getRewardForDeposit,
         startingTokenAddress.toLowerCase(), amount);
-      console.log('reward: ', reward);
-      yield* put(aggregatorActions.setDepositReward(reward.toString()));
-    } else if (flowState == 'withdraw') {
-      const destinationTokenAddress = (yield* select(destinationTokenAddressSelector)) ?? '';
+      incentive = roundBN(incentive, 3);
+      receiveAmount = amount.add(incentive);
+
+    } else if (flowState == 'withdraw' && destinationTokenAddress) {
       const tokenDecimals = DEFAULT_ASSET_DECIMALS;
       const amount = utils.parseUnits(sendAmount, tokenDecimals);
-      if(destinationTokenAddress) {
-        const penalty = yield* call(rewardManager.getPenaltyForWithdrawal,
-          destinationTokenAddress.toLowerCase(), amount);
-        yield* put(aggregatorActions.setWithdrawalPenalty(penalty.toString()));
-        console.log('penalty: ', penalty);
-      } else {
-        yield* put(aggregatorActions.setWithdrawalPenalty('0'));
-      }
+      incentive = yield* call(rewardManager.getPenaltyForWithdrawal,
+        destinationTokenAddress.toLowerCase(), amount);
+      incentive = roundBN(incentive, 3);
+      receiveAmount = amount.sub(incentive);
+
     }
+
+    yield* put(aggregatorActions.setIncentives(utils.formatUnits(incentive, DEFAULT_ASSET_DECIMALS)));
+    yield* put(aggregatorActions.setReceiveAmount(utils.formatUnits(receiveAmount, DEFAULT_ASSET_DECIMALS)));
 
   } catch (e) {
     console.error(e);
+    const msg =
+    e instanceof Error
+      ? e.message
+      : 'There was some error in fetching the incentive amount. Please try again';    
+    yield* put(aggregatorActions.fetchIncentivesFailure(msg));
   }
 }
 
@@ -200,4 +213,10 @@ export function* aggregatorSaga() {
 
     takeLatest(aggregatorActions.submit, transferTokens),
   ]);
+}
+
+function roundBN(bn: BigNumber, digits: number): BigNumber {
+  const ten = BigNumber.from('10');
+  const da = ten.pow(18 - digits);
+  return bn.div(da).mul(da);
 }

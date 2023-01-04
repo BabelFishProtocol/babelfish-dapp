@@ -14,6 +14,10 @@ export type FeesAndLimitsType = {
   dailyLimit?: string;
 };
 
+export type IncentivesType = {
+  amount?: string ;
+};
+
 export type XusdLocalTransaction = Omit<TransactionsTableItem, 'id'>;
 
 export type UpdateTxStatus = {
@@ -44,6 +48,12 @@ export class AggregatorState {
       dailyLimit: undefined,
     },
   };
+  incentives: LoadableValue<IncentivesType> = {
+    state: 'idle',
+    data: {
+      amount: undefined
+    }
+  };  
   fetchFeesAndLimitsErrorReason?: string;
   pool: PoolEnum = DEFAULT_POOL;
   startingToken?: TokenEnum;
@@ -61,8 +71,6 @@ export class AggregatorState {
     data: undefined,
   };
   sendAmount: string = '';
-  depositReward: string = '';
-  withdrawalPenalty: string = '';
   submitCall: CallState<AggregatorCalls> = {
     status: 'idle',
     steps: [
@@ -72,4 +80,5 @@ export class AggregatorState {
       { name: 'withdraw', label: 'withdrawing' },
     ],
   };
+  receiveAmount?: string = undefined;
 }

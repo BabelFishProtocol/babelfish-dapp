@@ -1,4 +1,4 @@
-import { FeesAndLimitsType } from '../../../store/aggregator/aggregator.state';
+import { FeesAndLimitsType, IncentivesType } from '../../../store/aggregator/aggregator.state';
 import { FiniteStates } from '../../../utils/types';
 
 export type AggregatorInfoContainerProps = {
@@ -7,10 +7,11 @@ export type AggregatorInfoContainerProps = {
 
 export type AggregatorInfoComponentProps = {
   onClick: () => void;
-  state: FiniteStates;
+  feesAndLimitsState: FiniteStates;
   feesAndLimits: FeesAndLimitsType;
   tokenName?: string;
   tokenDecimals?: number;
-  depositReward?: string;
-  withdrawalPenalty?: string;
+  incentivesState?: FiniteStates;
+  incentives?: IncentivesType;
 };
+

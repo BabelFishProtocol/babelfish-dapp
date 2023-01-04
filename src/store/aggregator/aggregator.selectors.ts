@@ -74,14 +74,19 @@ export const sendAmountSelector = createSelector(
   (state) => state.sendAmount
 );
 
-export const depositRewardSelector = createSelector(
+export const incentivesStateSelector = createSelector(
   aggregatorState,
-  (state) => state.depositReward
+  (state) => state.incentives.state
 );
 
-export const withdrawalPenaltySelector = createSelector(
+export const incentivesSelector = createSelector(
   aggregatorState,
-  (state) => state.withdrawalPenalty
+  (state) => state.incentives.data
+);
+
+export const receiveAmountSelector = createSelector(
+  aggregatorState,
+  (state) => state.receiveAmount
 );
 
 export const bridgeSelector = createSelector(

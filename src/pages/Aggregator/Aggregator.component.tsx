@@ -47,6 +47,7 @@ export const AggregatorComponent = ({
   onDestinationTokenChange,
   isStartingTokenPaused,
   onSendAmountChange,
+  receiveAmount
 }: AggregatorComponentProps) => {
   const flowState = useSelector(flowStateSelector);
 
@@ -61,7 +62,7 @@ export const AggregatorComponent = ({
     formState: { isValid },
   } = useForm<AggregatorFormValues>({
     mode: 'onChange',
-    defaultValues: aggregatorDefaultValues,
+    defaultValues: aggregatorDefaultValues
   });
 
   const startingChain = watch(AggregatorInputs.StartingChain);
@@ -85,6 +86,10 @@ export const AggregatorComponent = ({
     resetField,
     setValue
   );
+
+  useEffect(() => {
+    setValue<AggregatorInputs.ReceiveAmount>(AggregatorInputs.ReceiveAmount, receiveAmount || '0.0');
+  }, [ receiveAmount ]);
 
   useConnectedChain(startingChain, resetField, setValue);
 
@@ -126,8 +131,6 @@ export const AggregatorComponent = ({
   useEffect(() => {
     if (amount) {
       onSendAmountChange(amount);
-      setValue(AggregatorInputs.ReceiveAmount, amount);
-      //setValue(AggregatorInputs.ReceiveAmount, amount); // TODO: This will change in the future once we have an incentive curve algorithm
     }
   }, [amount, setValue]);
 
@@ -139,7 +142,6 @@ export const AggregatorComponent = ({
 
   useEffect(() => {
     resetField(AggregatorInputs.SendAmount);
-    resetField(AggregatorInputs.ReceiveAmount);
   }, [flowState, resetField]);
 
   const handleAddressDisclaimerClick = useCallback(
@@ -255,12 +257,13 @@ export const AggregatorComponent = ({
               <ControlledCurrencyInput
                 disabled
                 title="Receive amount"
-                symbol={destinationToken}
+                symbol="XUSD"
                 placeholder="0.00"
                 name={AggregatorInputs.ReceiveAmount}
                 control={control}
                 sx={{ mb: 5 }}
               />
+
               <ControlledAddressInput
                 title="Receiving address"
                 placeholder="Enter or paste address"

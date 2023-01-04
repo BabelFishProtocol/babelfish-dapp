@@ -45,7 +45,7 @@ export const depositMockValues = {
   [AggregatorInputs.SendAmount]: '11',
   [AggregatorInputs.DestinationChain]: ChainEnum.RSK_TESTNET,
   [AggregatorInputs.DestinationToken]: TokenEnum.XUSD,
-  [AggregatorInputs.ReceiveAmount]: '10.45',
+  receiveAmount: '10.45',
   [AggregatorInputs.ReceiveAddress]: mockReceiver,
 };
 
@@ -66,7 +66,7 @@ export const withdrawMockValues = {
   [AggregatorInputs.SendAmount]: '11',
   [AggregatorInputs.DestinationChain]: ChainEnum.ETH_TESTNET,
   [AggregatorInputs.DestinationToken]: TokenEnum.USDT,
-  [AggregatorInputs.ReceiveAmount]: '10.45',
+  receiveAmount: '10.45',
   [AggregatorInputs.ReceiveAddress]: mockReceiver,
 };
 

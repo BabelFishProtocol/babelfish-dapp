@@ -87,11 +87,21 @@ const aggregatorSlice = createSlice({
     setIsStartingTokenPaused: (state, { payload }: PayloadAction<string[]>) => {
       state.pausedTokens = payload;
     },
-    setDepositReward: (state, { payload }: PayloadAction<string>) => {
-      state.depositReward = payload;
+    fetchIncentivesLoading: (state) => {
+      state.incentives.state = 'loading';
+      state.incentives.data = {};
     },
-    setWithdrawalPenalty: (state, { payload }: PayloadAction<string>) => {
-      state.withdrawalPenalty = payload;
+    fetchIncentivesFailure: (state, { payload }: PayloadAction<string>) => {
+      state.incentives.state = 'failure';
+      state.incentives.data = {};
+      //state.fetchFeesAndLimitsErrorReason = payload;
+    },
+    setIncentives: (state, { payload }: PayloadAction<string>) => {
+      state.incentives.state = 'success';
+      state.incentives.data = { amount: payload };
+    },
+    setReceiveAmount: (state, { payload }: PayloadAction<string>) => {
+      state.receiveAmount = payload;
     },
     togglePool: (state) => {
       state.pool =
@@ -115,8 +125,9 @@ const aggregatorSlice = createSlice({
       state.startingTokenBalance.state = 'idle';
       state.startingTokenBalance.data = undefined;
       state.txDetails = undefined;
-      state.depositReward = '';
-      state.withdrawalPenalty = '';
+      state.incentives.state = 'idle';
+      state.incentives.data = {};
+      state.receiveAmount = undefined;
     },
   },
 });

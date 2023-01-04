@@ -10,6 +10,7 @@ export type AggregatorComponentProps = {
   onDestinationTokenChange: (token: TokenEnum | undefined) => void;
   isStartingTokenPaused: boolean;
   onSendAmountChange: (amount: string) => void;
+  receiveAmount?: string;
 };
 
 export type FocusActiveFieldParameters = {

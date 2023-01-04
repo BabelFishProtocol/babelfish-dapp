@@ -9,6 +9,7 @@ import {
 import { TokenEnum } from '../../config/tokens';
 import {
   pausedTokensSelector,
+  receiveAmountSelector,
   startingTokenAddressSelector,
   submitAggregatorStatusSelector,
 } from '../../store/aggregator/aggregator.selectors';
@@ -23,6 +24,8 @@ export const AggregatorContainer = () => {
 
   const pausedTokens = useSelector(pausedTokensSelector);
   const startingTokenAddress = useSelector(startingTokenAddressSelector);
+
+  const receiveAmount = useSelector(receiveAmountSelector);
 
   const isStartingTokenPaused = useMemo(
     () =>
@@ -73,6 +76,7 @@ export const AggregatorContainer = () => {
         onDestinationTokenChange={onDestinationTokenChange}
         isStartingTokenPaused={isStartingTokenPaused}
         onSendAmountChange={onSendAmountChange}
+        receiveAmount={receiveAmount}
       />
       {submitStatus.status !== 'idle' && (
         <SubmitStepsDialog
