@@ -257,7 +257,7 @@ export const AggregatorComponent = ({
               <ControlledCurrencyInput
                 disabled
                 title="Receive amount"
-                symbol="XUSD"
+                symbol={destinationToken}
                 placeholder="0.00"
                 name={AggregatorInputs.ReceiveAmount}
                 control={control}
