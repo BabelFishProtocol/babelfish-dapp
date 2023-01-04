@@ -6,6 +6,7 @@ import {
   bridgeContractSelector,
   destinationTokenAddressSelector,
   flowStateSelector,
+  incentivesSelector,
   sendAmountSelector,
   startingTokenAddressSelector,
   startingTokenContractSelector,
@@ -22,6 +23,7 @@ import {
 import { withdrawTokens } from './sagas/withdrawTokens';
 import { BigNumber, utils } from 'ethers';
 import { DEFAULT_ASSET_DECIMALS } from '../../constants';
+import { IncentiveType } from './aggregator.state';
 
 export function* transferTokens(action: AggregatorActions['submit']) {
   const flowState = yield* select(flowStateSelector);
@@ -145,8 +147,11 @@ export function* fetchIncentive() {
 
     let incentive = BigNumber.from(0);
     let receiveAmount = BigNumber.from(0);
+    let incentiveType = IncentiveType.none;
 
     if(flowState == 'deposit' && startingTokenAddress) {
+
+      incentiveType = IncentiveType.reward;
       const tokenDecimals = yield* select(startingTokenDecimalsSelector);
       const amount = utils.parseUnits(sendAmount, tokenDecimals);
       incentive = yield* call(rewardManager.getRewardForDeposit,
@@ -155,6 +160,8 @@ export function* fetchIncentive() {
       receiveAmount = amount.add(incentive);
 
     } else if (flowState == 'withdraw' && destinationTokenAddress) {
+
+      incentiveType = IncentiveType.penalty;
       const tokenDecimals = DEFAULT_ASSET_DECIMALS;
       const amount = utils.parseUnits(sendAmount, tokenDecimals);
       incentive = yield* call(rewardManager.getPenaltyForWithdrawal,
@@ -164,7 +171,9 @@ export function* fetchIncentive() {
 
     }
 
-    yield* put(aggregatorActions.setIncentives(utils.formatUnits(incentive, DEFAULT_ASSET_DECIMALS)));
+    yield* put(aggregatorActions.setIncentives({ 
+      type: incentiveType, 
+      amount: utils.formatUnits(incentive, DEFAULT_ASSET_DECIMALS) }));
     yield* put(aggregatorActions.setReceiveAmount(utils.formatUnits(receiveAmount, DEFAULT_ASSET_DECIMALS)));
 
   } catch (e) {

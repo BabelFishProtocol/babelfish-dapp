@@ -5,6 +5,7 @@ import { PoolEnum } from '../../config/pools';
 import {
   AggregatorState,
   FeesAndLimitsType,
+  IncentiveType,
   TxDetails,
 } from './aggregator.state';
 import { createStepCallsActions } from '../utils/utils.reducers';
@@ -96,9 +97,9 @@ const aggregatorSlice = createSlice({
       state.incentives.data = {};
       //state.fetchFeesAndLimitsErrorReason = payload;
     },
-    setIncentives: (state, { payload }: PayloadAction<string>) => {
+    setIncentives: (state, { payload }: PayloadAction<{ type: IncentiveType, amount: string }>) => {
       state.incentives.state = 'success';
-      state.incentives.data = { amount: payload };
+      state.incentives.data = payload;
     },
     setReceiveAmount: (state, { payload }: PayloadAction<string>) => {
       state.receiveAmount = payload;

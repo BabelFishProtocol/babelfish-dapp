@@ -14,7 +14,14 @@ export type FeesAndLimitsType = {
   dailyLimit?: string;
 };
 
+export enum IncentiveType {
+  none,
+  reward,
+  penalty
+};
+
 export type IncentivesType = {
+  type?: IncentiveType;
   amount?: string ;
 };
 
@@ -51,6 +58,7 @@ export class AggregatorState {
   incentives: LoadableValue<IncentivesType> = {
     state: 'idle',
     data: {
+      type: undefined,
       amount: undefined
     }
   };  

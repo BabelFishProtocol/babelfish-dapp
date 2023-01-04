@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import exchangeIcon from '../../../assets/icons/exchange.svg';
+import { IncentiveType } from '../../../store/aggregator/aggregator.state';
 import { formatUnitAmount } from '../../../utils/helpers';
 import { AggregatorInfoComponentProps } from './AggregatorInfo.types';
 import { InfoRow } from './InfoRow.component';
@@ -45,10 +46,10 @@ export const AggregatorInfoComponent = ({
       }}
     >
       <InfoRow
-          label="Incentive"
-          value={incentives?.amount ? `${incentives?.amount} XUSD` : 'n/a'}
-          state={incentivesState || 'idle'}
-        />
+        label={incentives?.type == IncentiveType.penalty ? 'Penalty' : 'Reward'}
+        value={`${incentives?.amount || '0.0'} XUSD`}
+        state={incentivesState || 'idle'}
+      />
     </Box>
     <Box
       sx={{
