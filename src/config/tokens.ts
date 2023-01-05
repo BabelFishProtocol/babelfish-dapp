@@ -1,11 +1,11 @@
-/* eslint-disable no-sparse-arrays */
 import usdtIcon from '../assets/icons/tokens/usdt.svg';
 import daiIcon from '../assets/icons/tokens/dai.svg';
 import usdcIcon from '../assets/icons/tokens/usdc.svg';
 import busdIcon from '../assets/icons/tokens/busd.svg';
-// import usdpIcon from '../assets/icons/tokens/usdp.svg';
 import xusdIcon from '../assets/icons/tokens/xusd.svg';
 import rdocIcon from '../assets/icons/tokens/rdoc.svg';
+import docIcon from '../assets/icons/tokens/doc.svg';
+import zusdIcon from '../assets/icons/tokens/zusd.svg';
 import { ChainEnum } from './chains';
 
 export enum TokenEnum {
@@ -13,12 +13,12 @@ export enum TokenEnum {
   USDC = 'USDC',
   BUSD = 'BUSD',
   DAI = 'DAI',
-  // USDP = 'USDP',
   XUSD = 'XUSD',
   RDOC = 'RDOC',
   SEPUSD = 'SEPUSD',
-  // BDUS = 'BDUS',
-  // ZUSD = 'ZUSD',
+  DOC = 'DOC',
+  RUSDT = 'RUSDT',
+  ZUSD = 'ZUSD',
 }
 
 export interface TokenTypeBase {
@@ -54,6 +54,22 @@ export const tokenOnChain = {
   [TokenEnum.SEPUSD]: {
     [ChainEnum.ETH_TESTNET]: '0x7f357b8D3293CD631907d33a500f2C9Ce7f9B90D',
   },
+  [TokenEnum.RDOC]: {
+    [ChainEnum.RSK]: '0x2d919f19d4892381d58edebeca66d5642cef1a1f',
+    [ChainEnum.RSK_TESTNET]: '0xC3De9f38581F83e281F260D0ddBAac0E102Ff9F8',
+  },
+  [TokenEnum.DOC]: {
+    [ChainEnum.RSK]: '0xe700691da7b9851f2f35f8b8182c69c53ccad9db',
+    [ChainEnum.RSK_TESTNET]: '0xCb46C0DdC60d18eFEB0e586c17AF6Ea36452DaE0',
+  },
+  [TokenEnum.RUSDT]: {
+    [ChainEnum.RSK]: '0xEf213441a85DF4d7acBdAe0Cf78004E1e486BB96',
+    [ChainEnum.RSK_TESTNET]: '0x4d5A316d23EBe168D8f887b4447BF8DBfA4901cc',
+  },
+  [TokenEnum.ZUSD]: {
+    [ChainEnum.RSK]: '0xdB107FA69E33f05180a4C2cE9c2E7CB481645C2d',
+    [ChainEnum.RSK_TESTNET]: '0x6B41566353D6c7b8C2A7931d498f11489dacac29',
+  },
 } as const;
 
 type TokensType = Record<Partial<TokenEnum>, TokenTypeBase>;
@@ -61,25 +77,25 @@ type TokensType = Record<Partial<TokenEnum>, TokenTypeBase>;
 export const tokens: TokensType = {
   [TokenEnum.USDT]: {
     id: TokenEnum.USDT,
-    name: 'USDT',
+    name: TokenEnum.USDT,
     icon: usdtIcon,
-    addresses: tokenOnChain[TokenEnum.USDT],
+    addresses: tokenOnChain.USDT,
   },
   [TokenEnum.USDC]: {
     id: TokenEnum.USDC,
-    name: 'USDC',
+    name: TokenEnum.USDC,
     icon: usdcIcon,
-    addresses: tokenOnChain[TokenEnum.USDC],
+    addresses: tokenOnChain.USDC,
   },
   [TokenEnum.DAI]: {
     id: TokenEnum.DAI,
-    name: 'DAI',
+    name: TokenEnum.DAI,
     icon: daiIcon,
-    addresses: tokenOnChain[TokenEnum.DAI],
+    addresses: tokenOnChain.DAI,
   },
   [TokenEnum.BUSD]: {
     id: TokenEnum.BUSD,
-    name: 'BUSD',
+    name: TokenEnum.BUSD,
     icon: busdIcon,
     addresses: tokenOnChain.BUSD,
   },
@@ -93,10 +109,7 @@ export const tokens: TokensType = {
     id: TokenEnum.RDOC,
     name: TokenEnum.RDOC,
     icon: rdocIcon,
-    addresses: {
-      [ChainEnum.RSK]: '0x2d919f19d4892381d58edebeca66d5642cef1a1f',
-      [ChainEnum.RSK_TESTNET]: '0xC3De9f38581F83e281F260D0ddBAac0E102Ff9F8',
-    },
+    addresses: tokenOnChain.RDOC,
   },
   [TokenEnum.SEPUSD]: {
     id: TokenEnum.SEPUSD,
@@ -104,22 +117,22 @@ export const tokens: TokensType = {
     icon: usdtIcon,
     addresses: tokenOnChain.SEPUSD,
   },
-  // [TokenEnum.BDUS]: {
-  //   id: TokenEnum.BDUS,
-  //   name: TokenEnum.BDUS,
-  //   icon: rdocIcon, // not provided yet
-  //   addresses: {
-  //     [ChainEnum.RSK]: '0xB450ff06d950eFA9A9c0aD63790C51971C1BE885',
-  //     [ChainEnum.RSK_TESTNET]: '0xB450ff06d950eFA9A9c0aD63790C51971C1BE885', // not provided yet - the same as RSK
-  //   },
-  // },
-  // [TokenEnum.ZUSD]: {
-  //   id: TokenEnum.ZUSD,
-  //   name: TokenEnum.ZUSD,
-  //   icon: rdocIcon, // not provided yet
-  //   addresses: {
-  //     [ChainEnum.RSK]: '0x4A0741FA749Ed6b1F810224D09f1f511952e67De', // not provided yet - the same as RSK testnet
-  //     [ChainEnum.RSK_TESTNET]: '0x4A0741FA749Ed6b1F810224D09f1f511952e67De',
-  //   },
-  // },
+  [TokenEnum.DOC]: {
+    id: TokenEnum.DOC,
+    name: TokenEnum.DOC,
+    icon: docIcon,
+    addresses: tokenOnChain.DOC,
+  },
+  [TokenEnum.RUSDT]: {
+    id: TokenEnum.RUSDT,
+    name: TokenEnum.RUSDT,
+    icon: usdtIcon,
+    addresses: tokenOnChain.RUSDT,
+  },
+  [TokenEnum.ZUSD]: {
+    id: TokenEnum.ZUSD,
+    name: TokenEnum.ZUSD,
+    icon: zusdIcon,
+    addresses: tokenOnChain.ZUSD,
+  },
 } as const;
