@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { is } from 'immer/dist/internal';
+import { useEffect, useMemo, useState } from 'react';
 import { UseFormResetField, UseFormSetValue } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -53,10 +54,14 @@ export const useAggregatorDropdowns = (
     setDestinationChainOptions(pool.baseChains);
   }, [pool.baseChains]);
 
+  const bassetTokens = useMemo(
+    () =>
+      pool.baseChains.find((item) => item.id === startingChain)?.bassets ?? [],
+    [pool.baseChains, startingChain]
+  );
+
   useEffect(() => {
     resetField(AggregatorInputs.StartingToken);
-    const bassetTokens =
-      pool.baseChains.find((item) => item.id === startingChain)?.bassets ?? [];
 
     if (isRSK(startingChain)) {
       // Enable all chain options when RSK
@@ -92,13 +97,17 @@ export const useAggregatorDropdowns = (
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [startingChain, pool.baseChains, pool.masset, resetField, setValue]);
+  }, [
+    startingChain,
+    pool.baseChains,
+    pool.masset,
+    resetField,
+    setValue,
+    bassetTokens,
+  ]);
 
   useEffect(() => {
     resetField(AggregatorInputs.DestinationToken);
-    const bassetTokens =
-      pool.baseChains.find((item) => item.id === destinationChain)?.bassets ??
-      [];
 
     if (isRSK(destinationChain)) {
       // Enable all chain options when RSK
@@ -150,7 +159,23 @@ export const useAggregatorDropdowns = (
       resetField(AggregatorInputs.StartingToken);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [destinationToken, resetField]);
+  }, [destinationToken, resetField, bassetTokens]);
+
+  useEffect(() => {
+    if (isRSK(startingChain) && isRSK(destinationChain) && startingToken) {
+      if (startingToken !== TokenEnum.XUSD) {
+        setDestinationTokenOptions([pool.masset]);
+      } else {
+        setDestinationTokenOptions([pool.masset, ...bassetTokens]);
+      }
+    }
+  }, [
+    bassetTokens,
+    destinationChain,
+    pool.masset,
+    startingChain,
+    startingToken,
+  ]);
 
   const toggleFlow = async () => {
     const tempChain = startingChain;
