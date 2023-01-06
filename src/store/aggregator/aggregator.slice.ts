@@ -92,10 +92,9 @@ const aggregatorSlice = createSlice({
       state.incentives.state = 'loading';
       state.incentives.data = {};
     },
-    fetchIncentivesFailure: (state, { payload }: PayloadAction<string>) => {
+    fetchIncentivesFailure: (state) => {
       state.incentives.state = 'failure';
       state.incentives.data = {};
-      //state.fetchFeesAndLimitsErrorReason = payload;
     },
     setIncentives: (state, { payload }: PayloadAction<{ type: IncentiveType, amount: string }>) => {
       state.incentives.state = 'success';

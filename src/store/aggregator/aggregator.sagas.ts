@@ -1,3 +1,4 @@
+import { BigNumber, utils } from 'ethers';
 import { select, call, put, all, takeLatest } from 'typed-redux-saga';
 import { accountSelector, pauseManagerSelector, rewardManagerSelector } from '../app/app.selectors';
 import { appActions } from '../app/app.slice';
@@ -6,7 +7,6 @@ import {
   bridgeContractSelector,
   destinationTokenAddressSelector,
   flowStateSelector,
-  incentivesSelector,
   sendAmountSelector,
   startingTokenAddressSelector,
   startingTokenContractSelector,
@@ -21,7 +21,6 @@ import {
   setFailedOnDepositCrossChainTx,
 } from './sagas/localTransactions';
 import { withdrawTokens } from './sagas/withdrawTokens';
-import { BigNumber, utils } from 'ethers';
 import { DEFAULT_ASSET_DECIMALS } from '../../constants';
 import { IncentiveType } from './aggregator.state';
 
@@ -149,7 +148,7 @@ export function* fetchIncentive() {
     let receiveAmount = BigNumber.from(0);
     let incentiveType = IncentiveType.none;
 
-    if(flowState == 'deposit' && startingTokenAddress) {
+    if(flowState === 'deposit' && startingTokenAddress) {
 
       incentiveType = IncentiveType.reward;
       const tokenDecimals = yield* select(startingTokenDecimalsSelector);
@@ -159,7 +158,7 @@ export function* fetchIncentive() {
       incentive = roundBN(incentive, 3);
       receiveAmount = amount.add(incentive);
 
-    } else if (flowState == 'withdraw' && destinationTokenAddress) {
+    } else if (flowState === 'withdraw' && destinationTokenAddress) {
 
       incentiveType = IncentiveType.penalty;
       const tokenDecimals = DEFAULT_ASSET_DECIMALS;
@@ -177,7 +176,6 @@ export function* fetchIncentive() {
     yield* put(aggregatorActions.setReceiveAmount(utils.formatUnits(receiveAmount, DEFAULT_ASSET_DECIMALS)));
 
   } catch (e) {
-    console.error(e);
     const msg =
     e instanceof Error
       ? e.message

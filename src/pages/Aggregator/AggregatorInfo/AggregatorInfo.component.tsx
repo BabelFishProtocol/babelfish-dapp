@@ -46,7 +46,7 @@ export const AggregatorInfoComponent = ({
       }}
     >
       <InfoRow
-        label={incentives?.type == IncentiveType.penalty ? 'Penalty' : 'Reward'}
+        label={incentives?.type === IncentiveType.penalty ? 'Penalty' : 'Reward'}
         value={`${incentives?.amount || '0.0'} XUSD`}
         state={incentivesState || 'idle'}
       />
