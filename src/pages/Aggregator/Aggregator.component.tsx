@@ -89,7 +89,7 @@ export const AggregatorComponent = ({
 
   useEffect(() => {
     setValue<AggregatorInputs.ReceiveAmount>(AggregatorInputs.ReceiveAmount, receiveAmount || '0.0');
-  }, [ receiveAmount ]);
+  }, [ receiveAmount, setValue ]);
 
   useConnectedChain(startingChain, resetField, setValue);
 
@@ -132,7 +132,7 @@ export const AggregatorComponent = ({
     if (amount) {
       onSendAmountChange(amount);
     }
-  }, [amount, setValue]);
+  }, [amount, onSendAmountChange]);
 
   useEffect(() => {
     if (isAddressDisclaimerChecked && !receivingAddress) {
