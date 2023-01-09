@@ -5,12 +5,10 @@ import Box from '@mui/material/Box';
 import { Urls } from '../../constants';
 import logo from '../../assets/icons/logo.svg';
 
-const StyledLogo = styled('img')(({ theme }) => ({
+const StyledLogo = styled('img')(() => ({
   width: 40,
   height: 40,
   padding: 2,
-  borderRadius: '50%',
-  border: `1px solid ${theme.palette.primary.main}`,
 }));
 
 export const Logo = () => (
