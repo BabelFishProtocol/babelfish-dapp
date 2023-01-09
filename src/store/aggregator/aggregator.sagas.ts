@@ -153,8 +153,8 @@ export function* fetchIncentive() {
       incentiveType = IncentiveType.reward;
       const tokenDecimals = yield* select(startingTokenDecimalsSelector);
       const amount = utils.parseUnits(sendAmount, tokenDecimals);
-      incentive = yield* call(rewardManager.getRewardForDeposit,
-        startingTokenAddress.toLowerCase(), amount);
+      incentive = (yield* call(rewardManager.getRewardForDeposit,
+        startingTokenAddress.toLowerCase(), amount)) as BigNumber;
       incentive = roundBN(incentive, 3);
       receiveAmount = amount.add(incentive);
 
@@ -163,8 +163,8 @@ export function* fetchIncentive() {
       incentiveType = IncentiveType.penalty;
       const tokenDecimals = DEFAULT_ASSET_DECIMALS;
       const amount = utils.parseUnits(sendAmount, tokenDecimals);
-      incentive = yield* call(rewardManager.getPenaltyForWithdrawal,
-        destinationTokenAddress.toLowerCase(), amount);
+      incentive = (yield* call(rewardManager.getPenaltyForWithdrawal,
+        destinationTokenAddress.toLowerCase(), amount)) as BigNumber;
       incentive = roundBN(incentive, 3);
       receiveAmount = amount.sub(incentive);
 
@@ -176,10 +176,6 @@ export function* fetchIncentive() {
     yield* put(aggregatorActions.setReceiveAmount(utils.formatUnits(receiveAmount, DEFAULT_ASSET_DECIMALS)));
 
   } catch (e) {
-    const msg =
-    e instanceof Error
-      ? e.message
-      : 'There was some error in fetching the incentive amount. Please try again';    
     yield* put(aggregatorActions.setIncentivesFailure());
   }
 }
