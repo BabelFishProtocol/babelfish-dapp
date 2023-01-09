@@ -131,7 +131,7 @@ export function* fetchPausedTokens() {
 export function* fetchIncentive() {
   try {
 
-    yield* put(aggregatorActions.fetchIncentivesLoading());
+    yield* put(aggregatorActions.setIncentivesLoading());
 
     const rewardManager = yield* select(rewardManagerSelector);
     const sendAmount = yield* select(sendAmountSelector);
@@ -180,7 +180,7 @@ export function* fetchIncentive() {
     e instanceof Error
       ? e.message
       : 'There was some error in fetching the incentive amount. Please try again';    
-    yield* put(aggregatorActions.fetchIncentivesFailure(msg));
+    yield* put(aggregatorActions.setIncentivesFailure());
   }
 }
 

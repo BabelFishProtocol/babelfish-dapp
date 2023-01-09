@@ -88,11 +88,11 @@ const aggregatorSlice = createSlice({
     setIsStartingTokenPaused: (state, { payload }: PayloadAction<string[]>) => {
       state.pausedTokens = payload;
     },
-    fetchIncentivesLoading: (state) => {
+    setIncentivesLoading: (state) => {
       state.incentives.state = 'loading';
       state.incentives.data = {};
     },
-    fetchIncentivesFailure: (state) => {
+    setIncentivesFailure: (state) => {
       state.incentives.state = 'failure';
       state.incentives.data = {};
     },
