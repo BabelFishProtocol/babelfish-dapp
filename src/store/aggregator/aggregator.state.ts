@@ -78,7 +78,7 @@ export class AggregatorState {
     state: 'idle',
     data: undefined,
   };
-  sendAmount: string = '';
+  sendAmount?: string = undefined;
   submitCall: CallState<AggregatorCalls> = {
     status: 'idle',
     steps: [

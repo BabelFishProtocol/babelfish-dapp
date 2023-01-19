@@ -23,6 +23,7 @@ import {
 import { withdrawTokens } from './sagas/withdrawTokens';
 import { DEFAULT_ASSET_DECIMALS } from '../../constants';
 import { IncentiveType } from './aggregator.state';
+import { roundBN } from '../utils/utils.math';
 
 export function* transferTokens(action: AggregatorActions['submit']) {
   const flowState = yield* select(flowStateSelector);
@@ -141,34 +142,35 @@ export function* fetchIncentive() {
       throw new Error('Could not find RewardManager contract');
     }
 
-    const startingTokenAddress = (yield* select(startingTokenAddressSelector)) ?? '';
-    const destinationTokenAddress = (yield* select(destinationTokenAddressSelector)) ?? '';
+    const startingTokenAddress = yield* select(startingTokenAddressSelector);
+    const destinationTokenAddress = yield* select(destinationTokenAddressSelector);
 
     let incentive = BigNumber.from(0);
     let receiveAmount = BigNumber.from(0);
     let incentiveType = IncentiveType.none;
 
+
     if(flowState === 'deposit' && startingTokenAddress) {
 
       incentiveType = IncentiveType.reward;
       const tokenDecimals = yield* select(startingTokenDecimalsSelector);
-      const amount = utils.parseUnits(sendAmount, tokenDecimals);
+      const amount = utils.parseUnits(sendAmount ?? '', tokenDecimals);
       incentive = (yield* call(rewardManager.getRewardForDeposit,
         startingTokenAddress.toLowerCase(), amount)) as BigNumber;
-      incentive = roundBN(incentive, 3);
       receiveAmount = amount.add(incentive);
 
     } else if (flowState === 'withdraw' && destinationTokenAddress) {
 
       incentiveType = IncentiveType.penalty;
       const tokenDecimals = DEFAULT_ASSET_DECIMALS;
-      const amount = utils.parseUnits(sendAmount, tokenDecimals);
+      const amount = utils.parseUnits(sendAmount ?? '', tokenDecimals);
       incentive = (yield* call(rewardManager.getPenaltyForWithdrawal,
         destinationTokenAddress.toLowerCase(), amount)) as BigNumber;
-      incentive = roundBN(incentive, 3);
       receiveAmount = amount.sub(incentive);
 
     }
+
+    incentive = incentive && roundBN(incentive, 3);
 
     yield* put(aggregatorActions.setIncentives({ 
       type: incentiveType, 
@@ -218,8 +220,3 @@ export function* aggregatorSaga() {
   ]);
 }
 
-function roundBN(bn: BigNumber, digits: number): BigNumber {
-  const ten = BigNumber.from('10');
-  const da = ten.pow(18 - digits);
-  return bn.div(da).mul(da);
-}

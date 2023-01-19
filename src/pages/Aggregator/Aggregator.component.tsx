@@ -88,7 +88,7 @@ export const AggregatorComponent = ({
   );
 
   useEffect(() => {
-    setValue<AggregatorInputs.ReceiveAmount>(AggregatorInputs.ReceiveAmount, receiveAmount || '0.0');
+    setValue(AggregatorInputs.ReceiveAmount, receiveAmount || '0.0');
   }, [ receiveAmount, setValue ]);
 
   useConnectedChain(startingChain, resetField, setValue);
@@ -142,6 +142,7 @@ export const AggregatorComponent = ({
 
   useEffect(() => {
     resetField(AggregatorInputs.SendAmount);
+    resetField(AggregatorInputs.ReceiveAmount);
   }, [flowState, resetField]);
 
   const handleAddressDisclaimerClick = useCallback(

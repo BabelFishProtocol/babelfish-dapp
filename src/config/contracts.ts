@@ -33,6 +33,7 @@ export const contractsAddresses: ContractsAddresses = {
     vestingRegistry: '0x036ab2DB0a3d1574469a4a7E09887Ed76fB56C41',
     XUSDMassetProxy: '0x1440d19436bEeaF8517896bffB957a88EC95a00F',
     pauseManager: '0x3e96B99993B39a01e620Be71eFB5bF8AC6F7fb0E',
+    // TODO: update with address once deployed to mainnet
     rewardManager: '',
   },
   [ChainEnum.RSK_TESTNET]: {
