@@ -1,10 +1,14 @@
 import { select, call, put, all, takeLatest } from 'typed-redux-saga';
+import { TokenEnum } from '../../config/tokens';
 import { accountSelector, pauseManagerSelector } from '../app/app.selectors';
 import { appActions } from '../app/app.slice';
 import {
   allowTokensContractSelector,
   bridgeContractSelector,
+  destinationTokenAddressSelector,
+  destinationTokenContractSelector,
   flowStateSelector,
+  massetAddressSelector,
   startingTokenContractSelector,
   startingTokenSelector,
   tokenAddressSelector,
@@ -105,6 +109,54 @@ export function* fetchStartingTokenBalance() {
   }
 }
 
+export function* fetchDestinationTokenAggregatorBalance() {
+  try {
+    const startingToken = yield* select(startingTokenSelector);
+    const massetAddress = yield* select(massetAddressSelector);
+    const destinationTokenAddress = yield* select(
+      destinationTokenAddressSelector
+    );
+    const destinationTokenContract = yield* select(
+      destinationTokenContractSelector
+    );
+
+    if (startingToken !== TokenEnum.XUSD || !destinationTokenAddress) {
+      return;
+    }
+
+    if (!massetAddress) {
+      throw new Error('Could not find masset address');
+    }
+
+    if (!destinationTokenContract) {
+      throw new Error('Could not find destination token contract');
+    }
+
+    yield* put(
+      aggregatorActions.fetchDestinationTokenAggregatorBalanceLoading()
+    );
+
+    const destinationTokenAggregatorBalance = yield* call(
+      destinationTokenContract.balanceOf,
+      massetAddress
+    );
+
+    yield* put(
+      aggregatorActions.setDestinationTokenAggregatorBalance(
+        destinationTokenAggregatorBalance.toString()
+      )
+    );
+  } catch (e) {
+    const msg =
+      e instanceof Error
+        ? e.message
+        : 'Could not fetch destination token aggregator balance';
+    yield* put(
+      aggregatorActions.fetchDestinationTokenAggregatorBalanceFailure(msg)
+    );
+  }
+}
+
 export function* fetchPausedTokens() {
   try {
     const pauseManager = yield* select(pauseManagerSelector);
@@ -151,6 +203,15 @@ export function* aggregatorSaga() {
     takeLatest(aggregatorActions.setDestinationChain, fetchAllowTokenAddress),
     takeLatest(aggregatorActions.setDestinationToken, fetchAllowTokenAddress),
     takeLatest(aggregatorActions.setStartingToken, fetchStartingTokenBalance),
+
+    takeLatest(
+      aggregatorActions.setDestinationToken,
+      fetchDestinationTokenAggregatorBalance
+    ),
+    takeLatest(
+      aggregatorActions.setStartingToken,
+      fetchDestinationTokenAggregatorBalance
+    ),
 
     takeLatest(aggregatorActions.submit, transferTokens),
   ]);

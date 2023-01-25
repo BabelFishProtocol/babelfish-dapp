@@ -69,6 +69,15 @@ export const startingTokenBalanceStateSelector = createSelector(
   (state) => state.startingTokenBalance.state
 );
 
+export const destinationTokenAggregatorBalanceSelector = createSelector(
+  aggregatorState,
+  (state) => state.destinationTokenAggregatorBalance.data
+);
+export const destinationTokenAggregatorBalanceStateSelector = createSelector(
+  aggregatorState,
+  (state) => state.destinationTokenAggregatorBalance.state
+);
+
 export const bridgeSelector = createSelector(
   [chainIdSelector, destinationChainSelector, flowStateSelector],
   (startingChain, destinationChain, flowState) => {
@@ -240,6 +249,21 @@ export const destinationTokenAddressSelector = createSelector(
     const address = tokens[destinationToken].addresses[destinationChain];
 
     return address;
+  }
+);
+
+export const destinationTokenContractSelector = createSelector(
+  [providerSelector, destinationTokenAddressSelector],
+  (provider, destinationTokenAddress) => {
+    if (!provider || !destinationTokenAddress) {
+      return undefined;
+    }
+
+    const contract = ERC20__factory.connect(
+      destinationTokenAddress.toLowerCase(),
+      provider.getSigner()
+    );
+    return contract;
   }
 );
 
