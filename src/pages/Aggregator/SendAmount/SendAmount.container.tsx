@@ -4,6 +4,8 @@ import { useCallback } from 'react';
 import { utils } from 'ethers';
 import { SendAmountComponent } from './SendAmount.component';
 import {
+  destinationChainSelector,
+  destinationTokenAggregatorBalanceSelector,
   feesAndLimitsSelector,
   startingTokenBalanceSelector,
   startingTokenBalanceStateSelector,
@@ -11,6 +13,8 @@ import {
 } from '../../../store/aggregator/aggregator.selectors';
 import { SendAmountContainerProps } from './SendAmount.types';
 import { fieldsErrors } from '../../../constants';
+import { TokenEnum } from '../../../config/tokens';
+import { ChainEnum } from '../../../config/chains';
 
 export const SendAmount = <FormValues extends FieldValues>(
   props: SendAmountContainerProps<FormValues>
@@ -20,31 +24,60 @@ export const SendAmount = <FormValues extends FieldValues>(
   const startingTokenBalanceState = useSelector(
     startingTokenBalanceStateSelector
   );
+  const destinationTokenAggregatorBalance = useSelector(
+    destinationTokenAggregatorBalanceSelector
+  );
+  const destinationChain = useSelector(destinationChainSelector);
   const { minTransfer, maxTransfer } = useSelector(feesAndLimitsSelector);
 
   const validate = useCallback(
-    (v: string) => {
-      if (!startingTokenBalance) return true;
-      if (utils.parseUnits(v, startingTokenDecimals).gt(startingTokenBalance)) {
+    (amount: string) => {
+      const { startingTokenName } = props;
+
+      if (!startingTokenBalance) {
+        return true;
+      }
+      if (
+        utils.parseUnits(amount, startingTokenDecimals).gt(startingTokenBalance)
+      ) {
         return fieldsErrors.amountGreaterThanBalance;
       }
       if (
         maxTransfer &&
-        utils.parseUnits(v, startingTokenDecimals).gt(maxTransfer)
+        utils.parseUnits(amount, startingTokenDecimals).gt(maxTransfer)
       ) {
         return fieldsErrors.amountGreaterThanMaxLimit;
       }
       if (
         minTransfer &&
-        utils.parseUnits(v, startingTokenDecimals).lt(minTransfer)
+        utils.parseUnits(amount, startingTokenDecimals).lt(minTransfer)
       ) {
         return fieldsErrors.amountLessThanMinLimit;
       }
-      if (utils.parseUnits(v, startingTokenDecimals).isZero()) {
+      if (utils.parseUnits(amount, startingTokenDecimals).isZero()) {
         return fieldsErrors.amountEqualZero;
       }
+      if (
+        startingTokenName === TokenEnum.XUSD &&
+        destinationChain &&
+        [ChainEnum.RSK, ChainEnum.RSK_TESTNET].includes(destinationChain) &&
+        destinationTokenAggregatorBalance !== undefined &&
+        utils
+          .parseUnits(amount, startingTokenDecimals)
+          .gt(destinationTokenAggregatorBalance)
+      ) {
+        return fieldsErrors.amountGreaterThanAggregatorBalance;
+      }
     },
-    [maxTransfer, minTransfer, startingTokenBalance, startingTokenDecimals]
+    [
+      destinationChain,
+      destinationTokenAggregatorBalance,
+      maxTransfer,
+      minTransfer,
+      props,
+      startingTokenBalance,
+      startingTokenDecimals,
+    ]
   );
 
   return (

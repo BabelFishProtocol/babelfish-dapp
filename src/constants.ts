@@ -88,6 +88,7 @@ export const fieldsErrors = {
   amountLessThanMinLimit: 'Value cannot be less than the transaction min limit',
   amountEqualZero: 'Value cannot be equal zero',
   depositsDisabled: 'Deposits for this asset are currently disabled',
+  amountGreaterThanAggregatorBalance: 'Amount exceeds aggregator balance',
 };
 
 export const selectorsErrors = {
