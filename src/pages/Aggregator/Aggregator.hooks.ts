@@ -53,7 +53,13 @@ export const useAggregatorDropdowns = (
     setDestinationChainOptions(pool.baseChains);
   }, [pool.baseChains]);
 
-  const bassetTokens = useMemo(
+  const startingChainBassetTokens = useMemo(
+    () =>
+      pool.baseChains.find((item) => item.id === startingChain)?.bassets ?? [],
+    [pool.baseChains, startingChain]
+  );
+
+  const destinationChainBassetTokens = useMemo(
     () =>
       pool.baseChains.find((item) => item.id === destinationChain)?.bassets ??
       [],
@@ -65,11 +71,14 @@ export const useAggregatorDropdowns = (
 
     if (isRSK(startingChain)) {
       // Enable all chain options when RSK
-      setStartingTokenOptions([pool.masset, ...bassetTokens]);
+      setStartingTokenOptions([pool.masset, ...startingChainBassetTokens]);
 
       if (isRSK(destinationChain)) {
         // Enable all chain options when RSK -> RSK
-        setDestinationTokenOptions([pool.masset, ...bassetTokens]);
+        setDestinationTokenOptions([
+          pool.masset,
+          ...destinationChainBassetTokens,
+        ]);
         return;
       }
 
@@ -82,7 +91,7 @@ export const useAggregatorDropdowns = (
 
     if (isNotRSK(startingChain)) {
       // Enable basset tokens when selected NOT RSK
-      setStartingTokenOptions(bassetTokens);
+      setStartingTokenOptions(startingChainBassetTokens);
 
       if (isRSK(destinationChain)) {
         // Force XUSD for RSK when NOT RSK -> RSK
@@ -103,7 +112,7 @@ export const useAggregatorDropdowns = (
     pool.masset,
     resetField,
     setValue,
-    bassetTokens,
+    destinationChainBassetTokens,
   ]);
 
   useEffect(() => {
@@ -111,11 +120,14 @@ export const useAggregatorDropdowns = (
 
     if (isRSK(destinationChain)) {
       // Enable all chain options when RSK
-      setDestinationTokenOptions([pool.masset, ...bassetTokens]);
+      setDestinationTokenOptions([
+        pool.masset,
+        ...destinationChainBassetTokens,
+      ]);
 
       if (isRSK(startingChain)) {
         // Enable all chain options when RSK -> RSK
-        setStartingTokenOptions([pool.masset, ...bassetTokens]);
+        setStartingTokenOptions([pool.masset, ...startingChainBassetTokens]);
         return;
       }
 
@@ -128,7 +140,7 @@ export const useAggregatorDropdowns = (
 
     if (isNotRSK(destinationChain)) {
       // Enable basset tokens when selected NOT RSK
-      setDestinationTokenOptions(bassetTokens);
+      setDestinationTokenOptions(destinationChainBassetTokens);
 
       if (isRSK(startingChain)) {
         // Force XUSD for RSK when RSK -> NOT RSK
@@ -159,18 +171,26 @@ export const useAggregatorDropdowns = (
       resetField(AggregatorInputs.StartingToken);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [destinationToken, resetField, bassetTokens]);
+  }, [
+    destinationToken,
+    resetField,
+    destinationChainBassetTokens,
+    startingChainBassetTokens,
+  ]);
 
   useEffect(() => {
     if (isRSK(startingChain) && isRSK(destinationChain) && startingToken) {
       if (startingToken !== TokenEnum.XUSD) {
         setDestinationTokenOptions([pool.masset]);
       } else {
-        setDestinationTokenOptions([pool.masset, ...bassetTokens]);
+        setDestinationTokenOptions([
+          pool.masset,
+          ...destinationChainBassetTokens,
+        ]);
       }
     }
   }, [
-    bassetTokens,
+    destinationChainBassetTokens,
     destinationChain,
     pool.masset,
     startingChain,
