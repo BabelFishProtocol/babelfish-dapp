@@ -55,8 +55,9 @@ export const useAggregatorDropdowns = (
 
   const bassetTokens = useMemo(
     () =>
-      pool.baseChains.find((item) => item.id === startingChain)?.bassets ?? [],
-    [pool.baseChains, startingChain]
+      pool.baseChains.find((item) => item.id === destinationChain)?.bassets ??
+      [],
+    [destinationChain, pool.baseChains]
   );
 
   useEffect(() => {
