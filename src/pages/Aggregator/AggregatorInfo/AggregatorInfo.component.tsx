@@ -3,8 +3,10 @@ import IconButton from '@mui/material/IconButton';
 import exchangeIcon from '../../../assets/icons/exchange.svg';
 import { IncentiveType } from '../../../store/aggregator/aggregator.state';
 import { formatUnitAmount } from '../../../utils/helpers';
+import { SendAmount } from '../SendAmount/SendAmount.container';
 import { AggregatorInfoComponentProps } from './AggregatorInfo.types';
 import { InfoRow } from './InfoRow.component';
+import { InfoRowWithPerc } from './InfoRowWithPerc.component';
 
 export const AggregatorInfoComponent = ({
   onClick,
@@ -13,7 +15,8 @@ export const AggregatorInfoComponent = ({
   tokenName,
   tokenDecimals,
   incentivesState,
-  incentives
+  incentives,
+  sendAmount
 }: AggregatorInfoComponentProps) => (
   <Box
     sx={{
@@ -45,9 +48,11 @@ export const AggregatorInfoComponent = ({
         color: ({ palette }) => palette.grey[600],
       }}
     >
-      <InfoRow
+      <InfoRowWithPerc
         label={incentives?.type === IncentiveType.penalty ? 'Penalty' : 'Reward'}
-        value={`${incentives?.amount || '0.0'} XUSD`}
+        value={`${incentives?.amount || '0.0'}`}
+        total={`${sendAmount || '0.0'}`}
+        unit="XUSD"
         state={incentivesState || 'idle'}
       />
     </Box>

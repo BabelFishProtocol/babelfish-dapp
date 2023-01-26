@@ -13,5 +13,6 @@ export type AggregatorInfoComponentProps = {
   tokenDecimals?: number;
   incentivesState?: FiniteStates;
   incentives?: IncentivesType;
+  sendAmount?: string;
 };
 

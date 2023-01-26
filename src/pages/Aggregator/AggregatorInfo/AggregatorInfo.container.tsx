@@ -6,6 +6,7 @@ import {
   feesAndLimitsStateSelector,
   startingTokenDecimalsSelector,
   startingTokenNameSelector,
+  sendAmountSelector,
 } from '../../../store/aggregator/aggregator.selectors';
 import { AggregatorInfoComponent } from './AggregatorInfo.component';
 import { AggregatorInfoContainerProps } from './AggregatorInfo.types';
@@ -23,6 +24,7 @@ export const AggregatorInfoContainer = ({
   const tokenDecimals = useSelector(startingTokenDecimalsSelector);
   const incentivesState = useSelector(incentivesStateSelector);
   const incentives = useSelector(incentivesSelector);
+  const sendAmount = useSelector(sendAmountSelector);
 
   return (
     <AggregatorInfoComponent
@@ -33,6 +35,7 @@ export const AggregatorInfoContainer = ({
       tokenDecimals={tokenDecimals}
       incentivesState={incentivesState}
       incentives={incentives}
+      sendAmount={sendAmount}
     />
   );
 };
