@@ -45,6 +45,5 @@ function calculatePercStr(value?: string, total?: string): string {
     const tv = Number(value ?? '');
     const tt = Number(total ?? '');
     const p = Math.floor(10000 * tv / tt) / 100;
-    console.log('!@#', p);
     return p > 0 ? `(${p}%)` : '';
 }
