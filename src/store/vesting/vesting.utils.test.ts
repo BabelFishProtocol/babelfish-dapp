@@ -28,7 +28,10 @@ jest.mock('../utils/utils.sagas', () => ({
 }));
 
 const mockVestingRegistry = createMockedContract(
-  VestingRegistry__factory.connect('0x123', mockSigner),
+  VestingRegistry__factory.connect(
+    '0x0000000000000000000000000000000000000123',
+    mockSigner
+  ),
   true
 );
 

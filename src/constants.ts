@@ -1,19 +1,17 @@
 export enum Urls {
-  Proposals = '/proposals',
+  Bitocracy = '/bitocracy',
   Dashboard = '/dashboard',
   Staking = '/stake',
-  Aggregator = '/aggregator',
+  Convert = '/convert',
   Improbability = '/improbability',
-  Claim = '/claim',
 }
 
 export enum UrlNames {
-  Proposals = 'DAO/GOVERN WITH FISH',
-  ProposalDetails = 'VIEW PROPOSAL',
-  Dashboard = 'HOME',
-  Staking = 'STAKE YOUR FISH',
-  Aggregator = 'DEPOSIT/WITHDRAW XUSD',
-  Claim = 'CLAIM',
+  Bitocracy = 'Bitocracy',
+  ProposalDetails = 'View proposal',
+  Dashboard = 'Home',
+  Staking = 'Stake',
+  Convert = 'Convert',
 }
 
 export enum ProposalState {
@@ -39,7 +37,7 @@ export const proposalStateNames = {
 };
 
 export enum Reducers {
-  Aggregator = 'aggregator',
+  Convert = 'convert',
   App = 'app',
   Dashboard = 'dashboard',
   Staking = 'staking',
@@ -73,10 +71,6 @@ export enum GovernorTypes {
 }
 
 export const GOVERNANCE_OPTIONS = {
-  GOVERNOR_OWNER: {
-    name: 'Governor Owner',
-    id: GovernorTypes.GovernorOwner,
-  },
   GOVERNOR_ADMIN: {
     name: 'Governor Admin',
     id: GovernorTypes.GovernorAdmin,
@@ -93,6 +87,8 @@ export const fieldsErrors = {
     'Value cannot be greater than the transaction max limit',
   amountLessThanMinLimit: 'Value cannot be less than the transaction min limit',
   amountEqualZero: 'Value cannot be equal zero',
+  depositsDisabled: 'Deposits for this asset are currently disabled',
+  amountGreaterThanAggregatorBalance: 'Amount exceeds aggregator balance',
 };
 
 export const selectorsErrors = {
@@ -107,3 +103,5 @@ export const calldataRegex = /^(0x)(..)*$/g;
 export enum MetamaskErrorCodes {
   chainNotAdded = 4902,
 }
+
+export const DEFAULT_ASSET_DECIMALS = 18;

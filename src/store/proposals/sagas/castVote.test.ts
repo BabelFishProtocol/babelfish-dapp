@@ -22,7 +22,10 @@ afterEach(() => {
 const initialState = { ...new ProposalsState() };
 
 const mockGovernorContract = createMockedContract(
-  GovernorAlpha__factory.connect('0x01', mockSigner),
+  GovernorAlpha__factory.connect(
+    '0x0000000000000000000000000000000000000001',
+    mockSigner
+  ),
   false
 );
 

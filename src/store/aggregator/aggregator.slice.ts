@@ -18,7 +18,7 @@ const submitStepCallActions = createStepCallsActions(
 );
 
 const aggregatorSlice = createSlice({
-  name: Reducers.Aggregator,
+  name: Reducers.Convert,
   initialState,
   reducers: {
     setStartingToken: (
@@ -77,6 +77,27 @@ const aggregatorSlice = createSlice({
     setStartingTokenBalance: (state, { payload }: PayloadAction<string>) => {
       state.startingTokenBalance.state = 'success';
       state.startingTokenBalance.data = payload;
+    },
+    fetchDestinationTokenAggregatorBalanceLoading: (state) => {
+      state.destinationTokenAggregatorBalance.state = 'loading';
+    },
+    fetchDestinationTokenAggregatorBalanceFailure: (
+      state,
+      { payload }: PayloadAction<string>
+    ) => {
+      state.destinationTokenAggregatorBalance.state = 'failure';
+      state.destinationTokenAggregatorBalance.data = undefined;
+      state.fetchDestinationTokenAggregatorBalanceErrorReason = payload;
+    },
+    setDestinationTokenAggregatorBalance: (
+      state,
+      { payload }: PayloadAction<string>
+    ) => {
+      state.destinationTokenAggregatorBalance.state = 'success';
+      state.destinationTokenAggregatorBalance.data = payload;
+    },
+    setIsStartingTokenPaused: (state, { payload }: PayloadAction<string[]>) => {
+      state.pausedTokens = payload;
     },
     togglePool: (state) => {
       state.pool =

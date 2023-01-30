@@ -1,11 +1,12 @@
 import Box from '@mui/material/Box';
-import React, { useCallback } from 'react';
+import React, { Ref, useCallback } from 'react';
 import {
   Controller,
   Path,
   PathValue,
   UnpackNestedValue,
 } from 'react-hook-form';
+import { FieldErrorMessage } from '../FieldErrorMessage/FieldErrorMessage.component';
 
 import { DropdownOptions } from './Dropdown.component';
 import { DropdownOptionType, ControlledDropdownProps } from './Dropdown.types';
@@ -19,8 +20,11 @@ export const ControlledDropdown = <
   control,
   options,
   setValue,
+  dropdownRef,
   ...dropdownProps
-}: ControlledDropdownProps<OptionType, FormValues>) => {
+}: ControlledDropdownProps<OptionType, FormValues> & {
+  dropdownRef?: Ref<HTMLDivElement>; // I use a custom ref prop because it's not possible to use forwardRef with generic props, see https://9to5answer.com/react-with-typescript-generics-while-using-react-forwardref
+}) => {
   const setValueWhenOneOption = useCallback(() => {
     if (options.length === 1) {
       setValue(
@@ -46,7 +50,9 @@ export const ControlledDropdown = <
             onChange={onChange}
             error={fieldState.error}
             setValueWhenOneOption={setValueWhenOneOption}
+            dropdownRef={dropdownRef}
           />
+          <FieldErrorMessage error={fieldState.error} />
         </Box>
       )}
       name={name}

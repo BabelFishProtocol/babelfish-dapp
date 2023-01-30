@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { UseFormResetField, UseFormSetValue } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -19,6 +19,11 @@ import {
 } from '../../store/app/app.selectors';
 import { switchConnectedChain } from '../../utils/switchConnectedChain';
 import { AggregatorInputs, AggregatorFormValues } from './Aggregator.fields';
+import { FocusActiveFieldParameters } from './Aggregator.types';
+import {
+  focusCurrentFieldIfEmpty,
+  removeFocusFromCurrentField,
+} from './Aggregator.utils';
 
 export const useAggregatorDropdowns = (
   startingChain: ChainEnum | '',
@@ -48,18 +53,32 @@ export const useAggregatorDropdowns = (
     setDestinationChainOptions(pool.baseChains);
   }, [pool.baseChains]);
 
+  const startingChainBassetTokens = useMemo(
+    () =>
+      pool.baseChains.find((item) => item.id === startingChain)?.bassets ?? [],
+    [pool.baseChains, startingChain]
+  );
+
+  const destinationChainBassetTokens = useMemo(
+    () =>
+      pool.baseChains.find((item) => item.id === destinationChain)?.bassets ??
+      [],
+    [destinationChain, pool.baseChains]
+  );
+
   useEffect(() => {
     resetField(AggregatorInputs.StartingToken);
-    const bassetTokens =
-      pool.baseChains.find((item) => item.id === startingChain)?.bassets ?? [];
 
     if (isRSK(startingChain)) {
       // Enable all chain options when RSK
-      setStartingTokenOptions([pool.masset, ...bassetTokens]);
+      setStartingTokenOptions([pool.masset, ...startingChainBassetTokens]);
 
       if (isRSK(destinationChain)) {
         // Enable all chain options when RSK -> RSK
-        setDestinationTokenOptions([pool.masset, ...bassetTokens]);
+        setDestinationTokenOptions([
+          pool.masset,
+          ...destinationChainBassetTokens,
+        ]);
         return;
       }
 
@@ -72,7 +91,7 @@ export const useAggregatorDropdowns = (
 
     if (isNotRSK(startingChain)) {
       // Enable basset tokens when selected NOT RSK
-      setStartingTokenOptions(bassetTokens);
+      setStartingTokenOptions(startingChainBassetTokens);
 
       if (isRSK(destinationChain)) {
         // Force XUSD for RSK when NOT RSK -> RSK
@@ -83,27 +102,32 @@ export const useAggregatorDropdowns = (
       if (startingChain && destinationChain) {
         // Reset destination chain when NOT RSK -> NOT RSK
         setValue(AggregatorInputs.DestinationChain, '');
-        return;
       }
     }
 
-    setStartingTokenOptions([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [startingChain, pool.baseChains, pool.masset, resetField, setValue]);
+  }, [
+    startingChain,
+    pool.baseChains,
+    pool.masset,
+    resetField,
+    setValue,
+    destinationChainBassetTokens,
+  ]);
 
   useEffect(() => {
     resetField(AggregatorInputs.DestinationToken);
-    const bassetTokens =
-      pool.baseChains.find((item) => item.id === destinationChain)?.bassets ??
-      [];
 
     if (isRSK(destinationChain)) {
       // Enable all chain options when RSK
-      setDestinationTokenOptions([pool.masset, ...bassetTokens]);
+      setDestinationTokenOptions([
+        pool.masset,
+        ...destinationChainBassetTokens,
+      ]);
 
       if (isRSK(startingChain)) {
         // Enable all chain options when RSK -> RSK
-        setStartingTokenOptions([pool.masset, ...bassetTokens]);
+        setStartingTokenOptions([pool.masset, ...startingChainBassetTokens]);
         return;
       }
 
@@ -116,7 +140,7 @@ export const useAggregatorDropdowns = (
 
     if (isNotRSK(destinationChain)) {
       // Enable basset tokens when selected NOT RSK
-      setDestinationTokenOptions(bassetTokens);
+      setDestinationTokenOptions(destinationChainBassetTokens);
 
       if (isRSK(startingChain)) {
         // Force XUSD for RSK when RSK -> NOT RSK
@@ -147,11 +171,34 @@ export const useAggregatorDropdowns = (
       resetField(AggregatorInputs.StartingToken);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [destinationToken, resetField]);
+  }, [
+    destinationToken,
+    resetField,
+    destinationChainBassetTokens,
+    startingChainBassetTokens,
+  ]);
+
+  useEffect(() => {
+    if (isRSK(startingChain) && isRSK(destinationChain) && startingToken) {
+      if (startingToken !== TokenEnum.XUSD) {
+        setDestinationTokenOptions([pool.masset]);
+      } else {
+        setDestinationTokenOptions([
+          pool.masset,
+          ...destinationChainBassetTokens,
+        ]);
+      }
+    }
+  }, [
+    destinationChainBassetTokens,
+    destinationChain,
+    pool.masset,
+    startingChain,
+    startingToken,
+  ]);
 
   const toggleFlow = async () => {
     const tempChain = startingChain;
-    const tempToken = startingToken;
 
     if (destinationChain && destinationChain !== startingChain) {
       await switchConnectedChain(destinationChain, provider);
@@ -159,8 +206,8 @@ export const useAggregatorDropdowns = (
 
     setValue(AggregatorInputs.DestinationChain, tempChain);
     setValue(AggregatorInputs.StartingChain, destinationChain);
-    setValue(AggregatorInputs.DestinationToken, tempToken);
-    setValue(AggregatorInputs.StartingToken, destinationToken);
+    setValue(AggregatorInputs.DestinationToken, '');
+    setValue(AggregatorInputs.StartingToken, '');
   };
 
   return {
@@ -228,4 +275,24 @@ export const useWalletAddress = (
       setValue(AggregatorInputs.ReceiveAddress, walletAddress);
     }
   }, [walletAddress, setValue]);
+};
+
+export const useFocusActiveFields = (
+  parameters: FocusActiveFieldParameters[]
+) => {
+  useEffect(() => {
+    focusCurrentFieldIfEmpty(parameters[0]);
+  }, [parameters]);
+
+  useEffect(() => {
+    removeFocusFromCurrentField(parameters[0]);
+  }, [parameters]);
+
+  useEffect(() => {
+    focusCurrentFieldIfEmpty(parameters[1]);
+  }, [parameters]);
+
+  useEffect(() => {
+    removeFocusFromCurrentField(parameters[1]);
+  }, [parameters]);
 };

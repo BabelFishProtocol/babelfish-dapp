@@ -54,10 +54,10 @@ afterEach(() => {
 });
 
 describe('aggregator store', () => {
-  const reducer = combineReducers(pick(rootReducer, [Reducers.Aggregator]));
+  const reducer = combineReducers(pick(rootReducer, [Reducers.Convert]));
 
   const initialState: DeepPartial<RootState> = {
-    [Reducers.Aggregator]: { ...new AggregatorState() },
+    [Reducers.Convert]: { ...new AggregatorState() },
   };
 
   describe('fetchBridgeData', () => {
@@ -65,8 +65,8 @@ describe('aggregator store', () => {
 
     const successState: DeepPartial<RootState> = {
       ...initialState,
-      [Reducers.Aggregator]: {
-        ...initialState[Reducers.Aggregator],
+      [Reducers.Convert]: {
+        ...initialState[Reducers.Convert],
         allowTokensAddress: {
           state: 'success',
           data: allowTokensAddress,
@@ -76,8 +76,8 @@ describe('aggregator store', () => {
 
     const failureState: DeepPartial<RootState> = {
       ...initialState,
-      [Reducers.Aggregator]: {
-        ...initialState[Reducers.Aggregator],
+      [Reducers.Convert]: {
+        ...initialState[Reducers.Convert],
         allowTokensAddress: {
           state: 'failure',
           data: undefined,
@@ -142,8 +142,8 @@ describe('aggregator store', () => {
 
     const successState: DeepPartial<RootState> = {
       ...initialState,
-      [Reducers.Aggregator]: {
-        ...initialState[Reducers.Aggregator],
+      [Reducers.Convert]: {
+        ...initialState[Reducers.Convert],
         feesAndLimits: {
           state: 'success',
           data: {
@@ -158,8 +158,8 @@ describe('aggregator store', () => {
 
     const failureState: DeepPartial<RootState> = {
       ...initialState,
-      [Reducers.Aggregator]: {
-        ...initialState[Reducers.Aggregator],
+      [Reducers.Convert]: {
+        ...initialState[Reducers.Convert],
         feesAndLimits: {
           state: 'failure',
           data: {},
@@ -225,8 +225,8 @@ describe('aggregator store', () => {
         )
         .hasFinalState({
           ...failureState,
-          [Reducers.Aggregator]: {
-            ...failureState[Reducers.Aggregator],
+          [Reducers.Convert]: {
+            ...failureState[Reducers.Convert],
             fetchFeesAndLimitsErrorReason:
               'Not enough data to fetch bridge fees',
           },
@@ -256,8 +256,8 @@ describe('aggregator store', () => {
         )
         .hasFinalState({
           ...failureState,
-          [Reducers.Aggregator]: {
-            ...failureState[Reducers.Aggregator],
+          [Reducers.Convert]: {
+            ...failureState[Reducers.Convert],
             fetchFeesAndLimitsErrorReason:
               'There was some error in fetching fees and limits. Please try again',
           },
@@ -274,8 +274,8 @@ describe('aggregator store', () => {
 
     const successState: DeepPartial<RootState> = {
       ...initialState,
-      [Reducers.Aggregator]: {
-        ...initialState[Reducers.Aggregator],
+      [Reducers.Convert]: {
+        ...initialState[Reducers.Convert],
         startingTokenBalance: {
           state: 'success',
           data: testStartingTokenBalance,
@@ -285,8 +285,8 @@ describe('aggregator store', () => {
 
     const failureState: DeepPartial<RootState> = {
       ...initialState,
-      [Reducers.Aggregator]: {
-        ...initialState[Reducers.Aggregator],
+      [Reducers.Convert]: {
+        ...initialState[Reducers.Convert],
         startingTokenBalance: {
           state: 'failure',
           data: undefined,
@@ -332,8 +332,8 @@ describe('aggregator store', () => {
         )
         .hasFinalState({
           ...failureState,
-          [Reducers.Aggregator]: {
-            ...failureState[Reducers.Aggregator],
+          [Reducers.Convert]: {
+            ...failureState[Reducers.Convert],
             fetchStartingTokenBalanceErrorReason: 'Please connect wallet first',
           },
         })
@@ -357,8 +357,8 @@ describe('aggregator store', () => {
         )
         .hasFinalState({
           ...failureState,
-          [Reducers.Aggregator]: {
-            ...failureState[Reducers.Aggregator],
+          [Reducers.Convert]: {
+            ...failureState[Reducers.Convert],
             fetchStartingTokenBalanceErrorReason:
               'Could not fetch starting token balance',
           },

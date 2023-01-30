@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { Ref, useEffect } from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
 import { DropdownOptionType, DropdownProps } from './Dropdown.types';
 import { NameWithIcon } from '../NameWithIcon/NameWithIcon.component';
-import { FieldErrorMessage } from '../FieldErrorMessage/FieldErrorMessage.component';
 
 export const DropdownOptions = <
   ItemSelected extends DropdownOptionType,
@@ -19,12 +18,16 @@ export const DropdownOptions = <
   sx,
   error,
   autoFocus,
+  dropdownRef,
   onChange,
   setValueWhenOneOption,
-}: DropdownProps<ItemSelected, ValueType>) => {
+}: DropdownProps<ItemSelected, ValueType> & {
+  dropdownRef?: Ref<HTMLDivElement>; // I use a custom ref prop because it's not possible to use forwardRef with generic props, see https://9to5answer.com/react-with-typescript-generics-while-using-react-forwardref
+}) => {
   useEffect(() => {
     setValueWhenOneOption?.();
   }, [setValueWhenOneOption]);
+
   const isDisabled =
     disabled || !options.length || (options.length === 1 && !!value);
 
@@ -34,6 +37,7 @@ export const DropdownOptions = <
         {title}
       </Typography>
       <Select
+        ref={dropdownRef}
         value={value}
         error={!!error}
         onChange={onChange}
@@ -65,7 +69,6 @@ export const DropdownOptions = <
             </>
           </MenuItem>
         ))}
-        <FieldErrorMessage error={error} />
       </Select>
     </FormControl>
   );

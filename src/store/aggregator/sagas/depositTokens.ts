@@ -7,15 +7,13 @@ import {
 } from '../../../config/chains';
 import { IEvent } from '../../../gql/graphql';
 import { parseToWei } from '../../../utils/helpers';
-import {
-  accountSelector,
-  massetContractSelector,
-} from '../../app/app.selectors';
+import { accountSelector } from '../../app/app.selectors';
 import { SagaContractEffect, SagaContractCallStep } from '../../types';
 import { contractStepCallsSaga } from '../../utils/utils.sagas';
 import {
   bridgeContractSelector,
   massetAddressSelector,
+  massetContractSelector,
   startingTokenAddressSelector,
   startingTokenContractSelector,
   startingTokenDecimalsSelector,
@@ -93,7 +91,7 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
   if (isRSK) {
     submitEffect = call(
       massetContract.mintTo,
-      tokenAddress,
+      tokenAddress.toLowerCase(),
       amount,
       receiveAddress.toLowerCase()
     );
@@ -104,9 +102,9 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
     );
     submitEffect = call(
       bridge!.receiveTokensAt,
-      tokenAddress,
+      tokenAddress.toLowerCase(),
       amount,
-      massetAddress,
+      massetAddress.toLowerCase(),
       extraData
     );
   }

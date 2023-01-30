@@ -1,10 +1,10 @@
-import Box from '@mui/material/Box';
+import { Checkbox, Box, FormControlLabel, Link } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
 import { useForm } from 'react-hook-form';
 
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { PageView } from '../../components/PageView/PageView.component';
 import { ControlledCurrencyInput } from '../../components/CurrencyInput/CurrencyInput.controlled';
@@ -21,12 +21,13 @@ import { AggregatorComponentProps } from './Aggregator.types';
 import {
   useAggregatorDropdowns,
   useConnectedChain,
+  useFocusActiveFields,
   useWalletAddress,
 } from './Aggregator.hooks';
 import { AggregatorInfoContainer } from './AggregatorInfo/AggregatorInfo.container';
 import { SendAmount } from './SendAmount/SendAmount.container';
 import { flowStateSelector } from '../../store/aggregator/aggregator.selectors';
-import { UrlNames } from '../../constants';
+import { fieldsErrors, UrlNames } from '../../constants';
 
 const PageViewTitle: React.FC = ({ children }) => (
   <Box
@@ -40,18 +41,21 @@ const PageViewTitle: React.FC = ({ children }) => (
 );
 
 export const AggregatorComponent = ({
-  getReceiveAmount,
   onSubmit,
   onDestinationChainChange,
   onStartingTokenChange,
   onDestinationTokenChange,
+  isStartingTokenPaused,
 }: AggregatorComponentProps) => {
   const flowState = useSelector(flowStateSelector);
+
   const {
     handleSubmit,
     watch,
     resetField,
     setValue,
+    setError,
+    clearErrors,
     control,
     formState: { isValid },
   } = useForm<AggregatorFormValues>({
@@ -64,6 +68,7 @@ export const AggregatorComponent = ({
   const destinationChain = watch(AggregatorInputs.DestinationChain);
   const destinationToken = watch(AggregatorInputs.DestinationToken);
   const amount = watch(AggregatorInputs.SendAmount);
+  const receivingAddress = watch(AggregatorInputs.ReceiveAddress);
 
   const {
     startingChainOptions,
@@ -84,6 +89,25 @@ export const AggregatorComponent = ({
 
   useWalletAddress(setValue);
 
+  const destinationNetworkRef = useRef<HTMLDivElement>(null);
+  const destinationTokenRef = useRef<HTMLDivElement>(null);
+
+  const [isAddressDisclaimerChecked, setIsAddressDisclaimerChecked] =
+    useState(false);
+
+  useFocusActiveFields([
+    {
+      isPreviousFieldEmpty: !startingChain,
+      isCurrentFieldEmpty: !destinationChain,
+      currentFieldRef: destinationNetworkRef,
+    },
+    {
+      isPreviousFieldEmpty: !destinationChain,
+      isCurrentFieldEmpty: !destinationToken,
+      currentFieldRef: destinationTokenRef,
+    },
+  ]);
+
   useEffect(() => {
     onStartingTokenChange(startingToken || undefined);
   }, [startingToken, onStartingTokenChange]);
@@ -100,18 +124,40 @@ export const AggregatorComponent = ({
 
   useEffect(() => {
     if (amount) {
-      setValue(AggregatorInputs.ReceiveAmount, getReceiveAmount(amount));
+      setValue(AggregatorInputs.ReceiveAmount, amount); // TODO: This will change in the future once we have an incentive curve algorithm
     }
-  }, [amount, getReceiveAmount, setValue]);
+  }, [amount, setValue]);
+
+  useEffect(() => {
+    if (isAddressDisclaimerChecked && !receivingAddress) {
+      setIsAddressDisclaimerChecked(false);
+    }
+  }, [isAddressDisclaimerChecked, receivingAddress]);
 
   useEffect(() => {
     resetField(AggregatorInputs.SendAmount);
     resetField(AggregatorInputs.ReceiveAmount);
   }, [flowState, resetField]);
 
+  const handleAddressDisclaimerClick = useCallback(
+    () => setIsAddressDisclaimerChecked((previousValue) => !previousValue),
+    []
+  );
+
+  useEffect(() => {
+    if (!isStartingTokenPaused) {
+      clearErrors(AggregatorInputs.StartingToken);
+    } else {
+      setError(AggregatorInputs.StartingToken, {
+        type: 'validate',
+        message: fieldsErrors.depositsDisabled,
+      });
+    }
+  }, [clearErrors, isStartingTokenPaused, setError]);
+
   return (
     <>
-      <Breadcrumbs links={[{ title: UrlNames.Aggregator }]} />
+      <Breadcrumbs links={[{ title: UrlNames.Convert }]} />
       <Box
         sx={{
           maxWidth: 1400,
@@ -189,6 +235,7 @@ export const AggregatorComponent = ({
                 options={destinationChainOptions}
                 sx={{ mb: 4 }}
                 setValue={setValue}
+                dropdownRef={destinationNetworkRef}
               />
 
               <ControlledDropdown
@@ -199,6 +246,7 @@ export const AggregatorComponent = ({
                 options={destinationTokenOptions}
                 sx={{ mb: 4 }}
                 setValue={setValue}
+                dropdownRef={destinationTokenRef}
               />
 
               <ControlledCurrencyInput
@@ -215,10 +263,52 @@ export const AggregatorComponent = ({
                 placeholder="Enter or paste address"
                 name={AggregatorInputs.ReceiveAddress}
                 control={control}
-                sx={{ mb: 5 }}
+                sx={{ mb: 0.5 }}
               />
-              <Button type="submit" fullWidth disabled={!isValid}>
-                Transfer
+              <Box
+                sx={{
+                  mt: 1,
+                  mb: 5,
+                }}
+              >
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={isAddressDisclaimerChecked}
+                      onClick={handleAddressDisclaimerClick}
+                    />
+                  }
+                  label={
+                    <Typography
+                      sx={{
+                        fontSize: '0.875rem',
+                        opacity: receivingAddress ? 1 : 0.5,
+                      }}
+                    >
+                      I confirm the funds will be accessible at the receiving
+                      address{' '}
+                      <Link
+                        href="https://wiki.sovryn.app/en/sovryn-dapp/bridge#beware-when-sending-to-exchange-addresses"
+                        target="_blank"
+                        color="primary"
+                      >
+                        (Learn more)
+                      </Link>
+                    </Typography>
+                  }
+                  disabled={!receivingAddress}
+                />
+              </Box>
+              <Button
+                type="submit"
+                fullWidth
+                disabled={
+                  !isValid ||
+                  !isAddressDisclaimerChecked ||
+                  isStartingTokenPaused
+                }
+              >
+                Convert
               </Button>
             </Box>
           </PageView>

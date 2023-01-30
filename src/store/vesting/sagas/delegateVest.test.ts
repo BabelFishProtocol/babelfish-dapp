@@ -10,7 +10,9 @@ import { vestingActions, vestingReducer } from '../vesting.slice';
 import { selectedVestContractSelector } from '../vesting.selectors';
 import { delegateVest } from './delegateVest';
 
-const mockVesting = createMockVestingContract('0x0');
+const mockVesting = createMockVestingContract(
+  '0x0000000000000000000000000000000000000000'
+);
 const initialState = { ...new VestingState() };
 
 afterEach(() => {

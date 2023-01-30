@@ -42,14 +42,14 @@ export const DashboardComponent = ({
         <Button
           sx={{ width: 'max-content', px: 3 }}
           component={Link}
-          to={Urls.Aggregator}
+          to={Urls.Convert}
         >
           Deposit/Withdraw XUSD
         </Button>
         <Button variant="outlined" component={Link} to={Urls.Staking}>
           Stake Your Fish
         </Button>
-        <Button variant="outlined" component={Link} to={Urls.Proposals}>
+        <Button variant="outlined" component={Link} to={Urls.Bitocracy}>
           Govern With Fish
         </Button>
       </Container>

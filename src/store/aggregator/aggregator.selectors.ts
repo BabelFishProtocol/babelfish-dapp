@@ -5,11 +5,12 @@ import { ChainEnum } from '../../config/chains';
 import { contractsAddresses } from '../../config/contracts';
 import { pools } from '../../config/pools';
 import { TokenEnum, tokens } from '../../config/tokens';
-import { Reducers } from '../../constants';
+import { DEFAULT_ASSET_DECIMALS, Reducers } from '../../constants';
 import {
   AllowTokens__factory,
   Bridge__factory,
   ERC20__factory,
+  MassetV3__factory,
 } from '../../contracts/types';
 import {
   chainIdSelector,
@@ -18,7 +19,7 @@ import {
 } from '../app/app.selectors';
 import { selectCurrentCallStepData } from '../utils/utils.selectors';
 
-const aggregatorState = (state: RootState) => state[Reducers.Aggregator];
+const aggregatorState = (state: RootState) => state[Reducers.Convert];
 
 export const flowStateSelector = createSelector(aggregatorState, (state) =>
   state.startingToken === TokenEnum.XUSD ? 'withdraw' : 'deposit'
@@ -44,6 +45,11 @@ export const startingTokenSelector = createSelector(
   (state) => state.startingToken
 );
 
+export const pausedTokensSelector = createSelector(
+  aggregatorState,
+  (state) => state.pausedTokens
+);
+
 export const destinationChainSelector = createSelector(
   aggregatorState,
   (state) => state.destinationChain
@@ -61,6 +67,15 @@ export const startingTokenBalanceSelector = createSelector(
 export const startingTokenBalanceStateSelector = createSelector(
   aggregatorState,
   (state) => state.startingTokenBalance.state
+);
+
+export const destinationTokenAggregatorBalanceSelector = createSelector(
+  aggregatorState,
+  (state) => state.destinationTokenAggregatorBalance.data
+);
+export const destinationTokenAggregatorBalanceStateSelector = createSelector(
+  aggregatorState,
+  (state) => state.destinationTokenAggregatorBalance.state
 );
 
 export const bridgeSelector = createSelector(
@@ -90,7 +105,7 @@ export const startingTokenDecimalsSelector = createSelector(
   [startingTokenSelector, bridgeSelector, flowStateSelector],
   (startingToken, bridge, flowState) => {
     if (!startingToken || !bridge) {
-      return undefined;
+      return DEFAULT_ASSET_DECIMALS;
     }
 
     return bridge.getTokenDecimals(startingToken, flowState);
@@ -135,6 +150,22 @@ export const massetAddressSelector = createSelector(
     }
 
     return undefined;
+  }
+);
+
+export const massetContractSelector = createSelector(
+  [massetAddressSelector, providerSelector],
+  (massetAddress, provider) => {
+    if (!massetAddress || !provider) {
+      return undefined;
+    }
+
+    const contract = MassetV3__factory.connect(
+      massetAddress,
+      provider?.getSigner()
+    );
+
+    return contract;
   }
 );
 
@@ -218,6 +249,21 @@ export const destinationTokenAddressSelector = createSelector(
     const address = tokens[destinationToken].addresses[destinationChain];
 
     return address;
+  }
+);
+
+export const destinationTokenContractSelector = createSelector(
+  [providerSelector, destinationTokenAddressSelector],
+  (provider, destinationTokenAddress) => {
+    if (!provider || !destinationTokenAddress) {
+      return undefined;
+    }
+
+    const contract = ERC20__factory.connect(
+      destinationTokenAddress.toLowerCase(),
+      provider.getSigner()
+    );
+    return contract;
   }
 );
 
