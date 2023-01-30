@@ -15,7 +15,7 @@ export const Logo = () => (
   <Box
     sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}
     component={Link}
-    to={Urls.Dashboard}
+    to={Urls.Convert}
   >
     <StyledLogo src={logo} alt="logo" />
 
