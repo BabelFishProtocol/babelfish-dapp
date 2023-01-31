@@ -57,6 +57,7 @@ export const StakingComponent = ({
                 variant="outlined"
                 onClick={handleOpenDialog}
                 sx={{ width: 'fit-content' }}
+                disabled
               >
                 Add New Stake
               </Button>
