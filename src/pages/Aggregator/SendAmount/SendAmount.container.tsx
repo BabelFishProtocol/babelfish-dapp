@@ -14,7 +14,6 @@ import {
 import { SendAmountContainerProps } from './SendAmount.types';
 import { fieldsErrors } from '../../../constants';
 import { TokenEnum } from '../../../config/tokens';
-import { ChainEnum } from '../../../config/chains';
 
 export const SendAmount = <FormValues extends FieldValues>(
   props: SendAmountContainerProps<FormValues>
@@ -60,7 +59,6 @@ export const SendAmount = <FormValues extends FieldValues>(
       if (
         startingTokenName === TokenEnum.XUSD &&
         destinationChain &&
-        [ChainEnum.RSK, ChainEnum.RSK_TESTNET].includes(destinationChain) &&
         destinationTokenAggregatorBalance !== undefined &&
         utils
           .parseUnits(amount, startingTokenDecimals)

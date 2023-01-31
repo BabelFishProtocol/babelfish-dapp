@@ -252,21 +252,6 @@ export const destinationTokenAddressSelector = createSelector(
   }
 );
 
-export const destinationTokenContractSelector = createSelector(
-  [providerSelector, destinationTokenAddressSelector],
-  (provider, destinationTokenAddress) => {
-    if (!provider || !destinationTokenAddress) {
-      return undefined;
-    }
-
-    const contract = ERC20__factory.connect(
-      destinationTokenAddress.toLowerCase(),
-      provider.getSigner()
-    );
-    return contract;
-  }
-);
-
 export const isEnoughTokensSelector = createSelector(
   [feesAndLimitsSelector, startingTokenBalanceSelector],
   (feesAndLimits, startingTokenBalance) => {
@@ -288,6 +273,44 @@ export const bassetAddressSelector = createSelector(
       return undefined;
     }
     return bridge.getRskSovrynTokenAddress(destinationToken)?.toLowerCase();
+  }
+);
+
+export const destinationTokenContractSelector = createSelector(
+  [
+    providerSelector,
+    chainIdSelector,
+    destinationChainSelector,
+    bassetAddressSelector,
+    destinationTokenAddressSelector,
+  ],
+  (
+    provider,
+    startingChain,
+    destinationChain,
+    bridgeTokenAddress,
+    rskTokenAddress
+  ) => {
+    if (
+      !provider ||
+      !startingChain ||
+      !destinationChain ||
+      (!bridgeTokenAddress && !rskTokenAddress)
+    ) {
+      return undefined;
+    }
+
+    const isCrossChain = startingChain !== destinationChain;
+
+    const destinationTokenAddress = isCrossChain
+      ? bridgeTokenAddress
+      : rskTokenAddress;
+
+    const contract = ERC20__factory.connect(
+      destinationTokenAddress!.toLowerCase(),
+      provider.getSigner()
+    );
+    return contract;
   }
 );
 
