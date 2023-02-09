@@ -128,6 +128,7 @@ const aggregatorSlice = createSlice({
       state.incentives.state = 'idle';
       state.incentives.data = {};
       state.receiveAmount = undefined;
+      state.slippageSlider = 2.5;
     },
   },
 });

@@ -10,7 +10,7 @@ import {
   AllowTokens__factory,
   Bridge__factory,
   ERC20__factory,
-  MassetV3__factory,
+  MassetV4__factory,
 } from '../../contracts/types';
 import {
   chainIdSelector,
@@ -171,7 +171,7 @@ export const massetContractSelector = createSelector(
       return undefined;
     }
 
-    const contract = MassetV3__factory.connect(
+    const contract = MassetV4__factory.connect(
       massetAddress,
       provider?.getSigner()
     );

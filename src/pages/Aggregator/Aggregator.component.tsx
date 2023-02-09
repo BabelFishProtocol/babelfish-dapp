@@ -28,6 +28,8 @@ import { AggregatorInfoContainer } from './AggregatorInfo/AggregatorInfo.contain
 import { SendAmount } from './SendAmount/SendAmount.container';
 import { flowStateSelector } from '../../store/aggregator/aggregator.selectors';
 import { fieldsErrors, UrlNames } from '../../constants';
+import { ControlledSlider } from './SlippageSlider/SlippageSlider.controlled';
+import { ChainEnum, SUPPORTED_CHAINS_RSK } from '../../config/chains';
 
 const PageViewTitle: React.FC = ({ children }) => (
   <Box
@@ -39,6 +41,9 @@ const PageViewTitle: React.FC = ({ children }) => (
     <Typography variant="h2">{children}</Typography>
   </Box>
 );
+
+const slippageSliderValues = [0, 0.5, 1, 1.5, 2, 2.5];
+const slippageSliderMarks = slippageSliderValues.map(v => ({ value: v, label: `${v}%`}));
 
 export const AggregatorComponent = ({
   onSubmit,
@@ -87,6 +92,8 @@ export const AggregatorComponent = ({
     setValue
   );
 
+  const slippageProtectionAvailable = SUPPORTED_CHAINS_RSK.includes(startingChain as ChainEnum);  
+  
   useEffect(() => {
     setValue(AggregatorInputs.ReceiveAmount, receiveAmount || '0.0');
   }, [ receiveAmount, setValue ]);
@@ -216,6 +223,17 @@ export const AggregatorComponent = ({
                 startingTokenName={startingToken}
                 control={control}
                 setValue={setValue}
+              />
+              <ControlledSlider 
+                disabled={!slippageProtectionAvailable}
+                title="Slippage Tolerance"
+                name={AggregatorInputs.SlippageSlider} 
+                control={control}
+                setValue={setValue}
+                min={0}
+                max={2.5}
+                step={null}
+                marks={slippageSliderMarks}
               />
             </Box>
           </PageView>

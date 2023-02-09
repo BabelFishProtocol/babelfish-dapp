@@ -4,6 +4,8 @@ import {
   checkIsCrossChain,
   SUPPORTED_CHAINS_RSK,
 } from '../../../config/chains';
+import { DEFAULT_ASSET_DECIMALS } from '../../../constants';
+import { MassetV4 } from '../../../contracts/types';
 import { IEvent } from '../../../gql/graphql';
 import { parseToWei } from '../../../utils/helpers';
 import { accountSelector } from '../../app/app.selectors';
@@ -58,14 +60,14 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
   const allowanceMasset = yield* call(
     tokenContract.allowance,
     account,
-    massetContract.address.toLowerCase()
+    (massetContract as any).address.toLowerCase()
   );
   const steps: SagaContractCallStep<AggregatorCalls>[] = [];
 
   if (allowanceMasset.lt(amount)) {
     const approveEffect = call(
       tokenContract.approve,
-      massetContract.address.toLowerCase(),
+      (massetContract as any).address.toLowerCase(),
       amount
     );
 
@@ -77,19 +79,24 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
 
   let submitEffect: SagaContractEffect;
 
+  const maximumPenaltyNumber = Number(payload.sendAmount) * payload.slippageSlider / 100;
+  const maximumPenalty = utils.parseUnits(maximumPenaltyNumber.toString(), DEFAULT_ASSET_DECIMALS);
+
   if (isRSK) {
     submitEffect = call(
-      massetContract.redeemTo,
+      massetContract.redeemToWithMaximumPenalty,
       destinationTokenAddress.toLowerCase(),
       amount,
-      receiveAddress.toLowerCase()
+      receiveAddress.toLowerCase(),
+      maximumPenalty
     );
   } else {
     submitEffect = call(
-      massetContract['redeemToBridge(address,uint256,address)'],
+      massetContract.redeemToBridgeWithMaximumPenalty,
       (bassetAddress as string).toLowerCase(),
       amount,
-      receiveAddress.toLowerCase()
+      receiveAddress.toLowerCase(),
+      maximumPenalty
     );
   }
 

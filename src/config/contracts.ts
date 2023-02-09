@@ -48,6 +48,6 @@ export const contractsAddresses: ContractsAddresses = {
     vestingRegistry: '0xEB0AAD069b452563628CE539df0Da531E2313148',
     XUSDMassetProxy: '0x1572D7E4a78A8AD14AE722E6fE5f5600a2c7A149',
     pauseManager: '0x08830e91423f393F082C03Ede0a94d828Af6629d',
-    rewardManager: '0xf26635c1bE04c66679734fCE9b2EdC9F67D858b7'
+    rewardManager: '0xFd14b97389e8677DF6057a50A6cAfbBFd03aF380'
   },
 };

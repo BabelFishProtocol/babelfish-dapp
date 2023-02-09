@@ -89,4 +89,5 @@ export class AggregatorState {
     ],
   };
   receiveAmount?: string = undefined;
+  slippageSlider?: number = 0;
 }

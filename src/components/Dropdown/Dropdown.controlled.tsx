@@ -29,9 +29,7 @@ export const ControlledDropdown = <
     if (options.length === 1) {
       setValue(
         name,
-        options[0].id as unknown as UnpackNestedValue<
-          PathValue<FormValues, Path<FormValues>>
-        >,
+        options[0].id as any,
         {
           shouldValidate: true,
         }
@@ -56,7 +54,7 @@ export const ControlledDropdown = <
         </Box>
       )}
       name={name}
-      control={control}
+      control={control as any}
       rules={{
         required: true,
         ...rules,
