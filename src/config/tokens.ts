@@ -6,6 +6,7 @@ import xusdIcon from '../assets/icons/tokens/xusd.svg';
 import rdocIcon from '../assets/icons/tokens/rdoc.svg';
 import docIcon from '../assets/icons/tokens/doc.svg';
 import zusdIcon from '../assets/icons/tokens/zusd.svg';
+import dllrIcon from '../assets/icons/tokens/dllr.svg';
 import { ChainEnum } from './chains';
 
 export enum TokenEnum {
@@ -143,7 +144,7 @@ export const tokens: TokensType = {
   [TokenEnum.DLLR]: {
     id: TokenEnum.DLLR,
     name: TokenEnum.DLLR,
-    icon: zusdIcon, // TODO: Change it to correct icon once we have it,
+    icon: dllrIcon,
     addresses: tokenOnChain.DLLR,
   },
 } as const;
