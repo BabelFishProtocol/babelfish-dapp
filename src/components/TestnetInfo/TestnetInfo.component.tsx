@@ -5,7 +5,9 @@ import { testnetMainnetSelector } from '../../store/app/app.selectors';
 
 export const TestnetInfo = () => {
   const testnetMainnetFlag = useSelector(testnetMainnetSelector);
-  if (testnetMainnetFlag === 'mainnet') return null;
+  if (!testnetMainnetFlag || testnetMainnetFlag === 'mainnet') {
+    return null;
+  }
 
   return (
     <Box
