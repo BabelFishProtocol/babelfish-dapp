@@ -98,7 +98,7 @@ export const WalletConnectionChecker = ({
   children,
 }: WalletConnectionCheckerProps) => (
   <>
-    <WalletNotConnectedModal />
+    {/* <WalletNotConnectedModal /> */}
     <WrongNetworkModal />
 
     {children}

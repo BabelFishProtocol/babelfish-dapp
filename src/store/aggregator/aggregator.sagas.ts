@@ -5,7 +5,6 @@ import { appActions } from '../app/app.slice';
 import {
   allowTokensContractSelector,
   bridgeContractSelector,
-  destinationTokenAddressSelector,
   destinationTokenContractSelector,
   flowStateSelector,
   massetAddressSelector,
@@ -113,23 +112,16 @@ export function* fetchDestinationTokenAggregatorBalance() {
   try {
     const startingToken = yield* select(startingTokenSelector);
     const massetAddress = yield* select(massetAddressSelector);
-    const destinationTokenAddress = yield* select(
-      destinationTokenAddressSelector
-    );
     const destinationTokenContract = yield* select(
       destinationTokenContractSelector
     );
 
-    if (startingToken !== TokenEnum.XUSD || !destinationTokenAddress) {
+    if (startingToken !== TokenEnum.XUSD || !destinationTokenContract) {
       return;
     }
 
     if (!massetAddress) {
       throw new Error('Could not find masset address');
-    }
-
-    if (!destinationTokenContract) {
-      throw new Error('Could not find destination token contract');
     }
 
     yield* put(

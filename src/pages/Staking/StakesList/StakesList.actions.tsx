@@ -46,11 +46,12 @@ export const StakeActionColumn: CustomColumn = ({
 
   const actions: TableAction[] = [
     {
-      isDisable: isActionDisabled,
+      isDisable: true,
       label: 'Increase',
       onClick: handleOpenIncreaseForm,
     },
     {
+      isDisable: true,
       label: 'Extend',
       onClick: handleOpenExtendForm,
     },
