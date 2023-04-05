@@ -1,6 +1,10 @@
 import { select, call, put, all, takeLatest } from 'typed-redux-saga';
 import { TokenEnum } from '../../config/tokens';
-import { accountSelector, pauseManagerSelector } from '../app/app.selectors';
+import {
+  pausedBassetListQuery,
+  PausedBassetListQueryItem,
+} from '../../queries/pausedBassetListQuery';
+import { accountSelector, subgraphClientSelector } from '../app/app.selectors';
 import { appActions } from '../app/app.slice';
 import {
   allowTokensContractSelector,
@@ -152,13 +156,17 @@ export function* fetchDestinationTokenAggregatorBalance() {
 
 export function* fetchPausedTokens() {
   try {
-    const pauseManager = yield* select(pauseManagerSelector);
+    const subgraphClient = yield* select(subgraphClientSelector);
 
-    if (!pauseManager) {
-      throw new Error('Could not find PauseManager contract');
+    if (!subgraphClient) {
+      throw new Error('Could not find subgraph client');
     }
 
-    const pausedTokens = yield* call(pauseManager.getTokens);
+    const { bassets } = yield* call(pausedBassetListQuery, subgraphClient);
+
+    const pausedTokens: string[] = bassets.map(
+      (item: PausedBassetListQueryItem) => item.id
+    );
 
     yield* put(aggregatorActions.setIsStartingTokenPaused(pausedTokens));
   } catch (e) {
