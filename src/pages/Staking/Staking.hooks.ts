@@ -77,9 +77,13 @@ export const useVotingPower = (amount: string, unlockDate: number) => {
         return;
       }
 
+      const timestampToLockDate = await staking.timestampToLockDate(
+        currentTimestamp
+      );
+
       const weight = await staking.computeWeightByDate(
         debouncedUnlockDate,
-        currentTimestamp
+        timestampToLockDate
       );
 
       const power = utils
