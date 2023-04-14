@@ -165,7 +165,7 @@ export function* fetchPausedTokens() {
     const { bassets } = yield* call(pausedBassetListQuery, subgraphClient);
 
     const pausedTokens: string[] = bassets.map(
-      (item: PausedBassetListQueryItem) => item.id
+      (item: PausedBassetListQueryItem) => item.id.toLowerCase()
     );
 
     yield* put(aggregatorActions.setIsStartingTokenPaused(pausedTokens));
