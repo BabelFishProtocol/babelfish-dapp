@@ -21,6 +21,7 @@ const getAllCheckpoints = (
   const userDateUTC = dayjs(currentDate).add(currentUserOffset, 'hour'); // get user offset
 
   const dates: number[] = [];
+
   const stakeExtensionDates: number[] = [];
 
   // getting the last possible date before the current date
