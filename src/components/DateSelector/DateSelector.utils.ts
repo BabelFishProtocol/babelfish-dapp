@@ -7,7 +7,7 @@ import {
   GetAvailableDatesConfig,
 } from './DateSelector.types';
 
-const getAllCheckpoints = (
+export const getAllCheckpoints = (
   kickoffTs: number,
   stakeEndDate: number | undefined
 ) => {
