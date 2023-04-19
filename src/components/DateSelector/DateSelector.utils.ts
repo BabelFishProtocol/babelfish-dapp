@@ -9,7 +9,7 @@ import {
 
 export const getAllCheckpoints = (
   kickoffTs: number,
-  stakeEndDate: number | undefined
+  stakeEndDate?: number | undefined
 ) => {
   const currentDate = new Date();
 
