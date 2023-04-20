@@ -10,6 +10,7 @@ import { TokenEnum } from '../../config/tokens';
 import {
   pausedTokensSelector,
   startingTokenAddressSelector,
+  startingTokenBridgeAddressSelector,
   submitAggregatorStatusSelector,
 } from '../../store/aggregator/aggregator.selectors';
 import { aggregatorActions } from '../../store/aggregator/aggregator.slice';
@@ -24,14 +25,21 @@ export const AggregatorContainer = () => {
   const pausedTokens = useSelector(pausedTokensSelector);
   const startingTokenAddress = useSelector(startingTokenAddressSelector);
 
+  const startingTokenBridgeAddress = useSelector(
+    startingTokenBridgeAddressSelector
+  );
+
   const isStartingTokenPaused = useMemo(
     () =>
       !!startingTokenAddress &&
       pausedTokens &&
-      pausedTokens.some(
-        (item) => item.toLowerCase() === startingTokenAddress.toLowerCase()
-      ),
-    [pausedTokens, startingTokenAddress]
+      (pausedTokens.some(
+        (item) => item === startingTokenAddress.toLowerCase()
+      ) ||
+        pausedTokens.some(
+          (item) => item === startingTokenBridgeAddress?.toLowerCase()
+        )),
+    [pausedTokens, startingTokenAddress, startingTokenBridgeAddress]
   );
 
   const onStartingTokenChange = (token: TokenEnum | undefined) => {

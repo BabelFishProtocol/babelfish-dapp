@@ -26,7 +26,6 @@ import {
   Multicall__factory,
   VestingRegistry__factory,
   GovernorAlpha__factory,
-  PauseManager__factory,
 } from '../../contracts/types';
 import { BaseContractFactory, MulticallProviderType } from '../types';
 import { hasLocalTransactions } from './app.slice';
@@ -133,21 +132,32 @@ export const currentChainSelector = createSelector(
   }
 );
 
+// In case we need more subgraphs in the future, we need to have more selectors like this
 export const subgraphClientSelector = createSelector(
-  currentChainSelector,
-  (chainConfig) => {
-    if (!chainConfig || !subgraphClients[chainConfig.id]) return undefined;
+  testnetMainnetSelector,
+  (testnetMainnet) => {
+    if (!testnetMainnet) {
+      return undefined;
+    }
 
-    return subgraphClients[chainConfig.id];
+    const chain =
+      testnetMainnet === 'testnet' ? ChainEnum.RSK_TESTNET : ChainEnum.RSK;
+
+    return subgraphClients[chain];
   }
 );
 
 export const subgraphWsClientSelector = createSelector(
-  currentChainSelector,
-  (chainConfig) => {
-    if (!chainConfig || !subgraphWsClients[chainConfig.id]) return undefined;
+  testnetMainnetSelector,
+  (testnetMainnet) => {
+    if (!testnetMainnet) {
+      return undefined;
+    }
 
-    return subgraphWsClients[chainConfig.id];
+    const chain =
+      testnetMainnet === 'testnet' ? ChainEnum.RSK_TESTNET : ChainEnum.RSK;
+
+    return subgraphWsClients[chain];
   }
 );
 
@@ -205,10 +215,6 @@ export const multicallContractSelector = createContractSelector(
 export const vestingRegistrySelector = createContractSelector(
   VestingRegistry__factory,
   'vestingRegistry'
-);
-export const pauseManagerSelector = createContractSelector(
-  PauseManager__factory,
-  'pauseManager'
 );
 
 export const multicallProviderSelector = createSelector(
