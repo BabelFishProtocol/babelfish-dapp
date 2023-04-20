@@ -8,9 +8,13 @@ import { ImprobabilityContainer } from './pages/Improbability/Improbability.cont
 import { ProposalDetailsContainer } from './pages/ProposalDetails/ProposalDetails.container';
 import { ProposalsListContainer } from './pages/ProposalsList/ProposalsList.container';
 import { StakingContainer } from './pages/Staking/Staking.container';
+import { Footer } from './components/Footer/Footer.component';
 
 export const App = () => (
-  <div className="App">
+  <div
+    className="App"
+    style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
+  >
     <Header />
     <Routes>
       <Route path={Urls.Bitocracy} element={<ProposalsListContainer />} />
@@ -25,5 +29,6 @@ export const App = () => (
     </Routes>
 
     <ErrorAlert />
+    <Footer />
   </div>
 );
