@@ -5,7 +5,9 @@ import { appActions } from '../app/app.slice';
 import {
   allowTokensContractSelector,
   bridgeContractSelector,
+  bridgeSelector,
   destinationTokenAddressSelector,
+  destinationTokenSelector,
   flowStateSelector,
   sendAmountSelector,
   startingTokenAddressSelector,
@@ -24,6 +26,8 @@ import { withdrawTokens } from './sagas/withdrawTokens';
 import { DEFAULT_ASSET_DECIMALS } from '../../constants';
 import { IncentiveType } from './aggregator.state';
 import { roundBN } from '../utils/utils.math';
+import { getPenalty, getReward } from '../../reward-manager-kludge';
+import { ChainEnum } from '../../config/chains';
 
 export function* transferTokens(action: AggregatorActions['submit']) {
   const flowState = yield* select(flowStateSelector);
@@ -134,47 +138,62 @@ export function* fetchIncentive() {
 
     yield* put(aggregatorActions.setIncentivesLoading());
 
-    const rewardManager = yield* select(rewardManagerSelector);
     const sendAmount = yield* select(sendAmountSelector);
+    if (Number(sendAmount) == 0) return;
     const flowState = yield* select(flowStateSelector);
-
-    if (!rewardManager) {
-      throw new Error('Could not find RewardManager contract');
-    }
 
     const startingTokenAddress = yield* select(startingTokenAddressSelector);
     const destinationTokenAddress = yield* select(destinationTokenAddressSelector);
+    if (!startingTokenAddress || !destinationTokenAddress) return;
 
     let incentive = BigNumber.from(0);
     let receiveAmount = BigNumber.from(0);
     let incentiveType = IncentiveType.none;
 
+    if (flowState === 'deposit') {
 
-    if(flowState === 'deposit' && startingTokenAddress) {
+      const bridge = (yield* select(bridgeSelector))!;
+      const startingToken = (yield* select(startingTokenSelector))!;
+      const sovTokenAddress = bridge!.getRskSovrynTokenAddress(startingToken)!;
 
       incentiveType = IncentiveType.reward;
       const tokenDecimals = yield* select(startingTokenDecimalsSelector);
       const amount = utils.parseUnits(sendAmount ?? '', tokenDecimals);
-      incentive = (yield* call(rewardManager.getRewardForDeposit,
-        startingTokenAddress.toLowerCase(), amount)) as BigNumber;
+      const isMainnet = bridge.to == ChainEnum.RSK;
+
+      incentive = (yield* call(getReward, sovTokenAddress, amount, isMainnet)) as BigNumber;
       receiveAmount = amount.add(incentive);
 
-    } else if (flowState === 'withdraw' && destinationTokenAddress) {
+    } else if (flowState === 'withdraw') {
 
+      const bridge = (yield* select(bridgeSelector))!;
+      const destinationToken = (yield* select(startingTokenSelector))!;
+      const sovTokenAddress = bridge!.getRskSovrynTokenAddress(destinationToken)!;
+
+      incentiveType = IncentiveType.penalty;
+      const amount = utils.parseUnits(sendAmount ?? '', DEFAULT_ASSET_DECIMALS);
+      const isMainnet = bridge.from == ChainEnum.RSK;
+
+      incentive = (yield* call(getPenalty, sovTokenAddress, amount, isMainnet)) as BigNumber;
+      receiveAmount = amount.add(incentive);
+
+      /*
       incentiveType = IncentiveType.penalty;
       const tokenDecimals = DEFAULT_ASSET_DECIMALS;
       const amount = utils.parseUnits(sendAmount ?? '', tokenDecimals);
       incentive = (yield* call(rewardManager.getPenaltyForWithdrawal,
         destinationTokenAddress.toLowerCase(), amount)) as BigNumber;
       receiveAmount = amount.sub(incentive);
+      */
 
     }
 
     incentive = incentive && roundBN(incentive, 3);
 
-    yield* put(aggregatorActions.setIncentives({ 
-      type: incentiveType, 
-      amount: utils.formatUnits(incentive, DEFAULT_ASSET_DECIMALS) }));
+    yield* put(aggregatorActions.setIncentives({
+      type: incentiveType,
+      amount: utils.formatUnits(incentive, DEFAULT_ASSET_DECIMALS)
+    }));
     yield* put(aggregatorActions.setReceiveAmount(utils.formatUnits(receiveAmount, DEFAULT_ASSET_DECIMALS)));
 
   } catch (e) {
