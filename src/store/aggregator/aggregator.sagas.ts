@@ -6,10 +6,11 @@ import {
   allowTokensContractSelector,
   bridgeContractSelector,
   bridgeSelector,
+  destinationChainSelector,
   destinationTokenAddressSelector,
-  destinationTokenSelector,
   flowStateSelector,
   sendAmountSelector,
+  startingChainSelector,
   startingTokenAddressSelector,
   startingTokenContractSelector,
   startingTokenDecimalsSelector,
@@ -152,40 +153,34 @@ export function* fetchIncentive() {
 
     if (flowState === 'deposit') {
 
-      const bridge = (yield* select(bridgeSelector))!;
-      const startingToken = (yield* select(startingTokenSelector))!;
-      const sovTokenAddress = bridge!.getRskSovrynTokenAddress(startingToken)!;
+      const startingToken = (yield* select(startingTokenSelector));
+      const bridge = (yield* select(bridgeSelector));
+      const sovTokenAddress = bridge ? 
+        bridge.getRskSovrynTokenAddress(startingToken!) : destinationTokenAddress;
 
       incentiveType = IncentiveType.reward;
       const tokenDecimals = yield* select(startingTokenDecimalsSelector);
       const amount = utils.parseUnits(sendAmount ?? '', tokenDecimals);
-      const isMainnet = bridge.to == ChainEnum.RSK;
+      const destinationChain = yield* select(destinationChainSelector);
+      const isMainnet = destinationChain == ChainEnum.RSK;
 
-      incentive = (yield* call(getReward, sovTokenAddress, amount, isMainnet)) as BigNumber;
+      incentive = (yield* call(getReward, sovTokenAddress!, amount, isMainnet)) as BigNumber;
       receiveAmount = amount.add(incentive);
 
     } else if (flowState === 'withdraw') {
 
-      const bridge = (yield* select(bridgeSelector))!;
-      const destinationToken = (yield* select(startingTokenSelector))!;
-      const sovTokenAddress = bridge!.getRskSovrynTokenAddress(destinationToken)!;
+      const destinationToken = (yield* select(startingTokenSelector));
+      const bridge = (yield* select(bridgeSelector));
+      const sovTokenAddress = bridge ? 
+        bridge.getRskSovrynTokenAddress(destinationToken!) : destinationToken;
 
       incentiveType = IncentiveType.penalty;
       const amount = utils.parseUnits(sendAmount ?? '', DEFAULT_ASSET_DECIMALS);
-      const isMainnet = bridge.from == ChainEnum.RSK;
+      const startingChain = yield* select(startingChainSelector);
+      const isMainnet = startingChain == ChainEnum.RSK;
 
-      incentive = (yield* call(getPenalty, sovTokenAddress, amount, isMainnet)) as BigNumber;
+      incentive = (yield* call(getPenalty, sovTokenAddress!, amount, isMainnet)) as BigNumber;
       receiveAmount = amount.add(incentive);
-
-      /*
-      incentiveType = IncentiveType.penalty;
-      const tokenDecimals = DEFAULT_ASSET_DECIMALS;
-      const amount = utils.parseUnits(sendAmount ?? '', tokenDecimals);
-      incentive = (yield* call(rewardManager.getPenaltyForWithdrawal,
-        destinationTokenAddress.toLowerCase(), amount)) as BigNumber;
-      receiveAmount = amount.sub(incentive);
-      */
-
     }
 
     incentive = incentive && roundBN(incentive, 3);

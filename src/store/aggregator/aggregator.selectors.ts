@@ -219,6 +219,16 @@ export const allowTokensContractSelector = createSelector(
   }
 );
 
+export const startingChainSelector = createSelector(
+  [chainIdSelector],
+  (startingChain) => {
+    if (!startingChain) {
+      return undefined;
+    }
+    return;
+  }
+);
+
 export const startingTokenAddressSelector = createSelector(
   [chainIdSelector, startingTokenSelector],
   (startingChain, startingToken) => {
