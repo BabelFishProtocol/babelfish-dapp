@@ -35,7 +35,7 @@ export const StakingComponent = ({
   const handleCloseDialog = () => setShowAddStakeDialog(false);
 
   return (
-    <>
+    <Box sx={{ position: 'relative' }}>
       <Breadcrumbs links={[{ title: UrlNames.Staking }]} />
       <PageAligner>
         <Box
@@ -109,7 +109,7 @@ export const StakingComponent = ({
           )}
         </Box>
       </PageAligner>
-    </>
+    </Box>
   );
 };
 

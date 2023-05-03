@@ -1,7 +1,7 @@
 import { utils } from 'ethers';
 import ethIcon from '../assets/icons/chains/eth.svg';
 import bscIcon from '../assets/icons/chains/bsc.svg';
-import rskIcon from '../assets/icons/chains/rsk.svg';
+import rskIcon from '../assets/icons/chains/rsk.png';
 
 export enum ChainEnum {
   ETH = 1,
@@ -45,7 +45,7 @@ export const testnetChains: Record<TestnetChains, ChainType> = {
     },
   },
   [ChainEnum.RSK_TESTNET]: {
-    name: 'RSK Testnet',
+    name: 'Rootstock Testnet',
     icon: rskIcon,
     id: ChainEnum.RSK_TESTNET,
     chainId: utils.hexlify(ChainEnum.RSK_TESTNET),
@@ -87,7 +87,7 @@ export const mainnetChains: Record<MainnetChains, ChainType> = {
     },
   },
   [ChainEnum.RSK]: {
-    name: 'RSK',
+    name: 'Rootstock',
     icon: rskIcon,
     id: ChainEnum.RSK,
     chainId: utils.hexlify(ChainEnum.RSK),

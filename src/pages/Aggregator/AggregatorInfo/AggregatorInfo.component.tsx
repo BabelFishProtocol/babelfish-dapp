@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import exchangeIcon from '../../../assets/icons/exchange.svg';
+import { DEFAULT_ASSET_DECIMALS } from '../../../constants';
 import { IncentiveType } from '../../../store/aggregator/aggregator.state';
 import { formatUnitAmount } from '../../../utils/helpers';
 import { SendAmount } from '../SendAmount/SendAmount.container';
@@ -12,8 +13,11 @@ export const AggregatorInfoComponent = ({
   onClick,
   feesAndLimitsState,
   feesAndLimits,
-  tokenName,
+  startingToken,
+  destinationToken,
   tokenDecimals,
+  aggregatorBalance,
+  aggregatorBalanceState,
   incentivesState,
   incentives,
   sendAmount
@@ -66,38 +70,58 @@ export const AggregatorInfoComponent = ({
         color: ({ palette }) => palette.grey[600],
       }}
     >
-      <InfoRow
-        label="Min Transfer"
-        value={`${formatUnitAmount(
-          feesAndLimits.minTransfer || 0,
-          tokenDecimals || 18,
-          2
-        )} ${tokenName || ''}`}
-        state={feesAndLimitsState}
-      />
-      <InfoRow
-        label="Max Transfer"
-        value={`${formatUnitAmount(feesAndLimits.maxTransfer || 0, 18, 2)} ${
-          tokenName || ''
-        }`}
-        state={feesAndLimitsState}
-      />
-      <InfoRow
-        label="Bridge Fee"
-        value={`${formatUnitAmount(
-          feesAndLimits.bridgeFee || 0,
-          tokenDecimals || 18,
-          2
-        )} ${tokenName || ''}`}
-        state={feesAndLimitsState}
-      />
-      <InfoRow
-        label="Day Limit"
-        value={`${formatUnitAmount(feesAndLimits.dailyLimit || 0, 18, 2)} ${
-          tokenName || ''
-        }`}
-        state={feesAndLimitsState}
-      />
+      {aggregatorBalance && (
+        <InfoRow
+          label="Aggregator Balance"
+          value={`${formatUnitAmount(
+            aggregatorBalance,
+            DEFAULT_ASSET_DECIMALS,
+            2
+          )} ${destinationToken || ''}`}
+          state={aggregatorBalanceState}
+        />
+      )}
+
+      {feesAndLimitsState === 'success' && (
+        <>
+          <InfoRow
+            label="Min Transfer"
+            value={`${formatUnitAmount(
+              feesAndLimits.minTransfer || 0,
+              tokenDecimals || DEFAULT_ASSET_DECIMALS,
+              2
+            )} ${startingToken || ''}`}
+            state={feesAndLimitsState}
+          />
+          <InfoRow
+            label="Max Transfer"
+            value={`${formatUnitAmount(
+              feesAndLimits.maxTransfer || 0,
+              DEFAULT_ASSET_DECIMALS,
+              2
+            )} ${startingToken || ''}`}
+            state={feesAndLimitsState}
+          />
+          <InfoRow
+            label="Bridge Fee"
+            value={`${formatUnitAmount(
+              feesAndLimits.bridgeFee || 0,
+              tokenDecimals || DEFAULT_ASSET_DECIMALS,
+              2
+            )} ${startingToken || ''}`}
+            state={feesAndLimitsState}
+          />
+          <InfoRow
+            label="Day Limit"
+            value={`${formatUnitAmount(
+              feesAndLimits.dailyLimit || 0,
+              DEFAULT_ASSET_DECIMALS,
+              2
+            )} ${startingToken || ''}`}
+            state={feesAndLimitsState}
+          />
+        </>
+      )}
     </Box>
   </Box>
 );

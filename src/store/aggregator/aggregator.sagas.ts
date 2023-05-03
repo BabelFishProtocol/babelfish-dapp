@@ -1,14 +1,17 @@
 import { BigNumber, utils } from 'ethers';
 import { select, call, put, all, takeLatest } from 'typed-redux-saga';
+import { TokenEnum } from '../../config/tokens';
 import { accountSelector, pauseManagerSelector, rewardManagerSelector } from '../app/app.selectors';
 import { appActions } from '../app/app.slice';
 import {
   allowTokensContractSelector,
   bridgeContractSelector,
+  destinationTokenContractSelector,
   bridgeSelector,
   destinationChainSelector,
   destinationTokenAddressSelector,
   flowStateSelector,
+  massetAddressSelector,
   sendAmountSelector,
   startingChainSelector,
   startingTokenAddressSelector,
@@ -115,6 +118,47 @@ export function* fetchStartingTokenBalance() {
     const msg =
       e instanceof Error ? e.message : 'Could not fetch starting token balance';
     yield* put(aggregatorActions.fetchStartingTokenBalanceFailure(msg));
+  }
+}
+
+export function* fetchDestinationTokenAggregatorBalance() {
+  try {
+    const startingToken = yield* select(startingTokenSelector);
+    const massetAddress = yield* select(massetAddressSelector);
+    const destinationTokenContract = yield* select(
+      destinationTokenContractSelector
+    );
+
+    if (startingToken !== TokenEnum.XUSD || !destinationTokenContract) {
+      return;
+    }
+
+    if (!massetAddress) {
+      throw new Error('Could not find masset address');
+    }
+
+    yield* put(
+      aggregatorActions.fetchDestinationTokenAggregatorBalanceLoading()
+    );
+
+    const destinationTokenAggregatorBalance = yield* call(
+      destinationTokenContract.balanceOf,
+      massetAddress
+    );
+
+    yield* put(
+      aggregatorActions.setDestinationTokenAggregatorBalance(
+        destinationTokenAggregatorBalance.toString()
+      )
+    );
+  } catch (e) {
+    const msg =
+      e instanceof Error
+        ? e.message
+        : 'Could not fetch destination token aggregator balance';
+    yield* put(
+      aggregatorActions.fetchDestinationTokenAggregatorBalanceFailure(msg)
+    );
   }
 }
 
@@ -226,6 +270,15 @@ export function* aggregatorSaga() {
     takeLatest(aggregatorActions.setDestinationChain, fetchAllowTokenAddress),
     takeLatest(aggregatorActions.setDestinationToken, fetchAllowTokenAddress),
     takeLatest(aggregatorActions.setStartingToken, fetchStartingTokenBalance),
+
+    takeLatest(
+      aggregatorActions.setDestinationToken,
+      fetchDestinationTokenAggregatorBalance
+    ),
+    takeLatest(
+      aggregatorActions.setStartingToken,
+      fetchDestinationTokenAggregatorBalance
+    ),
 
     takeLatest(aggregatorActions.setSendAmount, fetchIncentive),
     takeLatest(aggregatorActions.setDestinationToken, fetchIncentive),

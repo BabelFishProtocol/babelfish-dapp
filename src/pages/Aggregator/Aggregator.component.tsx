@@ -237,7 +237,11 @@ export const AggregatorComponent = ({
               />
             </Box>
           </PageView>
-          <AggregatorInfoContainer toggleFlow={toggleFlow} />
+          <AggregatorInfoContainer
+            toggleFlow={toggleFlow}
+            startingToken={startingToken}
+            destinationToken={destinationToken}
+          />
           <PageView
             title={<PageViewTitle>Destination chain</PageViewTitle>}
             sx={{

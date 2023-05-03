@@ -50,6 +50,8 @@ export const FOUR_WEEKS = 2419200;
 export const TWO_WEEKS = 1209600;
 export const ONE_DAY = 86400;
 
+export const MS = 1e3;
+
 export const monthNames = [
   'Jan',
   'Feb',
@@ -88,6 +90,7 @@ export const fieldsErrors = {
   amountLessThanMinLimit: 'Value cannot be less than the transaction min limit',
   amountEqualZero: 'Value cannot be equal zero',
   depositsDisabled: 'Deposits for this asset are currently disabled',
+  amountGreaterThanAggregatorBalance: 'Amount exceeds aggregator balance',
 };
 
 export const selectorsErrors = {
