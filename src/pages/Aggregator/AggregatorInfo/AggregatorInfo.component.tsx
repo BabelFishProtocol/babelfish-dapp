@@ -57,7 +57,7 @@ export const AggregatorInfoComponent = ({
         value={`${incentives?.amount || '0.0'}`}
         total={`${sendAmount || '0.0'}`}
         unit="XUSD"
-        state={incentivesState || 'idle'}
+        state={incentivesState}
       />
     </Box>
     <Box
