@@ -28,6 +28,7 @@ import { AggregatorInfoContainer } from './AggregatorInfo/AggregatorInfo.contain
 import { SendAmount } from './SendAmount/SendAmount.container';
 import { flowStateSelector } from '../../store/aggregator/aggregator.selectors';
 import { fieldsErrors, UrlNames } from '../../constants';
+import { useWalletConnect } from '../../hooks/useWalletConnect';
 
 const PageViewTitle: React.FC = ({ children }) => (
   <Box
@@ -48,6 +49,12 @@ export const AggregatorComponent = ({
   isStartingTokenPaused,
 }: AggregatorComponentProps) => {
   const flowState = useSelector(flowStateSelector);
+
+  const { wallets } = useWalletConnect();
+
+  console.log(
+    `wallets in Aggregator component: ${wallets?.[0]?.accounts[0]?.address}`
+  );
 
   const {
     handleSubmit,

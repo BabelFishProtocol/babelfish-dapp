@@ -6,11 +6,13 @@ import { Web3ReactProvider } from '@web3-react/core';
 import { ExternalProvider, Web3Provider } from '@ethersproject/providers';
 import { PersistGate } from 'redux-persist/integration/react';
 
+import { OnboardProvider } from '@sovryn/onboard-react';
 import { App } from './App';
 import { persistor, store } from './store';
 import { ThemeProvider } from './theme';
 import { AppUpdater } from './store/app/app.updaters';
 import { WalletConnectionChecker } from './components/WalletConnectionChecker/WalletConnectionChecker.component';
+import { onboard } from './lib/connector';
 
 if ('ethereum' in window) {
   // @ts-ignore
@@ -33,6 +35,7 @@ ReactDOM.render(
             <Web3ReactProvider getLibrary={getLibrary}>
               <WalletConnectionChecker>
                 <AppUpdater />
+                <OnboardProvider onboard={onboard} />
                 <App />
               </WalletConnectionChecker>
             </Web3ReactProvider>
