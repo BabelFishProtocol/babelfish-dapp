@@ -4,21 +4,13 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
-import { UnsupportedChainIdError } from '@web3-react/core';
 
-import { useDispatch } from 'react-redux';
 import { Link } from '@mui/material';
 import { Button } from '../../Button/Button.component';
 import { WalletIcon } from '../WalletIcon/WalletIcon.component';
 import { WalletDropdownProps, WalletOptionProps } from './WalletDropdown.types';
-import { appActions } from '../../../store/app/app.slice';
 
-export const WalletDropdown = ({
-  wallets,
-  activate,
-  setConnectedWallet,
-}: WalletDropdownProps) => {
-  const dispatch = useDispatch();
+export const WalletDropdown = ({ wallets, activate }: WalletDropdownProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const open = Boolean(anchorEl);
@@ -31,26 +23,8 @@ export const WalletDropdown = ({
     setAnchorEl(null);
   }, []);
 
-  const tryActivation = async (walletId: number) => {
-    const { name, connector, checkConnection } = wallets[walletId];
-
-    const errorMessage = checkConnection();
-
-    if (errorMessage) {
-      dispatch(appActions.setErrorMessage(errorMessage));
-    }
-
-    if (connector) {
-      try {
-        await activate(connector, undefined, true);
-        setConnectedWallet(name);
-      } catch (e) {
-        if (e instanceof UnsupportedChainIdError) {
-          await activate(connector);
-          setConnectedWallet(name);
-        }
-      }
-    }
+  const tryActivation = async () => {
+    activate();
   };
 
   return (

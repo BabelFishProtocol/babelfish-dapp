@@ -3,7 +3,9 @@ import createTypography from '@mui/material/styles/createTypography';
 
 export const getTypography = (palette: Palette) =>
   createTypography(palette, {
-    fontFamily: ['Comfortaa-Regular', 'Open Sans'].join(','),
+    fontFamily: ['Comfortaa-Regular', 'Open Sans', 'Montserrat', 'Roboto'].join(
+      ','
+    ),
     h1: {
       fontSize: 30,
       fontFamily: 'Archive',

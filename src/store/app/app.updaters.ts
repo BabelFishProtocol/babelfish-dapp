@@ -1,42 +1,42 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import {
-  useActiveWeb3React,
-  useEagerConnect,
-} from '../../hooks/useActiveWeb3React';
 import { appActions } from './app.slice';
-import { getWalletName } from './app.updaters.utils';
+import { useAccount } from '../../hooks/useAccount';
+import { WalletEnum } from '../../config/wallets';
 
 export const AppUpdater = () => {
   const dispatch = useDispatch();
-  const { chainId, account, library, connector } = useActiveWeb3React();
 
-  useEagerConnect();
-
-  useEffect(() => {
-    const name = getWalletName(connector);
-    if (name) {
-      dispatch(appActions.setConnectedWallet(name));
-    }
-  }, [connector, dispatch]);
+  const {
+    account: newAccount,
+    type,
+    provider,
+    chainId: newChainId,
+  } = useAccount();
 
   useEffect(() => {
-    if (chainId) {
-      dispatch(appActions.setChainId(chainId));
+    if (type) {
+      dispatch(appActions.setConnectedWallet(type as WalletEnum));
     }
-  }, [chainId, dispatch]);
+  }, [dispatch, type]);
 
   useEffect(() => {
-    if (account) {
-      dispatch(appActions.setAccount(account));
+    if (newChainId) {
+      dispatch(appActions.setChainId(newChainId));
     }
-  }, [account, dispatch]);
+  }, [newChainId, dispatch]);
 
   useEffect(() => {
-    if (library) {
-      dispatch(appActions.walletConnected(library));
+    if (newAccount) {
+      dispatch(appActions.setAccount(newAccount));
     }
-  }, [library, chainId, dispatch]);
+  }, [newAccount, dispatch]);
+
+  useEffect(() => {
+    if (provider) {
+      dispatch(appActions.walletConnected(provider));
+    }
+  }, [provider, dispatch]);
 
   return null;
 };

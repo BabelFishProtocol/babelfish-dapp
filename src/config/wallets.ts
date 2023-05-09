@@ -11,6 +11,7 @@ const ethereum = (window as WindowWithEthereum)?.ethereum;
 export enum WalletEnum {
   Metamask = 'Metamask',
   Liquality = 'Liquality',
+  Ledger = 'Ledger',
   // Portis = 'Portis',
 }
 
@@ -34,6 +35,16 @@ export const wallets: WalletConfig[] = [
   },
   {
     name: WalletEnum.Liquality,
+    icon: liqualityIcon,
+    connector: injectedConnector,
+    checkConnection: () => {
+      if (!ethereum || !ethereum.isLiquality) {
+        return '🔵🟣 You must install Liquality into your browser and make sure it is set as the default wallet.';
+      }
+    },
+  },
+  {
+    name: WalletEnum.Ledger,
     icon: liqualityIcon,
     connector: injectedConnector,
     checkConnection: () => {

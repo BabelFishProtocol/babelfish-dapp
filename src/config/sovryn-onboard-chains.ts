@@ -8,7 +8,7 @@ export enum Chains {
   BSC = 'bsc',
 }
 
-const isMainnet = false; // TODO: Just for testing, needs to be refactored later
+const isMainnet = true; // TODO: Just for testing, needs to be refactored later
 
 export const defaultChainId = (
   isMainnet ? ChainIds.RSK_MAINNET : ChainIds.RSK_TESTNET
