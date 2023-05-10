@@ -12,7 +12,6 @@ import { persistor, store } from './store';
 import { ThemeProvider } from './theme';
 import { AppUpdater } from './store/app/app.updaters';
 import { WalletConnectionChecker } from './components/WalletConnectionChecker/WalletConnectionChecker.component';
-import { onboard } from './lib/connector';
 
 if ('ethereum' in window) {
   // @ts-ignore
@@ -35,10 +34,7 @@ ReactDOM.render(
             <Web3ReactProvider getLibrary={getLibrary}>
               <WalletConnectionChecker>
                 <AppUpdater />
-                <OnboardProvider
-                  onboard={onboard}
-                  dataAttribute="dapp-onboard"
-                />
+                <OnboardProvider dataAttribute="dapp-onboard" />
                 <App />
               </WalletConnectionChecker>
             </Web3ReactProvider>
