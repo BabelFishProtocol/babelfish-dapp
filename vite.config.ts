@@ -1,53 +1,50 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
-import rollupNodePolyFill from 'rollup-plugin-node-polyfills';
-// import * as cryptoPlugin from 'crypto-browserify';
+import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 // https://vitejs.dev/config/
+// Configuration for sovryn-onboard package: https://onboard.blocknative.com/docs/modules/core#vite
 export default defineConfig({
-  resolve: {
-    alias: {
-      // stream: 'stream-browserify',
-      stream: 'rollup-plugin-node-polyfills/polyfills/stream',
-      buffer: 'rollup-plugin-node-polyfills/polyfills/buffer-es6',
-      // crypto3: cryptoPlugin,
-    },
-  },
   plugins: [
     react(),
-    NodeGlobalsPolyfillPlugin(),
-    NodeModulesPolyfillPlugin(),
-    rollupNodePolyFill(),
-  ],
-  define: {
-    'process.env': process.env,
-    // global: {},
-  },
-  optimizeDeps: {
-    esbuildOptions: {
-      plugins: [
-        NodeModulesPolyfillPlugin(),
-        {
-          name: 'fix-node-globals-polyfill',
-          setup(build) {
-            build.onResolve(
-              { filter: /_virtual-process-polyfill_\.js/ },
-              ({ path }) => ({ path })
-            );
-          },
-        },
+    nodePolyfills({
+      include: [
+        'node_modules/**/*.js',
+        // eslint-disable-next-line prefer-regex-literals
+        new RegExp('node_modules/.vite/.*js'),
+        'http',
+        'crypto',
       ],
+    }),
+  ],
+  resolve: {
+    alias: {
+      crypto: 'crypto-browserify',
+      stream: 'stream-browserify',
+      assert: 'assert',
     },
   },
   build: {
     rollupOptions: {
-      plugins: [
-        // Enable rollup polyfills plugin
-        // used during production bundling
-        rollupNodePolyFill,
-      ],
+      external: ['@sovryn/onboard-*'],
+      plugins: [nodePolyfills({ include: ['crypto', 'http'] })],
     },
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
+  },
+  optimizeDeps: {
+    exclude: ['@ethersproject/hash', 'wrtc', 'http'],
+    include: ['@sovryn/onboard-core', 'js-sha3', '@ethersproject/bignumber'],
+    esbuildOptions: {
+      // Node.js global to browser globalThis
+      define: {
+        global: 'globalThis',
+      },
+    },
+  },
+  define: {
+    'process.env': process.env,
+    global: 'window',
   },
 });

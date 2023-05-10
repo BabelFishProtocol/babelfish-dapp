@@ -12,7 +12,7 @@ export enum WalletEnum {
   Metamask = 'Metamask',
   Liquality = 'Liquality',
   Ledger = 'Ledger',
-  // Portis = 'Portis',
+  Trezor = 'Trezor',
 }
 
 export type WalletConfig = {
@@ -45,6 +45,16 @@ export const wallets: WalletConfig[] = [
   },
   {
     name: WalletEnum.Ledger,
+    icon: liqualityIcon,
+    connector: injectedConnector,
+    checkConnection: () => {
+      if (!ethereum || !ethereum.isLiquality) {
+        return '🔵🟣 You must install Liquality into your browser and make sure it is set as the default wallet.';
+      }
+    },
+  },
+  {
+    name: WalletEnum.Trezor,
     icon: liqualityIcon,
     connector: injectedConnector,
     checkConnection: () => {

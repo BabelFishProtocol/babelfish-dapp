@@ -17,8 +17,8 @@ const ledger = ledgerModule({
   assets,
 });
 const trezor = trezorModule({
-  email: 'victor@sovryn.app',
-  appUrl: 'http://localhost:3000/',
+  email: 'tiltom.defi@proton.me',
+  appUrl: 'https://app.babelfish.money/',
   basePaths,
   assets,
 });
