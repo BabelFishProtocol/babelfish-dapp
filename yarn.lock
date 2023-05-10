@@ -4426,7 +4426,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sovryn/ethers-provider@npm:*":
+"@sovryn/ethers-provider@npm:1.0.0":
   version: 1.0.0
   resolution: "@sovryn/ethers-provider@npm:1.0.0"
   dependencies:
@@ -4455,9 +4455,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sovryn/onboard-core@npm:1.0.0":
-  version: 1.0.0
-  resolution: "@sovryn/onboard-core@npm:1.0.0"
+"@sovryn/onboard-core@npm:1.0.1":
+  version: 1.0.1
+  resolution: "@sovryn/onboard-core@npm:1.0.1"
   dependencies:
     "@sovryn/onboard-common": 1.0.0
     bowser: ^2.11.0
@@ -4466,21 +4466,21 @@ __metadata:
     joi: ^17.6.0
     lodash.partition: ^4.6.0
     rxjs: ^7.5.6
-  checksum: 1b0052ced0b5bc0b9856d2169ec9dabe9ed87d2b7e5bfbcff3959dc1e42ac4472a02c030bf6603676cb414ddc333ae0cc2f78237db6b02a8bf7b04f2cbc2041d
+  checksum: 3dc92dfcdaf995a9514b494819954a7307c0a974770e9d09a413e9fc56be87ffe0f9ecbf50a4d3383a90cccba251bd5d11a5a90a5fd7043295de3718f7e60f63
   languageName: node
   linkType: hard
 
-"@sovryn/onboard-hw-common@npm:1.0.0":
-  version: 1.0.0
-  resolution: "@sovryn/onboard-hw-common@npm:1.0.0"
+"@sovryn/onboard-hw-common@npm:1.0.1":
+  version: 1.0.1
+  resolution: "@sovryn/onboard-hw-common@npm:1.0.1"
   dependencies:
     "@ethereumjs/common": ^2.6.5
     "@sovryn/onboard-common": 1.0.0
-    "@sovryn/onboard-core": 1.0.0
+    "@sovryn/onboard-core": 1.0.1
     ethers: ^5.7.0
     joi: ^17.6.0
     rxjs: 7.5.6
-  checksum: f21e4b385e1800b42436fada993a9ecf02b59bce052f5cce0026dc84ed4684d55ca9ba9a12926242bd5aa3f9b8cc20329625419ae2421a7569e2f5c1e9427d2a
+  checksum: 79be1ef30246666e012daa7070b693eb2ab9adebe7a1f37a78a883dfaf84febdfc763976604e8ba85440d63763dedd3a4a0ea7c99f33778eb3b20acb5fb23671
   languageName: node
   linkType: hard
 
@@ -4499,9 +4499,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sovryn/onboard-ledger@npm:1.0.0":
-  version: 1.0.0
-  resolution: "@sovryn/onboard-ledger@npm:1.0.0"
+"@sovryn/onboard-ledger@npm:1.0.1":
+  version: 1.0.1
+  resolution: "@sovryn/onboard-ledger@npm:1.0.1"
   dependencies:
     "@ethereumjs/tx": ^3.5.2
     "@ledgerhq/hw-app-eth": ^6.29.4
@@ -4510,46 +4510,46 @@ __metadata:
     "@ledgerhq/hw-transport-webusb": ^6.27.2
     "@metamask/eth-sig-util": ^4.0.1
     "@sovryn/onboard-common": 1.0.0
-    "@sovryn/onboard-hw-common": 1.0.0
+    "@sovryn/onboard-hw-common": 1.0.1
     ethers: ^5.7.0
     eventemitter3: ^4.0.7
     joi: ^17.6.0
     lodash.partition: ^4.6.0
     rxjs: 7.5.6
-  checksum: 39ce9f46c771e194a202301f946a04459f000ae1aebe946b5e2f6976d609089da73b6ad8a62fd5a48ab500c77d06f79cea158533b3a430816d7717ba3a672616
+  checksum: b89f17c5e985e54d79223fbe5a3eba38873924d1351f3a0dc9b14f1cee6c4ab1c0e5d66df010a0ae2678ef037dfda81edca5655ea2ae8583f9e6c125fef6e938
   languageName: node
   linkType: hard
 
-"@sovryn/onboard-react@npm:1.0.1":
-  version: 1.0.1
-  resolution: "@sovryn/onboard-react@npm:1.0.1"
+"@sovryn/onboard-react@npm:1.0.2":
+  version: 1.0.2
+  resolution: "@sovryn/onboard-react@npm:1.0.2"
   dependencies:
     "@sovryn/onboard-common": 1.0.0
-    "@sovryn/onboard-core": 1.0.0
-    "@sovryn/onboard-hw-common": 1.0.0
+    "@sovryn/onboard-core": 1.0.1
+    "@sovryn/onboard-hw-common": 1.0.1
   peerDependencies:
     "@sovryn/ui": 1.0.4
     ethers: 5.7.0
     react: 18.2.0
     react-dom: 18.2.0
     rxjs: 7.5.6
-  checksum: b393b9143a81b93959b6ee816ee399192761cb09d6c76fae8225e4a1671f32f14e8e1334588b947c4c756ca4b648ab14b3eec6320afafdf3868ac840bbb40de8
+  checksum: 049296707b1a89d56aa7ba9cb774ba5311e4d5a47223de1346721ba0f058b6546f5f62a940ed19128248a732c00bf7b40da18ec9fb1d20dcfad556e9ae167ae3
   languageName: node
   linkType: hard
 
-"@sovryn/onboard-trezor@npm:1.0.0":
-  version: 1.0.0
-  resolution: "@sovryn/onboard-trezor@npm:1.0.0"
+"@sovryn/onboard-trezor@npm:1.0.1":
+  version: 1.0.1
+  resolution: "@sovryn/onboard-trezor@npm:1.0.1"
   dependencies:
     "@ethereumjs/tx": 3.5.2
     "@metamask/eth-sig-util": 4.0.1
     "@sovryn/onboard-common": 1.0.0
-    "@sovryn/onboard-hw-common": 1.0.0
+    "@sovryn/onboard-hw-common": 1.0.1
     eth-crypto: 2.3.0
     ethers: 5.7.0
     hdkey: 2.0.1
     trezor-connect: 8.2.11
-  checksum: 90a5fa3f3f6db1c06e904eb18f408c5e020f29fc6df73d59685f6edb20217e570994e91a6292cff9329b31cd64bcaaa757690bee2e21fca7bbd49f9547c5e1c5
+  checksum: c54e7f3e266a4e634d0ed7159f359df6f2ea3902eb0ac696a19bfd608342d38c711fb5ba0eacaee081b2ff01a1278312ea3c70398d5948e80048375dd4ac2b8f
   languageName: node
   linkType: hard
 
@@ -5882,14 +5882,14 @@ __metadata:
     "@graphql-typed-document-node/core": 3.1.1
     "@mui/material": 5.4.0
     "@reduxjs/toolkit": 1.7.2
-    "@sovryn/ethers-provider": "*"
+    "@sovryn/ethers-provider": 1.0.0
     "@sovryn/onboard-common": 1.0.0
-    "@sovryn/onboard-core": 1.0.0
-    "@sovryn/onboard-hw-common": 1.0.0
+    "@sovryn/onboard-core": 1.0.1
+    "@sovryn/onboard-hw-common": 1.0.1
     "@sovryn/onboard-injected": 1.0.0
-    "@sovryn/onboard-ledger": 1.0.0
-    "@sovryn/onboard-react": 1.0.1
-    "@sovryn/onboard-trezor": 1.0.0
+    "@sovryn/onboard-ledger": 1.0.1
+    "@sovryn/onboard-react": 1.0.2
+    "@sovryn/onboard-trezor": 1.0.1
     "@sovryn/ui": 1.0.6
     "@testing-library/jest-dom": 5.16.2
     "@testing-library/react": 12.1.2
@@ -5937,7 +5937,7 @@ __metadata:
     redux-saga: 1.1.3
     redux-saga-test-plan: 4.0.4
     rollup-plugin-polyfill-node: 0.12.0
-    rxjs: 7.5.6
+    rxjs: 7.8.1
     stream-browserify: 3.0.0
     subscription-client: 0.9.15
     ts-jest: 27.1.3
@@ -12813,21 +12813,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rxjs@npm:7.8.1, rxjs@npm:^7.5.6":
+  version: 7.8.1
+  resolution: "rxjs@npm:7.8.1"
+  dependencies:
+    tslib: ^2.1.0
+  checksum: de4b53db1063e618ec2eca0f7965d9137cabe98cf6be9272efe6c86b47c17b987383df8574861bcced18ebd590764125a901d5506082be84a8b8e364bf05f119
+  languageName: node
+  linkType: hard
+
 "rxjs@npm:^7.5.5":
   version: 7.5.5
   resolution: "rxjs@npm:7.5.5"
   dependencies:
     tslib: ^2.1.0
   checksum: e034f60805210cce756dd2f49664a8108780b117cf5d0e2281506e9e6387f7b4f1532d974a8c8b09314fa7a16dd2f6cff3462072a5789672b5dcb45c4173f3c6
-  languageName: node
-  linkType: hard
-
-"rxjs@npm:^7.5.6":
-  version: 7.8.1
-  resolution: "rxjs@npm:7.8.1"
-  dependencies:
-    tslib: ^2.1.0
-  checksum: de4b53db1063e618ec2eca0f7965d9137cabe98cf6be9272efe6c86b47c17b987383df8574861bcced18ebd590764125a901d5506082be84a8b8e364bf05f119
   languageName: node
   linkType: hard
 
