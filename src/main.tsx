@@ -35,7 +35,10 @@ ReactDOM.render(
             <Web3ReactProvider getLibrary={getLibrary}>
               <WalletConnectionChecker>
                 <AppUpdater />
-                <OnboardProvider onboard={onboard} />
+                <OnboardProvider
+                  onboard={onboard}
+                  dataAttribute="dapp-onboard"
+                />
                 <App />
               </WalletConnectionChecker>
             </Web3ReactProvider>
