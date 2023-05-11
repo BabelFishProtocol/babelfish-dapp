@@ -1,6 +1,8 @@
-import metamaskIcon from '../assets/icons/metamask-icon.webp';
-// import portisIcon from '../assets/icons/portis.svg';
-import liqualityIcon from '../assets/icons/liquality.png';
+import { BoxProps } from '@mui/material';
+import ledgerIcon from '../assets/icons/ledger.svg';
+import trezorIcon from '../assets/icons/trezor.svg';
+import metamaskIcon from '../assets/icons/metamask.svg';
+import liqualityIcon from '../assets/icons/liquality.svg';
 
 export enum WalletEnum {
   Metamask = 'Metamask',
@@ -12,6 +14,7 @@ export enum WalletEnum {
 export type WalletConfig = {
   name: WalletEnum;
   icon: string;
+  sx?: BoxProps['sx'];
 };
 
 export const wallets: WalletConfig[] = [
@@ -25,10 +28,16 @@ export const wallets: WalletConfig[] = [
   },
   {
     name: WalletEnum.Ledger,
-    icon: liqualityIcon,
+    icon: ledgerIcon,
+    sx: {
+      backgroundColor: 'white',
+    },
   },
   {
     name: WalletEnum.Trezor,
-    icon: liqualityIcon,
+    icon: trezorIcon,
+    sx: {
+      backgroundColor: 'white',
+    },
   },
 ];
