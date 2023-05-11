@@ -12,7 +12,7 @@ type XusdLocalTransactions = {
 export class AppState {
   connectedWallet?: WalletEnum;
   chainId?: ChainEnum;
-  account: string | null = null;
+  account: string | undefined = undefined;
   currentBlockNumber?: number;
   provider?: Web3Provider;
   supportedNetworks: ChainEnum[] = [ChainEnum.RSK, ChainEnum.RSK_TESTNET];
