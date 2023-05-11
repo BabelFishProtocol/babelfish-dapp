@@ -12,6 +12,7 @@ import { useAccount } from '../../hooks/useAccount';
 
 export const WalletConnector = () => {
   const dispatch = useDispatch();
+
   const connectedWallet = useSelector(connectedWalletSelector);
 
   const { connectWallet, disconnectWallet, pending } = useWalletConnect();
