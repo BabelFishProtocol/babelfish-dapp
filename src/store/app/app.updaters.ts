@@ -7,12 +7,7 @@ import { WalletEnum } from '../../config/wallets';
 export const AppUpdater = () => {
   const dispatch = useDispatch();
 
-  const {
-    account: newAccount,
-    type,
-    provider,
-    chainId: newChainId,
-  } = useAccount();
+  const { account, type, provider, chainId } = useAccount();
 
   useEffect(() => {
     if (type) {
@@ -21,16 +16,16 @@ export const AppUpdater = () => {
   }, [dispatch, type]);
 
   useEffect(() => {
-    if (newChainId) {
-      dispatch(appActions.setChainId(newChainId));
+    if (chainId) {
+      dispatch(appActions.setChainId(chainId));
     }
-  }, [newChainId, dispatch]);
+  }, [chainId, dispatch]);
 
   useEffect(() => {
-    if (newAccount) {
-      dispatch(appActions.setAccount(newAccount));
+    if (account) {
+      dispatch(appActions.setAccount(account));
     }
-  }, [newAccount, dispatch]);
+  }, [account, dispatch]);
 
   useEffect(() => {
     if (provider) {

@@ -8,7 +8,7 @@ export enum Chains {
   BSC = 'bsc',
 }
 
-const isMainnet = true; // TODO: Just for testing, needs to be refactored later
+const isMainnet = true; // We don't distinguish between mainnet and testnet so this should be always set to true, set it to false only for testnet debugging if necessary
 
 export const defaultChainId = (
   isMainnet ? ChainIds.RSK_MAINNET : ChainIds.RSK_TESTNET
