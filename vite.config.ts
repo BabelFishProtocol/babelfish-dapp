@@ -5,18 +5,7 @@ import nodePolyfills from 'rollup-plugin-polyfill-node';
 // https://vitejs.dev/config/
 // Configuration for sovryn-onboard package: https://onboard.blocknative.com/docs/modules/core#vite
 export default defineConfig({
-  plugins: [
-    react(),
-    nodePolyfills({
-      include: [
-        'node_modules/**/*.js',
-        // eslint-disable-next-line prefer-regex-literals
-        new RegExp('node_modules/.vite/.*js'),
-        'http',
-        'crypto',
-      ],
-    }),
-  ],
+  plugins: [react()],
   resolve: {
     alias: {
       crypto: 'crypto-browserify',
@@ -45,6 +34,5 @@ export default defineConfig({
   },
   define: {
     'process.env': process.env,
-    global: 'window',
   },
 });
