@@ -1,52 +1,43 @@
-import { AbstractConnector } from '@web3-react/abstract-connector';
-import { injectedConnector } from './providers';
-
-import metamaskIcon from '../assets/icons/metamask-icon.webp';
-// import portisIcon from '../assets/icons/portis.svg';
-import liqualityIcon from '../assets/icons/liquality.png';
-import { WindowWithEthereum } from '../utils/types';
-
-const ethereum = (window as WindowWithEthereum)?.ethereum;
+import { BoxProps } from '@mui/material';
+import ledgerIcon from '../assets/icons/ledger.svg';
+import trezorIcon from '../assets/icons/trezor.svg';
+import metamaskIcon from '../assets/icons/metamask.svg';
+import liqualityIcon from '../assets/icons/liquality.svg';
 
 export enum WalletEnum {
   Metamask = 'Metamask',
   Liquality = 'Liquality',
-  // Portis = 'Portis',
+  Ledger = 'Ledger',
+  Trezor = 'Trezor',
 }
 
 export type WalletConfig = {
   name: WalletEnum;
   icon: string;
-  connector: AbstractConnector;
-  checkConnection: () => string | undefined;
+  sx?: BoxProps['sx'];
 };
 
 export const wallets: WalletConfig[] = [
   {
     name: WalletEnum.Metamask,
     icon: metamaskIcon,
-    connector: injectedConnector,
-    checkConnection: () => {
-      if (!ethereum || !ethereum.isMetaMask) {
-        return '🦊 You must install Metamask into your browser and make sure it is set as the default wallet.';
-      }
-    },
   },
   {
     name: WalletEnum.Liquality,
     icon: liqualityIcon,
-    connector: injectedConnector,
-    checkConnection: () => {
-      if (!ethereum || !ethereum.isLiquality) {
-        return '🔵🟣 You must install Liquality into your browser and make sure it is set as the default wallet.';
-      }
+  },
+  {
+    name: WalletEnum.Ledger,
+    icon: ledgerIcon,
+    sx: {
+      backgroundColor: 'white',
     },
   },
-  // {
-  //   name: WalletEnum.Portis,
-  //   icon: portisIcon,
-  //   connector: providerProvider, // TODO: fix portis errors
-  //   // connector: injectedConnector,
-  //   checkConnection: () => {},
-  // },
+  {
+    name: WalletEnum.Trezor,
+    icon: trezorIcon,
+    sx: {
+      backgroundColor: 'white',
+    },
+  },
 ];

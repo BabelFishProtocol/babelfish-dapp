@@ -62,7 +62,7 @@ describe('proposals store', () => {
           data: winningProposal as ProposalDetails,
         });
 
-        expect(winningProposalRatio.toFixed(2)).toBe('89.99');
+        expect(winningProposalRatio?.toFixed(2)).toBe('89.99');
 
         const beatenProposal: DeepPartial<ProposalDetails> = {
           forVotesAmount: '550000',
@@ -74,7 +74,7 @@ describe('proposals store', () => {
           data: beatenProposal as ProposalDetails,
         });
 
-        expect(beatenProposalRatio.toFixed(2)).toBe('13.36');
+        expect(beatenProposalRatio?.toFixed(2)).toBe('13.36');
       });
 
       it('works fine with big numbers', () => {
@@ -88,7 +88,7 @@ describe('proposals store', () => {
           data: winningProposal as ProposalDetails,
         });
 
-        expect(winningProposalRatio.toFixed(2)).toBe('66.67');
+        expect(winningProposalRatio?.toFixed(2)).toBe('66.67');
 
         const beatenProposal: DeepPartial<ProposalDetails> = {
           forVotesAmount: utils.parseEther('500').toString(),
@@ -100,7 +100,7 @@ describe('proposals store', () => {
           data: beatenProposal as ProposalDetails,
         });
 
-        expect(beatenProposalRatio.toFixed(2)).toBe('25.00');
+        expect(beatenProposalRatio?.toFixed(2)).toBe('25.00');
       });
     });
 

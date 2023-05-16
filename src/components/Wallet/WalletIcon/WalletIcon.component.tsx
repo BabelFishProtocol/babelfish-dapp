@@ -14,7 +14,7 @@ export const WalletIcon = ({ icon, name, sx }: WalletIconProps) => (
       height: 35,
       display: 'grid',
       placeItems: 'center',
-      borderRadius: '50%',
+      borderRadius: '8px',
       ...sx,
     }}
   >

@@ -16,7 +16,8 @@ export default () => {
     coverageDirectory: 'coverage',
     transform: {
       '^.+\\.tsx?$': 'ts-jest',
-      '.+\\.(svg)$': 'jest-transform-stub',
+      '.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2|svg)$':
+        'jest-transform-stub',
     },
     setupFilesAfterEnv: ['<rootDir>/setup-tests.ts'],
   };
