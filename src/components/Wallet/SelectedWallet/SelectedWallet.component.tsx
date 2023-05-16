@@ -30,7 +30,7 @@ export const SelectedWallet = ({
       }}
     >
       <PrettyTx value={account.toUpperCase()} color="inherit" variant="body1" />
-      <WalletIcon name={wallet.name} icon={wallet.icon} />
+      <WalletIcon name={wallet.name} icon={wallet.icon} sx={wallet?.sx} />
     </Box>
     <Button
       variant="text"

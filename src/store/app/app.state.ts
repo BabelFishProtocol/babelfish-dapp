@@ -1,5 +1,4 @@
 import { Web3Provider } from '@ethersproject/providers';
-import { Web3ReactContextInterface } from '@web3-react/core/dist/types';
 import { ChainEnum } from '../../config/chains';
 import { WalletEnum } from '../../config/wallets';
 import { XusdLocalTransaction } from '../aggregator/aggregator.state';
@@ -13,7 +12,7 @@ type XusdLocalTransactions = {
 export class AppState {
   connectedWallet?: WalletEnum;
   chainId?: ChainEnum;
-  account: Web3ReactContextInterface['account'];
+  account: string | undefined = undefined;
   currentBlockNumber?: number;
   provider?: Web3Provider;
   supportedNetworks: ChainEnum[] = [ChainEnum.RSK, ChainEnum.RSK_TESTNET];
