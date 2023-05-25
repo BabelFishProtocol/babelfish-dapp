@@ -22,6 +22,12 @@ const aggregatorSlice = createSlice({
   name: Reducers.Convert,
   initialState,
   reducers: {
+    setStartingChain: (
+      state,
+      { payload }: PayloadAction<AggregatorState['startingChain']>
+    ) => {
+      state.startingChain = payload;
+    },
     setStartingToken: (
       state,
       { payload }: PayloadAction<AggregatorState['startingToken']>

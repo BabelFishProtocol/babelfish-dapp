@@ -47,6 +47,7 @@ const slippageSliderMarks = slippageSliderValues.map(v => ({ value: v, label: `$
 
 export const AggregatorComponent = ({
   onSubmit,
+  onStartingChainChange,
   onDestinationChainChange,
   onStartingTokenChange,
   onDestinationTokenChange,
@@ -142,6 +143,12 @@ export const AggregatorComponent = ({
       onDestinationChainChange(destinationChain);
     }
   }, [destinationChain, onDestinationChainChange]);
+
+  useEffect(() => {
+    if (startingChain) {
+      onStartingChainChange(startingChain);
+    }
+  }, [startingChain, onStartingChainChange]);
 
   useEffect(() => {
     onDestinationTokenChange(destinationToken || undefined);

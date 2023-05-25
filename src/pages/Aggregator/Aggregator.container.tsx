@@ -45,6 +45,10 @@ export const AggregatorContainer = () => {
     [pausedTokens, startingTokenAddress, startingTokenBridgeAddress]
   );
 
+  const onStartingChainChange = (chain: ChainEnum) => {
+    dispatch(aggregatorActions.setStartingChain(chain));
+  };
+
   const onStartingTokenChange = (token: TokenEnum | undefined) => {
     dispatch(aggregatorActions.setStartingToken(token));
   };
@@ -52,6 +56,7 @@ export const AggregatorContainer = () => {
   const onDestinationChainChange = (chain: ChainEnum) => {
     dispatch(aggregatorActions.setDestinationChain(chain));
   };
+
   const onDestinationTokenChange = (token: TokenEnum | undefined) => {
     dispatch(aggregatorActions.setDestinationToken(token));
   };
@@ -79,6 +84,7 @@ export const AggregatorContainer = () => {
     <>
       <AggregatorComponent
         onSubmit={onSubmit}
+        onStartingChainChange={onStartingChainChange}
         onDestinationChainChange={onDestinationChainChange}
         onStartingTokenChange={onStartingTokenChange}
         onDestinationTokenChange={onDestinationTokenChange}

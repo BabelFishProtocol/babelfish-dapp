@@ -229,18 +229,16 @@ export const allowTokensContractSelector = createSelector(
 );
 
 export const startingChainSelector = createSelector(
-  [chainIdSelector],
-  (startingChain) => {
-    if (!startingChain) {
-      return undefined;
-    }
-    return;
+  aggregatorState,
+  (state) => {
+    return state.startingChain;
   }
 );
 
 export const startingTokenAddressSelector = createSelector(
-  [chainIdSelector, startingTokenSelector],
+  [startingChainSelector, startingTokenSelector],
   (startingChain, startingToken) => {
+
     if (!startingChain || !startingToken) {
       return undefined;
     }

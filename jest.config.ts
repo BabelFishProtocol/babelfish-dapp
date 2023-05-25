@@ -15,9 +15,9 @@ export default () => {
     collectCoverage: true,
     coverageDirectory: 'coverage',
     transform: {
-      '.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2|svg)$': 'jest-transform-stub',
-      '^.+\\.(ts|tsx)?$': 'ts-jest',
-      "^.+\\.(js|jsx)$": "babel-jest",
+      '^.+\\.tsx?$': 'ts-jest',
+      '.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2|svg)$':
+        'jest-transform-stub',
     },
     setupFilesAfterEnv: ['<rootDir>/setup-tests.ts'],
   };

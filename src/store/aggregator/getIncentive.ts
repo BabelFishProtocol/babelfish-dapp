@@ -1,10 +1,10 @@
 import { Request, newHttpClient } from 'typescript-http-client';
-import { ChainEnum } from "../../../config/chains";
-import { contractsAddresses } from "../../../config/contracts";
+import { ChainEnum } from "../../config/chains";
+import { contractsAddresses } from "../../config/contracts";
 import Web3 from "web3";
 import { AbiItem } from "web3-utils";
 import { BigNumber } from "ethers";
-import { getPenaltyForWithdrawalAbi, getRewardForDepositAbi } from "./rewardManagerAbis";
+import { getPenaltyForWithdrawalAbi, getRewardForDepositAbi } from "./sagas/rewardManagerAbis";
 
 const publicTestnetNodeUrl = 'https://public-node.testnet.rsk.co';
 const publicMainnetBodeUrl = 'https://public-node.rsk.co';
@@ -28,8 +28,8 @@ async function jsonRpcPost(mainnetFlag: boolean, data: any) {
             }, 'latest']
         }
     });
-    const responseBody = await client.execute<string>(request);
-    return JSON.parse(responseBody);
+    const responseBody = await client.execute<any>(request);
+    return responseBody;
 }
 
 export async function getReward(tokenAddress: string, sum: BigNumber, mainnetFlag: boolean) {
@@ -38,8 +38,8 @@ export async function getReward(tokenAddress: string, sum: BigNumber, mainnetFla
     const data = web3.eth.abi
         .encodeFunctionCall(getRewardForDepositAbi as AbiItem,
             [tokenAddress.toLocaleLowerCase(), sum, bridgeMode] as any[]);
-    const result = await jsonRpcPost(mainnetFlag, data);
-    return BigNumber.from(result.data?.result);
+    const response = await jsonRpcPost(mainnetFlag, data);
+    return BigNumber.from(response.result);
 }
 
 export async function getPenalty(tokenAddress: string, sum: BigNumber, mainnetFlag: boolean) {
@@ -48,6 +48,6 @@ export async function getPenalty(tokenAddress: string, sum: BigNumber, mainnetFl
     const data = web3.eth.abi
         .encodeFunctionCall(getPenaltyForWithdrawalAbi as AbiItem,
             [tokenAddress.toLocaleLowerCase(), sum, bridgeMode] as any[]);
-    const result = await jsonRpcPost(mainnetFlag, data);
-    return BigNumber.from(result.data?.result);
+    const response = await jsonRpcPost(mainnetFlag, data);
+    return BigNumber.from(response.result);
 }

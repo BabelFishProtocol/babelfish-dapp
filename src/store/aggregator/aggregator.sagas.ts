@@ -35,7 +35,7 @@ import { DEFAULT_ASSET_DECIMALS } from '../../constants';
 import { IncentiveType } from './aggregator.state';
 import { roundBN } from '../utils/utils.math';
 import { ChainEnum } from '../../config/chains';
-import { getReward, getPenalty } from './sagas/getIncentive';
+import { getReward, getPenalty } from './getIncentive';
 
 export function* transferTokens(action: AggregatorActions['submit']) {
   const flowState = yield* select(flowStateSelector);
@@ -187,6 +187,7 @@ export function* fetchPausedTokens() {
 }
 
 export function* fetchIncentive() {
+
   try {
 
     yield* put(aggregatorActions.setIncentivesLoading());
@@ -203,6 +204,8 @@ export function* fetchIncentive() {
     let receiveAmount = BigNumber.from(0);
     let incentiveType = IncentiveType.none;
 
+    debugger;
+    
     if (flowState === 'deposit') {
 
       const startingToken = (yield* select(startingTokenSelector));
@@ -244,6 +247,7 @@ export function* fetchIncentive() {
     yield* put(aggregatorActions.setReceiveAmount(utils.formatUnits(receiveAmount, DEFAULT_ASSET_DECIMALS)));
 
   } catch (e) {
+    console.error(e);
     yield* put(aggregatorActions.setIncentivesFailure());
   }
 }

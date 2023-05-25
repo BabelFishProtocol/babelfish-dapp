@@ -67,6 +67,7 @@ export class AggregatorState {
   startingToken?: TokenEnum;
   destinationChain?: ChainEnum;
   destinationToken?: TokenEnum;
+  startingChain?: ChainEnum;
   startingTokenBalance: LoadableAmount = {
     state: 'idle',
     data: undefined,
