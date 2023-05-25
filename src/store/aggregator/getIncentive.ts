@@ -59,9 +59,9 @@ export async function getReward(
     getRewardForDepositAbi as AbiItem,
     [
       tokenAddress.toLocaleLowerCase(),
-      sum.toString(),
-      bridgeMode ? 'true' : 'false',
-    ]
+      sum,
+      bridgeMode
+    ] as string[]
   );
   const response = await jsonRpcPost(mainnetFlag, data);
   return BigNumber.from(response.result);
@@ -77,9 +77,9 @@ export async function getPenalty(
     getPenaltyForWithdrawalAbi as AbiItem,
     [
       tokenAddress.toLocaleLowerCase(),
-      sum.toString(),
-      bridgeMode ? 'true' : 'false',
-    ]
+      sum,
+      bridgeMode
+    ] as string[]
   );
   const response = await jsonRpcPost(mainnetFlag, data);
   return BigNumber.from(response.result);
