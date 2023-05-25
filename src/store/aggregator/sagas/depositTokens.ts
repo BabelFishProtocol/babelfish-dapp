@@ -1,4 +1,4 @@
-import { BigNumber, utils } from 'ethers';
+import { utils } from 'ethers';
 import { call, put, select } from 'typed-redux-saga';
 import {
   ChainEnum,
@@ -6,7 +6,6 @@ import {
   SUPPORTED_CHAINS_RSK,
 } from '../../../config/chains';
 import { DEFAULT_ASSET_DECIMALS } from '../../../constants';
-import { MassetV4, MassetV4Interface } from '../../../contracts/types/MassetV4';
 import { IEvent } from '../../../gql/graphql';
 import { parseToWei } from '../../../utils/helpers';
 import { accountSelector } from '../../app/app.selectors';
@@ -63,7 +62,7 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
   );
 
   const amount = utils.parseUnits(payload.sendAmount, tokenDecimals);
-  const spender = isRSK ? massetAddress : (bridge as any).address.toLowerCase();
+  const spender = isRSK ? massetAddress : bridge!.address.toLowerCase();
   const allowanceSpender = yield* call(
     tokenContract.allowance,
     account.toLowerCase(),

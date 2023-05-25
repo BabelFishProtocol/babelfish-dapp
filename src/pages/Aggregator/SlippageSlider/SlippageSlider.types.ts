@@ -1,13 +1,12 @@
 import {
     Control,
     FieldPath,
-    FieldError,
     ControllerProps,
     FieldValues,
     UseFormSetValue,
   } from 'react-hook-form';
 import { TypographyProps } from '@mui/material/Typography';
-import Slider, { SliderProps } from '@mui/material/Slider';
+import { SliderProps } from '@mui/material/Slider';
 
 export type SlippageSliderProps = Partial<SliderProps> & {
     title?: string;

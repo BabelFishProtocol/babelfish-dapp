@@ -5910,6 +5910,7 @@ __metadata:
     typescript-http-client: ^0.10.4
     vite: 4.3.5
     web3: ^1.9.0
+    web3-utils: ^1.10.0
   languageName: unknown
   linkType: soft
 
@@ -15863,6 +15864,21 @@ __metadata:
     randombytes: ^2.1.0
     utf8: 3.0.0
   checksum: 3c794a7fcef9387b96e8fcd847fbf286862f0540ab6656063cdb69830ddd7141d955f5e52c049e3d5f28373311934d19f75199f42604741400af72e2348a26f6
+  languageName: node
+  linkType: hard
+
+"web3-utils@npm:^1.10.0":
+  version: 1.10.0
+  resolution: "web3-utils@npm:1.10.0"
+  dependencies:
+    bn.js: ^5.2.1
+    ethereum-bloom-filters: ^1.0.6
+    ethereumjs-util: ^7.1.0
+    ethjs-unit: 0.1.6
+    number-to-bn: 1.7.0
+    randombytes: ^2.1.0
+    utf8: 3.0.0
+  checksum: c6b7662359c0513b5cbfe02cdcb312ce9152778bb19d94d413d44f74cfaa93b7de97190ab6ba11af25a40855c949d2427dcb751929c6d0f257da268c55a3ba2a
   languageName: node
   linkType: hard
 

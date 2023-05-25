@@ -9,7 +9,7 @@ export const ControlledSlider = <FormValues extends FieldValues>({
   ...inputProps
 }: ControlledSliderProps<FormValues>) => (
   <Controller
-    render={({ field: { onChange, value }, fieldState: { error } }) => (
+    render={({ field: { onChange, value } }) => (
       <SlippageSlider
         {...inputProps}
         onChange={onChange}

@@ -40,7 +40,7 @@ export const InfoRowWithPerc = ({ label, value, unit, total, state }: InfoRowWit
 };
 
 function calculatePercStr(value?: string, total?: string): string {
-    if(Number(total) == 0) return '';
+    if(Number(total) === 0) return '';
     const tv = Number(value ?? '');
     const tt = Number(total ?? '');
     const p = Math.floor(10000 * tv / tt) / 100;

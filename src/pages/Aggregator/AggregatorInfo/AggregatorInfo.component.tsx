@@ -4,7 +4,6 @@ import exchangeIcon from '../../../assets/icons/exchange.svg';
 import { DEFAULT_ASSET_DECIMALS } from '../../../constants';
 import { IncentiveType } from '../../../store/aggregator/aggregator.state';
 import { formatUnitAmount } from '../../../utils/helpers';
-import { SendAmount } from '../SendAmount/SendAmount.container';
 import { AggregatorInfoComponentProps } from './AggregatorInfo.types';
 import { InfoRow } from './InfoRow.component';
 import { InfoRowWithPerc } from './InfoRowWithPerc.component';

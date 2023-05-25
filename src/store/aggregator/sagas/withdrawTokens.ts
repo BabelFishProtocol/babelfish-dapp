@@ -5,7 +5,6 @@ import {
   SUPPORTED_CHAINS_RSK,
 } from '../../../config/chains';
 import { DEFAULT_ASSET_DECIMALS } from '../../../constants';
-import { MassetV4 } from '../../../contracts/types';
 import { IEvent } from '../../../gql/graphql';
 import { parseToWei } from '../../../utils/helpers';
 import { accountSelector } from '../../app/app.selectors';
@@ -60,14 +59,14 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
   const allowanceMasset = yield* call(
     tokenContract.allowance,
     account,
-    (massetContract as any).address.toLowerCase()
+    massetContract.address.toLowerCase()
   );
   const steps: SagaContractCallStep<AggregatorCalls>[] = [];
 
   if (allowanceMasset.lt(amount)) {
     const approveEffect = call(
       tokenContract.approve,
-      (massetContract as any).address.toLowerCase(),
+      massetContract.address.toLowerCase(),
       amount
     );
 

@@ -182,7 +182,7 @@ export function* fetchPausedTokens() {
 
     yield* put(aggregatorActions.setIsStartingTokenPaused(pausedTokens));
   } catch (e) {
-    // console.error(e);
+    yield* put(aggregatorActions.fetchFeesAndLimitsFailure);
   }
 }
 
@@ -193,7 +193,7 @@ export function* fetchIncentive() {
     yield* put(aggregatorActions.setIncentivesLoading());
 
     const sendAmount = yield* select(sendAmountSelector);
-    if (Number(sendAmount) == 0) return;
+    if (Number(sendAmount) === 0) return;
     const flowState = yield* select(flowStateSelector);
 
     const startingTokenAddress = yield* select(startingTokenAddressSelector);
@@ -204,8 +204,6 @@ export function* fetchIncentive() {
     let receiveAmount = BigNumber.from(0);
     let incentiveType = IncentiveType.none;
 
-    debugger;
-    
     if (flowState === 'deposit') {
 
       const startingToken = (yield* select(startingTokenSelector));
@@ -217,7 +215,7 @@ export function* fetchIncentive() {
       const tokenDecimals = yield* select(startingTokenDecimalsSelector);
       const amount = utils.parseUnits(sendAmount ?? '', tokenDecimals);
       const destinationChain = yield* select(destinationChainSelector);
-      const isMainnet = destinationChain == ChainEnum.RSK;
+      const isMainnet = destinationChain === ChainEnum.RSK;
 
       incentive = (yield* call(getReward, sovTokenAddress!, amount, isMainnet)) as BigNumber;
       receiveAmount = amount.add(incentive);
@@ -232,7 +230,7 @@ export function* fetchIncentive() {
       incentiveType = IncentiveType.penalty;
       const amount = utils.parseUnits(sendAmount ?? '', DEFAULT_ASSET_DECIMALS);
       const startingChain = yield* select(startingChainSelector);
-      const isMainnet = startingChain == ChainEnum.RSK;
+      const isMainnet = startingChain === ChainEnum.RSK;
 
       incentive = (yield* call(getPenalty, sovTokenAddress!, amount, isMainnet)) as BigNumber;
       receiveAmount = amount.add(incentive);
@@ -247,7 +245,6 @@ export function* fetchIncentive() {
     yield* put(aggregatorActions.setReceiveAmount(utils.formatUnits(receiveAmount, DEFAULT_ASSET_DECIMALS)));
 
   } catch (e) {
-    console.error(e);
     yield* put(aggregatorActions.setIncentivesFailure());
   }
 }

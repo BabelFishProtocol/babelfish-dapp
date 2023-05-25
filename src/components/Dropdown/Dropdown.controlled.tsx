@@ -1,11 +1,6 @@
 import Box from '@mui/material/Box';
-import React, { Ref, useCallback } from 'react';
-import {
-  Controller,
-  Path,
-  PathValue,
-  UnpackNestedValue,
-} from 'react-hook-form';
+import { Ref, useCallback } from 'react';
+import { Controller, Path, PathValue } from 'react-hook-form';
 import { FieldErrorMessage } from '../FieldErrorMessage/FieldErrorMessage.component';
 
 import { DropdownOptions } from './Dropdown.component';
@@ -29,7 +24,7 @@ export const ControlledDropdown = <
     if (options.length === 1) {
       setValue(
         name,
-        options[0].id as any,
+        options[0].id as PathValue<FormValues, Path<FormValues>>,
         {
           shouldValidate: true,
         }
@@ -54,7 +49,7 @@ export const ControlledDropdown = <
         </Box>
       )}
       name={name}
-      control={control as any}
+      control={control}
       rules={{
         required: true,
         ...rules,
