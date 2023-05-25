@@ -306,6 +306,16 @@ export const bassetAddressSelector = createSelector(
   }
 );
 
+export const startingTokenBridgeAddressSelector = createSelector(
+  [bridgeSelector, startingTokenSelector],
+  (bridge, startingToken) => {
+    if (!bridge || !startingToken) {
+      return undefined;
+    }
+    return bridge.getRskSovrynTokenAddress(startingToken)?.toLowerCase();
+  }
+);
+
 export const destinationTokenContractSelector = createSelector(
   [
     providerSelector,

@@ -1,24 +1,19 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import {
-  useActiveWeb3React,
-  useEagerConnect,
-} from '../../hooks/useActiveWeb3React';
 import { appActions } from './app.slice';
-import { getWalletName } from './app.updaters.utils';
+import { useAccount } from '../../hooks/useAccount';
+import { WalletEnum } from '../../config/wallets';
 
 export const AppUpdater = () => {
   const dispatch = useDispatch();
-  const { chainId, account, library, connector } = useActiveWeb3React();
 
-  useEagerConnect();
+  const { account, type, provider, chainId } = useAccount();
 
   useEffect(() => {
-    const name = getWalletName(connector);
-    if (name) {
-      dispatch(appActions.setConnectedWallet(name));
+    if (type) {
+      dispatch(appActions.setConnectedWallet(type as WalletEnum));
     }
-  }, [connector, dispatch]);
+  }, [dispatch, type]);
 
   useEffect(() => {
     if (chainId) {
@@ -33,10 +28,10 @@ export const AppUpdater = () => {
   }, [account, dispatch]);
 
   useEffect(() => {
-    if (library) {
-      dispatch(appActions.walletConnected(library));
+    if (provider) {
+      dispatch(appActions.walletConnected(provider));
     }
-  }, [library, chainId, dispatch]);
+  }, [provider, dispatch]);
 
   return null;
 };

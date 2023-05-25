@@ -99,7 +99,7 @@ describe('withdrawTokens', () => {
           [matchers.call.fn(mockToken.allowance), parseUnits('11')],
           [
             matchers.call.fn(
-              mockMasset['redeemToBridge(address,uint256,address)']
+              mockMasset.redeemToBridge
             ),
             mockTx,
           ],
@@ -111,7 +111,7 @@ describe('withdrawTokens', () => {
           mockMasset.address.toLowerCase()
         )
         .call(
-          mockMasset['redeemToBridge(address,uint256,address)'],
+          mockMasset.redeemToBridge,
           mockBassetAddress,
           mockAmount,
           mockReceiver.toLowerCase()
@@ -153,7 +153,7 @@ describe('withdrawTokens', () => {
           [matchers.call.fn(mockToken.approve), mockTx],
           [
             matchers.call.fn(
-              mockMasset['redeemToBridge(address,uint256,address)']
+              mockMasset.redeemToBridge
             ),
             mockTx,
           ],
@@ -166,7 +166,7 @@ describe('withdrawTokens', () => {
         )
         .call(mockToken.approve, mockMasset.address.toLowerCase(), mockAmount)
         .call(
-          mockMasset['redeemToBridge(address,uint256,address)'],
+          mockMasset.redeemToBridge,
           mockBassetAddress,
           mockAmount,
           mockReceiver.toLowerCase()

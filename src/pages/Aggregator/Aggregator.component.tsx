@@ -121,9 +121,21 @@ export const AggregatorComponent = ({
     },
   ]);
 
+  const checkTokenPauseState = useCallback(() => {
+    if (!isStartingTokenPaused) {
+      clearErrors(AggregatorInputs.StartingToken);
+    } else {
+      setError(AggregatorInputs.StartingToken, {
+        type: 'validate',
+        message: fieldsErrors.depositsDisabled,
+      });
+    }
+  }, [clearErrors, isStartingTokenPaused, setError]);
+
   useEffect(() => {
+    checkTokenPauseState();
     onStartingTokenChange(startingToken || undefined);
-  }, [startingToken, onStartingTokenChange]);
+  }, [startingToken, onStartingTokenChange, checkTokenPauseState]);
 
   useEffect(() => {
     if (destinationChain) {
@@ -156,17 +168,6 @@ export const AggregatorComponent = ({
     () => setIsAddressDisclaimerChecked((previousValue) => !previousValue),
     []
   );
-
-  useEffect(() => {
-    if (!isStartingTokenPaused) {
-      clearErrors(AggregatorInputs.StartingToken);
-    } else {
-      setError(AggregatorInputs.StartingToken, {
-        type: 'validate',
-        message: fieldsErrors.depositsDisabled,
-      });
-    }
-  }, [clearErrors, isStartingTokenPaused, setError]);
 
   return (
     <>

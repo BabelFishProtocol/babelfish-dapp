@@ -24,7 +24,7 @@ describe('app selectors', () => {
       appState.supportedNetworks
     );
 
-    expect(supportedNetworksNames).toEqual(['RSK', 'RSK Testnet']);
+    expect(supportedNetworksNames).toEqual(['Rootstock', 'Rootstock Testnet']);
   });
 
   describe('unsupportedNetworkSelector', () => {
@@ -104,10 +104,9 @@ describe('app selectors', () => {
 
   describe('subgraphClientSelector', () => {
     it('returns client when found', () => {
-      const chainConfig = mainnetChains[ChainEnum.RSK];
-      const client = subgraphClientSelector.resultFunc(chainConfig);
+      const client = subgraphClientSelector.resultFunc('testnet');
 
-      expect(client).toEqual(subgraphClients[chainConfig.id]);
+      expect(client).toEqual(subgraphClients[ChainEnum.RSK_TESTNET]);
     });
 
     it('returns undefined when not found', () => {
@@ -119,10 +118,9 @@ describe('app selectors', () => {
 
   describe('subgraphWsClientSelector', () => {
     it('returns ws client when found', () => {
-      const chainConfig = mainnetChains[ChainEnum.RSK];
-      const client = subgraphWsClientSelector.resultFunc(chainConfig);
+      const client = subgraphWsClientSelector.resultFunc('mainnet');
 
-      expect(client).toEqual(subgraphWsClients[chainConfig.id]);
+      expect(client).toEqual(subgraphWsClients[ChainEnum.RSK]);
     });
 
     it('returns undefined when not found', () => {
