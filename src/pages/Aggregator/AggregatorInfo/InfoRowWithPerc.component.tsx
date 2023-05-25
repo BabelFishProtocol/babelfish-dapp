@@ -10,7 +10,13 @@ type InfoRowWithPercProps = {
   state: FiniteStates;
 };
 
-export const InfoRowWithPerc = ({ label, value, unit, total, state }: InfoRowWithPercProps) => {
+export const InfoRowWithPerc = ({
+  label,
+  value,
+  unit,
+  total,
+  state,
+}: InfoRowWithPercProps) => {
   const isUpdate = !value || state === 'loading';
   return (
     <>
@@ -40,9 +46,9 @@ export const InfoRowWithPerc = ({ label, value, unit, total, state }: InfoRowWit
 };
 
 function calculatePercStr(value?: string, total?: string): string {
-    if(Number(total) === 0) return '';
-    const tv = Number(value ?? '');
-    const tt = Number(total ?? '');
-    const p = Math.floor(10000 * tv / tt) / 100;
-    return p > 0 ? `(${p}%)` : '';
+  if (Number(total) === 0) return '';
+  const tv = Number(value ?? '');
+  const tt = Number(total ?? '');
+  const p = Math.floor((10000 * tv) / tt) / 100;
+  return p > 0 ? `(${p}%)` : '';
 }

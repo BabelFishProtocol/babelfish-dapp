@@ -10,7 +10,7 @@ export enum AggregatorInputs {
   DestinationToken = 'destinationToken',
   ReceiveAddress = 'receiveAddress',
   ReceiveAmount = 'receiveAmount',
-  SlippageSlider = 'slippageSlider'
+  SlippageSlider = 'slippageSlider',
 }
 
 export type AggregatorFormValues = {
@@ -32,5 +32,5 @@ export const aggregatorDefaultValues: DefaultValues<AggregatorFormValues> = {
   [AggregatorInputs.DestinationToken]: '',
   [AggregatorInputs.ReceiveAddress]: '',
   [AggregatorInputs.ReceiveAmount]: '',
-  [AggregatorInputs.SlippageSlider]: 2.5
+  [AggregatorInputs.SlippageSlider]: 2.5,
 };

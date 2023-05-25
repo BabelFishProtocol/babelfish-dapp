@@ -187,9 +187,7 @@ export function* fetchPausedTokens() {
 }
 
 export function* fetchIncentive() {
-
   try {
-
     yield* put(aggregatorActions.setIncentivesLoading());
 
     const sendAmount = yield* select(sendAmountSelector);
@@ -197,7 +195,9 @@ export function* fetchIncentive() {
     const flowState = yield* select(flowStateSelector);
 
     const startingTokenAddress = yield* select(startingTokenAddressSelector);
-    const destinationTokenAddress = yield* select(destinationTokenAddressSelector);
+    const destinationTokenAddress = yield* select(
+      destinationTokenAddressSelector
+    );
     if (!startingTokenAddress || !destinationTokenAddress) return;
 
     let incentive = BigNumber.from(0);
@@ -205,11 +205,11 @@ export function* fetchIncentive() {
     let incentiveType = IncentiveType.none;
 
     if (flowState === 'deposit') {
-
-      const startingToken = (yield* select(startingTokenSelector));
-      const bridge = (yield* select(bridgeSelector));
-      const sovTokenAddress = bridge ? 
-        bridge.getRskSovrynTokenAddress(startingToken!) : destinationTokenAddress;
+      const startingToken = yield* select(startingTokenSelector);
+      const bridge = yield* select(bridgeSelector);
+      const sovTokenAddress = bridge
+        ? bridge.getRskSovrynTokenAddress(startingToken!)
+        : destinationTokenAddress;
 
       incentiveType = IncentiveType.reward;
       const tokenDecimals = yield* select(startingTokenDecimalsSelector);
@@ -217,33 +217,47 @@ export function* fetchIncentive() {
       const destinationChain = yield* select(destinationChainSelector);
       const isMainnet = destinationChain === ChainEnum.RSK;
 
-      incentive = (yield* call(getReward, sovTokenAddress!, amount, isMainnet)) as BigNumber;
+      incentive = (yield* call(
+        getReward,
+        sovTokenAddress!,
+        amount,
+        isMainnet
+      )) as BigNumber;
       receiveAmount = amount.add(incentive);
-
     } else if (flowState === 'withdraw') {
-
-      const destinationToken = (yield* select(startingTokenSelector));
-      const bridge = (yield* select(bridgeSelector));
-      const sovTokenAddress = bridge ? 
-        bridge.getRskSovrynTokenAddress(destinationToken!) : destinationToken;
+      const destinationToken = yield* select(startingTokenSelector);
+      const bridge = yield* select(bridgeSelector);
+      const sovTokenAddress = bridge
+        ? bridge.getRskSovrynTokenAddress(destinationToken!)
+        : destinationToken;
 
       incentiveType = IncentiveType.penalty;
       const amount = utils.parseUnits(sendAmount ?? '', DEFAULT_ASSET_DECIMALS);
       const startingChain = yield* select(startingChainSelector);
       const isMainnet = startingChain === ChainEnum.RSK;
 
-      incentive = (yield* call(getPenalty, sovTokenAddress!, amount, isMainnet)) as BigNumber;
+      incentive = (yield* call(
+        getPenalty,
+        sovTokenAddress!,
+        amount,
+        isMainnet
+      )) as BigNumber;
       receiveAmount = amount.add(incentive);
     }
 
     incentive = incentive && roundBN(incentive, 3);
 
-    yield* put(aggregatorActions.setIncentives({
-      type: incentiveType,
-      amount: utils.formatUnits(incentive, DEFAULT_ASSET_DECIMALS)
-    }));
-    yield* put(aggregatorActions.setReceiveAmount(utils.formatUnits(receiveAmount, DEFAULT_ASSET_DECIMALS)));
-
+    yield* put(
+      aggregatorActions.setIncentives({
+        type: incentiveType,
+        amount: utils.formatUnits(incentive, DEFAULT_ASSET_DECIMALS),
+      })
+    );
+    yield* put(
+      aggregatorActions.setReceiveAmount(
+        utils.formatUnits(receiveAmount, DEFAULT_ASSET_DECIMALS)
+      )
+    );
   } catch (e) {
     yield* put(aggregatorActions.setIncentivesFailure());
   }
@@ -295,4 +309,3 @@ export function* aggregatorSaga() {
     takeLatest(aggregatorActions.submit, transferTokens),
   ]);
 }
-

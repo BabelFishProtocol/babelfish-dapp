@@ -22,13 +22,9 @@ export const ControlledDropdown = <
 }) => {
   const setValueWhenOneOption = useCallback(() => {
     if (options.length === 1) {
-      setValue(
-        name,
-        options[0].id as PathValue<FormValues, Path<FormValues>>,
-        {
-          shouldValidate: true,
-        }
-      );
+      setValue(name, options[0].id as PathValue<FormValues, Path<FormValues>>, {
+        shouldValidate: true,
+      });
     }
   }, [name, options, setValue]);
 

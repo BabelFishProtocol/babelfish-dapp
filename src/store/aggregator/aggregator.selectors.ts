@@ -238,7 +238,6 @@ export const startingChainSelector = createSelector(
 export const startingTokenAddressSelector = createSelector(
   [startingChainSelector, startingTokenSelector],
   (startingChain, startingToken) => {
-
     if (!startingChain || !startingToken) {
       return undefined;
     }

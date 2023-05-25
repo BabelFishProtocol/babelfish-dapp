@@ -19,7 +19,7 @@ export const AggregatorInfoComponent = ({
   aggregatorBalanceState,
   incentivesState,
   incentives,
-  sendAmount
+  sendAmount,
 }: AggregatorInfoComponentProps) => (
   <Box
     sx={{
@@ -52,7 +52,9 @@ export const AggregatorInfoComponent = ({
       }}
     >
       <InfoRowWithPerc
-        label={incentives?.type === IncentiveType.penalty ? 'Penalty' : 'Reward'}
+        label={
+          incentives?.type === IncentiveType.penalty ? 'Penalty' : 'Reward'
+        }
         value={`${incentives?.amount || '0.0'}`}
         total={`${sendAmount || '0.0'}`}
         unit="XUSD"

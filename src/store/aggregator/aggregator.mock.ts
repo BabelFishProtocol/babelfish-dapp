@@ -47,7 +47,7 @@ export const depositMockValues = {
   [AggregatorInputs.DestinationToken]: TokenEnum.XUSD,
   [AggregatorInputs.ReceiveAmount]: '10.45',
   [AggregatorInputs.ReceiveAddress]: mockReceiver,
-  [AggregatorInputs.SlippageSlider]: 0
+  [AggregatorInputs.SlippageSlider]: 0,
 };
 
 export const mockReceiveAmount = parseUnits(
@@ -69,7 +69,7 @@ export const withdrawMockValues = {
   [AggregatorInputs.DestinationToken]: TokenEnum.USDT,
   [AggregatorInputs.ReceiveAmount]: '10.45',
   [AggregatorInputs.ReceiveAddress]: mockReceiver,
-  [AggregatorInputs.SlippageSlider]: 0
+  [AggregatorInputs.SlippageSlider]: 0,
 };
 
 export const withdrawRSKMockValues = {

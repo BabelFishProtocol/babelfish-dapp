@@ -97,12 +97,7 @@ describe('withdrawTokens', () => {
         .provide([
           ...mockSelectors,
           [matchers.call.fn(mockToken.allowance), parseUnits('11')],
-          [
-            matchers.call.fn(
-              mockMasset.redeemToBridge
-            ),
-            mockTx,
-          ],
+          [matchers.call.fn(mockMasset.redeemToBridge), mockTx],
           [matchers.call.fn(mockTx.wait), mockReceipt],
         ])
         .call(
@@ -151,12 +146,7 @@ describe('withdrawTokens', () => {
           ...mockSelectors,
           [matchers.call.fn(mockToken.allowance), parseUnits('4')],
           [matchers.call.fn(mockToken.approve), mockTx],
-          [
-            matchers.call.fn(
-              mockMasset.redeemToBridge
-            ),
-            mockTx,
-          ],
+          [matchers.call.fn(mockMasset.redeemToBridge), mockTx],
           [matchers.call.fn(mockTx.wait), mockReceipt],
         ])
         .call(

@@ -17,12 +17,12 @@ export type FeesAndLimitsType = {
 export enum IncentiveType {
   none,
   reward,
-  penalty
-};
+  penalty,
+}
 
 export type IncentivesType = {
   type?: IncentiveType;
-  amount?: string ;
+  amount?: string;
 };
 
 export type XusdLocalTransaction = Omit<TransactionsTableItem, 'id'>;
@@ -59,9 +59,9 @@ export class AggregatorState {
     state: 'idle',
     data: {
       type: undefined,
-      amount: undefined
-    }
-  };  
+      amount: undefined,
+    },
+  };
   fetchFeesAndLimitsErrorReason?: string;
   pool: PoolEnum = DEFAULT_POOL;
   startingToken?: TokenEnum;

@@ -43,7 +43,10 @@ const PageViewTitle: React.FC = ({ children }) => (
 );
 
 const slippageSliderValues = [0, 0.5, 1, 1.5, 2, 2.5];
-const slippageSliderMarks = slippageSliderValues.map(v => ({ value: v, label: `${v}%`}));
+const slippageSliderMarks = slippageSliderValues.map((v) => ({
+  value: v,
+  label: `${v}%`,
+}));
 
 export const AggregatorComponent = ({
   onSubmit,
@@ -53,7 +56,7 @@ export const AggregatorComponent = ({
   onDestinationTokenChange,
   isStartingTokenPaused,
   onSendAmountChange,
-  receiveAmount
+  receiveAmount,
 }: AggregatorComponentProps) => {
   const flowState = useSelector(flowStateSelector);
 
@@ -68,7 +71,7 @@ export const AggregatorComponent = ({
     formState: { isValid },
   } = useForm<AggregatorFormValues>({
     mode: 'onChange',
-    defaultValues: aggregatorDefaultValues
+    defaultValues: aggregatorDefaultValues,
   });
 
   const startingChain = watch(AggregatorInputs.StartingChain);
@@ -93,11 +96,13 @@ export const AggregatorComponent = ({
     setValue
   );
 
-  const slippageProtectionAvailable = SUPPORTED_CHAINS_RSK.includes(startingChain as ChainEnum);  
-  
+  const slippageProtectionAvailable = SUPPORTED_CHAINS_RSK.includes(
+    startingChain as ChainEnum
+  );
+
   useEffect(() => {
     setValue(AggregatorInputs.ReceiveAmount, receiveAmount || '0.0');
-  }, [ receiveAmount, setValue ]);
+  }, [receiveAmount, setValue]);
 
   useConnectedChain(startingChain, resetField, setValue);
 
@@ -232,10 +237,10 @@ export const AggregatorComponent = ({
                 control={control}
                 setValue={setValue}
               />
-              <ControlledSlider 
+              <ControlledSlider
                 disabled={!slippageProtectionAvailable}
                 title="Slippage Tolerance"
-                name={AggregatorInputs.SlippageSlider} 
+                name={AggregatorInputs.SlippageSlider}
                 control={control}
                 setValue={setValue}
                 min={0}

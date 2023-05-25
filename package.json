@@ -7,7 +7,7 @@
     "deploy": "./start.sh",
     "lint": "eslint .",
     "prettier": "prettier --config .prettierrc --check .",
-    "prettify": "prettier --config .prettierrc .",
+    "prettier:fix": "prettier --config .prettierrc --write .",
     "test": "jest --verbose",
     "preview": "vite preview",
     "check-types": "tsc --noEmit",

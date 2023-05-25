@@ -90,8 +90,12 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
   let submitEffect: SagaContractEffect;
 
   if (isRSK) {
-    const minimumRewardNumber = Number(payload.sendAmount) * payload.slippageSlider / 100;
-    const minimumReward = utils.parseUnits(minimumRewardNumber.toString(), DEFAULT_ASSET_DECIMALS);
+    const minimumRewardNumber =
+      (Number(payload.sendAmount) * payload.slippageSlider) / 100;
+    const minimumReward = utils.parseUnits(
+      minimumRewardNumber.toString(),
+      DEFAULT_ASSET_DECIMALS
+    );
 
     submitEffect = call(
       massetContract.mintToWithMinimumReward,

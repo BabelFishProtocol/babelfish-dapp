@@ -78,8 +78,12 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
 
   let submitEffect: SagaContractEffect;
 
-  const maximumPenaltyNumber = Number(payload.sendAmount) * payload.slippageSlider / 100;
-  const maximumPenalty = utils.parseUnits(maximumPenaltyNumber.toString(), DEFAULT_ASSET_DECIMALS);
+  const maximumPenaltyNumber =
+    (Number(payload.sendAmount) * payload.slippageSlider) / 100;
+  const maximumPenalty = utils.parseUnits(
+    maximumPenaltyNumber.toString(),
+    DEFAULT_ASSET_DECIMALS
+  );
 
   if (isRSK) {
     submitEffect = call(

@@ -14,21 +14,21 @@ export const SlippageSlider = ({
   onChange,
   ...inputProps
 }: SlippageSliderProps) => (
-    <Box sx={{ width: '100%' }}>
-        <Typography variant="h3" sx={{ mb: 1.5, ...labelSx }}>
-            {title}
-        </Typography>
-        { !disabled ? 
-            <Slider
-                valueLabelDisplay="auto"
-                value={value}
-                min={min}
-                max={max}
-                onChange={onChange}
-                {...inputProps}
-            />
-            :
-            <h4>N/A</h4>
-        }
-    </Box>
+  <Box sx={{ width: '100%' }}>
+    <Typography variant="h3" sx={{ mb: 1.5, ...labelSx }}>
+      {title}
+    </Typography>
+    {!disabled ? (
+      <Slider
+        valueLabelDisplay="auto"
+        value={value}
+        min={min}
+        max={max}
+        onChange={onChange}
+        {...inputProps}
+      />
+    ) : (
+      <h4>N/A</h4>
+    )}
+  </Box>
 );

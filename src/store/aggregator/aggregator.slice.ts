@@ -120,7 +120,10 @@ const aggregatorSlice = createSlice({
       state.incentives.state = 'failure';
       state.incentives.data = {};
     },
-    setIncentives: (state, { payload }: PayloadAction<{ type: IncentiveType, amount: string }>) => {
+    setIncentives: (
+      state,
+      { payload }: PayloadAction<{ type: IncentiveType; amount: string }>
+    ) => {
       state.incentives.state = 'success';
       state.incentives.data = payload;
     },
