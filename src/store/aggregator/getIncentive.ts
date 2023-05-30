@@ -54,13 +54,12 @@ export async function getReward(
   sum: BigNumber,
   mainnetFlag: boolean
 ) {
-  const bridgeMode = false;
   const data = web3.eth.abi.encodeFunctionCall(
     getRewardForDepositAbi as AbiItem,
     [
       tokenAddress.toLocaleLowerCase(),
-      sum,
-      bridgeMode
+      sum.toString(),
+      false
     ] as string[]
   );
   const response = await jsonRpcPost(mainnetFlag, data);
@@ -72,14 +71,12 @@ export async function getPenalty(
   sum: BigNumber,
   mainnetFlag: boolean
 ) {
-  const bridgeMode = false;
   const data = web3.eth.abi.encodeFunctionCall(
     getPenaltyForWithdrawalAbi as AbiItem,
     [
       tokenAddress.toLocaleLowerCase(),
-      sum,
-      bridgeMode
-    ] as string[]
+      sum.toString()
+    ]
   );
   const response = await jsonRpcPost(mainnetFlag, data);
   return BigNumber.from(response.result);

@@ -229,7 +229,7 @@ export function* fetchIncentive() {
       const bridge = yield* select(bridgeSelector);
       const sovTokenAddress = bridge
         ? bridge.getRskSovrynTokenAddress(destinationToken!)
-        : destinationToken;
+        : destinationTokenAddress;
 
       incentiveType = IncentiveType.penalty;
       const amount = utils.parseUnits(sendAmount ?? '', DEFAULT_ASSET_DECIMALS);

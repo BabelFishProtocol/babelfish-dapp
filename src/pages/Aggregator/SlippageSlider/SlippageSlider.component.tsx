@@ -14,7 +14,7 @@ export const SlippageSlider = ({
   onChange,
   ...inputProps
 }: SlippageSliderProps) => (
-  <Box sx={{ width: '100%' }}>
+  <Box sx={{ width: '100%', marginTop: '20px' }}>
     <Typography variant="h3" sx={{ mb: 1.5, ...labelSx }}>
       {title}
     </Typography>

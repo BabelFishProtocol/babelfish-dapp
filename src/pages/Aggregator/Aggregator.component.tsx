@@ -99,6 +99,7 @@ export const AggregatorComponent = ({
   const slippageProtectionAvailable = SUPPORTED_CHAINS_RSK.includes(
     startingChain as ChainEnum
   );
+  console.log('slippageProtectionAvailable', slippageProtectionAvailable);
 
   useEffect(() => {
     setValue(AggregatorInputs.ReceiveAmount, receiveAmount || '0.0');
@@ -181,6 +182,14 @@ export const AggregatorComponent = ({
     []
   );
 
+  const isSubmitAllowed = isValid &&
+    isAddressDisclaimerChecked &&
+    !isStartingTokenPaused;
+
+  console.log('isValid', isValid);
+  console.log('isAddressDisclaimerChecked', isAddressDisclaimerChecked);
+  console.log('isStartingTokenPaused', isStartingTokenPaused);
+
   return (
     <>
       <Breadcrumbs links={[{ title: UrlNames.Convert }]} />
@@ -238,7 +247,7 @@ export const AggregatorComponent = ({
                 setValue={setValue}
               />
               <ControlledSlider
-                disabled={!slippageProtectionAvailable}
+                hidden={!slippageProtectionAvailable}
                 title="Slippage Tolerance"
                 name={AggregatorInputs.SlippageSlider}
                 control={control}
@@ -344,11 +353,7 @@ export const AggregatorComponent = ({
               <Button
                 type="submit"
                 fullWidth
-                disabled={
-                  !isValid ||
-                  !isAddressDisclaimerChecked ||
-                  isStartingTokenPaused
-                }
+                disabled={ !isSubmitAllowed }
               >
                 Convert
               </Button>

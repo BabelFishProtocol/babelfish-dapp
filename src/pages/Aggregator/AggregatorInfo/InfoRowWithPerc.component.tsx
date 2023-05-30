@@ -3,6 +3,7 @@ import Typography from '@mui/material/Typography';
 import { FiniteStates } from '../../../utils/types';
 
 type InfoRowWithPercProps = {
+  hidden?: boolean;
   label: string;
   value?: string;
   total?: string;
@@ -16,9 +17,10 @@ export const InfoRowWithPerc = ({
   unit,
   total,
   state,
+  hidden
 }: InfoRowWithPercProps) => {
   const isUpdate = !value || state === 'loading';
-  return (
+  return hidden ? null : (
     <>
       <Typography
         sx={{
