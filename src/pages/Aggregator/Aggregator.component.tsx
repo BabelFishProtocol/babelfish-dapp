@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 
 import { useForm } from 'react-hook-form';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { PageView } from '../../components/PageView/PageView.component';
 import { ControlledCurrencyInput } from '../../components/CurrencyInput/CurrencyInput.controlled';
@@ -156,6 +156,11 @@ export const AggregatorComponent = ({
     []
   );
 
+  const shouldAllowTokensSelection = useMemo(
+    () => !!startingChain && !!destinationChain,
+    [destinationChain, startingChain]
+  );
+
   return (
     <>
       <Breadcrumbs links={[{ title: UrlNames.Convert }]} />
@@ -205,6 +210,7 @@ export const AggregatorComponent = ({
                 control={control}
                 options={startingTokenOptions}
                 setValue={setValue}
+                disabled={!shouldAllowTokensSelection}
               />
               <SendAmount
                 name={AggregatorInputs.SendAmount}
@@ -252,6 +258,7 @@ export const AggregatorComponent = ({
                 sx={{ mb: 4 }}
                 setValue={setValue}
                 dropdownRef={destinationTokenRef}
+                disabled={!shouldAllowTokensSelection}
               />
 
               <ControlledCurrencyInput
