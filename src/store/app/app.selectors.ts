@@ -246,8 +246,11 @@ const createDefaultChainContractSelector = (
   );
 
 // TODO: All contracts from contracts.ts should be created by createDefaultChainContractSelector
-export const stakingContractSelector = createDefaultChainContractSelector(
-  Staking__factory.abi,
+export const stakingContractSelectorDefaultChain =
+  createDefaultChainContractSelector(Staking__factory.abi, 'staking');
+
+export const stakingContractSelector = createContractSelector(
+  Staking__factory,
   'staking'
 );
 

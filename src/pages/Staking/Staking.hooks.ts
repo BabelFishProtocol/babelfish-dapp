@@ -13,6 +13,7 @@ import { getCurrentTimestamp } from '../../utils/helpers';
 import {
   providerSelector,
   stakingContractSelector,
+  stakingContractSelectorDefaultChain,
 } from '../../store/app/app.selectors';
 import { UseEstimateFeeConfig } from './Staking.types';
 
@@ -144,7 +145,7 @@ export const useEstimateFee = ({
 export const useIsInMaintenance = () => {
   const [isInMaintenance, setIsInMaintenance] = useState(false);
 
-  const staking = useSelector(stakingContractSelector);
+  const staking = useSelector(stakingContractSelectorDefaultChain);
 
   useEffect(() => {
     const fetchIsPaused = async () => {
