@@ -140,3 +140,20 @@ export const useEstimateFee = ({
 
   return estimatedFee;
 };
+
+export const useIsInMaintenance = () => {
+  const [isInMaintenance, setIsInMaintenance] = useState(false);
+
+  const staking = useSelector(stakingContractSelector);
+
+  useEffect(() => {
+    const fetchIsPaused = async () => {
+      const isPaused = await staking?.paused();
+
+      setIsInMaintenance(isPaused || false);
+    };
+    fetchIsPaused();
+  }, [staking]);
+
+  return isInMaintenance;
+};

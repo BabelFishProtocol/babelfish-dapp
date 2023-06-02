@@ -1,10 +1,11 @@
-import { utils } from 'ethers';
+import { ContractInterface, ethers, utils } from 'ethers';
 import { createSelector } from '@reduxjs/toolkit';
 
 import {
   Provider as MulticallProvider,
   setMulticallAddress,
 } from 'ethers-multicall';
+import { ChainIds, getProvider } from '@sovryn/ethers-provider';
 import { RootState } from '..';
 import {
   contractsAddresses,
@@ -177,6 +178,43 @@ export const addressesSelector = createSelector(
   }
 );
 
+const getDefaultChainSelector = createSelector(
+  testnetMainnetSelector,
+  (environment) => {
+    const chain =
+      !environment || environment === 'mainnet'
+        ? ChainIds.RSK_MAINNET
+        : ChainIds.RSK_TESTNET;
+
+    return chain;
+  }
+);
+
+export const addressesSelectorDefaultChain = createSelector(
+  getDefaultChainSelector,
+  (defaultChain) => {
+    if (!defaultChain) return undefined;
+
+    const chain =
+      defaultChain === ChainIds.RSK_MAINNET
+        ? ChainEnum.RSK
+        : ChainEnum.RSK_TESTNET;
+
+    return contractsAddresses[chain];
+  }
+);
+
+const getDefaultChainProviderSelector = createSelector(
+  getDefaultChainSelector,
+  (defaultChain) => {
+    if (!defaultChain) {
+      return undefined;
+    }
+
+    return getProvider(defaultChain);
+  }
+);
+
 const createContractSelector = <Factory extends BaseContractFactory>(
   factory: Factory,
   name: keyof ContractsForNetwork
@@ -192,10 +230,27 @@ const createContractSelector = <Factory extends BaseContractFactory>(
     }
   );
 
-export const stakingContractSelector = createContractSelector(
-  Staking__factory,
+const createDefaultChainContractSelector = (
+  abi: ContractInterface,
+  name: keyof ContractsForNetwork
+) =>
+  createSelector(
+    [getDefaultChainProviderSelector, addressesSelectorDefaultChain],
+    (chainProvider, addresses) => {
+      if (!chainProvider || !addresses) {
+        return undefined;
+      }
+
+      return new ethers.Contract(addresses[name], abi, chainProvider);
+    }
+  );
+
+// TODO: All contracts from contracts.ts should be created by createDefaultChainContractSelector
+export const stakingContractSelector = createDefaultChainContractSelector(
+  Staking__factory.abi,
   'staking'
 );
+
 export const fishTokenSelector = createContractSelector(
   ERC20__factory,
   'fishToken'
