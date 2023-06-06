@@ -26,10 +26,13 @@ import {
 } from './Aggregator.hooks';
 import { AggregatorInfoContainer } from './AggregatorInfo/AggregatorInfo.container';
 import { SendAmount } from './SendAmount/SendAmount.container';
-import { flowStateSelector } from '../../store/aggregator/aggregator.selectors';
+import { destinationTokenAggregatorBalanceSelector, flowStateSelector, startingTokenBalanceSelector, startingTokenDecimalsSelector } from '../../store/aggregator/aggregator.selectors';
 import { fieldsErrors, UrlNames } from '../../constants';
 import { ControlledSlider } from './SlippageSlider/SlippageSlider.controlled';
 import { ChainEnum, SUPPORTED_CHAINS_RSK } from '../../config/chains';
+
+import { isRskAddress } from '../../utils/helpers';
+import { isFormValid } from './Aggregator.utils';
 
 const PageViewTitle: React.FC = ({ children }) => (
   <Box
@@ -68,7 +71,7 @@ export const AggregatorComponent = ({
     setError,
     clearErrors,
     control,
-    formState: { isValid },
+    formState
   } = useForm<AggregatorFormValues>({
     mode: 'onChange',
     defaultValues: aggregatorDefaultValues,
@@ -96,9 +99,7 @@ export const AggregatorComponent = ({
     setValue
   );
 
-  const slippageProtectionAvailable = SUPPORTED_CHAINS_RSK.includes(
-    startingChain as ChainEnum
-  );
+  const slippageProtectionAvailable = startingChain === destinationChain;
   console.log('slippageProtectionAvailable', slippageProtectionAvailable);
 
   useEffect(() => {
@@ -182,13 +183,14 @@ export const AggregatorComponent = ({
     []
   );
 
-  const isSubmitAllowed = isValid &&
-    isAddressDisclaimerChecked &&
-    !isStartingTokenPaused;
-
-  console.log('isValid', isValid);
-  console.log('isAddressDisclaimerChecked', isAddressDisclaimerChecked);
-  console.log('isStartingTokenPaused', isStartingTokenPaused);
+  // check form validity like this because it works better
+  const isSubmitAllowed = isFormValid({
+    startingToken, destinationToken,
+    startingChain: startingChain as ChainEnum, 
+    destinationChain: destinationChain as ChainEnum,
+    isAddressDisclaimerChecked, isStartingTokenPaused, 
+    amount, receivingAddress
+  });
 
   return (
     <>

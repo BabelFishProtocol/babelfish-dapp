@@ -63,6 +63,7 @@ export async function getReward(
     ] as string[]
   );
   const response = await jsonRpcPost(mainnetFlag, data);
+  console.log(`Reward: ${response.result.toString()}`);
   return BigNumber.from(response.result);
 }
 
@@ -79,5 +80,6 @@ export async function getPenalty(
     ]
   );
   const response = await jsonRpcPost(mainnetFlag, data);
+  console.log(`Penalty: ${response.result.toString()}`);
   return BigNumber.from(response.result);
 }
