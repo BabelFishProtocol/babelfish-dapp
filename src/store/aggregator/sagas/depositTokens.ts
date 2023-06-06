@@ -93,7 +93,8 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
   let submitEffect: SagaContractEffect;
 
   if (!isCrossChain) {
-    const minimumRewardNumber = rewardAmount * (100 - payload.slippageSlider) / 100;
+    let minimumRewardNumber = rewardAmount * (100 - payload.slippageSlider) / 100;
+    minimumRewardNumber = minimumRewardNumber > 0 ? minimumRewardNumber : 0;
     const minimumReward = utils.parseUnits(
       minimumRewardNumber.toString(),
       DEFAULT_ASSET_DECIMALS
