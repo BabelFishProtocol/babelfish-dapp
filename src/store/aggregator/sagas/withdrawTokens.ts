@@ -81,13 +81,12 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
 
   let submitEffect: SagaContractEffect;
 
-  const maximumPenaltyNumber = penaltyAmount * (100 + payload.slippageSlider) / 100;
-  const maximumPenalty = utils.parseUnits(
-    maximumPenaltyNumber.toString(),
-    DEFAULT_ASSET_DECIMALS
-  );
-
-  if (isRSK) {
+  if (!isCrossChain) {
+    const maximumPenaltyNumber = penaltyAmount * (100 + payload.slippageSlider) / 100;
+    const maximumPenalty = utils.parseUnits(
+      maximumPenaltyNumber.toString(),
+      DEFAULT_ASSET_DECIMALS
+    );
     submitEffect = call(
       massetContract.redeemToWithMaximumPenalty,
       destinationTokenAddress.toLowerCase(),
@@ -97,11 +96,10 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
     );
   } else {
     submitEffect = call(
-      massetContract.redeemToBridgeWithMaximumPenalty,
+      massetContract.redeemToBridge,
       (bassetAddress as string).toLowerCase(),
       amount,
-      receiveAddress.toLowerCase(),
-      maximumPenalty
+      receiveAddress.toLowerCase()
     );
   }
 
