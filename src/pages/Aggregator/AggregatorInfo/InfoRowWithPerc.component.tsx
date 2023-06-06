@@ -17,7 +17,7 @@ export const InfoRowWithPerc = ({
   unit,
   total,
   state,
-  hidden
+  hidden,
 }: InfoRowWithPercProps) => {
   const isUpdate = !value || state === 'loading';
   return (
@@ -27,22 +27,25 @@ export const InfoRowWithPerc = ({
           textAlign: 'right',
           fontWeight: 600,
           fontSize: 12,
-          visibility: hidden ? 'hidden' : 'visible'
+          visibility: hidden ? 'hidden' : 'visible',
         }}
       >
         {label}:
       </Typography>
       {isUpdate ? (
-        <Skeleton sx={{ 
-          height: '1em', width: '100%',
-          visibility: hidden ? 'hidden' : 'visible'
-        }} />
+        <Skeleton
+          sx={{
+            height: '1em',
+            width: '100%',
+            visibility: hidden ? 'hidden' : 'visible',
+          }}
+        />
       ) : (
         <Typography
           sx={{
             textAlign: 'left',
             fontSize: 12,
-            visibility: hidden ? 'hidden' : 'visible'
+            visibility: hidden ? 'hidden' : 'visible',
           }}
         >
           {value} {unit} {calculatePercStr(value, total)}

@@ -26,13 +26,12 @@ import {
 } from './Aggregator.hooks';
 import { AggregatorInfoContainer } from './AggregatorInfo/AggregatorInfo.container';
 import { SendAmount } from './SendAmount/SendAmount.container';
-import { destinationTokenAggregatorBalanceSelector, flowStateSelector, startingTokenBalanceSelector, startingTokenDecimalsSelector } from '../../store/aggregator/aggregator.selectors';
+import { flowStateSelector } from '../../store/aggregator/aggregator.selectors';
 import { fieldsErrors, UrlNames } from '../../constants';
 import { ControlledSlider } from './SlippageSlider/SlippageSlider.controlled';
-import { ChainEnum, SUPPORTED_CHAINS_RSK } from '../../config/chains';
+import { ChainEnum } from '../../config/chains';
 
-import { isRskAddress } from '../../utils/helpers';
-import { isFormValid } from './Aggregator.utils';
+import { useIsFormValid } from './Aggregator.utils';
 
 const PageViewTitle: React.FC = ({ children }) => (
   <Box
@@ -71,7 +70,6 @@ export const AggregatorComponent = ({
     setError,
     clearErrors,
     control,
-    formState
   } = useForm<AggregatorFormValues>({
     mode: 'onChange',
     defaultValues: aggregatorDefaultValues,
@@ -100,7 +98,6 @@ export const AggregatorComponent = ({
   );
 
   const slippageProtectionAvailable = startingChain === destinationChain;
-  console.log('slippageProtectionAvailable', slippageProtectionAvailable);
 
   useEffect(() => {
     setValue(AggregatorInputs.ReceiveAmount, receiveAmount || '0.0');
@@ -184,12 +181,15 @@ export const AggregatorComponent = ({
   );
 
   // check form validity like this because it works better
-  const isSubmitAllowed = isFormValid({
-    startingToken, destinationToken,
-    startingChain: startingChain as ChainEnum, 
+  const isSubmitAllowed = useIsFormValid({
+    startingToken,
+    destinationToken,
+    startingChain: startingChain as ChainEnum,
     destinationChain: destinationChain as ChainEnum,
-    isAddressDisclaimerChecked, isStartingTokenPaused, 
-    amount, receivingAddress
+    isAddressDisclaimerChecked,
+    isStartingTokenPaused,
+    amount,
+    receivingAddress,
   });
 
   return (
@@ -352,11 +352,7 @@ export const AggregatorComponent = ({
                   disabled={!receivingAddress}
                 />
               </Box>
-              <Button
-                type="submit"
-                fullWidth
-                disabled={ !isSubmitAllowed }
-              >
+              <Button type="submit" fullWidth disabled={!isSubmitAllowed}>
                 Convert
               </Button>
             </Box>

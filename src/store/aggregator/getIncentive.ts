@@ -56,14 +56,9 @@ export async function getReward(
 ) {
   const data = web3.eth.abi.encodeFunctionCall(
     getRewardForDepositAbi as AbiItem,
-    [
-      tokenAddress.toLocaleLowerCase(),
-      sum.toString(),
-      false
-    ] as string[]
+    [tokenAddress.toLocaleLowerCase(), sum.toString(), false] as string[]
   );
   const response = await jsonRpcPost(mainnetFlag, data);
-  console.log(`Reward: ${response.result.toString()}`);
   return BigNumber.from(response.result);
 }
 
@@ -74,12 +69,8 @@ export async function getPenalty(
 ) {
   const data = web3.eth.abi.encodeFunctionCall(
     getPenaltyForWithdrawalAbi as AbiItem,
-    [
-      tokenAddress.toLocaleLowerCase(),
-      sum.toString()
-    ]
+    [tokenAddress.toLocaleLowerCase(), sum.toString()]
   );
   const response = await jsonRpcPost(mainnetFlag, data);
-  console.log(`Penalty: ${response.result.toString()}`);
   return BigNumber.from(response.result);
 }

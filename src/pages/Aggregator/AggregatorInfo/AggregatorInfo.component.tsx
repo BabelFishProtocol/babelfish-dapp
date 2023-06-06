@@ -53,10 +53,13 @@ export const AggregatorInfoComponent = ({
     >
       <InfoRowWithPerc
         hidden={
-          !(incentives?.type == IncentiveType.penalty || incentives?.type == IncentiveType.reward)
+          !(
+            incentives?.type === IncentiveType.penalty ||
+            incentives?.type === IncentiveType.reward
+          )
         }
         label={
-            incentives?.type === IncentiveType.penalty ? 'Penalty' : 'Reward'
+          incentives?.type === IncentiveType.penalty ? 'Penalty' : 'Reward'
         }
         value={`${incentives?.amount || '0.0'}`}
         total={`${sendAmount || '0.0'}`}

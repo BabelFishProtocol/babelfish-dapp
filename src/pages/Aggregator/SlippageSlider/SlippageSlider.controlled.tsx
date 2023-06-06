@@ -8,16 +8,17 @@ export const ControlledSlider = <FormValues extends FieldValues>({
   control,
   ...inputProps
 }: ControlledSliderProps<FormValues>) => {
-  return inputProps.hidden ? null :
+  return inputProps.hidden ? null : (
     <Controller
-    render={({ field: { onChange, value } }) => (
-      <SlippageSlider {...inputProps} onChange={onChange} value={value} />
-    )}
-    name={name}
-    control={control}
-    rules={{
-      required: true,
-      ...rules,
-    }}
-  />
+      render={({ field: { onChange, value } }) => (
+        <SlippageSlider {...inputProps} onChange={onChange} value={value} />
+      )}
+      name={name}
+      control={control}
+      rules={{
+        required: true,
+        ...rules,
+      }}
+    />
+  );
 };
