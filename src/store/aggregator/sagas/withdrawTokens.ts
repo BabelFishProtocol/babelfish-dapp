@@ -13,6 +13,7 @@ import { contractStepCallsSaga } from '../../utils/utils.sagas';
 import {
   bassetAddressSelector,
   destinationTokenAddressSelector,
+  incentivesSelector,
   massetContractSelector,
   startingTokenContractSelector,
   startingTokenDecimalsSelector,
@@ -30,6 +31,8 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
   const massetContract = yield* select(massetContractSelector);
   const account = yield* select(accountSelector);
   const { destinationChain, receiveAddress, sendAmount } = payload;
+  const penaltyData = yield* select(incentivesSelector);
+  const penaltyAmount = Number(penaltyData?.amount ?? 0);
 
   if (!massetContract || !tokenContract || !destinationChain) {
     yield* put(aggregatorActions.setSubmitError('Could not find contracts'));
@@ -78,8 +81,7 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
 
   let submitEffect: SagaContractEffect;
 
-  const maximumPenaltyNumber =
-    (Number(payload.sendAmount) * payload.slippageSlider) / 100;
+  const maximumPenaltyNumber = penaltyAmount * (100 + payload.slippageSlider) / 100;
   const maximumPenalty = utils.parseUnits(
     maximumPenaltyNumber.toString(),
     DEFAULT_ASSET_DECIMALS

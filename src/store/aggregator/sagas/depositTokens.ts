@@ -13,6 +13,7 @@ import { SagaContractEffect, SagaContractCallStep } from '../../types';
 import { contractStepCallsSaga } from '../../utils/utils.sagas';
 import {
   bridgeContractSelector,
+  incentivesSelector,
   massetAddressSelector,
   massetContractSelector,
   startingTokenAddressSelector,
@@ -32,6 +33,8 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
   const account = yield* select(accountSelector);
   const { startingChain, receiveAddress, receiveAmount } = payload;
   const isRSK = SUPPORTED_CHAINS_RSK.includes(startingChain as ChainEnum);
+  const rewardData = yield* select(incentivesSelector);
+  const rewardAmount = Number(rewardData?.amount ?? 0);
 
   if (
     !massetContract ||
@@ -90,8 +93,7 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
   let submitEffect: SagaContractEffect;
 
   if (isRSK) {
-    const minimumRewardNumber =
-      (Number(payload.sendAmount) * payload.slippageSlider) / 100;
+    const minimumRewardNumber = rewardAmount * (100 - payload.slippageSlider) / 100;
     const minimumReward = utils.parseUnits(
       minimumRewardNumber.toString(),
       DEFAULT_ASSET_DECIMALS
