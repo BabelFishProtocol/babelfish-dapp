@@ -48,6 +48,6 @@ export const defaultChainId = (
   isMainnet ? ChainIds.RSK_MAINNET : ChainIds.RSK_TESTNET
 ) as string;
 
-export const chains: Chain[] = isMainnet ? mainnetChains : testnetChains;
+export const chains: Chain[] = [...mainnetChains, ...testnetChains];
 
 setup(chains);
