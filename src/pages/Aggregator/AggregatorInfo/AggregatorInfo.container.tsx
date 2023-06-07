@@ -57,7 +57,7 @@ export const AggregatorInfoContainer = ({
       tokenDecimals={tokenDecimals}
       incentivesState={incentivesState}
       incentives={incentives}
-      sendAmount={sendAmount}
+      sendAmount={sendAmount!}
       aggregatorBalance={aggregatorBalance}
       aggregatorBalanceState={destinationTokenAggregatorBalanceState}
     />

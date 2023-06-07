@@ -5902,7 +5902,7 @@ __metadata:
     react-hook-form: ^7.43.1
     react-redux: 7.2.6
     react-router-dom: 6.2.1
-    reactjs-localstorage: 1.0.1
+    reactjs-localstorage: ^1.0.1
     redux-mock-store: 1.5.4
     redux-persist: 6.0.0
     redux-saga: 1.1.3
@@ -13418,7 +13418,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"reactjs-localstorage@npm:1.0.1":
+"reactjs-localstorage@npm:^1.0.1":
   version: 1.0.1
   resolution: "reactjs-localstorage@npm:1.0.1"
   checksum: c6639ee7673b1a83ba80adc24d71dd6e6463df3dd7cf3677d0bfb7f2fbd06e8f38cb79d05138c22362086e79d5e1186f3587234ba4bf121f8e287b82c2687b2b

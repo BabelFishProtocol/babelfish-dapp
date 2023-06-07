@@ -21,6 +21,6 @@ export type AggregatorInfoComponentProps = {
   aggregatorBalance?: string;
   aggregatorBalanceState: FiniteStates;
   incentivesState?: FiniteStates;
-  incentives?: IncentivesType;
-  sendAmount?: string;
+  incentives: IncentivesType;
+  sendAmount: string;
 };
