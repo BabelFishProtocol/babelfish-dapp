@@ -245,7 +245,7 @@ export function* fetchIncentive() {
       receiveAmount = amount.sub(incentive);
     }
 
-    incentive = incentive && roundBN(incentive, 3);
+    //incentive = incentive && roundBN(incentive, 3);
 
     yield* put(
       aggregatorActions.setIncentives({
