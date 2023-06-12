@@ -66,18 +66,15 @@ export function useIsFormValid(state: {
     !state.startingToken ||
     !state.destinationToken
   ) {
-    // console.log(`Invalid starting or destination token selected: ${state.startingToken} -> ${state.destinationToken}`);
     return false;
   }
 
   if (state.isStartingTokenPaused) {
-    // console.log(`Starting token is paused`);
     return false;
   }
 
   // check that amount is defined
   if (!state.amount || Number(state.amount) <= 0) {
-    // console.log(`Invalid amount: ${state.amount}`);
     return false;
   }
 
@@ -89,18 +86,15 @@ export function useIsFormValid(state: {
     )
   );
   if (userBalance < Number(state.amount)) {
-    // console.log(`User balance not sufficient, ${state.amount} > ${userBalance}`);
     return false;
   }
 
   // validate the receiving address
   if (!isRskAddress(state.receivingAddress)) {
-    // console.log(`Invalid receiving address: ${state.receivingAddress}`);
     return false;
   }
 
   if (!state.isAddressDisclaimerChecked) {
-    // console.log('Disclaimer checkbox not checked');
     return false;
   }
 
@@ -108,10 +102,8 @@ export function useIsFormValid(state: {
     state.startingToken === TokenEnum.XUSD &&
     BigNumber.from(destinationTokenAggregatorBalance).lt(state.amount)
   ) {
-    // console.log(`Aggregator balance insufficient: ${destinationTokenAggregatorBalance} < ${state.amount}`);
     return false;
   }
 
-  // console.log('Form is valid and ready to send');
   return true;
 }
