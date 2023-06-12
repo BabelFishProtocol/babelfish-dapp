@@ -242,7 +242,7 @@ export function* fetchIncentive() {
         amount,
         isMainnet
       )) as BigNumber;
-      receiveAmount = amount.add(incentive);
+      receiveAmount = amount.sub(incentive);
     }
 
     incentive = incentive && roundBN(incentive, 3);
