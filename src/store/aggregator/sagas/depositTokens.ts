@@ -1,4 +1,4 @@
-import { utils } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { call, put, select } from 'typed-redux-saga';
 import {
   ChainEnum,
@@ -10,6 +10,7 @@ import { IEvent } from '../../../gql/graphql';
 import { parseToWei } from '../../../utils/helpers';
 import { accountSelector } from '../../app/app.selectors';
 import { SagaContractEffect, SagaContractCallStep } from '../../types';
+import { toBN } from '../../utils/utils.math';
 import { contractStepCallsSaga } from '../../utils/utils.sagas';
 import {
   bridgeContractSelector,
@@ -34,7 +35,6 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
   const { startingChain, receiveAddress, receiveAmount } = payload;
   const isRSK = SUPPORTED_CHAINS_RSK.includes(startingChain as ChainEnum);
   const rewardData = yield* select(incentivesSelector);
-  const rewardAmount = Number(rewardData?.amount ?? 0);
 
   if (
     !massetContract ||
@@ -93,18 +93,17 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
   let submitEffect: SagaContractEffect;
 
   if (!isCrossChain) {
-    let minimumRewardNumber = rewardAmount * (100 - payload.slippageSlider) / 100;
-    minimumRewardNumber = minimumRewardNumber > 0 ? minimumRewardNumber : 0;
-    const minimumReward = utils.parseUnits(
-      minimumRewardNumber.toString(),
-      DEFAULT_ASSET_DECIMALS
-    );
+    const rewardAmountBN = toBN(Number(rewardData?.amount ?? 0), DEFAULT_ASSET_DECIMALS);
+    const slippageBN = amount.mul(10 * payload.slippageSlider).div(1000);
+    const minimumRewardBN = rewardAmountBN.gt(slippageBN) ? 
+      rewardAmountBN.sub(slippageBN) : BigNumber.from(0);
+
     submitEffect = call(
       massetContract.mintToWithMinimumReward,
       tokenAddress.toLowerCase(),
       amount,
       receiveAddress.toLowerCase(),
-      minimumReward
+      minimumRewardBN
     );
   } else {
     const extraData = utils.defaultAbiCoder.encode(

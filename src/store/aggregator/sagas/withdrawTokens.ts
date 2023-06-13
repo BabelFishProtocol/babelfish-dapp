@@ -1,4 +1,4 @@
-import { utils } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { call, put, select } from 'typed-redux-saga';
 import {
   checkIsCrossChain,
@@ -9,6 +9,7 @@ import { IEvent } from '../../../gql/graphql';
 import { parseToWei } from '../../../utils/helpers';
 import { accountSelector } from '../../app/app.selectors';
 import { SagaContractEffect, SagaContractCallStep } from '../../types';
+import { toBN } from '../../utils/utils.math';
 import { contractStepCallsSaga } from '../../utils/utils.sagas';
 import {
   bassetAddressSelector,
@@ -82,17 +83,17 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
   let submitEffect: SagaContractEffect;
 
   if (!isCrossChain) {
-    const maximumPenaltyNumber = penaltyAmount * (100 + payload.slippageSlider) / 100;
-    const maximumPenalty = utils.parseUnits(
-      maximumPenaltyNumber.toString(),
-      DEFAULT_ASSET_DECIMALS
-    );
+
+    const penaltyAmountBN = toBN(Number(penaltyData?.amount ?? 0), DEFAULT_ASSET_DECIMALS);
+    const slippageBN = amount.mul(10 * payload.slippageSlider).div(1000);
+    const maximumPenaltyBN = penaltyAmountBN.add(slippageBN);
+
     submitEffect = call(
       massetContract.redeemToWithMaximumPenalty,
       destinationTokenAddress.toLowerCase(),
       amount,
       receiveAddress.toLowerCase(),
-      maximumPenalty
+      maximumPenaltyBN
     );
   } else {
     submitEffect = call(
