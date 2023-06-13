@@ -54,10 +54,10 @@ export function useIsFormValid(state: {
   isAddressDisclaimerChecked: boolean;
   isStartingTokenPaused: boolean;
 }): boolean {
-  const startingTokenBalance = useSelector(startingTokenBalanceSelector);
+  const startingTokenBalance = useSelector(startingTokenBalanceSelector) ?? 0;
   const destinationTokenAggregatorBalance = useSelector(
     destinationTokenAggregatorBalanceSelector
-  );
+  ) ?? 0;
   const startingTokenDecimals = useSelector(startingTokenDecimalsSelector);
 
   // validate the tokens

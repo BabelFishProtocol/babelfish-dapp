@@ -72,5 +72,5 @@ export async function getPenalty(
     [tokenAddress.toLocaleLowerCase(), sum.toString()]
   );
   const response = await jsonRpcPost(mainnetFlag, data);
-  return BigNumber.from(response.result);
+  return BigNumber.from(response?.result);
 }
