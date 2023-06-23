@@ -7,5 +7,5 @@ export function roundBN(bn: BigNumber, digits: number): BigNumber {
 }
 
 export function toBN(n: number, digits: number): BigNumber {
-  return BigNumber.from(Math.round(n * Math.pow(10, digits)));
+  return BigNumber.from(Math.round(n * 10 ** digits));
 }

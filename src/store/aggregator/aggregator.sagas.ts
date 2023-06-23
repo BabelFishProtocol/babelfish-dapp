@@ -23,6 +23,7 @@ import {
   startingTokenDecimalsSelector,
   startingTokenSelector,
   tokenAddressSelector,
+  destinationTokenSelector,
 } from './aggregator.selectors';
 import { AggregatorActions, aggregatorActions } from './aggregator.slice';
 import { depositTokens } from './sagas/depositTokens';
@@ -225,7 +226,7 @@ export function* fetchIncentive() {
       )) as BigNumber;
       receiveAmount = amount.add(incentive);
     } else if (flowState === 'withdraw') {
-      const destinationToken = yield* select(startingTokenSelector);
+      const destinationToken = yield* select(destinationTokenSelector);
       const bridge = yield* select(bridgeSelector);
       const sovTokenAddress = bridge
         ? bridge.getRskSovrynTokenAddress(destinationToken!)
