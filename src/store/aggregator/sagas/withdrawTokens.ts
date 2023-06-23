@@ -1,4 +1,4 @@
-import { BigNumber, utils } from 'ethers';
+import { utils } from 'ethers';
 import { call, put, select } from 'typed-redux-saga';
 import {
   checkIsCrossChain,
