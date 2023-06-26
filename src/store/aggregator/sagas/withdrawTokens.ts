@@ -1,4 +1,4 @@
-import { BigNumber, utils } from 'ethers';
+import { utils } from 'ethers';
 import { call, put, select } from 'typed-redux-saga';
 import {
   checkIsCrossChain,
@@ -33,7 +33,6 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
   const account = yield* select(accountSelector);
   const { destinationChain, receiveAddress, sendAmount } = payload;
   const penaltyData = yield* select(incentivesSelector);
-  const penaltyAmount = Number(penaltyData?.amount ?? 0);
 
   if (!massetContract || !tokenContract || !destinationChain) {
     yield* put(aggregatorActions.setSubmitError('Could not find contracts'));
