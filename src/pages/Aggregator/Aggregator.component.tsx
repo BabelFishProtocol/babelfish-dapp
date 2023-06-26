@@ -97,8 +97,6 @@ export const AggregatorComponent = ({
     setValue
   );
 
-  const slippageProtectionAvailable = startingChain === destinationChain;
-
   useEffect(() => {
     setValue(AggregatorInputs.ReceiveAmount, receiveAmount || '0.0');
   }, [receiveAmount, setValue]);
@@ -197,6 +195,8 @@ export const AggregatorComponent = ({
     () => !!startingChain && !!destinationChain,
     [destinationChain, startingChain]
   );
+
+  const slippageProtectionAvailable = startingChain === destinationChain;
 
   return (
     <>
