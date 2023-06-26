@@ -32,6 +32,7 @@
     "@sovryn/onboard-ledger": "1.0.1",
     "@sovryn/onboard-react": "1.0.2",
     "@sovryn/onboard-trezor": "1.0.1",
+    "@sovryn/onboard-walletconnect": "1.0.1",
     "@sovryn/ui": "1.0.6",
     "@typechain/ethers-v5": "9.0.0",
     "buffer": "6.0.3",

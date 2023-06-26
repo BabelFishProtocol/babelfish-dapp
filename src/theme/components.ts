@@ -219,6 +219,10 @@ video {
 [data-layout-id="dapp-onboard"] [hidden] {
   display: none;
 }
+
+.walletconnect-modal__mobile__toggle > a {
+  color: #F57118;
+}
 `;
 
 const transition = `250ms cubic-bezier(0.4, 0, 0.2, 1)`;

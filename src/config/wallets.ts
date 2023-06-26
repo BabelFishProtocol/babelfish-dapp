@@ -3,12 +3,14 @@ import ledgerIcon from '../assets/icons/ledger.svg';
 import trezorIcon from '../assets/icons/trezor.svg';
 import metamaskIcon from '../assets/icons/metamask.svg';
 import liqualityIcon from '../assets/icons/liquality.svg';
+import walletConnectIcon from '../assets/icons/walletConnect.svg';
 
 export enum WalletEnum {
   Metamask = 'Metamask',
   Liquality = 'Liquality',
   Ledger = 'Ledger',
   Trezor = 'Trezor',
+  WalletConnect = 'WalletConnect',
 }
 
 export type WalletConfig = {
@@ -39,5 +41,9 @@ export const wallets: WalletConfig[] = [
     sx: {
       backgroundColor: 'white',
     },
+  },
+  {
+    name: WalletEnum.WalletConnect,
+    icon: walletConnectIcon,
   },
 ];

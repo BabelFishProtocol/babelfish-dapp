@@ -3,6 +3,7 @@ import { Asset, BasePath } from '@sovryn/onboard-hw-common';
 import injectedModule from '@sovryn/onboard-injected';
 import ledgerModule from '@sovryn/onboard-ledger';
 import trezorModule from '@sovryn/onboard-trezor';
+import walletConnectModule from '@sovryn/onboard-walletconnect';
 import { chains } from '../config/sovryn-onboard-chains';
 
 const basePaths: BasePath[] = [
@@ -23,8 +24,10 @@ const trezor = trezorModule({
   assets,
 });
 
+const walletConnect = walletConnectModule();
+
 export const onboard = Onboard({
-  wallets: [injected, ledger, trezor],
+  wallets: [injected, walletConnect, ledger, trezor],
   chains: chains.map((item) => ({
     ...item,
     rpcUrl: typeof item.rpcUrl === 'string' ? item.rpcUrl : item.rpcUrl[0],
