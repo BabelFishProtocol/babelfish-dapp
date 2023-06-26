@@ -100,7 +100,7 @@ export function useIsFormValid(state: {
 
   if (
     state.startingToken === TokenEnum.XUSD &&
-    BigNumber.from(destinationTokenAggregatorBalance).lt(state.amount)
+    Number(destinationTokenAggregatorBalance) < Number(state.amount)
   ) {
     return false;
   }
