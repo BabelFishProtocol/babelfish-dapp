@@ -94,8 +94,8 @@ export function* depositTokens({ payload }: AggregatorActions['submit']) {
 
   if (!isCrossChain) {
     const rewardAmountBN = toBN(Number(rewardData?.amount ?? 0), DEFAULT_ASSET_DECIMALS);
-    const slippageBN = amount.mul(10 * payload.slippageSlider).div(1000);
-    const minimumRewardBN = rewardAmountBN.gt(slippageBN) ? 
+    const slippageBN = rewardAmountBN.mul(10 * payload.slippageSlider).div(1000);
+    const minimumRewardBN = rewardAmountBN.gt(slippageBN) ?
       rewardAmountBN.sub(slippageBN) : BigNumber.from(0);
 
     submitEffect = call(

@@ -44,7 +44,7 @@ const PageViewTitle: React.FC = ({ children }) => (
   </Box>
 );
 
-const slippageSliderValues = [0, 0.5, 1, 1.5, 2, 2.5];
+const slippageSliderValues = [0, 5, 10, 15, 20];
 const slippageSliderMarks = slippageSliderValues.map((v) => ({
   value: v,
   label: `${v}%`,
@@ -196,7 +196,10 @@ export const AggregatorComponent = ({
     [destinationChain, startingChain]
   );
 
-  const slippageProtectionAvailable = startingChain === destinationChain;
+
+  let slippageProtectionAvailable = startingChain === destinationChain;
+  // disable for now
+  slippageProtectionAvailable = false;
 
   return (
     <>
@@ -262,7 +265,7 @@ export const AggregatorComponent = ({
                 control={control}
                 setValue={setValue}
                 min={0}
-                max={2.5}
+                max={20}
                 step={null}
                 marks={slippageSliderMarks}
               />

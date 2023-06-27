@@ -84,7 +84,7 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
   if (!isCrossChain) {
 
     const penaltyAmountBN = toBN(Number(penaltyData?.amount ?? 0), DEFAULT_ASSET_DECIMALS);
-    const slippageBN = amount.mul(10 * payload.slippageSlider).div(1000);
+    const slippageBN = penaltyAmountBN.mul(10 * payload.slippageSlider).div(1000);
     const maximumPenaltyBN = penaltyAmountBN.add(slippageBN);
 
     submitEffect = call(
