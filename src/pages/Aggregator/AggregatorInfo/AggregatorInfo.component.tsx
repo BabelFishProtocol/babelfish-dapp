@@ -59,7 +59,7 @@ export const AggregatorInfoComponent = ({
           )
         }
         label={
-          incentives?.type === IncentiveType.penalty ? 'Penalty' : 'Reward'
+          incentives?.type === IncentiveType.penalty ? 'Conversion Fee' : 'Reward'
         }
         value={`${incentives?.amount || '0.0'}`}
         total={`${sendAmount || '0.0'}`}
