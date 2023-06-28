@@ -24,6 +24,7 @@ import {
   startingTokenSelector,
   tokenAddressSelector,
   destinationTokenSelector,
+  feesAndLimitsSelector,
 } from './aggregator.selectors';
 import { AggregatorActions, aggregatorActions } from './aggregator.slice';
 import { depositTokens } from './sagas/depositTokens';
@@ -201,8 +202,8 @@ export function* fetchIncentive() {
     );
     if (!startingTokenAddress || !destinationTokenAddress) return;
 
-    let incentive = BigNumber.from(0);
-    let receiveAmount = BigNumber.from(0);
+    let incentiveBN = BigNumber.from(0);
+    let receiveAmountBN = BigNumber.from(0);
     let incentiveType = IncentiveType.none;
 
     if (flowState === 'deposit') {
@@ -218,13 +219,13 @@ export function* fetchIncentive() {
       const destinationChain = yield* select(destinationChainSelector);
       const isMainnet = destinationChain === ChainEnum.RSK;
 
-      incentive = (yield* call(
+      incentiveBN = (yield* call(
         getReward,
         sovTokenAddress!,
         amount,
         isMainnet
       )) as BigNumber;
-      receiveAmount = amount.add(incentive);
+      receiveAmountBN = amount.add(incentiveBN);
     } else if (flowState === 'withdraw') {
       const destinationToken = yield* select(destinationTokenSelector);
       const bridge = yield* select(bridgeSelector);
@@ -237,26 +238,29 @@ export function* fetchIncentive() {
       const startingChain = yield* select(startingChainSelector);
       const isMainnet = startingChain === ChainEnum.RSK;
 
-      incentive = (yield* call(
+      incentiveBN = (yield* call(
         getPenalty,
         sovTokenAddress!,
         amount,
         isMainnet
       )) as BigNumber;
-      receiveAmount = amount.sub(incentive);
+      receiveAmountBN = amount.sub(incentiveBN);
     }
 
-    //incentive = incentive && roundBN(incentive, 3);
+    const feesAndLimits = yield* select(feesAndLimitsSelector);
+    const bridgeFeeBN = BigNumber.from(feesAndLimits.bridgeFee ?? '0');
+    receiveAmountBN = receiveAmountBN.sub(bridgeFeeBN);
+    console.log(feesAndLimits.bridgeFee);
 
     yield* put(
       aggregatorActions.setIncentives({
         type: incentiveType,
-        amount: utils.formatUnits(incentive, DEFAULT_ASSET_DECIMALS),
+        amount: utils.formatUnits(incentiveBN, DEFAULT_ASSET_DECIMALS),
       })
     );
     yield* put(
       aggregatorActions.setReceiveAmount(
-        utils.formatUnits(receiveAmount, DEFAULT_ASSET_DECIMALS)
+        utils.formatUnits(receiveAmountBN, DEFAULT_ASSET_DECIMALS)
       )
     );
   } catch (e) {
