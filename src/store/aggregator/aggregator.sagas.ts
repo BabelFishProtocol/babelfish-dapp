@@ -250,7 +250,6 @@ export function* fetchIncentive() {
     const feesAndLimits = yield* select(feesAndLimitsSelector);
     const bridgeFeeBN = BigNumber.from(feesAndLimits.bridgeFee ?? '0');
     receiveAmountBN = receiveAmountBN.sub(bridgeFeeBN);
-    console.log(feesAndLimits.bridgeFee);
 
     yield* put(
       aggregatorActions.setIncentives({
