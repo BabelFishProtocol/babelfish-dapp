@@ -97,6 +97,7 @@ export const AggregatorComponent = ({
     setValue
   );
 
+  // gadi
   useEffect(() => {
     setValue(AggregatorInputs.ReceiveAmount, receiveAmount || '0.0');
   }, [receiveAmount, setValue]);
@@ -138,7 +139,7 @@ export const AggregatorComponent = ({
   useEffect(() => {
     checkTokenPauseState();
     onStartingTokenChange(startingToken || undefined);
-  }, [startingToken, onStartingTokenChange, checkTokenPauseState]);
+  }, [startingToken, onStartingTokenChange]);
 
   useEffect(() => {
     if (destinationChain) {
@@ -157,9 +158,10 @@ export const AggregatorComponent = ({
   }, [destinationToken, onDestinationTokenChange]);
 
   useEffect(() => {
-    if (amount) {
+    // gadi
+    //if (amount) {
       onSendAmountChange(amount);
-    }
+    //}
   }, [amount, onSendAmountChange]);
 
   useEffect(() => {
@@ -170,7 +172,8 @@ export const AggregatorComponent = ({
 
   useEffect(() => {
     resetField(AggregatorInputs.SendAmount);
-    resetField(AggregatorInputs.ReceiveAmount);
+    // gadi
+    //resetField(AggregatorInputs.ReceiveAmount);
   }, [flowState, resetField]);
 
   const handleAddressDisclaimerClick = useCallback(
@@ -179,7 +182,6 @@ export const AggregatorComponent = ({
   );
 
 
-  // check form validity like this because it works better
   const isSubmitAllowed = useIsFormValid({
     startingToken,
     destinationToken,

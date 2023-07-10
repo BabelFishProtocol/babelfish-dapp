@@ -12,12 +12,14 @@ import {
   receiveAmountSelector,
   startingTokenAddressSelector,
   startingTokenBridgeAddressSelector,
+  startingTokenSelector,
   submitAggregatorStatusSelector,
 } from '../../store/aggregator/aggregator.selectors';
 import { aggregatorActions } from '../../store/aggregator/aggregator.slice';
 import { appActions } from '../../store/app/app.slice';
 import { AggregatorComponent } from './Aggregator.component';
 import { AggregatorFormValues } from './Aggregator.fields';
+import { select } from 'redux-saga/effects';
 
 export const AggregatorContainer = () => {
   const submitStatus = useSelector(submitAggregatorStatusSelector);

@@ -313,6 +313,10 @@ export const startingTokenBridgeAddressSelector = createSelector(
   }
 );
 
+export const isCrosschainSelector = createSelector(
+  [chainIdSelector, destinationChainSelector], 
+  (startingChain, destinationChain) => startingChain !== destinationChain);
+
 export const destinationTokenContractSelector = createSelector(
   [
     providerSelector,

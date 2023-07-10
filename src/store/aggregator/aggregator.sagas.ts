@@ -25,6 +25,10 @@ import {
   tokenAddressSelector,
   destinationTokenSelector,
   feesAndLimitsSelector,
+  incentivesSelector,
+  incentivesStateSelector,
+  feesAndLimitsStateSelector,
+  isCrosschainSelector,
 } from './aggregator.selectors';
 import { AggregatorActions, aggregatorActions } from './aggregator.slice';
 import { depositTokens } from './sagas/depositTokens';
@@ -50,6 +54,7 @@ export function* transferTokens(action: AggregatorActions['submit']) {
 }
 
 export function* fetchAllowTokenAddress() {
+  console.log('fetchAllowTokenAddress');
   try {
     const bridge = yield* select(bridgeContractSelector);
 
@@ -65,6 +70,7 @@ export function* fetchAllowTokenAddress() {
 }
 
 export function* fetchBridgeFeesAndLimits() {
+  console.log('fetchBridgeFeesAndLimits');
   try {
     yield* put(aggregatorActions.fetchFeesAndLimitsLoading());
     const allowTokens = yield* select(allowTokensContractSelector);
@@ -104,6 +110,7 @@ export function* fetchBridgeFeesAndLimits() {
 }
 
 export function* fetchStartingTokenBalance() {
+  console.log('fetchStartingTokenBalance');
   try {
     const account = yield* select(accountSelector);
     const tokenContract = yield* select(startingTokenContractSelector);
@@ -128,6 +135,7 @@ export function* fetchStartingTokenBalance() {
 }
 
 export function* fetchDestinationTokenAggregatorBalance() {
+  console.log('fetchDestinationTokenAggregatorBalance');
   try {
     const startingToken = yield* select(startingTokenSelector);
     const massetAddress = yield* select(massetAddressSelector);
@@ -169,6 +177,7 @@ export function* fetchDestinationTokenAggregatorBalance() {
 }
 
 export function* fetchPausedTokens() {
+  console.log('fetchPausedTokens');
   try {
     const subgraphClient = yield* select(subgraphClientSelector);
 
@@ -188,12 +197,67 @@ export function* fetchPausedTokens() {
   }
 }
 
+// gadi
+export function* fetchReceiveAmount() {
+  console.log('fetchReceiveAmount');
+
+  const incentiveState = yield* select(incentivesStateSelector);
+  const bridgeInfoState = yield* select(feesAndLimitsStateSelector);
+  const isCrossChain = yield* select(isCrosschainSelector);
+
+  if(incentiveState !== 'success' || (isCrossChain && bridgeInfoState !== 'success')) {
+    yield* put(
+      aggregatorActions.setReceiveAmount('')
+    );
+    return;
+  }
+
+  const sendAmount = yield* select(sendAmountSelector);
+
+  if (Number(sendAmount) === 0) {
+    yield* put(
+      aggregatorActions.setReceiveAmount('0.0')
+    );
+    return;   
+  }
+
+  let receiveAmountBN = utils.parseUnits(sendAmount ?? '0', DEFAULT_ASSET_DECIMALS);
+
+  function subOrZero(bna: BigNumber, bnb: BigNumber): BigNumber {
+    return bna.gt(bnb) ? bna.sub(bnb) : BigNumber.from(0);
+  }
+
+  if(isCrossChain) {
+    const feesAndLimits = yield* select(feesAndLimitsSelector);
+    const bridgeFeeBN = BigNumber.from(feesAndLimits.bridgeFee ?? '0');  
+    receiveAmountBN = subOrZero(receiveAmountBN, bridgeFeeBN);
+  }
+
+  const incentiveData = yield* select(incentivesSelector);
+  const incentiveBN = utils.parseUnits(incentiveData.amount ?? '0', DEFAULT_ASSET_DECIMALS);
+  const flowState = yield* select(flowStateSelector);
+  if (flowState === 'deposit') {
+    receiveAmountBN = subOrZero(receiveAmountBN, incentiveBN);
+  } else if (flowState === 'withdraw') {
+    receiveAmountBN = subOrZero(receiveAmountBN, incentiveBN);
+  }
+
+  const receiveAmountStr = utils.formatUnits(receiveAmountBN, DEFAULT_ASSET_DECIMALS);
+
+  yield* put(
+    aggregatorActions.setReceiveAmount(receiveAmountStr)
+  );
+}
+
 export function* fetchIncentive() {
+  console.log('fetchIncentive');
   try {
-    yield* put(aggregatorActions.setIncentivesLoading());
+    // gadi
+    //yield* put(aggregatorActions.setIncentivesLoading());
 
     const sendAmount = yield* select(sendAmountSelector);
-    if (Number(sendAmount) === 0) return;
+    //if (Number(sendAmount) === 0) return;
+
     const flowState = yield* select(flowStateSelector);
 
     const startingTokenAddress = yield* select(startingTokenAddressSelector);
@@ -203,7 +267,6 @@ export function* fetchIncentive() {
     if (!startingTokenAddress || !destinationTokenAddress) return;
 
     let incentiveBN = BigNumber.from(0);
-    let receiveAmountBN = BigNumber.from(0);
     let incentiveType = IncentiveType.none;
 
     if (flowState === 'deposit') {
@@ -225,7 +288,6 @@ export function* fetchIncentive() {
         amount,
         isMainnet
       )) as BigNumber;
-      receiveAmountBN = amount.add(incentiveBN);
     } else if (flowState === 'withdraw') {
       const destinationToken = yield* select(destinationTokenSelector);
       const bridge = yield* select(bridgeSelector);
@@ -244,12 +306,7 @@ export function* fetchIncentive() {
         amount,
         isMainnet
       )) as BigNumber;
-      receiveAmountBN = amount.sub(incentiveBN);
     }
-
-    const feesAndLimits = yield* select(feesAndLimitsSelector);
-    const bridgeFeeBN = BigNumber.from(feesAndLimits.bridgeFee ?? '0');
-    receiveAmountBN = receiveAmountBN.sub(bridgeFeeBN);
 
     yield* put(
       aggregatorActions.setIncentives({
@@ -257,17 +314,13 @@ export function* fetchIncentive() {
         amount: utils.formatUnits(incentiveBN, DEFAULT_ASSET_DECIMALS),
       })
     );
-    yield* put(
-      aggregatorActions.setReceiveAmount(
-        utils.formatUnits(receiveAmountBN, DEFAULT_ASSET_DECIMALS)
-      )
-    );
   } catch (e) {
     yield* put(aggregatorActions.setIncentivesFailure());
   }
 }
 
 export function* resetAggregator() {
+  console.log('resetAggregator');
   yield* put(aggregatorActions.resetAggregator());
 }
 
@@ -293,7 +346,6 @@ export function* aggregatorSaga() {
       aggregatorActions.setAllowTokensAddress,
       fetchBridgeFeesAndLimits
     ),
-    takeLatest(aggregatorActions.setDestinationToken, fetchBridgeFeesAndLimits),
     takeLatest(aggregatorActions.setDestinationChain, fetchAllowTokenAddress),
     takeLatest(aggregatorActions.setDestinationToken, fetchAllowTokenAddress),
     takeLatest(aggregatorActions.setStartingToken, fetchStartingTokenBalance),
@@ -307,8 +359,14 @@ export function* aggregatorSaga() {
       fetchDestinationTokenAggregatorBalance
     ),
 
+    takeLatest(aggregatorActions.setDestinationToken, fetchBridgeFeesAndLimits),
+
     takeLatest(aggregatorActions.setSendAmount, fetchIncentive),
     takeLatest(aggregatorActions.setDestinationToken, fetchIncentive),
+    takeLatest(aggregatorActions.setStartingToken, fetchIncentive),
+
+    takeLatest(aggregatorActions.setFeesAndLimits, fetchReceiveAmount),
+    takeLatest(aggregatorActions.setIncentives, fetchReceiveAmount),
 
     takeLatest(aggregatorActions.submit, transferTokens),
   ]);
