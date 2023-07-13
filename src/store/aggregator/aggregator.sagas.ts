@@ -237,7 +237,7 @@ export function* fetchReceiveAmount() {
   const incentiveBN = utils.parseUnits(incentiveData.amount ?? '0', DEFAULT_ASSET_DECIMALS);
   const flowState = yield* select(flowStateSelector);
   if (flowState === 'deposit') {
-    receiveAmountBN = subOrZero(receiveAmountBN, incentiveBN);
+    receiveAmountBN = receiveAmountBN.add(incentiveBN);
   } else if (flowState === 'withdraw') {
     receiveAmountBN = subOrZero(receiveAmountBN, incentiveBN);
   }
@@ -319,6 +319,12 @@ export function* fetchIncentive() {
   }
 }
 
+export function* resetSendAmount() {
+  yield* put(
+    aggregatorActions.setSendAmount('0.0')
+  );
+}
+
 export function* resetAggregator() {
   console.log('resetAggregator');
   yield* put(aggregatorActions.resetAggregator());
@@ -358,6 +364,9 @@ export function* aggregatorSaga() {
       aggregatorActions.setStartingToken,
       fetchDestinationTokenAggregatorBalance
     ),
+
+    takeLatest(aggregatorActions.setDestinationToken, resetSendAmount),
+    takeLatest(aggregatorActions.setStartingToken, resetSendAmount),
 
     takeLatest(aggregatorActions.setDestinationToken, fetchBridgeFeesAndLimits),
 
