@@ -78,7 +78,7 @@ export function* fetchBridgeFeesAndLimits() {
     const tokenAddress = yield* select(tokenAddressSelector);
 
     if (!allowTokens || !startingToken || !tokenAddress) {
-      throw new Error('Not enough data to fetch bridge fees');
+      return;
     }
 
     const bridgeFee = yield* call(
@@ -252,13 +252,22 @@ export function* fetchReceiveAmount() {
 export function* fetchIncentive() {
   console.log('fetchIncentive');
   try {
-    // gadi
-    //yield* put(aggregatorActions.setIncentivesLoading());
+    yield* put(aggregatorActions.setIncentivesLoading());
 
     const sendAmount = yield* select(sendAmountSelector);
     //if (Number(sendAmount) === 0) return;
 
     const flowState = yield* select(flowStateSelector);
+
+    if(Number(sendAmount) == 0) {
+      yield* put(
+        aggregatorActions.setIncentives({
+          type: IncentiveType.none,
+          amount: '0.0',
+        })
+      );
+      return;
+    }
 
     const startingTokenAddress = yield* select(startingTokenAddressSelector);
     const destinationTokenAddress = yield* select(
@@ -315,6 +324,7 @@ export function* fetchIncentive() {
       })
     );
   } catch (e) {
+    console.error(e);
     yield* put(aggregatorActions.setIncentivesFailure());
   }
 }
@@ -365,8 +375,8 @@ export function* aggregatorSaga() {
       fetchDestinationTokenAggregatorBalance
     ),
 
-    takeLatest(aggregatorActions.setDestinationToken, resetSendAmount),
-    takeLatest(aggregatorActions.setStartingToken, resetSendAmount),
+    //takeLatest(aggregatorActions.setDestinationToken, resetSendAmount),
+    //takeLatest(aggregatorActions.setStartingToken, resetSendAmount),
 
     takeLatest(aggregatorActions.setDestinationToken, fetchBridgeFeesAndLimits),
 

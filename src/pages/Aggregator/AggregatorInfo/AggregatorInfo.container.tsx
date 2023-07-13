@@ -47,6 +47,16 @@ export const AggregatorInfoContainer = ({
     [destinationToken, destinationTokenAggregatorBalance, startingToken]
   );
 
+  const errorMessage = useMemo(
+    () => {
+      let msg = '';
+      if(incentivesState === 'failure') msg = 'Failure fetching incentives. '
+      if(feesAndLimitsState === 'failure') msg += 'Failure fetching bridge fees.'
+      return msg;
+    },
+    [incentivesState, feesAndLimitsState]
+  );
+
   return (
     <AggregatorInfoComponent
       onClick={onClick}
@@ -60,6 +70,7 @@ export const AggregatorInfoContainer = ({
       sendAmount={sendAmount!}
       aggregatorBalance={aggregatorBalance}
       aggregatorBalanceState={destinationTokenAggregatorBalanceState}
+      errorMessage={errorMessage}
     />
   );
 };

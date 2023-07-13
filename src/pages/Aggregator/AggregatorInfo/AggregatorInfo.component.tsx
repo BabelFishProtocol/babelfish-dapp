@@ -7,6 +7,8 @@ import { formatUnitAmount } from '../../../utils/helpers';
 import { AggregatorInfoComponentProps } from './AggregatorInfo.types';
 import { InfoRow } from './InfoRow.component';
 import { InfoRowWithPerc } from './InfoRowWithPerc.component';
+import { Typography } from '@mui/material';
+import { Heading } from '@sovryn/ui';
 
 export const AggregatorInfoComponent = ({
   onClick,
@@ -20,6 +22,7 @@ export const AggregatorInfoComponent = ({
   incentivesState,
   incentives,
   sendAmount,
+  errorMessage
 }: AggregatorInfoComponentProps) => (
   <Box
     sx={{
@@ -51,6 +54,17 @@ export const AggregatorInfoComponent = ({
         color: ({ palette }) => palette.grey[600],
       }}
     >
+      <Typography
+        sx={{
+          textAlign: 'right',
+          fontWeight: 600,
+          fontSize: 12,
+          color: 'red',
+          display: errorMessage ? 'block' : 'none',
+        }}
+      >
+        {errorMessage}:
+      </Typography>
       <InfoRowWithPerc
         hidden={
           !(
