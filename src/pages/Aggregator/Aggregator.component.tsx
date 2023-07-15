@@ -97,11 +97,6 @@ export const AggregatorComponent = ({
     setValue
   );
 
-  // gadi
-  useEffect(() => {
-    setValue(AggregatorInputs.ReceiveAmount, receiveAmount || '0.0');
-  }, [receiveAmount, setValue]);
-
   useConnectedChain(startingChain, resetField, setValue);
 
   useWalletAddress(setValue);
@@ -137,6 +132,10 @@ export const AggregatorComponent = ({
   }, [clearErrors, isStartingTokenPaused, setError]);
 
   useEffect(() => {
+    setValue(AggregatorInputs.ReceiveAmount, receiveAmount ?? '0.0');
+  }, [receiveAmount, setValue]);
+
+  useEffect(() => {
     checkTokenPauseState();
     onStartingTokenChange(startingToken || undefined);
   }, [startingToken, onStartingTokenChange]);
@@ -158,10 +157,7 @@ export const AggregatorComponent = ({
   }, [destinationToken, onDestinationTokenChange]);
 
   useEffect(() => {
-    // gadi
-    //if (amount) {
-      onSendAmountChange(amount);
-    //}
+    onSendAmountChange(amount);
   }, [amount, onSendAmountChange]);
 
   useEffect(() => {
@@ -172,8 +168,6 @@ export const AggregatorComponent = ({
 
   useEffect(() => {
     resetField(AggregatorInputs.SendAmount);
-    // gadi
-    //resetField(AggregatorInputs.ReceiveAmount);
   }, [flowState, resetField]);
 
   const handleAddressDisclaimerClick = useCallback(

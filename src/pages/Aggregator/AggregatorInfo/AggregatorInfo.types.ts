@@ -23,5 +23,5 @@ export type AggregatorInfoComponentProps = {
   incentivesState?: FiniteStates;
   incentives: IncentivesType;
   sendAmount: string;
-  errorMessage: string;
+  errorMessages: string[];
 };

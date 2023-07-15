@@ -9,6 +9,8 @@ import { InfoRow } from './InfoRow.component';
 import { InfoRowWithPerc } from './InfoRowWithPerc.component';
 import { Typography } from '@mui/material';
 import { Heading } from '@sovryn/ui';
+import { AggregatorInfoErrorComponent } from './AggregatorInfoError.component';
+import { AggregatorInfoSwitchComponent } from './AggregatorInfoSwitch.component';
 
 export const AggregatorInfoComponent = ({
   onClick,
@@ -22,7 +24,7 @@ export const AggregatorInfoComponent = ({
   incentivesState,
   incentives,
   sendAmount,
-  errorMessage
+  errorMessages
 }: AggregatorInfoComponentProps) => (
   <Box
     sx={{
@@ -30,41 +32,31 @@ export const AggregatorInfoComponent = ({
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      mt: 24,
+      mt: 10,
+      mb: 10,
       minWidth: 230,
     }}
   >
-    <IconButton
+    <AggregatorInfoSwitchComponent onClick={onClick}/>
+    <Box
       sx={{
-        width: 144,
-        height: 144,
-        background: ({ palette }) => palette.grey[800],
+        mt: 3
       }}
-      onClick={onClick}
     >
-      <img alt="exchange icon" src={exchangeIcon} />
-    </IconButton>
+    {
+      errorMessages.map(s => <AggregatorInfoErrorComponent errorMessage={s} />)
+    }  
+    </Box>
     <Box
       sx={{
         display: 'grid',
         gridTemplateColumns: 'repeat(2, 1fr)',
-        gap: '10px 8px',
-        mt: 8,
+        gap: '1px 8px',
+        mt: 0,
         whiteSpace: 'nowrap',
         color: ({ palette }) => palette.grey[600],
       }}
     >
-      <Typography
-        sx={{
-          textAlign: 'right',
-          fontWeight: 600,
-          fontSize: 12,
-          color: 'red',
-          display: errorMessage ? 'block' : 'none',
-        }}
-      >
-        {errorMessage}:
-      </Typography>
       <InfoRowWithPerc
         hidden={
           !(
@@ -86,7 +78,7 @@ export const AggregatorInfoComponent = ({
         display: 'grid',
         gridTemplateColumns: 'repeat(2, 1fr)',
         gap: '10px 8px',
-        mt: 8,
+        mt: 6,
         whiteSpace: 'nowrap',
         color: ({ palette }) => palette.grey[600],
       }}

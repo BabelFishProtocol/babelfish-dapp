@@ -6,6 +6,9 @@ import {
   startingTokenBalanceSelector,
   destinationTokenAggregatorBalanceSelector,
   startingTokenDecimalsSelector,
+  incentivesStateSelector,
+  feesAndLimitsStateSelector,
+  receiveAmountSelector,
 } from '../../store/aggregator/aggregator.selectors';
 import { isRskAddress } from '../../utils/helpers';
 import { FocusActiveFieldParameters } from './Aggregator.types';
@@ -59,6 +62,13 @@ export function useIsFormValid(state: {
     destinationTokenAggregatorBalanceSelector
   ) ?? 0;
   const startingTokenDecimals = useSelector(startingTokenDecimalsSelector);
+
+  const incentivesState = useSelector(incentivesStateSelector);
+  const feesState = useSelector(feesAndLimitsStateSelector);
+  const isCrossChain = state.startingChain !== state.destinationChain;
+  if(incentivesState !== 'success' || (isCrossChain && feesState !== 'success')) {
+    return false;
+  }
 
   // validate the tokens
   if (

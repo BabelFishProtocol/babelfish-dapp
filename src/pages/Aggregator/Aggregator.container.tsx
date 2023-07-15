@@ -8,8 +8,12 @@ import {
 } from '../../config/chains';
 import { TokenEnum } from '../../config/tokens';
 import {
+  destinationChainSelector,
+  destinationTokenSelector,
   pausedTokensSelector,
   receiveAmountSelector,
+  sendAmountSelector,
+  startingChainSelector,
   startingTokenAddressSelector,
   startingTokenBridgeAddressSelector,
   startingTokenSelector,
@@ -26,8 +30,14 @@ export const AggregatorContainer = () => {
   const dispatch = useDispatch();
 
   const pausedTokens = useSelector(pausedTokensSelector);
+  const startingChain = useSelector(startingChainSelector);
+  const startingToken = useSelector(startingTokenSelector);
   const startingTokenAddress = useSelector(startingTokenAddressSelector);
 
+  const destinationChain = useSelector(destinationChainSelector);
+  const destinationToken = useSelector(destinationTokenSelector);
+
+  const sendAmount = useSelector(sendAmountSelector);
   const receiveAmount = useSelector(receiveAmountSelector);
 
   const startingTokenBridgeAddress = useSelector(
@@ -48,23 +58,38 @@ export const AggregatorContainer = () => {
   );
 
   const onStartingChainChange = (chain: ChainEnum) => {
-    dispatch(aggregatorActions.setStartingChain(chain));
+    console.log('onStartingChainChange');
+    if(startingChain !== chain) {
+      dispatch(aggregatorActions.setStartingChain(chain));
+    }
   };
 
   const onStartingTokenChange = (token: TokenEnum | undefined) => {
-    dispatch(aggregatorActions.setStartingToken(token));
+    console.log('onStartingTokenChange');
+    if(token !== startingToken) {
+      dispatch(aggregatorActions.setStartingToken(token));
+    }
   };
 
   const onDestinationChainChange = (chain: ChainEnum) => {
-    dispatch(aggregatorActions.setDestinationChain(chain));
+    console.log('onDestinationChainChange');
+    if(destinationChain !== chain) {
+      dispatch(aggregatorActions.setDestinationChain(chain));
+    }
   };
 
   const onDestinationTokenChange = (token: TokenEnum | undefined) => {
-    dispatch(aggregatorActions.setDestinationToken(token));
+    console.log('onDestinationTokenChange');
+    if(destinationToken !== token) {
+      dispatch(aggregatorActions.setDestinationToken(token));
+    }
   };
 
   const onSendAmountChange = (amount: string) => {
-    dispatch(aggregatorActions.setSendAmount(amount));
+    console.log('onSendAmountChange');
+    if(sendAmount !== amount) {
+      dispatch(aggregatorActions.setSendAmount(amount));
+    }
   };
 
   useEffect(() => {

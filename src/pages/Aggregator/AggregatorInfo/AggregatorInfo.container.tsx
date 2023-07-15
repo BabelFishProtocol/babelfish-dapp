@@ -13,6 +13,9 @@ import {
 } from '../../../store/aggregator/aggregator.selectors';
 import { AggregatorInfoComponent } from './AggregatorInfo.component';
 import { AggregatorInfoContainerProps } from './AggregatorInfo.types';
+import { AggregatorInfoErrorComponent } from './AggregatorInfoError.component';
+import { AggregatorInfoSwitchComponent } from './AggregatorInfoSwitch.component';
+import { Box } from '@mui/material';
 
 export const AggregatorInfoContainer = ({
   toggleFlow,
@@ -47,17 +50,18 @@ export const AggregatorInfoContainer = ({
     [destinationToken, destinationTokenAggregatorBalance, startingToken]
   );
 
-  const errorMessage = useMemo(
+  const errorMessages = useMemo(
     () => {
-      let msg = '';
-      if(incentivesState === 'failure') msg = 'Failure fetching incentives. '
-      if(feesAndLimitsState === 'failure') msg += 'Failure fetching bridge fees.'
-      return msg;
+      let msgs = [];
+      if(incentivesState === 'failure') msgs.push('Failure fetching incentives');
+      if(feesAndLimitsState === 'failure') msgs.push('Failure fetching bridge fees');
+      return msgs;
     },
     [incentivesState, feesAndLimitsState]
   );
 
   return (
+    <div>
     <AggregatorInfoComponent
       onClick={onClick}
       feesAndLimitsState={feesAndLimitsState}
@@ -70,7 +74,8 @@ export const AggregatorInfoContainer = ({
       sendAmount={sendAmount!}
       aggregatorBalance={aggregatorBalance}
       aggregatorBalanceState={destinationTokenAggregatorBalanceState}
-      errorMessage={errorMessage}
+      errorMessages={errorMessages}
     />
+  </div>
   );
 };

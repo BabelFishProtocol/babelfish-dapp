@@ -73,6 +73,7 @@ export function* fetchBridgeFeesAndLimits() {
   console.log('fetchBridgeFeesAndLimits');
   try {
     yield* put(aggregatorActions.fetchFeesAndLimitsLoading());
+
     const allowTokens = yield* select(allowTokensContractSelector);
     const startingToken = yield* select(startingTokenSelector);
     const tokenAddress = yield* select(tokenAddressSelector);
@@ -101,6 +102,7 @@ export function* fetchBridgeFeesAndLimits() {
       })
     );
   } catch (e) {
+    console.error(e);
     const msg =
       e instanceof Error
         ? e.message
@@ -283,7 +285,7 @@ export function* fetchIncentive() {
       const bridge = yield* select(bridgeSelector);
       const sovTokenAddress = bridge
         ? bridge.getRskSovrynTokenAddress(startingToken!)
-        : destinationTokenAddress;
+        : startingTokenAddress;
 
       incentiveType = IncentiveType.reward;
       const tokenDecimals = yield* select(startingTokenDecimalsSelector);
@@ -375,17 +377,18 @@ export function* aggregatorSaga() {
       fetchDestinationTokenAggregatorBalance
     ),
 
-    //takeLatest(aggregatorActions.setDestinationToken, resetSendAmount),
-    //takeLatest(aggregatorActions.setStartingToken, resetSendAmount),
-
     takeLatest(aggregatorActions.setDestinationToken, fetchBridgeFeesAndLimits),
+    takeLatest(aggregatorActions.setStartingToken, fetchBridgeFeesAndLimits),
 
     takeLatest(aggregatorActions.setSendAmount, fetchIncentive),
     takeLatest(aggregatorActions.setDestinationToken, fetchIncentive),
     takeLatest(aggregatorActions.setStartingToken, fetchIncentive),
 
-    takeLatest(aggregatorActions.setFeesAndLimits, fetchReceiveAmount),
     takeLatest(aggregatorActions.setIncentives, fetchReceiveAmount),
+    takeLatest(aggregatorActions.setFeesAndLimits, fetchReceiveAmount),
+    
+    //takeLatest(aggregatorActions.setDestinationToken, resetSendAmount),
+    //takeLatest(aggregatorActions.setStartingToken, resetSendAmount),
 
     takeLatest(aggregatorActions.submit, transferTokens),
   ]);
