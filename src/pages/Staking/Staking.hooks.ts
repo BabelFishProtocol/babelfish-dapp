@@ -13,6 +13,7 @@ import { getCurrentTimestamp } from '../../utils/helpers';
 import {
   providerSelector,
   stakingContractSelector,
+  stakingContractSelectorDefaultChain,
 } from '../../store/app/app.selectors';
 import { UseEstimateFeeConfig } from './Staking.types';
 
@@ -77,9 +78,13 @@ export const useVotingPower = (amount: string, unlockDate: number) => {
         return;
       }
 
+      const timestampToLockDate = await staking.timestampToLockDate(
+        currentTimestamp
+      );
+
       const weight = await staking.computeWeightByDate(
         debouncedUnlockDate,
-        currentTimestamp
+        timestampToLockDate
       );
 
       const power = utils
@@ -135,4 +140,21 @@ export const useEstimateFee = ({
   }, [debouncedAmount, estimator, provider, debouncedTimestamp]);
 
   return estimatedFee;
+};
+
+export const useIsInMaintenance = () => {
+  const [isInMaintenance, setIsInMaintenance] = useState(false);
+
+  const staking = useSelector(stakingContractSelectorDefaultChain);
+
+  useEffect(() => {
+    const fetchIsPaused = async () => {
+      const isPaused = await staking?.paused();
+
+      setIsInMaintenance(isPaused || false);
+    };
+    fetchIsPaused();
+  }, [staking]);
+
+  return isInMaintenance;
 };

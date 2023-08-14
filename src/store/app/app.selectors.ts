@@ -1,10 +1,11 @@
-import { utils } from 'ethers';
+import { ContractInterface, ethers, utils } from 'ethers';
 import { createSelector } from '@reduxjs/toolkit';
 
 import {
   Provider as MulticallProvider,
   setMulticallAddress,
 } from 'ethers-multicall';
+import { ChainIds, getProvider } from '@sovryn/ethers-provider';
 import { RootState } from '..';
 import {
   contractsAddresses,
@@ -26,7 +27,7 @@ import {
   Multicall__factory,
   VestingRegistry__factory,
   GovernorAlpha__factory,
-  PauseManager__factory,
+  RewardManager__factory,
 } from '../../contracts/types';
 import { BaseContractFactory, MulticallProviderType } from '../types';
 import { hasLocalTransactions } from './app.slice';
@@ -133,21 +134,32 @@ export const currentChainSelector = createSelector(
   }
 );
 
+// In case we need more subgraphs in the future, we need to have more selectors like this
 export const subgraphClientSelector = createSelector(
-  currentChainSelector,
-  (chainConfig) => {
-    if (!chainConfig || !subgraphClients[chainConfig.id]) return undefined;
+  testnetMainnetSelector,
+  (testnetMainnet) => {
+    if (!testnetMainnet) {
+      return undefined;
+    }
 
-    return subgraphClients[chainConfig.id];
+    const chain =
+      testnetMainnet === 'testnet' ? ChainEnum.RSK_TESTNET : ChainEnum.RSK;
+
+    return subgraphClients[chain];
   }
 );
 
 export const subgraphWsClientSelector = createSelector(
-  currentChainSelector,
-  (chainConfig) => {
-    if (!chainConfig || !subgraphWsClients[chainConfig.id]) return undefined;
+  testnetMainnetSelector,
+  (testnetMainnet) => {
+    if (!testnetMainnet) {
+      return undefined;
+    }
 
-    return subgraphWsClients[chainConfig.id];
+    const chain =
+      testnetMainnet === 'testnet' ? ChainEnum.RSK_TESTNET : ChainEnum.RSK;
+
+    return subgraphWsClients[chain];
   }
 );
 
@@ -167,6 +179,43 @@ export const addressesSelector = createSelector(
   }
 );
 
+const getDefaultChainSelector = createSelector(
+  testnetMainnetSelector,
+  (environment) => {
+    const chain =
+      !environment || environment === 'mainnet'
+        ? ChainIds.RSK_MAINNET
+        : ChainIds.RSK_TESTNET;
+
+    return chain;
+  }
+);
+
+export const addressesSelectorDefaultChain = createSelector(
+  getDefaultChainSelector,
+  (defaultChain) => {
+    if (!defaultChain) return undefined;
+
+    const chain =
+      defaultChain === ChainIds.RSK_MAINNET
+        ? ChainEnum.RSK
+        : ChainEnum.RSK_TESTNET;
+
+    return contractsAddresses[chain];
+  }
+);
+
+const getDefaultChainProviderSelector = createSelector(
+  getDefaultChainSelector,
+  (defaultChain) => {
+    if (!defaultChain) {
+      return undefined;
+    }
+
+    return getProvider(defaultChain);
+  }
+);
+
 const createContractSelector = <Factory extends BaseContractFactory>(
   factory: Factory,
   name: keyof ContractsForNetwork
@@ -182,10 +231,30 @@ const createContractSelector = <Factory extends BaseContractFactory>(
     }
   );
 
+const createDefaultChainContractSelector = (
+  abi: ContractInterface,
+  name: keyof ContractsForNetwork
+) =>
+  createSelector(
+    [getDefaultChainProviderSelector, addressesSelectorDefaultChain],
+    (chainProvider, addresses) => {
+      if (!chainProvider || !addresses) {
+        return undefined;
+      }
+
+      return new ethers.Contract(addresses[name], abi, chainProvider);
+    }
+  );
+
+// TODO: All contracts from contracts.ts should be created by createDefaultChainContractSelector
+export const stakingContractSelectorDefaultChain =
+  createDefaultChainContractSelector(Staking__factory.abi, 'staking');
+
 export const stakingContractSelector = createContractSelector(
   Staking__factory,
   'staking'
 );
+
 export const fishTokenSelector = createContractSelector(
   ERC20__factory,
   'fishToken'
@@ -206,9 +275,9 @@ export const vestingRegistrySelector = createContractSelector(
   VestingRegistry__factory,
   'vestingRegistry'
 );
-export const pauseManagerSelector = createContractSelector(
-  PauseManager__factory,
-  'pauseManager'
+export const rewardManagerSelector = createContractSelector(
+  RewardManager__factory,
+  'rewardManager'
 );
 
 export const multicallProviderSelector = createSelector(

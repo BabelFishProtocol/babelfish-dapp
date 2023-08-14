@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 
 import { useForm } from 'react-hook-form';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { PageView } from '../../components/PageView/PageView.component';
 import { ControlledCurrencyInput } from '../../components/CurrencyInput/CurrencyInput.controlled';
@@ -28,6 +28,10 @@ import { AggregatorInfoContainer } from './AggregatorInfo/AggregatorInfo.contain
 import { SendAmount } from './SendAmount/SendAmount.container';
 import { flowStateSelector } from '../../store/aggregator/aggregator.selectors';
 import { fieldsErrors, UrlNames } from '../../constants';
+import { ControlledSlider } from './SlippageSlider/SlippageSlider.controlled';
+import { ChainEnum } from '../../config/chains';
+
+import { useIsFormValid } from './Aggregator.utils';
 
 const PageViewTitle: React.FC = ({ children }) => (
   <Box
@@ -40,12 +44,21 @@ const PageViewTitle: React.FC = ({ children }) => (
   </Box>
 );
 
+const slippageSliderValues = [0, 5, 10, 15, 20];
+const slippageSliderMarks = slippageSliderValues.map((v) => ({
+  value: v,
+  label: `${v}%`,
+}));
+
 export const AggregatorComponent = ({
   onSubmit,
+  onStartingChainChange,
   onDestinationChainChange,
   onStartingTokenChange,
   onDestinationTokenChange,
   isStartingTokenPaused,
+  onSendAmountChange,
+  receiveAmount,
 }: AggregatorComponentProps) => {
   const flowState = useSelector(flowStateSelector);
 
@@ -57,7 +70,6 @@ export const AggregatorComponent = ({
     setError,
     clearErrors,
     control,
-    formState: { isValid },
   } = useForm<AggregatorFormValues>({
     mode: 'onChange',
     defaultValues: aggregatorDefaultValues,
@@ -108,7 +120,23 @@ export const AggregatorComponent = ({
     },
   ]);
 
+  const checkTokenPauseState = useCallback(() => {
+    if (!isStartingTokenPaused) {
+      clearErrors(AggregatorInputs.StartingToken);
+    } else {
+      setError(AggregatorInputs.StartingToken, {
+        type: 'validate',
+        message: fieldsErrors.depositsDisabled,
+      });
+    }
+  }, [clearErrors, isStartingTokenPaused, setError]);
+
   useEffect(() => {
+    setValue(AggregatorInputs.ReceiveAmount, receiveAmount ?? '0.0');
+  }, [receiveAmount, setValue]);
+
+  useEffect(() => {
+    checkTokenPauseState();
     onStartingTokenChange(startingToken || undefined);
   }, [startingToken, onStartingTokenChange]);
 
@@ -119,14 +147,18 @@ export const AggregatorComponent = ({
   }, [destinationChain, onDestinationChainChange]);
 
   useEffect(() => {
+    if (startingChain) {
+      onStartingChainChange(startingChain);
+    }
+  }, [startingChain, onStartingChainChange]);
+
+  useEffect(() => {
     onDestinationTokenChange(destinationToken || undefined);
   }, [destinationToken, onDestinationTokenChange]);
 
   useEffect(() => {
-    if (amount) {
-      setValue(AggregatorInputs.ReceiveAmount, amount); // TODO: This will change in the future once we have an incentive curve algorithm
-    }
-  }, [amount, setValue]);
+    onSendAmountChange(amount);
+  }, [amount, onSendAmountChange]);
 
   useEffect(() => {
     if (isAddressDisclaimerChecked && !receivingAddress) {
@@ -136,7 +168,6 @@ export const AggregatorComponent = ({
 
   useEffect(() => {
     resetField(AggregatorInputs.SendAmount);
-    resetField(AggregatorInputs.ReceiveAmount);
   }, [flowState, resetField]);
 
   const handleAddressDisclaimerClick = useCallback(
@@ -144,16 +175,27 @@ export const AggregatorComponent = ({
     []
   );
 
-  useEffect(() => {
-    if (!isStartingTokenPaused) {
-      clearErrors(AggregatorInputs.StartingToken);
-    } else {
-      setError(AggregatorInputs.StartingToken, {
-        type: 'validate',
-        message: fieldsErrors.depositsDisabled,
-      });
-    }
-  }, [clearErrors, isStartingTokenPaused, setError]);
+
+  const isSubmitAllowed = useIsFormValid({
+    startingToken,
+    destinationToken,
+    startingChain: startingChain as ChainEnum,
+    destinationChain: destinationChain as ChainEnum,
+    isAddressDisclaimerChecked,
+    isStartingTokenPaused,
+    amount,
+    receivingAddress,
+  });
+
+  const shouldAllowTokensSelection = useMemo(
+    () => !!startingChain && !!destinationChain,
+    [destinationChain, startingChain]
+  );
+
+
+  let slippageProtectionAvailable = startingChain === destinationChain;
+  // disable for now
+  slippageProtectionAvailable = false;
 
   return (
     <>
@@ -204,12 +246,24 @@ export const AggregatorComponent = ({
                 control={control}
                 options={startingTokenOptions}
                 setValue={setValue}
+                disabled={!shouldAllowTokensSelection}
               />
               <SendAmount
                 name={AggregatorInputs.SendAmount}
                 startingTokenName={startingToken}
                 control={control}
                 setValue={setValue}
+              />
+              <ControlledSlider
+                hidden={!slippageProtectionAvailable}
+                title="Slippage Tolerance"
+                name={AggregatorInputs.SlippageSlider}
+                control={control}
+                setValue={setValue}
+                min={0}
+                max={20}
+                step={null}
+                marks={slippageSliderMarks}
               />
             </Box>
           </PageView>
@@ -251,6 +305,7 @@ export const AggregatorComponent = ({
                 sx={{ mb: 4 }}
                 setValue={setValue}
                 dropdownRef={destinationTokenRef}
+                disabled={!shouldAllowTokensSelection}
               />
 
               <ControlledCurrencyInput
@@ -262,6 +317,7 @@ export const AggregatorComponent = ({
                 control={control}
                 sx={{ mb: 5 }}
               />
+
               <ControlledAddressInput
                 title="Receiving address"
                 placeholder="Enter or paste address"
@@ -303,15 +359,7 @@ export const AggregatorComponent = ({
                   disabled={!receivingAddress}
                 />
               </Box>
-              <Button
-                type="submit"
-                fullWidth
-                disabled={
-                  !isValid ||
-                  !isAddressDisclaimerChecked ||
-                  isStartingTokenPaused
-                }
-              >
+              <Button type="submit" fullWidth disabled={!isSubmitAllowed}>
                 Convert
               </Button>
             </Box>

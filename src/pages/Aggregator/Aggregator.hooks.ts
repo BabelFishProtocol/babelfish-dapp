@@ -198,16 +198,21 @@ export const useAggregatorDropdowns = (
   ]);
 
   const toggleFlow = async () => {
-    const tempChain = startingChain;
 
-    if (destinationChain && destinationChain !== startingChain) {
-      await switchConnectedChain(destinationChain, provider);
-    }
+    const _startingChain = startingChain;
+    const _startingToken = startingToken;
+    const _destinationChain = destinationChain;
+    const _destinationToken = destinationToken;
 
-    setValue(AggregatorInputs.DestinationChain, tempChain);
-    setValue(AggregatorInputs.StartingChain, destinationChain);
-    setValue(AggregatorInputs.DestinationToken, '');
-    setValue(AggregatorInputs.StartingToken, '');
+    // if (destinationChain && destinationChain !== startingChain) {
+    //   await switchConnectedChain(_destinationChain as ChainEnum, provider);
+    // }
+
+    setValue(AggregatorInputs.DestinationChain, _startingChain);
+    setValue(AggregatorInputs.StartingChain, _destinationChain);
+    setValue(AggregatorInputs.DestinationToken, _startingToken);
+    setValue(AggregatorInputs.StartingToken, _destinationToken);
+
   };
 
   return {

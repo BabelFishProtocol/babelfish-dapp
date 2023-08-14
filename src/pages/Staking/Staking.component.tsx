@@ -22,6 +22,8 @@ import { RewardBlockProps, StakingComponentProps } from './Staking.types';
 import wave1Icon from '../../assets/icons/wave1.svg';
 import wave2Icon from '../../assets/icons/wave2.svg';
 import wave3Icon from '../../assets/icons/wave3.svg';
+import maintenanceModeIcon from '../../assets/icons/maintenance-mode.svg';
+import { useIsInMaintenance } from './Staking.hooks';
 
 export const StakingComponent = ({
   rewards,
@@ -31,11 +33,14 @@ export const StakingComponent = ({
 }: StakingComponentProps) => {
   const [showAddStakeDialog, setShowAddStakeDialog] = useState(false);
 
+  const isInMaintenance = useIsInMaintenance();
+
   const handleOpenDialog = () => setShowAddStakeDialog(true);
   const handleCloseDialog = () => setShowAddStakeDialog(false);
 
   return (
-    <>
+    <Box sx={{ position: 'relative' }}>
+      {isInMaintenance && <MaintenanceModeOverlay />}
       <Breadcrumbs links={[{ title: UrlNames.Staking }]} />
       <PageAligner>
         <Box
@@ -57,7 +62,6 @@ export const StakingComponent = ({
                 variant="outlined"
                 onClick={handleOpenDialog}
                 sx={{ width: 'fit-content' }}
-                disabled
               >
                 Add New Stake
               </Button>
@@ -110,7 +114,7 @@ export const StakingComponent = ({
           )}
         </Box>
       </PageAligner>
-    </>
+    </Box>
   );
 };
 
@@ -122,5 +126,28 @@ const RewardBlock = ({ amount, asset, usdAmount }: RewardBlockProps) => (
     <Button size="small" variant="text" sx={{ ml: 1 }}>
       <Typography variant="body2">withdraw</Typography>
     </Button>
+  </Box>
+);
+
+const MaintenanceModeOverlay = () => (
+  <Box
+    sx={{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      zIndex: 1000,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    }}
+  >
+    <img
+      src={maintenanceModeIcon}
+      alt="Staking is currently under maintenance"
+      width={600}
+    />
   </Box>
 );

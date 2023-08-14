@@ -28,8 +28,7 @@ export const DropdownOptions = <
     setValueWhenOneOption?.();
   }, [setValueWhenOneOption]);
 
-  const isDisabled =
-    disabled || !options.length || (options.length === 1 && !!value);
+  const isDisabled = disabled || !options.length;
 
   return (
     <FormControl fullWidth disabled={isDisabled} sx={sx}>

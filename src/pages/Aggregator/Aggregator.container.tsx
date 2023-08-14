@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Box from '@mui/material/Box';
 import { SubmitStepsDialog } from '../../components/TxDialog/TxDialog.component';
 import {
   ChainEnum,
@@ -8,41 +9,111 @@ import {
 } from '../../config/chains';
 import { TokenEnum } from '../../config/tokens';
 import {
+  destinationChainSelector,
+  destinationTokenSelector,
   pausedTokensSelector,
+  receiveAmountSelector,
+  sendAmountSelector,
+  startingChainSelector,
   startingTokenAddressSelector,
+  startingTokenBridgeAddressSelector,
+  startingTokenSelector,
   submitAggregatorStatusSelector,
 } from '../../store/aggregator/aggregator.selectors';
 import { aggregatorActions } from '../../store/aggregator/aggregator.slice';
 import { appActions } from '../../store/app/app.slice';
 import { AggregatorComponent } from './Aggregator.component';
 import { AggregatorFormValues } from './Aggregator.fields';
+import { select } from 'redux-saga/effects';
+import maintenanceModeIcon from '../../assets/icons/maintenance-mode.svg';
+
+const MaintenanceModeOverlay = () => (
+  <Box
+    sx={{
+      position: 'absolute',
+      width: '100%',
+      height: '75%',
+      zIndex: 1000,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+  >
+    <img
+      src={maintenanceModeIcon}
+      alt="Convert is currently under maintenance"
+      width={600}
+    />
+  </Box>
+);
+
+const inMaintenance = true;
 
 export const AggregatorContainer = () => {
   const submitStatus = useSelector(submitAggregatorStatusSelector);
   const dispatch = useDispatch();
 
   const pausedTokens = useSelector(pausedTokensSelector);
+  const startingChain = useSelector(startingChainSelector);
+  const startingToken = useSelector(startingTokenSelector);
   const startingTokenAddress = useSelector(startingTokenAddressSelector);
+
+  const destinationChain = useSelector(destinationChainSelector);
+  const destinationToken = useSelector(destinationTokenSelector);
+
+  const sendAmount = useSelector(sendAmountSelector);
+  const receiveAmount = useSelector(receiveAmountSelector);
+
+  const startingTokenBridgeAddress = useSelector(
+    startingTokenBridgeAddressSelector
+  );
 
   const isStartingTokenPaused = useMemo(
     () =>
       !!startingTokenAddress &&
       pausedTokens &&
-      pausedTokens.some(
-        (item) => item.toLowerCase() === startingTokenAddress.toLowerCase()
-      ),
-    [pausedTokens, startingTokenAddress]
+      (pausedTokens.some(
+        (item) => item === startingTokenAddress.toLowerCase()
+      ) ||
+        pausedTokens.some(
+          (item) => item === startingTokenBridgeAddress?.toLowerCase()
+        )),
+    [pausedTokens, startingTokenAddress, startingTokenBridgeAddress]
   );
 
+  const onStartingChainChange = (chain: ChainEnum) => {
+    console.log('onStartingChainChange');
+    if(startingChain !== chain) {
+      dispatch(aggregatorActions.setStartingChain(chain));
+    }
+  };
+
   const onStartingTokenChange = (token: TokenEnum | undefined) => {
-    dispatch(aggregatorActions.setStartingToken(token));
+    console.log('onStartingTokenChange');
+    if(token !== startingToken) {
+      dispatch(aggregatorActions.setStartingToken(token));
+    }
   };
 
   const onDestinationChainChange = (chain: ChainEnum) => {
-    dispatch(aggregatorActions.setDestinationChain(chain));
+    console.log('onDestinationChainChange');
+    if(destinationChain !== chain) {
+      dispatch(aggregatorActions.setDestinationChain(chain));
+    }
   };
+
   const onDestinationTokenChange = (token: TokenEnum | undefined) => {
-    dispatch(aggregatorActions.setDestinationToken(token));
+    console.log('onDestinationTokenChange');
+    if(destinationToken !== token) {
+      dispatch(aggregatorActions.setDestinationToken(token));
+    }
+  };
+
+  const onSendAmountChange = (amount: string) => {
+    console.log('onSendAmountChange');
+    if(sendAmount !== amount) {
+      dispatch(aggregatorActions.setSendAmount(amount));
+    }
   };
 
   useEffect(() => {
@@ -61,23 +132,32 @@ export const AggregatorContainer = () => {
   };
 
   return (
-    <>
-      <AggregatorComponent
-        onSubmit={onSubmit}
-        onDestinationChainChange={onDestinationChainChange}
-        onStartingTokenChange={onStartingTokenChange}
-        onDestinationTokenChange={onDestinationTokenChange}
-        isStartingTokenPaused={isStartingTokenPaused}
-      />
-      {submitStatus.status !== 'idle' && (
-        <SubmitStepsDialog
-          onClose={onClose}
-          steps={submitStatus.steps}
-          status={submitStatus.status}
-          summary={submitStatus.summary}
-          currentStep={submitStatus.currentStep}
-        />
+    <div>
+      {inMaintenance ? (
+        <MaintenanceModeOverlay />
+      ) : (
+        <>
+          <AggregatorComponent
+            onSubmit={onSubmit}
+            onStartingChainChange={onStartingChainChange}
+            onDestinationChainChange={onDestinationChainChange}
+            onStartingTokenChange={onStartingTokenChange}
+            onDestinationTokenChange={onDestinationTokenChange}
+            isStartingTokenPaused={isStartingTokenPaused}
+            onSendAmountChange={onSendAmountChange}
+            receiveAmount={receiveAmount}
+          />
+          {submitStatus.status !== 'idle' && (
+            <SubmitStepsDialog
+              onClose={onClose}
+              steps={submitStatus.steps}
+              status={submitStatus.status}
+              summary={submitStatus.summary}
+              currentStep={submitStatus.currentStep}
+            />
+          )}
+        </>
       )}
-    </>
+    </div>
   );
 };

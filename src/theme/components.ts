@@ -7,6 +7,220 @@ import ArchiveWoff from '../assets/fonts/Archive-Regular.woff';
 
 import { colors } from './palette';
 
+// Base styles were taken from https://unpkg.com/tailwindcss@3.3.2/src/css/preflight.css
+const sovrynOnboardOverrides = `
+[data-layout-id="dapp-onboard"] *, [role="tooltip"] {
+  font-family: Roboto, sans-serif;
+}
+
+[data-layout-id="dapp-onboard"] *:not(div),
+::before,
+::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+}
+
+[data-layout-id^="dapp-onboard--back"], [data-layout-id^="dapp-onboard-back"] {
+  color: #f5f5f5;
+  background-color: transparent;
+}
+
+[data-layout-id="dapp-onboard"] li > button {
+  background-color: transparent;
+}
+
+[data-layout-id^="dapp-onboard--back"] svg, [data-layout-id^="dapp-onboard-back"] svg {
+  transform: rotate(180deg);
+}
+
+[data-layout-id="dapp-onboard"] hr {
+  height: 0; 
+  color: inherit; 
+  border-top-width: 1px; 
+}
+
+[data-layout-id="dapp-onboard"] abbr:where([title]) {
+  text-decoration: underline dotted;
+}
+  
+[data-layout-id="dapp-onboard"] a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+[data-layout-id="dapp-onboard"] strong {
+  font-weight: bolder;
+}
+
+[data-layout-id="dapp-onboard"] code,
+kbd,
+samp,
+pre {
+  font-family: Roboto Mono, monospace; 
+  font-size: 1em; 
+}
+
+[data-layout-id="dapp-onboard"] small {  
+  font-size: 80%;
+}
+
+[data-layout-id="dapp-onboard"] sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+[data-layout-id="dapp-onboard"] sub {
+  bottom: -0.25em;
+}
+
+[data-layout-id="dapp-onboard"] sup {
+  top: -0.5em;
+}
+
+[data-layout-id="dapp-onboard"] table {
+  text-indent: 0; 
+  border-color: inherit; 
+  border-collapse: collapse; 
+}
+
+[data-layout-id="dapp-onboard--addresslist"] + div button:not([data-layout-id="dapp-onboard--addresslist-confirm"]) {
+  font-family: inherit; 
+  font-weight: inherit; 
+  color: inherit; 
+  background-color: transparent;
+}
+
+[data-layout-id="dapp-onboard"] button,
+select {
+  text-transform: none;
+}
+
+[data-layout-id="dapp-onboard"] button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button;
+  background-image: none;
+}
+
+[data-layout-id="dapp-onboard-close"] {
+  background-color: transparent;
+}
+
+[data-layout-id="dapp-onboard"] :-moz-focusring {
+  outline: auto;
+}
+
+[data-layout-id="dapp-onboard"] :-moz-ui-invalid {
+  box-shadow: none;
+}
+
+[data-layout-id="dapp-onboard"] progress {
+  vertical-align: baseline;
+}
+
+[data-layout-id="dapp-onboard"] ::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+[data-layout-id="dapp-onboard"] [type='search'] {
+  -webkit-appearance: textfield; 
+  outline-offset: -2px;
+}
+
+[data-layout-id="dapp-onboard"] ::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+[data-layout-id="dapp-onboard"] ::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  font: inherit;
+}
+
+[data-layout-id="dapp-onboard"] summary {
+  display: list-item;
+}
+
+[data-layout-id="dapp-onboard"] blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+[data-layout-id="dapp-onboard"] fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+[data-layout-id="dapp-onboard"] legend {
+  padding: 0;
+}
+
+[data-layout-id="dapp-onboard"] ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+[data-layout-id="dapp-onboard"] textarea {
+  resize: vertical;
+}
+
+[data-layout-id="dapp-onboard"] input::placeholder,
+textarea::placeholder {
+  opacity: 1; 
+  color: #9ca3af; 
+}
+
+[data-layout-id="dapp-onboard"] button,
+[role="button"] {
+  cursor: pointer;
+}
+
+[data-layout-id="dapp-onboard"] :disabled {
+  cursor: default;
+}
+
+[data-layout-id="dapp-onboard"] img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; 
+  vertical-align: middle; 
+}
+
+[data-layout-id="dapp-onboard"] img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+[data-layout-id="dapp-onboard"] [hidden] {
+  display: none;
+}
+`;
+
 const transition = `250ms cubic-bezier(0.4, 0, 0.2, 1)`;
 
 export const getComponents = (palette: Palette): Components<Theme> => ({
@@ -47,6 +261,8 @@ export const getComponents = (palette: Palette): Components<Theme> => ({
            url(${ArchiveWoff}) format('woff');
       unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
     }
+
+    ${sovrynOnboardOverrides}
     `,
   },
   MuiButton: {
