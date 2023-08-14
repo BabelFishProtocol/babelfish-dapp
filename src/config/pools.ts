@@ -37,7 +37,7 @@ const testnetBaseChains: BaseChainType[] = [
   {
     ...chains[ChainEnum.RSK_TESTNET],
     bassets: [tokens.DOC, tokens.RDOC, tokens.RUSDT, tokens.ZUSD, 
-      tokens.DLLR, tokens.TST1, tokens.TST2, tokens.TST3, tokens.TST4, tokens.TST5, tokens.TST6],
+      tokens.DLLR, tokens.TST1, tokens.TST2, tokens.TST3, tokens.TST4, tokens.TST6],
   },
   {
     ...chains[ChainEnum.ETH_TESTNET],

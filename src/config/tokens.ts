@@ -25,7 +25,6 @@ export enum TokenEnum {
   TST2 = 'TST2',
   TST3 = 'TST3',
   TST4 = 'TST4',
-  TST5 = 'TST5',
   TST6 = 'TST6'
 }
 
@@ -93,9 +92,6 @@ export const tokenOnChain = {
   },
   [TokenEnum.TST4]: {
     [ChainEnum.RSK_TESTNET]: '0x12aff942bafc1394acc3fdef28f41fd3f008b32d',
-  },
-  [TokenEnum.TST5]: {
-    [ChainEnum.RSK_TESTNET]: '0x02adba17629c1c9a99d541ba30cc65d6862e260a',
   },
   [TokenEnum.TST6]: {
     [ChainEnum.RSK_TESTNET]: '0xd1179afa75dcdeaa5bd6c0da705e67d268a2d7c3',
@@ -194,12 +190,6 @@ export const tokens: TokensType = {
     name: TokenEnum.TST4,
     icon: dllrIcon,
     addresses: tokenOnChain.TST4,
-  },
-  [TokenEnum.TST5]: {
-    id: TokenEnum.TST5,
-    name: TokenEnum.TST5,
-    icon: dllrIcon,
-    addresses: tokenOnChain.TST5,
   },
   [TokenEnum.TST6]: {
     id: TokenEnum.TST6,
