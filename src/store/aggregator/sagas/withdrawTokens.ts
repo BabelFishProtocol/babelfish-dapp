@@ -4,14 +4,17 @@ import {
   checkIsCrossChain,
   SUPPORTED_CHAINS_RSK,
 } from '../../../config/chains';
+import { DEFAULT_ASSET_DECIMALS } from '../../../constants';
 import { IEvent } from '../../../gql/graphql';
 import { parseToWei } from '../../../utils/helpers';
 import { accountSelector } from '../../app/app.selectors';
 import { SagaContractEffect, SagaContractCallStep } from '../../types';
+import { toBN } from '../../utils/utils.math';
 import { contractStepCallsSaga } from '../../utils/utils.sagas';
 import {
   bassetAddressSelector,
   destinationTokenAddressSelector,
+  incentivesSelector,
   massetContractSelector,
   startingTokenContractSelector,
   startingTokenDecimalsSelector,
@@ -29,6 +32,7 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
   const massetContract = yield* select(massetContractSelector);
   const account = yield* select(accountSelector);
   const { destinationChain, receiveAddress, sendAmount } = payload;
+  const penaltyData = yield* select(incentivesSelector);
 
   if (!massetContract || !tokenContract || !destinationChain) {
     yield* put(aggregatorActions.setSubmitError('Could not find contracts'));
@@ -77,16 +81,23 @@ export function* withdrawTokens({ payload }: AggregatorActions['submit']) {
 
   let submitEffect: SagaContractEffect;
 
-  if (isRSK) {
+  if (!isCrossChain) {
+
+    const penaltyAmountBN = utils.parseUnits(penaltyData?.amount ?? '0', DEFAULT_ASSET_DECIMALS);
+    const slippageBN = penaltyAmountBN; //penaltyAmountBN.mul(10 * payload.slippageSlider).div(1000);
+    const maximumPenaltyBN = penaltyAmountBN.add(slippageBN);
+
     submitEffect = call(
-      massetContract.redeemTo,
+      massetContract.redeemToWithMaximumPenalty,
       destinationTokenAddress.toLowerCase(),
       amount,
-      receiveAddress.toLowerCase()
+      receiveAddress.toLowerCase(),
+      maximumPenaltyBN,
+      
     );
   } else {
     submitEffect = call(
-      massetContract['redeemToBridge(address,uint256,address)'],
+      massetContract.redeemToBridge,
       (bassetAddress as string).toLowerCase(),
       amount,
       receiveAddress.toLowerCase()

@@ -1,3 +1,4 @@
+import { BigNumber, utils } from 'ethers';
 import { select, call, put, all, takeLatest } from 'typed-redux-saga';
 import { TokenEnum } from '../../config/tokens';
 import {
@@ -10,11 +11,24 @@ import {
   allowTokensContractSelector,
   bridgeContractSelector,
   destinationTokenContractSelector,
+  bridgeSelector,
+  destinationChainSelector,
+  destinationTokenAddressSelector,
   flowStateSelector,
   massetAddressSelector,
+  sendAmountSelector,
+  startingChainSelector,
+  startingTokenAddressSelector,
   startingTokenContractSelector,
+  startingTokenDecimalsSelector,
   startingTokenSelector,
   tokenAddressSelector,
+  destinationTokenSelector,
+  feesAndLimitsSelector,
+  incentivesSelector,
+  incentivesStateSelector,
+  feesAndLimitsStateSelector,
+  isCrosschainSelector,
 } from './aggregator.selectors';
 import { AggregatorActions, aggregatorActions } from './aggregator.slice';
 import { depositTokens } from './sagas/depositTokens';
@@ -23,6 +37,11 @@ import {
   setFailedOnDepositCrossChainTx,
 } from './sagas/localTransactions';
 import { withdrawTokens } from './sagas/withdrawTokens';
+import { DEFAULT_ASSET_DECIMALS } from '../../constants';
+import { IncentiveType } from './aggregator.state';
+import { roundBN } from '../utils/utils.math';
+import { ChainEnum } from '../../config/chains';
+import { getReward, getPenalty } from './getIncentive';
 
 export function* transferTokens(action: AggregatorActions['submit']) {
   const flowState = yield* select(flowStateSelector);
@@ -35,6 +54,7 @@ export function* transferTokens(action: AggregatorActions['submit']) {
 }
 
 export function* fetchAllowTokenAddress() {
+  console.log('fetchAllowTokenAddress');
   try {
     const bridge = yield* select(bridgeContractSelector);
 
@@ -50,14 +70,16 @@ export function* fetchAllowTokenAddress() {
 }
 
 export function* fetchBridgeFeesAndLimits() {
+  console.log('fetchBridgeFeesAndLimits');
   try {
     yield* put(aggregatorActions.fetchFeesAndLimitsLoading());
+
     const allowTokens = yield* select(allowTokensContractSelector);
     const startingToken = yield* select(startingTokenSelector);
     const tokenAddress = yield* select(tokenAddressSelector);
 
     if (!allowTokens || !startingToken || !tokenAddress) {
-      throw new Error('Not enough data to fetch bridge fees');
+      return;
     }
 
     const bridgeFee = yield* call(
@@ -80,6 +102,7 @@ export function* fetchBridgeFeesAndLimits() {
       })
     );
   } catch (e) {
+    console.error(e);
     const msg =
       e instanceof Error
         ? e.message
@@ -89,6 +112,7 @@ export function* fetchBridgeFeesAndLimits() {
 }
 
 export function* fetchStartingTokenBalance() {
+  console.log('fetchStartingTokenBalance');
   try {
     const account = yield* select(accountSelector);
     const tokenContract = yield* select(startingTokenContractSelector);
@@ -113,6 +137,7 @@ export function* fetchStartingTokenBalance() {
 }
 
 export function* fetchDestinationTokenAggregatorBalance() {
+  console.log('fetchDestinationTokenAggregatorBalance');
   try {
     const startingToken = yield* select(startingTokenSelector);
     const massetAddress = yield* select(massetAddressSelector);
@@ -154,6 +179,7 @@ export function* fetchDestinationTokenAggregatorBalance() {
 }
 
 export function* fetchPausedTokens() {
+  console.log('fetchPausedTokens');
   try {
     const subgraphClient = yield* select(subgraphClientSelector);
 
@@ -169,11 +195,150 @@ export function* fetchPausedTokens() {
 
     yield* put(aggregatorActions.setIsStartingTokenPaused(pausedTokens));
   } catch (e) {
-    // console.error(e);
+    yield* put(aggregatorActions.fetchFeesAndLimitsFailure);
   }
 }
 
+// gadi
+export function* fetchReceiveAmount() {
+  console.log('fetchReceiveAmount');
+
+  const incentiveState = yield* select(incentivesStateSelector);
+  const bridgeInfoState = yield* select(feesAndLimitsStateSelector);
+  const isCrossChain = yield* select(isCrosschainSelector);
+
+  if(incentiveState !== 'success' || (isCrossChain && bridgeInfoState !== 'success')) {
+    yield* put(
+      aggregatorActions.setReceiveAmount('')
+    );
+    return;
+  }
+
+  const sendAmount = yield* select(sendAmountSelector);
+
+  if (Number(sendAmount) === 0) {
+    yield* put(
+      aggregatorActions.setReceiveAmount('0.0')
+    );
+    return;   
+  }
+
+  let receiveAmountBN = utils.parseUnits(sendAmount ?? '0', DEFAULT_ASSET_DECIMALS);
+
+  function subOrZero(bna: BigNumber, bnb: BigNumber): BigNumber {
+    return bna.gt(bnb) ? bna.sub(bnb) : BigNumber.from(0);
+  }
+
+  if(isCrossChain) {
+    const feesAndLimits = yield* select(feesAndLimitsSelector);
+    const bridgeFeeBN = BigNumber.from(feesAndLimits.bridgeFee ?? '0');  
+    receiveAmountBN = subOrZero(receiveAmountBN, bridgeFeeBN);
+  }
+
+  const incentiveData = yield* select(incentivesSelector);
+  const incentiveBN = utils.parseUnits(incentiveData.amount ?? '0', DEFAULT_ASSET_DECIMALS);
+  const flowState = yield* select(flowStateSelector);
+  if (flowState === 'deposit') {
+    receiveAmountBN = receiveAmountBN.add(incentiveBN);
+  } else if (flowState === 'withdraw') {
+    receiveAmountBN = subOrZero(receiveAmountBN, incentiveBN);
+  }
+
+  const receiveAmountStr = utils.formatUnits(receiveAmountBN, DEFAULT_ASSET_DECIMALS);
+
+  yield* put(
+    aggregatorActions.setReceiveAmount(receiveAmountStr)
+  );
+}
+
+export function* fetchIncentive() {
+  console.log('fetchIncentive');
+  try {
+    yield* put(aggregatorActions.setIncentivesLoading());
+
+    const sendAmount = yield* select(sendAmountSelector);
+    //if (Number(sendAmount) === 0) return;
+
+    const flowState = yield* select(flowStateSelector);
+
+    if(Number(sendAmount) == 0) {
+      yield* put(
+        aggregatorActions.setIncentives({
+          type: IncentiveType.none,
+          amount: '0.0',
+        })
+      );
+      return;
+    }
+
+    const startingTokenAddress = yield* select(startingTokenAddressSelector);
+    const destinationTokenAddress = yield* select(
+      destinationTokenAddressSelector
+    );
+    if (!startingTokenAddress || !destinationTokenAddress) return;
+
+    let incentiveBN = BigNumber.from(0);
+    let incentiveType = IncentiveType.none;
+
+    if (flowState === 'deposit') {
+      const startingToken = yield* select(startingTokenSelector);
+      const bridge = yield* select(bridgeSelector);
+      const sovTokenAddress = bridge
+        ? bridge.getRskSovrynTokenAddress(startingToken!)
+        : startingTokenAddress;
+
+      incentiveType = IncentiveType.reward;
+      const tokenDecimals = yield* select(startingTokenDecimalsSelector);
+      const amount = utils.parseUnits(sendAmount ?? '', tokenDecimals);
+      const destinationChain = yield* select(destinationChainSelector);
+      const isMainnet = destinationChain === ChainEnum.RSK;
+
+      incentiveBN = (yield* call(
+        getReward,
+        sovTokenAddress!,
+        amount,
+        isMainnet
+      )) as BigNumber;
+    } else if (flowState === 'withdraw') {
+      const destinationToken = yield* select(destinationTokenSelector);
+      const bridge = yield* select(bridgeSelector);
+      const sovTokenAddress = bridge
+        ? bridge.getRskSovrynTokenAddress(destinationToken!)
+        : destinationTokenAddress;
+
+      incentiveType = IncentiveType.penalty;
+      const amount = utils.parseUnits(sendAmount ?? '', DEFAULT_ASSET_DECIMALS);
+      const startingChain = yield* select(startingChainSelector);
+      const isMainnet = startingChain === ChainEnum.RSK;
+
+      incentiveBN = (yield* call(
+        getPenalty,
+        sovTokenAddress!,
+        amount,
+        isMainnet
+      )) as BigNumber;
+    }
+
+    yield* put(
+      aggregatorActions.setIncentives({
+        type: incentiveType,
+        amount: utils.formatUnits(incentiveBN, DEFAULT_ASSET_DECIMALS),
+      })
+    );
+  } catch (e) {
+    console.error(e);
+    yield* put(aggregatorActions.setIncentivesFailure());
+  }
+}
+
+export function* resetSendAmount() {
+  yield* put(
+    aggregatorActions.setSendAmount('0.0')
+  );
+}
+
 export function* resetAggregator() {
+  console.log('resetAggregator');
   yield* put(aggregatorActions.resetAggregator());
 }
 
@@ -199,7 +364,6 @@ export function* aggregatorSaga() {
       aggregatorActions.setAllowTokensAddress,
       fetchBridgeFeesAndLimits
     ),
-    takeLatest(aggregatorActions.setDestinationToken, fetchBridgeFeesAndLimits),
     takeLatest(aggregatorActions.setDestinationChain, fetchAllowTokenAddress),
     takeLatest(aggregatorActions.setDestinationToken, fetchAllowTokenAddress),
     takeLatest(aggregatorActions.setStartingToken, fetchStartingTokenBalance),
@@ -212,6 +376,19 @@ export function* aggregatorSaga() {
       aggregatorActions.setStartingToken,
       fetchDestinationTokenAggregatorBalance
     ),
+
+    takeLatest(aggregatorActions.setDestinationToken, fetchBridgeFeesAndLimits),
+    takeLatest(aggregatorActions.setStartingToken, fetchBridgeFeesAndLimits),
+
+    takeLatest(aggregatorActions.setSendAmount, fetchIncentive),
+    takeLatest(aggregatorActions.setDestinationToken, fetchIncentive),
+    takeLatest(aggregatorActions.setStartingToken, fetchIncentive),
+
+    takeLatest(aggregatorActions.setIncentives, fetchReceiveAmount),
+    takeLatest(aggregatorActions.setFeesAndLimits, fetchReceiveAmount),
+    
+    //takeLatest(aggregatorActions.setDestinationToken, resetSendAmount),
+    //takeLatest(aggregatorActions.setStartingToken, resetSendAmount),
 
     takeLatest(aggregatorActions.submit, transferTokens),
   ]);

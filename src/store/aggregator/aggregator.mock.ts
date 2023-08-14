@@ -5,7 +5,7 @@ import { TokenEnum } from '../../config/tokens';
 import {
   Bridge__factory,
   ERC20__factory,
-  MassetV3__factory,
+  MassetV4__factory,
 } from '../../contracts/types';
 import { AggregatorInputs } from '../../pages/Aggregator/Aggregator.fields';
 import { createMockedContract, mockSigner } from '../../testUtils';
@@ -33,7 +33,7 @@ export const mockBridge = createMockedContract(
 );
 
 export const mockMasset = createMockedContract(
-  MassetV3__factory.connect(constants.AddressZero, mockSigner),
+  MassetV4__factory.connect(constants.AddressZero, mockSigner),
   true
 );
 
@@ -47,6 +47,7 @@ export const depositMockValues = {
   [AggregatorInputs.DestinationToken]: TokenEnum.XUSD,
   [AggregatorInputs.ReceiveAmount]: '10.45',
   [AggregatorInputs.ReceiveAddress]: mockReceiver,
+  [AggregatorInputs.SlippageSlider]: 0,
 };
 
 export const mockReceiveAmount = parseUnits(
@@ -68,6 +69,7 @@ export const withdrawMockValues = {
   [AggregatorInputs.DestinationToken]: TokenEnum.USDT,
   [AggregatorInputs.ReceiveAmount]: '10.45',
   [AggregatorInputs.ReceiveAddress]: mockReceiver,
+  [AggregatorInputs.SlippageSlider]: 0,
 };
 
 export const withdrawRSKMockValues = {

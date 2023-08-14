@@ -27,6 +27,7 @@ import {
   Multicall__factory,
   VestingRegistry__factory,
   GovernorAlpha__factory,
+  RewardManager__factory,
 } from '../../contracts/types';
 import { BaseContractFactory, MulticallProviderType } from '../types';
 import { hasLocalTransactions } from './app.slice';
@@ -273,6 +274,10 @@ export const multicallContractSelector = createContractSelector(
 export const vestingRegistrySelector = createContractSelector(
   VestingRegistry__factory,
   'vestingRegistry'
+);
+export const rewardManagerSelector = createContractSelector(
+  RewardManager__factory,
+  'rewardManager'
 );
 
 export const multicallProviderSelector = createSelector(

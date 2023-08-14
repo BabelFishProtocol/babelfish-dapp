@@ -1,5 +1,8 @@
 import { TokenEnum } from '../../../config/tokens';
-import { FeesAndLimitsType } from '../../../store/aggregator/aggregator.state';
+import {
+  FeesAndLimitsType,
+  IncentivesType,
+} from '../../../store/aggregator/aggregator.state';
 import { FiniteStates } from '../../../utils/types';
 
 export type AggregatorInfoContainerProps = {
@@ -17,4 +20,8 @@ export type AggregatorInfoComponentProps = {
   tokenDecimals?: number;
   aggregatorBalance?: string;
   aggregatorBalanceState: FiniteStates;
+  incentivesState?: FiniteStates;
+  incentives: IncentivesType;
+  sendAmount: string;
+  errorMessages: string[];
 };

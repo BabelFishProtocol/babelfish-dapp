@@ -10,7 +10,7 @@ import {
   AllowTokens__factory,
   Bridge__factory,
   ERC20__factory,
-  MassetV3__factory,
+  MassetV4__factory,
 } from '../../contracts/types';
 import {
   chainIdSelector,
@@ -76,6 +76,26 @@ export const destinationTokenAggregatorBalanceSelector = createSelector(
 export const destinationTokenAggregatorBalanceStateSelector = createSelector(
   aggregatorState,
   (state) => state.destinationTokenAggregatorBalance.state
+);
+
+export const sendAmountSelector = createSelector(
+  aggregatorState,
+  (state) => state.sendAmount
+);
+
+export const incentivesStateSelector = createSelector(
+  aggregatorState,
+  (state) => state.incentives.state
+);
+
+export const incentivesSelector = createSelector(
+  aggregatorState,
+  (state) => state.incentives.data
+);
+
+export const receiveAmountSelector = createSelector(
+  aggregatorState,
+  (state) => state.receiveAmount
 );
 
 export const bridgeSelector = createSelector(
@@ -160,7 +180,7 @@ export const massetContractSelector = createSelector(
       return undefined;
     }
 
-    const contract = MassetV3__factory.connect(
+    const contract = MassetV4__factory.connect(
       massetAddress,
       provider?.getSigner()
     );
@@ -208,8 +228,15 @@ export const allowTokensContractSelector = createSelector(
   }
 );
 
+export const startingChainSelector = createSelector(
+  aggregatorState,
+  (state) => {
+    return state.startingChain;
+  }
+);
+
 export const startingTokenAddressSelector = createSelector(
-  [chainIdSelector, startingTokenSelector],
+  [startingChainSelector, startingTokenSelector],
   (startingChain, startingToken) => {
     if (!startingChain || !startingToken) {
       return undefined;
@@ -285,6 +312,10 @@ export const startingTokenBridgeAddressSelector = createSelector(
     return bridge.getRskSovrynTokenAddress(startingToken)?.toLowerCase();
   }
 );
+
+export const isCrosschainSelector = createSelector(
+  [chainIdSelector, destinationChainSelector], 
+  (startingChain, destinationChain) => startingChain !== destinationChain);
 
 export const destinationTokenContractSelector = createSelector(
   [

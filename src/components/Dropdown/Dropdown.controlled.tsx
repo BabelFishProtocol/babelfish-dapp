@@ -1,11 +1,6 @@
 import Box from '@mui/material/Box';
-import React, { Ref, useCallback } from 'react';
-import {
-  Controller,
-  Path,
-  PathValue,
-  UnpackNestedValue,
-} from 'react-hook-form';
+import { Ref, useCallback } from 'react';
+import { Controller, Path, PathValue } from 'react-hook-form';
 import { FieldErrorMessage } from '../FieldErrorMessage/FieldErrorMessage.component';
 
 import { DropdownOptions } from './Dropdown.component';
@@ -27,15 +22,9 @@ export const ControlledDropdown = <
 }) => {
   const setValueWhenOneOption = useCallback(() => {
     if (options.length === 1) {
-      setValue(
-        name,
-        options[0].id as unknown as UnpackNestedValue<
-          PathValue<FormValues, Path<FormValues>>
-        >,
-        {
-          shouldValidate: true,
-        }
-      );
+      setValue(name, options[0].id as PathValue<FormValues, Path<FormValues>>, {
+        shouldValidate: true,
+      });
     }
   }, [name, options, setValue]);
 
