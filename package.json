@@ -7,6 +7,7 @@
     "deploy": "./start.sh",
     "lint": "eslint .",
     "prettier": "prettier --config .prettierrc --check .",
+    "prettier:fix": "prettier --config .prettierrc --write .",
     "test": "jest --verbose",
     "preview": "vite preview",
     "check-types": "tsc --noEmit",
@@ -30,7 +31,7 @@
     "@sovryn/onboard-hw-common": "1.0.1",
     "@sovryn/onboard-injected": "1.0.0",
     "@sovryn/onboard-ledger": "1.0.1",
-    "@sovryn/onboard-react": "1.0.2",
+    "@sovryn/onboard-react": "1.0.3",
     "@sovryn/onboard-trezor": "1.0.1",
     "@sovryn/ui": "1.0.6",
     "@typechain/ethers-v5": "9.0.0",
@@ -42,7 +43,7 @@
     "graphql-request": "4.1.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-hook-form": "7.27.0",
+    "react-hook-form": "7.43.1",
     "react-redux": "7.2.6",
     "react-router-dom": "6.2.1",
     "reactjs-localstorage": "1.0.1",
@@ -51,7 +52,10 @@
     "rxjs": "7.8.1",
     "subscription-client": "0.9.15",
     "ts-node": "10.5.0",
-    "typed-redux-saga": "1.4.0"
+    "typed-redux-saga": "1.5.0",
+    "typescript-http-client": "0.10.4",
+    "web3": "1.9.0",
+    "web3-utils": "1.10.0"
   },
   "devDependencies": {
     "@ethersproject/providers": "5.5.1",

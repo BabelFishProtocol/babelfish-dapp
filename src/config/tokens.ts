@@ -21,6 +21,11 @@ export enum TokenEnum {
   RUSDT = 'RUSDT',
   ZUSD = 'ZUSD',
   DLLR = 'DLLR',
+  TST1 = 'TST1',
+  TST2 = 'TST2',
+  TST3 = 'TST3',
+  TST4 = 'TST4',
+  TST6 = 'TST6'
 }
 
 export interface TokenTypeBase {
@@ -58,15 +63,15 @@ export const tokenOnChain = {
   },
   [TokenEnum.RDOC]: {
     [ChainEnum.RSK]: '0x2d919f19d4892381d58edebeca66d5642cef1a1f',
-    [ChainEnum.RSK_TESTNET]: '0xC3De9f38581F83e281F260D0ddBAac0E102Ff9F8',
+    [ChainEnum.RSK_TESTNET]: '0xdbdc2d486c10c23902a46a17bec1f7de64075257',
   },
   [TokenEnum.DOC]: {
     [ChainEnum.RSK]: '0xe700691da7b9851f2f35f8b8182c69c53ccad9db',
-    [ChainEnum.RSK_TESTNET]: '0xCb46C0DdC60d18eFEB0e586c17AF6Ea36452DaE0',
+    [ChainEnum.RSK_TESTNET]: '0xad0d0d04ec0cf442204908fc2cc18503ead06d3e',
   },
   [TokenEnum.RUSDT]: {
     [ChainEnum.RSK]: '0xEf213441a85DF4d7acBdAe0Cf78004E1e486BB96',
-    [ChainEnum.RSK_TESTNET]: '0x4d5A316d23EBe168D8f887b4447BF8DBfA4901cc',
+    [ChainEnum.RSK_TESTNET]: '0x71e14cb1d752b88215782f2d6af01327cb483a0e',
   },
   [TokenEnum.ZUSD]: {
     [ChainEnum.RSK]: '0xdB107FA69E33f05180a4C2cE9c2E7CB481645C2d',
@@ -75,6 +80,21 @@ export const tokenOnChain = {
   [TokenEnum.DLLR]: {
     [ChainEnum.RSK]: '0x007b3AA69A846cB1f76b60b3088230A52D2A83AC', // TODO: Change it once we have mainnet deployment, this is a testnet address
     [ChainEnum.RSK_TESTNET]: '0x007b3AA69A846cB1f76b60b3088230A52D2A83AC',
+  },
+  [TokenEnum.TST1]: {
+    [ChainEnum.RSK_TESTNET]: '0x9552f2e86b38b6545f7a3ff871b1f3e0023fa841',
+  },
+  [TokenEnum.TST2]: {
+    [ChainEnum.RSK_TESTNET]: '0x36f737dcaf6b2480f3163602c7cf85c9661527d4',
+  },
+  [TokenEnum.TST3]: {
+    [ChainEnum.RSK_TESTNET]: '0xf177355fffbf1096436c43354b6b653c08ff75ee',
+  },
+  [TokenEnum.TST4]: {
+    [ChainEnum.RSK_TESTNET]: '0x12aff942bafc1394acc3fdef28f41fd3f008b32d',
+  },
+  [TokenEnum.TST6]: {
+    [ChainEnum.RSK_TESTNET]: '0xd1179afa75dcdeaa5bd6c0da705e67d268a2d7c3',
   },
 } as const;
 
@@ -146,5 +166,35 @@ export const tokens: TokensType = {
     name: TokenEnum.DLLR,
     icon: dllrIcon,
     addresses: tokenOnChain.DLLR,
+  },
+  [TokenEnum.TST1]: {
+    id: TokenEnum.TST1,
+    name: TokenEnum.TST1,
+    icon: dllrIcon,
+    addresses: tokenOnChain.TST1,
+  },
+  [TokenEnum.TST2]: {
+    id: TokenEnum.TST2,
+    name: TokenEnum.TST2,
+    icon: dllrIcon,
+    addresses: tokenOnChain.TST2,
+  },
+  [TokenEnum.TST3]: {
+    id: TokenEnum.TST3,
+    name: TokenEnum.TST3,
+    icon: dllrIcon,
+    addresses: tokenOnChain.TST3,
+  },
+  [TokenEnum.TST4]: {
+    id: TokenEnum.TST4,
+    name: TokenEnum.TST4,
+    icon: dllrIcon,
+    addresses: tokenOnChain.TST4,
+  },
+  [TokenEnum.TST6]: {
+    id: TokenEnum.TST6,
+    name: TokenEnum.TST6,
+    icon: dllrIcon,
+    addresses: tokenOnChain.TST6,
   },
 } as const;

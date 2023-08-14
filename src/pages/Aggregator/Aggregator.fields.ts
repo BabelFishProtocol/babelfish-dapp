@@ -8,8 +8,9 @@ export enum AggregatorInputs {
   SendAmount = 'sendAmount',
   DestinationChain = 'destinationChain',
   DestinationToken = 'destinationToken',
-  ReceiveAmount = 'receiveAmount',
   ReceiveAddress = 'receiveAddress',
+  ReceiveAmount = 'receiveAmount',
+  SlippageSlider = 'slippageSlider',
 }
 
 export type AggregatorFormValues = {
@@ -18,8 +19,9 @@ export type AggregatorFormValues = {
   [AggregatorInputs.SendAmount]: string;
   [AggregatorInputs.DestinationChain]: ChainEnum | '';
   [AggregatorInputs.DestinationToken]: TokenEnum | '';
-  [AggregatorInputs.ReceiveAmount]: string;
   [AggregatorInputs.ReceiveAddress]: string;
+  [AggregatorInputs.ReceiveAmount]: string;
+  [AggregatorInputs.SlippageSlider]: number;
 };
 
 export const aggregatorDefaultValues: DefaultValues<AggregatorFormValues> = {
@@ -28,6 +30,7 @@ export const aggregatorDefaultValues: DefaultValues<AggregatorFormValues> = {
   [AggregatorInputs.SendAmount]: '',
   [AggregatorInputs.DestinationChain]: '',
   [AggregatorInputs.DestinationToken]: '',
-  [AggregatorInputs.ReceiveAmount]: '',
   [AggregatorInputs.ReceiveAddress]: '',
+  [AggregatorInputs.ReceiveAmount]: '',
+  [AggregatorInputs.SlippageSlider]: 20,
 };

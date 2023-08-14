@@ -24,7 +24,7 @@ describe('app selectors', () => {
       appState.supportedNetworks
     );
 
-    expect(supportedNetworksNames).toEqual(['RSK', 'RSK Testnet']);
+    expect(supportedNetworksNames).toEqual(['Rootstock', 'Rootstock Testnet']);
   });
 
   describe('unsupportedNetworkSelector', () => {
