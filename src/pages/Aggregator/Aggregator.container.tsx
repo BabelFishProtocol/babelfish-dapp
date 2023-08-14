@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Box from '@mui/material/Box';
 import { SubmitStepsDialog } from '../../components/TxDialog/TxDialog.component';
 import {
   ChainEnum,
@@ -24,6 +25,29 @@ import { appActions } from '../../store/app/app.slice';
 import { AggregatorComponent } from './Aggregator.component';
 import { AggregatorFormValues } from './Aggregator.fields';
 import { select } from 'redux-saga/effects';
+import maintenanceModeIcon from '../../assets/icons/maintenance-mode.svg';
+
+const MaintenanceModeOverlay = () => (
+  <Box
+    sx={{
+      position: 'absolute',
+      width: '100%',
+      height: '75%',
+      zIndex: 1000,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+  >
+    <img
+      src={maintenanceModeIcon}
+      alt="Convert is currently under maintenance"
+      width={600}
+    />
+  </Box>
+);
+
+const inMaintenance = true;
 
 export const AggregatorContainer = () => {
   const submitStatus = useSelector(submitAggregatorStatusSelector);
@@ -108,26 +132,32 @@ export const AggregatorContainer = () => {
   };
 
   return (
-    <>
-      <AggregatorComponent
-        onSubmit={onSubmit}
-        onStartingChainChange={onStartingChainChange}
-        onDestinationChainChange={onDestinationChainChange}
-        onStartingTokenChange={onStartingTokenChange}
-        onDestinationTokenChange={onDestinationTokenChange}
-        isStartingTokenPaused={isStartingTokenPaused}
-        onSendAmountChange={onSendAmountChange}
-        receiveAmount={receiveAmount}
-      />
-      {submitStatus.status !== 'idle' && (
-        <SubmitStepsDialog
-          onClose={onClose}
-          steps={submitStatus.steps}
-          status={submitStatus.status}
-          summary={submitStatus.summary}
-          currentStep={submitStatus.currentStep}
-        />
+    <div>
+      {inMaintenance ? (
+        <MaintenanceModeOverlay />
+      ) : (
+        <>
+          <AggregatorComponent
+            onSubmit={onSubmit}
+            onStartingChainChange={onStartingChainChange}
+            onDestinationChainChange={onDestinationChainChange}
+            onStartingTokenChange={onStartingTokenChange}
+            onDestinationTokenChange={onDestinationTokenChange}
+            isStartingTokenPaused={isStartingTokenPaused}
+            onSendAmountChange={onSendAmountChange}
+            receiveAmount={receiveAmount}
+          />
+          {submitStatus.status !== 'idle' && (
+            <SubmitStepsDialog
+              onClose={onClose}
+              steps={submitStatus.steps}
+              status={submitStatus.status}
+              summary={submitStatus.summary}
+              currentStep={submitStatus.currentStep}
+            />
+          )}
+        </>
       )}
-    </>
+    </div>
   );
 };
