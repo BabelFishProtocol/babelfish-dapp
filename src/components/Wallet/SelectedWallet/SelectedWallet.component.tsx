@@ -29,7 +29,7 @@ export const SelectedWallet = ({
         alignItems: 'center',
       }}
     >
-      <PrettyTx value={account.toUpperCase()} color="inherit" variant="body1" />
+      <PrettyTx value={account} color="inherit" variant="body1" />
       <WalletIcon name={wallet.name} icon={wallet.icon} sx={wallet?.sx} />
     </Box>
     <Button
