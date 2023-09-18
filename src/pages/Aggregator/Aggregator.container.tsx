@@ -47,7 +47,7 @@ const MaintenanceModeOverlay = () => (
   </Box>
 );
 
-const inMaintenance = false;
+const inMaintenance = true;
 
 export const AggregatorContainer = () => {
   const submitStatus = useSelector(submitAggregatorStatusSelector);
