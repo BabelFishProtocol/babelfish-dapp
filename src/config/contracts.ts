@@ -31,7 +31,7 @@ export const contractsAddresses: ContractsAddresses = {
     feeSharingProxy: '0x12B1B0C67d9A771EB5Db7726d23fdc6848fd93ef',
     vestingRegistry: '0x036ab2DB0a3d1574469a4a7E09887Ed76fB56C41',
     XUSDMassetProxy: '0x1440d19436bEeaF8517896bffB957a88EC95a00F',
-    rewardManager: '0xd2508d45ff30f920178ce88b3a5c7207c534558d',
+    rewardManager: '0xdfe234575c04f8ad29bea2c1546799e677022021',
   },
   [ChainEnum.RSK_TESTNET]: {
     staking: '0x34a01F53432e2105B7361Aee031F3De629eb7211',
