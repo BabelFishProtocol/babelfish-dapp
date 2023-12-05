@@ -293,13 +293,14 @@ export function* fetchIncentive() {
       incentiveType = IncentiveType.reward;
       const tokenDecimals = yield* select(startingTokenDecimalsSelector);
       const amount = utils.parseUnits(sendAmount ?? '', tokenDecimals);
+      const amountInDefaultDecimals = utils.parseUnits(sendAmount ?? '', DEFAULT_ASSET_DECIMALS);
       const destinationChain = yield* select(destinationChainSelector);
       const isMainnet = destinationChain === ChainEnum.RSK;
 
       incentiveBN = (yield* call(
         getReward,
         sovTokenAddress!,
-        amount,
+        amountInDefaultDecimals,
         isMainnet
       )) as BigNumber;
     } else if (flowState === 'withdraw') {
