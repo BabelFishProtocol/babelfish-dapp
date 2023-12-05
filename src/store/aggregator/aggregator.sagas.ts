@@ -199,7 +199,6 @@ export function* fetchPausedTokens() {
   }
 }
 
-// gadi
 export function* fetchReceiveAmount() {
   console.log('fetchReceiveAmount');
 
@@ -230,8 +229,12 @@ export function* fetchReceiveAmount() {
   }
 
   if(isCrossChain) {
+    const bridgeFeeTokenDecimals = yield *select(startingTokenDecimalsSelector);
     const feesAndLimits = yield* select(feesAndLimitsSelector);
-    const bridgeFeeBN = BigNumber.from(feesAndLimits.bridgeFee ?? '0');  
+    let bridgeFeeBN = BigNumber.from(feesAndLimits.bridgeFee ?? '0');
+    if(bridgeFeeTokenDecimals < DEFAULT_ASSET_DECIMALS) {
+      bridgeFeeBN = bridgeFeeBN.mul(BigNumber.from(10).pow(DEFAULT_ASSET_DECIMALS - bridgeFeeTokenDecimals));
+    }
     receiveAmountBN = subOrZero(receiveAmountBN, bridgeFeeBN);
   }
 
