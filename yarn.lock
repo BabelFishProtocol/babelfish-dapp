@@ -4534,9 +4534,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sovryn/ui@npm:1.0.6":
-  version: 1.0.6
-  resolution: "@sovryn/ui@npm:1.0.6"
+"@sovryn/ui@npm:1.0.22":
+  version: 1.0.22
+  resolution: "@sovryn/ui@npm:1.0.22"
   dependencies:
     "@fortawesome/fontawesome-svg-core": 6.2.0
     "@fortawesome/free-solid-svg-icons": 6.2.0
@@ -4550,7 +4550,7 @@ __metadata:
   peerDependencies:
     react: 18.2.0
     react-dom: 18.2.0
-  checksum: 7e5a3517a11495c4104bf950be86999bfe4c019f56a6fc7b2049fc8a432c415276b61b53bb576a587b86f436871a88656e20846f215f3d1eb094d54b59e748f6
+  checksum: 7852609b0bdb95214b919d72002bbcaf55d136ea1ef37325eac7964c72ca824065d595a063ec6c00c19878e27509dda91e9a8b0824a46c433f3223ad639196f9
   languageName: node
   linkType: hard
 
@@ -6189,7 +6189,7 @@ __metadata:
     "@sovryn/onboard-ledger": 1.0.7
     "@sovryn/onboard-react": 1.0.13
     "@sovryn/onboard-trezor": 1.0.7
-    "@sovryn/ui": 1.0.6
+    "@sovryn/ui": 1.0.22
     "@testing-library/jest-dom": 5.16.2
     "@testing-library/react": 12.1.2
     "@testing-library/react-hooks": 7.0.2
