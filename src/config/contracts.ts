@@ -44,6 +44,6 @@ export const contractsAddresses: ContractsAddresses = {
     feeSharingProxy: '0xBF56E401e3CbE1ddF3d8fEee770d9A3a19076751',
     vestingRegistry: '0xEB0AAD069b452563628CE539df0Da531E2313148',
     XUSDMassetProxy: '0x1572D7E4a78A8AD14AE722E6fE5f5600a2c7A149',
-    rewardManager: '0xfcf938f0e239ed366ffbfdcfe4124372df85ba9b',
+    rewardManager: '0x08577B5898b70d5319d8E210Fb321b4F0B7fA1e6',
   },
 };
