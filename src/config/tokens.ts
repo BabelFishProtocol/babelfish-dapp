@@ -1,7 +1,6 @@
 import usdtIcon from '../assets/icons/tokens/usdt.svg';
 import daiIcon from '../assets/icons/tokens/dai.svg';
 import usdcIcon from '../assets/icons/tokens/usdc.svg';
-import busdIcon from '../assets/icons/tokens/busd.svg';
 import xusdIcon from '../assets/icons/tokens/xusd.svg';
 import rdocIcon from '../assets/icons/tokens/rdoc.svg';
 import docIcon from '../assets/icons/tokens/doc.svg';
@@ -12,7 +11,6 @@ import { ChainEnum } from './chains';
 export enum TokenEnum {
   USDT = 'USDT',
   USDC = 'USDC',
-  BUSD = 'BUSD',
   DAI = 'DAI',
   XUSD = 'XUSD',
   RDOC = 'RDOC',
@@ -25,7 +23,7 @@ export enum TokenEnum {
   TST2 = 'TST2',
   TST3 = 'TST3',
   TST4 = 'TST4',
-  TST6 = 'TST6'
+  TST6 = 'TST6',
 }
 
 export interface TokenTypeBase {
@@ -40,9 +38,6 @@ export const tokenOnChain = {
     [ChainEnum.BSC]: '0x55d398326f99059ff775485246999027b3197955',
     [ChainEnum.ETH]: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
     [ChainEnum.ETH_TESTNET]: '0xff364ffa4962cb172203a5be01d17cf3fef02419',
-  },
-  [TokenEnum.BUSD]: {
-    [ChainEnum.BSC]: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
   },
   [TokenEnum.DAI]: {
     [ChainEnum.BSC]: '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3',
@@ -118,12 +113,6 @@ export const tokens: TokensType = {
     name: TokenEnum.DAI,
     icon: daiIcon,
     addresses: tokenOnChain.DAI,
-  },
-  [TokenEnum.BUSD]: {
-    id: TokenEnum.BUSD,
-    name: TokenEnum.BUSD,
-    icon: busdIcon,
-    addresses: tokenOnChain.BUSD,
   },
   [TokenEnum.XUSD]: {
     id: TokenEnum.XUSD,

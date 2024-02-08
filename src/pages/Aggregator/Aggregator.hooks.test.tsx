@@ -167,7 +167,7 @@ describe('Aggregator hooks', () => {
 
     it('toggles flow when ETH -> RSK', async () => {
       const startingChain = ChainEnum.ETH_TESTNET;
-      const startingToken = TokenEnum.BUSD;
+      const startingToken = TokenEnum.DAI;
       const destinationChain = ChainEnum.RSK_TESTNET;
       const destinationToken = TokenEnum.XUSD;
 
