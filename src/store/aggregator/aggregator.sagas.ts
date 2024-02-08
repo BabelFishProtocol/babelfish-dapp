@@ -199,7 +199,6 @@ export function* fetchPausedTokens() {
   }
 }
 
-// gadi
 export function* fetchReceiveAmount() {
   console.log('fetchReceiveAmount');
 
@@ -230,8 +229,12 @@ export function* fetchReceiveAmount() {
   }
 
   if(isCrossChain) {
+    const bridgeFeeTokenDecimals = yield *select(startingTokenDecimalsSelector);
     const feesAndLimits = yield* select(feesAndLimitsSelector);
-    const bridgeFeeBN = BigNumber.from(feesAndLimits.bridgeFee ?? '0');  
+    let bridgeFeeBN = BigNumber.from(feesAndLimits.bridgeFee ?? '0');
+    if(bridgeFeeTokenDecimals < DEFAULT_ASSET_DECIMALS) {
+      bridgeFeeBN = bridgeFeeBN.mul(BigNumber.from(10).pow(DEFAULT_ASSET_DECIMALS - bridgeFeeTokenDecimals));
+    }
     receiveAmountBN = subOrZero(receiveAmountBN, bridgeFeeBN);
   }
 
@@ -290,13 +293,14 @@ export function* fetchIncentive() {
       incentiveType = IncentiveType.reward;
       const tokenDecimals = yield* select(startingTokenDecimalsSelector);
       const amount = utils.parseUnits(sendAmount ?? '', tokenDecimals);
+      const amountInDefaultDecimals = utils.parseUnits(sendAmount ?? '', DEFAULT_ASSET_DECIMALS);
       const destinationChain = yield* select(destinationChainSelector);
       const isMainnet = destinationChain === ChainEnum.RSK;
 
       incentiveBN = (yield* call(
         getReward,
         sovTokenAddress!,
-        amount,
+        amountInDefaultDecimals,
         isMainnet
       )) as BigNumber;
     } else if (flowState === 'withdraw') {

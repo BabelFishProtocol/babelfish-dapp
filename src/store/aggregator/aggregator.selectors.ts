@@ -291,7 +291,7 @@ export const isEnoughTokensSelector = createSelector(
 
 /**
  * Pool token selector e.g. DAIes, USDCbs
- ** NOTE: Don't use for native rsk tokens e.g BDUS, ZUSD
+ ** NOTE: Don't use for native rsk tokens e.g BDUS, DLLR
  */
 export const bassetAddressSelector = createSelector(
   [bridgeSelector, destinationTokenSelector],

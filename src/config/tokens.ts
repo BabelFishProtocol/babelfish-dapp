@@ -4,7 +4,6 @@ import usdcIcon from '../assets/icons/tokens/usdc.svg';
 import xusdIcon from '../assets/icons/tokens/xusd.svg';
 import rdocIcon from '../assets/icons/tokens/rdoc.svg';
 import docIcon from '../assets/icons/tokens/doc.svg';
-import zusdIcon from '../assets/icons/tokens/zusd.svg';
 import dllrIcon from '../assets/icons/tokens/dllr.svg';
 import { ChainEnum } from './chains';
 
@@ -17,7 +16,6 @@ export enum TokenEnum {
   SEPUSD = 'SEPUSD',
   DOC = 'DOC',
   RUSDT = 'RUSDT',
-  ZUSD = 'ZUSD',
   DLLR = 'DLLR',
   TST1 = 'TST1',
   TST2 = 'TST2',
@@ -68,12 +66,8 @@ export const tokenOnChain = {
     [ChainEnum.RSK]: '0xEf213441a85DF4d7acBdAe0Cf78004E1e486BB96',
     [ChainEnum.RSK_TESTNET]: '0x71e14cb1d752b88215782f2d6af01327cb483a0e',
   },
-  [TokenEnum.ZUSD]: {
-    [ChainEnum.RSK]: '0xdB107FA69E33f05180a4C2cE9c2E7CB481645C2d',
-    [ChainEnum.RSK_TESTNET]: '0x6B41566353D6c7b8C2A7931d498f11489dacac29',
-  },
   [TokenEnum.DLLR]: {
-    [ChainEnum.RSK]: '0x007b3AA69A846cB1f76b60b3088230A52D2A83AC', // TODO: Change it once we have mainnet deployment, this is a testnet address
+    [ChainEnum.RSK]: '0xc1411567d2670e24d9c4daaa7cda95686e1250aa', // TODO: Change it once we have mainnet deployment, this is a testnet address
     [ChainEnum.RSK_TESTNET]: '0x007b3AA69A846cB1f76b60b3088230A52D2A83AC',
   },
   [TokenEnum.TST1]: {
@@ -143,12 +137,6 @@ export const tokens: TokensType = {
     name: TokenEnum.RUSDT,
     icon: usdtIcon,
     addresses: tokenOnChain.RUSDT,
-  },
-  [TokenEnum.ZUSD]: {
-    id: TokenEnum.ZUSD,
-    name: TokenEnum.ZUSD,
-    icon: zusdIcon,
-    addresses: tokenOnChain.ZUSD,
   },
   [TokenEnum.DLLR]: {
     id: TokenEnum.DLLR,
