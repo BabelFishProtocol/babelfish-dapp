@@ -40,7 +40,7 @@ const testnetBaseChains: BaseChainType[] = [
       tokens.DOC,
       tokens.RDOC,
       tokens.RUSDT,
-      tokens.ZUSD,
+      tokens.DLLR,
       tokens.DLLR,
       tokens.TST1,
       tokens.TST2,
