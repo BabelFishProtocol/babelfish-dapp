@@ -16,7 +16,7 @@ export const DEFAULT_POOL = PoolEnum.mainnet;
 const mainnetBaseChains: BaseChainType[] = [
   {
     ...chains[ChainEnum.RSK],
-    bassets: [tokens.DOC, tokens.RDOC, tokens.RUSDT, tokens.ZUSD],
+    bassets: [tokens.DOC, tokens.RDOC, tokens.RUSDT, tokens.DLLR],
   },
   {
     ...chains[ChainEnum.ETH],

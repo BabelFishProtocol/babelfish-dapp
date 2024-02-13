@@ -17,6 +17,5 @@ export const Header = () => (
     <Logo />
     <Navigation />
     <WalletConnector />
-    <span style={{ fontSize: '0px' }} >version: incentive-curve</span>
   </Box>
 );
