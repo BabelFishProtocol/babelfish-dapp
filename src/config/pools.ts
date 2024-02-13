@@ -11,7 +11,7 @@ export enum PoolEnum {
 }
 
 // TODO: Should be changeable by user
-export const DEFAULT_POOL = PoolEnum.testnet;
+export const DEFAULT_POOL = PoolEnum.mainnet;
 
 const mainnetBaseChains: BaseChainType[] = [
   {
@@ -36,8 +36,18 @@ export const mainnetPool = {
 const testnetBaseChains: BaseChainType[] = [
   {
     ...chains[ChainEnum.RSK_TESTNET],
-    bassets: [tokens.DOC, tokens.RDOC, tokens.RUSDT, tokens.ZUSD, 
-      tokens.DLLR, tokens.TST1, tokens.TST2, tokens.TST3, tokens.TST4, tokens.TST6],
+    bassets: [
+      tokens.DOC,
+      tokens.RDOC,
+      tokens.RUSDT,
+      tokens.ZUSD,
+      tokens.DLLR,
+      tokens.TST1,
+      tokens.TST2,
+      tokens.TST3,
+      tokens.TST4,
+      tokens.TST6,
+    ],
   },
   {
     ...chains[ChainEnum.ETH_TESTNET],
