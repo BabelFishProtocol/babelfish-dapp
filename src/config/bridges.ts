@@ -65,11 +65,6 @@ export class BridgeDictionary {
           rskSovrynAddress: '0x91EDceE9567cd5612c9DEDeaAE24D5e574820af1',
         },
         {
-          ...tokens.BUSD,
-          originalAddress: tokenOnChain[TokenEnum.BUSD][ChainEnum.BSC],
-          rskSovrynAddress: '0x61e9604e31a736129d7f5C58964c75935b2d80D6',
-        },
-        {
           ...tokens.USDT,
           originalAddress: tokenOnChain[TokenEnum.USDT][ChainEnum.BSC],
           rskSovrynAddress: '0xFf4299bCA0313C20A61dc5eD597739743BEf3f6d',

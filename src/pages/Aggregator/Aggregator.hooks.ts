@@ -198,7 +198,6 @@ export const useAggregatorDropdowns = (
   ]);
 
   const toggleFlow = async () => {
-
     const _startingChain = startingChain;
     const _startingToken = startingToken;
     const _destinationChain = destinationChain;
@@ -212,7 +211,6 @@ export const useAggregatorDropdowns = (
     setValue(AggregatorInputs.StartingChain, _destinationChain);
     setValue(AggregatorInputs.DestinationToken, _startingToken);
     setValue(AggregatorInputs.StartingToken, _destinationToken);
-
   };
 
   return {

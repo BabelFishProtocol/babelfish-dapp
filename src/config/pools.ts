@@ -24,7 +24,7 @@ const mainnetBaseChains: BaseChainType[] = [
   },
   {
     ...chains[ChainEnum.BSC],
-    bassets: [tokens.USDT, tokens.USDC, tokens.BUSD, tokens.DAI],
+    bassets: [tokens.USDT, tokens.USDC, tokens.DAI],
   },
 ];
 export const mainnetPool = {
