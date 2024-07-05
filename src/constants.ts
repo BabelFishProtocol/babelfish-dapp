@@ -81,14 +81,14 @@ export const GOVERNANCE_OPTIONS = {
 
 export const fieldsErrors = {
   required: 'Field Required',
-  addressFormat: 'Value must be a proper RSK address',
+  addressFormat: 'Value must be a proper Rootstock address',
   invalidSignature: 'Value must be a valid Function Signature',
   invalidCalldata: 'Value must be a valid Calldata',
-  amountGreaterThanBalance: 'Value cannot be greater than your token balance',
+  amountGreaterThanBalance: 'Value cannot be greater than your address balance',
   amountGreaterThanMaxLimit:
-    'Value cannot be greater than the transaction max limit',
-  amountLessThanMinLimit: 'Value cannot be less than the transaction min limit',
-  amountEqualZero: 'Value cannot be equal zero',
+    'Value cannot be greater than the transaction maximum limit',
+  amountLessThanMinLimit: 'Value cannot be less than the transaction minimum limit',
+  amountEqualZero: 'Value must be greater than zero',
   depositsDisabled: 'Deposits for this asset are currently disabled',
   amountGreaterThanAggregatorBalance: 'Amount exceeds aggregator balance',
 };
