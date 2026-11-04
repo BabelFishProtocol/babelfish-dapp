@@ -1,0 +1,6 @@
+[build]
+  command = "yarn build:maintenance"
+  publish = "dist"
+
+[build.environment]
+  YARN_FLAGS = "--mode=skip-build"

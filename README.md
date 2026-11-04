@@ -29,7 +29,12 @@ yarn install --immutable --mode=skip-build
 yarn build:maintenance
 ```
 
-Deploy the contents of `dist` to the existing app hosting project. Keep `_redirects`
+Netlify uses the checked-in `netlify.toml` to build this maintenance version.
+Push the maintenance branch and merge it into the production branch configured
+in Netlify to publish through the existing Git integration.
+
+You can also deploy the contents of `dist` to the existing app hosting project. Keep `_redirects`
 in the deployment so direct links also show maintenance. The homepage is a
-separate deployment. Restoring the application requires restoring its entry page
-and running the normal application build.
+separate deployment. Restoring the application requires restoring its entry page, removing the
+maintenance-specific Netlify configuration, and running the normal application
+build.
