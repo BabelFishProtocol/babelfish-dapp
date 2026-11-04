@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && cp ./_redirects ./dist",
+    "build:maintenance": "vite build && cp ./_redirects ./dist",
     "deploy": "./start.sh",
     "lint": "eslint .",
     "prettier": "prettier --config .prettierrc --check .",

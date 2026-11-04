@@ -17,3 +17,19 @@ All actual blockchain data is bring together in `src/config/bridges.ts`. You can
 ### Releases
 
 We show a link to the latest release (https://github.com/BabelFishProtocol/babelfish-dapp/releases/latest) in the footer. For this feature to work, every production release needs to be properly tagged at https://github.com/BabelFishProtocol/babelfish-dapp/releases.
+
+## Maintenance deployment
+
+The entry page currently shows maintenance on every app route without loading
+application or wallet scripts. To build this static deployment without generating
+the dormant app types, use the pinned Yarn version:
+
+```sh
+yarn install --immutable --mode=skip-build
+yarn build:maintenance
+```
+
+Deploy the contents of `dist` to the existing app hosting project. Keep `_redirects`
+in the deployment so direct links also show maintenance. The homepage is a
+separate deployment. Restoring the application requires restoring its entry page
+and running the normal application build.

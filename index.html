@@ -2,39 +2,90 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="The BabelFish app is temporarily under maintenance."
+    />
     <link
-      rel="shortcut icon"
+      rel="icon"
       type="image/svg+xml"
       href="/src/assets/icons/favicon.svg"
     />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-      rel="stylesheet"
-      type="text/css"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-      type="text/css"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
-      rel="stylesheet"
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BabelFish | Stablecoin aggregator</title>
+    <title>BabelFish | Under maintenance</title>
+    <style>
+      @font-face {
+        font-family: Archive;
+        src: url('/src/assets/fonts/Archive-Regular.woff2') format('woff2');
+        font-display: swap;
+      }
 
-    <script type="module">
-      import { Buffer } from 'buffer';
-      window.global = window;
-      window.global.Buffer = Buffer;
-    </script>
+      @font-face {
+        font-family: Comfortaa;
+        src: url('/src/assets/fonts/Comfortaa-Regular.woff2') format('woff2');
+        font-display: swap;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        min-height: 100svh;
+        margin: 0;
+        display: grid;
+        place-items: center;
+        padding: 2rem 1.25rem;
+        background: #181a20;
+        color: #fff;
+        font-family: Comfortaa, sans-serif;
+        text-align: center;
+      }
+
+      main {
+        max-width: 42rem;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 3rem;
+        font: 1.5rem Archive, sans-serif;
+      }
+
+      .brand img {
+        width: 3rem;
+        height: 3rem;
+      }
+
+      h1 {
+        margin: 0 0 1.5rem;
+        color: #ffbf42;
+        font: clamp(1.75rem, 5vw, 2.75rem) / 1.25 Archive, sans-serif;
+      }
+
+      p {
+        margin: 0 auto;
+        max-width: 34rem;
+        color: #d0d3dc;
+        font-size: 1rem;
+        line-height: 1.8;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-    <!-- <script>
-      window.global = window;
-    </script> -->
+    <main>
+      <div class="brand">
+        <img src="/src/assets/icons/logo.svg" alt="" />
+        <span>BABELFISH</span>
+      </div>
+      <h1>Temporarily under maintenance</h1>
+      <p>
+        The BabelFish app is currently unavailable. Please check back later.
+      </p>
+    </main>
   </body>
 </html>
